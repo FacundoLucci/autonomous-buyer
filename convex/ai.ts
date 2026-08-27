@@ -147,14 +147,30 @@ export const getEvidence = internalQuery({
   }),
   handler: async (ctx, args) => {
     const run = await ctx.db.get("aiRuns", args.aiRunId);
-    if (run === null || run.procurementId === undefined || run.agentThreadLinkId === undefined) {
+    if (run === null || run.procurementId === undefined) {
       throw new Error("AI run is missing its procurement context.");
     }
     const procurement = await ctx.db.get("procurements", run.procurementId);
-    const link = await ctx.db.get("agentThreadLinks", run.agentThreadLinkId);
-    if (procurement === null || link === null) throw new Error("AI run context not found.");
+    const link =
+      run.agentThreadLinkId === undefined
+        ? null
+        : await ctx.db.get("agentThreadLinks", run.agentThreadLinkId);
+    if (procurement === null) throw new Error("AI run context not found.");
     const item = await ctx.db.get("inventoryItems", procurement.inventoryItemId);
     if (item === null) throw new Error("Inventory evidence not found.");
+    const supplierProduct =
+      run.supplierProductId === undefined
+        ? null
+        : await ctx.db.get("supplierProducts", run.supplierProductId);
+    const supplier =
+      supplierProduct === null ? null : await ctx.db.get("suppliers", supplierProduct.supplierId);
+    const claims =
+      supplierProduct === null
+        ? []
+        : await ctx.db
+            .query("supplierProductClaims")
+            .withIndex("by_product", (q) => q.eq("supplierProductId", supplierProduct._id))
+            .take(50);
     const events = await ctx.db
       .query("procurementEvents")
       .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))
@@ -163,12 +179,14 @@ export const getEvidence = internalQuery({
     const evidenceRefs = [
       `procurements:${procurement._id}`,
       `inventoryItems:${item._id}`,
+      ...(supplierProduct === null ? [] : [`supplierProducts:${supplierProduct._id}`]),
+      ...claims.map((claim) => `supplierProductClaims:${claim._id}`),
       ...events.map((event) => `procurementEvents:${event._id}`),
     ];
     return {
       task: run.task,
       intent: run.intent ?? intentByTask[run.task],
-      componentThreadId: link.componentThreadId,
+      componentThreadId: link?.componentThreadId ?? "",
       evidenceRefs,
       evidenceJson: JSON.stringify({
         procurement: {
@@ -190,8 +208,27 @@ export const getEvidence = internalQuery({
           quantityOnHand: item.quantityOnHand,
           casePack: item.casePack,
         },
-        events: events.map((event, index) => ({
-          id: evidenceRefs[index + 2],
+        supplierProduct:
+          supplierProduct === null
+            ? null
+            : {
+                id: `supplierProducts:${supplierProduct._id}`,
+                supplierName: supplier?.name ?? null,
+                productUrl: supplierProduct.productUrl,
+                title: supplierProduct.title,
+                material: supplierProduct.material ?? null,
+                dimensions: supplierProduct.dimensions ?? null,
+                packSize: supplierProduct.packSize ?? null,
+              },
+        claims: claims.map((claim) => ({
+          id: `supplierProductClaims:${claim._id}`,
+          field: claim.field,
+          value: claim.value,
+          sourceUrl: claim.sourceUrl,
+          observedAt: claim.observedAt,
+        })),
+        events: events.map((event) => ({
+          id: `procurementEvents:${event._id}`,
           type: event.type,
           summary: event.summary,
           createdAt: event.createdAt,
@@ -212,17 +249,21 @@ export const completeRun = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const run = await ctx.db.get("aiRuns", args.aiRunId);
-    if (run === null || run.agentThreadLinkId === undefined) throw new Error("AI run not found.");
-    const link = await ctx.db.get("agentThreadLinks", run.agentThreadLinkId);
-    if (link === null) throw new Error("Contextual thread link not found.");
+    if (run === null) throw new Error("AI run not found.");
+    const link =
+      run.agentThreadLinkId === undefined
+        ? null
+        : await ctx.db.get("agentThreadLinks", run.agentThreadLinkId);
     const now = Date.now();
-    await saveMessage(ctx, components.agent, {
-      threadId: link.componentThreadId,
-      userId: link.buyerUserId,
-      agentName: "Autonomous Buyer",
-      message: { role: "assistant", content: args.result.summary },
-      metadata: { provider: args.transport, model: args.model },
-    });
+    if (link !== null) {
+      await saveMessage(ctx, components.agent, {
+        threadId: link.componentThreadId,
+        userId: link.buyerUserId,
+        agentName: "Autonomous Buyer",
+        message: { role: "assistant", content: args.result.summary },
+        metadata: { provider: args.transport, model: args.model },
+      });
+    }
     await ctx.db.patch("aiRuns", run._id, {
       transport: args.transport,
       model: args.model,
@@ -233,12 +274,20 @@ export const completeRun = internalMutation({
       completedAt: now,
       errorMessage: undefined,
     });
-    await ctx.db.patch("agentThreadLinks", link._id, {
-      unreadCount: link.unreadCount + 1,
-      status: "unread",
-      lastMessageAt: now,
-      updatedAt: now,
-    });
+    if (run.supplierProductId !== undefined && args.result.output.task === "product_equivalency") {
+      await ctx.db.patch("supplierProducts", run.supplierProductId, {
+        matchStatus: args.result.output.assessment,
+        matchConfidence: args.result.confidence,
+      });
+    }
+    if (link !== null) {
+      await ctx.db.patch("agentThreadLinks", link._id, {
+        unreadCount: link.unreadCount + 1,
+        status: "unread",
+        lastMessageAt: now,
+        updatedAt: now,
+      });
+    }
     return null;
   },
 });

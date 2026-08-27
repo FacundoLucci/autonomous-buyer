@@ -21,6 +21,7 @@ import type * as domain_quotes from "../domain/quotes.js";
 import type * as integrations from "../integrations.js";
 import type * as procurements from "../procurements.js";
 import type * as purchasing from "../purchasing.js";
+import type * as sourcing from "../sourcing.js";
 
 import type {
   ApiFromModules,
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   integrations: typeof integrations;
   procurements: typeof procurements;
   purchasing: typeof purchasing;
+  sourcing: typeof sourcing;
 }>;
 
 /**

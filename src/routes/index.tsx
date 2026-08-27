@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -378,11 +378,15 @@ function FocusedProcurement({
   onBack: () => void;
 }) {
   const procurement = useQuery(api.purchasing.getProcurement, { procurementId });
+  const sourcing = useQuery(api.sourcing.getLatest, { procurementId });
+  const startSourcing = useAction(api.sourcing.start);
   const startStructuredTask = useMutation(api.ai.startStructuredTask);
   const markThreadRead = useMutation(api.ai.markThreadRead);
   const [openThread, setOpenThread] = useState<string | null>(null);
   const [aiRunId, setAiRunId] = useState<Id<"aiRuns"> | null>(null);
   const [diagnosticError, setDiagnosticError] = useState<string | null>(null);
+  const [sourcingState, setSourcingState] = useState<"idle" | "working">("idle");
+  const [sourcingError, setSourcingError] = useState<string | null>(null);
   const aiRun = useQuery(api.ai.getRun, aiRunId === null ? "skip" : { aiRunId });
   const threadMessages = useQuery(
     api.ai.listThreadMessages,
@@ -414,6 +418,18 @@ function FocusedProcurement({
       setDiagnosticError(
         error instanceof Error ? error.message : "The AI diagnostic could not start.",
       );
+    }
+  }
+
+  async function sourceSuppliers() {
+    setSourcingError(null);
+    setSourcingState("working");
+    try {
+      await startSourcing({ procurementId });
+    } catch (error) {
+      setSourcingError(error instanceof Error ? error.message : "Supplier discovery failed.");
+    } finally {
+      setSourcingState("idle");
     }
   }
 
@@ -509,6 +525,57 @@ function FocusedProcurement({
                 There is no buyer action here yet. Return to the dashboard while the agent works.
               </div>
             )}
+          </CardContent>
+        </Card>
+        <Card className="border-stone-300 bg-white/80 shadow-none">
+          <CardHeader>
+            <CardDescription>Live supplier evidence · BC-08</CardDescription>
+            <CardTitle className="text-base">Real supplier discovery</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button
+              onClick={() => void sourceSuppliers()}
+              disabled={sourcingState === "working" || sourcing?.run.status === "pending"}
+            >
+              <Search />
+              {sourcingState === "working" || sourcing?.run.status === "pending"
+                ? "Searching with Firecrawl…"
+                : sourcing?.run.status === "succeeded"
+                  ? "Search again"
+                  : "Start sourcing"}
+            </Button>
+            {sourcing?.candidates.map((candidate) => (
+              <div
+                key={candidate.resultId}
+                className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-medium">{candidate.supplierName}</p>
+                  <Badge variant="outline">Real discovered supplier</Badge>
+                </div>
+                <p className="mt-1 text-stone-600">{candidate.title}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-stone-500">
+                  <a
+                    className="font-medium text-amber-800 underline"
+                    href={candidate.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open source
+                  </a>
+                  <span>{candidate.matchStatus.replaceAll("_", " ")}</span>
+                  {candidate.matchConfidence > 0 ? (
+                    <span>{Math.round(candidate.matchConfidence * 100)}% confidence</span>
+                  ) : (
+                    <span>OpenAI assessment pending</span>
+                  )}
+                </div>
+              </div>
+            ))}
+            {sourcing?.run.status === "failed" ? (
+              <p className="text-sm text-red-700">{sourcing.run.errorMessage}</p>
+            ) : null}
+            {sourcingError ? <p className="text-sm text-red-700">{sourcingError}</p> : null}
           </CardContent>
         </Card>
         {demo ? (

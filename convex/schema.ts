@@ -292,6 +292,7 @@ export default defineSchema({
     title: v.string(),
     supplierName: v.optional(v.string()),
     summary: v.optional(v.string()),
+    markdownExcerpt: v.optional(v.string()),
     observedAt: timestampValidator,
   }).index("by_search_run", ["searchRunId"]),
 
@@ -465,6 +466,7 @@ export default defineSchema({
     organizationId: v.optional(v.id("organizations")),
     buyerUserId: v.optional(v.id("users")),
     procurementId: v.optional(v.id("procurements")),
+    supplierProductId: v.optional(v.id("supplierProducts")),
     agentThreadLinkId: v.optional(v.id("agentThreadLinks")),
     anchorKey: v.optional(v.string()),
     intent: v.optional(v.string()),
