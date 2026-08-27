@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".output/**",
+    "dist/**",
+    "src/routeTree.gen.ts",
+    "convex/_generated/**",
+    "docs/product-spec.md"
+  ],
+  "sortTailwindcss": {
+    "stylesheet": "./src/styles/app.css",
+    "functions": ["clsx", "cn", "cva"]
+  }
+}

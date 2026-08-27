@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react", "jsx-a11y", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react",
+            "importNames": ["useEffect"],
+            "message": "Use derived state, an event handler, useSyncExternalStore, or a focused mount-only helper instead."
+          }
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": [
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".output/**",
+    "src/components/ui/**",
+    "src/routeTree.gen.ts",
+    "dist/**",
+    "convex/_generated/**"
+  ]
+}
