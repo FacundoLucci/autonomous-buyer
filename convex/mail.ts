@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 import { components, internal } from "./_generated/api";
 import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { missingQuoteFieldValidator } from "./domain";
 
 const agentmail = new AgentMail(components.agentmail, {
   onMessageReceived: internal.inbound.onMessageReceived,
@@ -349,6 +350,221 @@ export const reconcileDelivery = internalMutation({
       });
     }
     return null;
+  },
+});
+
+export const queueFollowUp = internalMutation({
+  args: {
+    rfqId: v.id("rfqs"),
+    sourceQuoteId: v.id("quotes"),
+    requestedFields: v.array(missingQuoteFieldValidator),
+    subject: v.string(),
+    body: v.string(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const rfq = await ctx.db.get("rfqs", args.rfqId);
+    const quote = await ctx.db.get("quotes", args.sourceQuoteId);
+    if (rfq === null || quote === null || quote.rfqId !== rfq._id)
+      throw new Error("Follow-up quote context is invalid.");
+    if (rfq.automaticFollowUpCount >= 2) throw new Error("Automatic follow-up limit reached.");
+    const attempt = rfq.automaticFollowUpCount + 1;
+    const existing = await ctx.db
+      .query("rfqFollowUps")
+      .withIndex("by_rfq_and_attempt", (q) => q.eq("rfqId", rfq._id).eq("attempt", attempt))
+      .unique();
+    if (existing !== null) return null;
+    const idempotencyKey = `${rfq.demoRunId}:rfq:${rfq._id}:followup:${attempt}`;
+    const priorReceipt = await ctx.db
+      .query("integrationReceipts")
+      .withIndex("by_provider_key", (q) =>
+        q.eq("provider", "agentmail").eq("idempotencyKey", idempotencyKey),
+      )
+      .unique();
+    if (priorReceipt !== null) return null;
+    const now = Date.now();
+    const followUpId = await ctx.db.insert("rfqFollowUps", {
+      procurementId: rfq.procurementId,
+      rfqId: rfq._id,
+      sourceQuoteId: quote._id,
+      sourceProviderMessageId: quote.rawProviderMessageId,
+      attempt,
+      requestedFields: args.requestedFields,
+      subject: args.subject,
+      body: args.body,
+      status: "queued",
+      createdAt: now,
+    });
+    await ctx.db.insert("integrationReceipts", {
+      procurementId: rfq.procurementId,
+      provider: "agentmail",
+      idempotencyKey,
+      operation: "agentmail_send_follow_up",
+      status: "pending",
+      requestHash: `${quote.rawProviderMessageId}|${args.subject}|${args.body}`,
+      createdAt: now,
+    });
+    await ctx.db.patch("rfqs", rfq._id, { automaticFollowUpCount: attempt });
+    await ctx.scheduler.runAfter(0, internal.mail.sendFollowUp, { followUpId });
+    return null;
+  },
+});
+
+export const sendFollowUp = internalMutation({
+  args: { followUpId: v.id("rfqFollowUps") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const followUp = await ctx.db.get("rfqFollowUps", args.followUpId);
+    if (followUp === null || followUp.providerOutboundId !== undefined) return null;
+    const rfq = await ctx.db.get("rfqs", followUp.rfqId);
+    const procurement = await ctx.db.get("procurements", followUp.procurementId);
+    if (rfq === null || procurement === null) throw new Error("Follow-up context not found.");
+    const inbox = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_organization_and_provider", (q) =>
+        q.eq("organizationId", procurement.organizationId).eq("provider", "agentmail"),
+      )
+      .unique();
+    if (inbox === null) throw new Error("The Acme purchasing inbox is not selected.");
+    const outboundId = await agentmail.replyToMessage(
+      ctx,
+      inbox.inboxId,
+      followUp.sourceProviderMessageId,
+      {
+        subject: followUp.subject,
+        text: followUp.body,
+        labels: ["autonomous-buyer", `procurement-${procurement._id}`, "automatic-follow-up"],
+        headers: {
+          "X-Autonomous-Buyer-Key": `${rfq.demoRunId}:rfq:${rfq._id}:followup:${followUp.attempt}`,
+        },
+      },
+    );
+    await ctx.db.patch("rfqFollowUps", followUp._id, { providerOutboundId: outboundId });
+    await ctx.scheduler.runAfter(1_000, internal.mail.reconcileFollowUp, {
+      followUpId: followUp._id,
+      attempt: 0,
+    });
+    return null;
+  },
+});
+
+export const reconcileFollowUp = internalMutation({
+  args: { followUpId: v.id("rfqFollowUps"), attempt: v.number() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const followUp = await ctx.db.get("rfqFollowUps", args.followUpId);
+    if (followUp === null || followUp.providerOutboundId === undefined) return null;
+    const status = await agentmail.status(ctx, followUp.providerOutboundId as OutboundId);
+    if ((status === null || status.status === "pending") && args.attempt < 60) {
+      await ctx.scheduler.runAfter(2_000, internal.mail.reconcileFollowUp, {
+        followUpId: followUp._id,
+        attempt: args.attempt + 1,
+      });
+      return null;
+    }
+    const succeeded = status?.status === "sent" || status?.status === "delivered";
+    const now = Date.now();
+    await ctx.db.patch("rfqFollowUps", followUp._id, {
+      status: succeeded ? "sent" : "failed",
+      providerMessageId: status?.agentmailMessageId ?? undefined,
+      providerThreadId: status?.threadId ?? undefined,
+      errorMessage:
+        status?.errorMessage ?? (status === null ? "Delivery status unavailable." : undefined),
+      sentAt: succeeded ? now : undefined,
+    });
+    const rfq = await ctx.db.get("rfqs", followUp.rfqId);
+    if (rfq === null) return null;
+    const receipt = await ctx.db
+      .query("integrationReceipts")
+      .withIndex("by_provider_key", (q) =>
+        q
+          .eq("provider", "agentmail")
+          .eq("idempotencyKey", `${rfq.demoRunId}:rfq:${rfq._id}:followup:${followUp.attempt}`),
+      )
+      .unique();
+    if (receipt !== null) {
+      await ctx.db.patch("integrationReceipts", receipt._id, {
+        status: succeeded ? "succeeded" : "failed",
+        providerRecordId: status?.agentmailMessageId ?? followUp.providerOutboundId,
+        errorMessage: status?.errorMessage ?? undefined,
+        completedAt: now,
+      });
+    }
+    if (succeeded && status?.agentmailMessageId && status.threadId) {
+      await ctx.db.insert("emailLinks", {
+        procurementId: followUp.procurementId,
+        rfqId: followUp.rfqId,
+        supplierId: rfq.supplierId,
+        provider: "agentmail",
+        providerMessageId: status.agentmailMessageId,
+        providerThreadId: status.threadId,
+        direction: "outbound",
+        purpose: "follow_up",
+        createdAt: now,
+      });
+      const procurement = await ctx.db.get("procurements", followUp.procurementId);
+      if (procurement !== null) {
+        await ctx.db.insert("procurementEvents", {
+          procurementId: procurement._id,
+          demoRunId: procurement.demoRunId,
+          type: "follow_up_sent",
+          summary: `Automatic follow-up ${followUp.attempt} requested ${followUp.requestedFields.join(", ").replaceAll("_", " ")}.`,
+          actorType: "agent",
+          relatedRecordId: followUp._id,
+          createdAt: now,
+        });
+      }
+    }
+    return null;
+  },
+});
+
+export const listFollowUps = query({
+  args: { procurementId: v.id("procurements") },
+  returns: v.array(
+    v.object({
+      followUpId: v.id("rfqFollowUps"),
+      supplierName: v.string(),
+      attempt: v.number(),
+      requestedFields: v.array(missingQuoteFieldValidator),
+      subject: v.string(),
+      body: v.string(),
+      status: v.union(
+        v.literal("queued"),
+        v.literal("sent"),
+        v.literal("failed"),
+        v.literal("human_review"),
+      ),
+      errorMessage: v.union(v.string(), v.null()),
+      createdAt: v.number(),
+      sentAt: v.union(v.number(), v.null()),
+    }),
+  ),
+  handler: async (ctx, args) => {
+    const followUps = await ctx.db
+      .query("rfqFollowUps")
+      .withIndex("by_procurement_and_created_at", (q) => q.eq("procurementId", args.procurementId))
+      .order("desc")
+      .take(20);
+    const rows = [];
+    for (const followUp of followUps) {
+      const rfq = await ctx.db.get("rfqs", followUp.rfqId);
+      const supplier = rfq === null ? null : await ctx.db.get("suppliers", rfq.supplierId);
+      if (supplier === null) continue;
+      rows.push({
+        followUpId: followUp._id,
+        supplierName: supplier.name,
+        attempt: followUp.attempt,
+        requestedFields: followUp.requestedFields,
+        subject: followUp.subject,
+        body: followUp.body,
+        status: followUp.status,
+        errorMessage: followUp.errorMessage ?? null,
+        createdAt: followUp.createdAt,
+        sentAt: followUp.sentAt ?? null,
+      });
+    }
+    return rows;
   },
 });
 

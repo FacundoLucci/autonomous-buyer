@@ -380,6 +380,31 @@ export default defineSchema({
     .index("by_email_link", ["emailLinkId"])
     .index("by_provider_event_id", ["providerEventId"]),
 
+  rfqFollowUps: defineTable({
+    procurementId: v.id("procurements"),
+    rfqId: v.id("rfqs"),
+    sourceQuoteId: v.id("quotes"),
+    sourceProviderMessageId: v.string(),
+    attempt: v.number(),
+    requestedFields: v.array(missingQuoteFieldValidator),
+    subject: v.string(),
+    body: v.string(),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("sent"),
+      v.literal("failed"),
+      v.literal("human_review"),
+    ),
+    providerOutboundId: v.optional(v.string()),
+    providerMessageId: v.optional(v.string()),
+    providerThreadId: v.optional(v.string()),
+    errorMessage: v.optional(v.string()),
+    createdAt: timestampValidator,
+    sentAt: v.optional(timestampValidator),
+  })
+    .index("by_rfq_and_attempt", ["rfqId", "attempt"])
+    .index("by_procurement_and_created_at", ["procurementId", "createdAt"]),
+
   quotes: defineTable({
     procurementId: v.id("procurements"),
     rfqId: v.id("rfqs"),

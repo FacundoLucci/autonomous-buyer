@@ -67,3 +67,14 @@ starting values, and reported zero console errors or warnings. A fresh reset
 created a different `demoRunId`. Convex development push and full static checks
 passed; no external calls, emails, public deployment, or production changes
 were made.
+
+### 2026-08-27 — BC-12
+
+Added stored, idempotent automatic follow-ups for incomplete supplier quotes.
+The workflow asks only for missing availability, freight, or arrival details,
+increments the attempt before sending, replies in the existing AgentMail
+thread, and stops after two attempts for buyer review. The browser now shows
+the exact requested fields and wording for every attempt. Convex development
+push, OXC, type checking, production build, and local browser load passed. The
+real incomplete-reply and completed-reply proof remains pending; this change
+did not send email.

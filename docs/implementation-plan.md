@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-11 implemented. Live BC-10 and BC-11 proof awaits approved real recipients and the AgentMail webhook secret.
+Status: BC-00 through BC-12 implemented. Live BC-10 through BC-12 proof awaits the approved controlled-recipient email flow.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -538,7 +538,7 @@ browser without refresh or database editing.
 
 ### BC-12 — Autonomous follow-up
 
-Depends on: BC-11.
+Depends on: BC-11. Status: implemented; live email proof pending.
 
 Load: spec section 15 and the follow-up policy only.
 

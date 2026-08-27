@@ -178,6 +178,15 @@ export const getEvidence = internalQuery({
             .query("inboundEmailEvidence")
             .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
             .unique();
+    const latestQuotes =
+      rfq === null
+        ? []
+        : await ctx.db
+            .query("quotes")
+            .withIndex("by_rfq_revision", (q) => q.eq("rfqId", rfq._id))
+            .order("desc")
+            .take(1);
+    const latestQuote = latestQuotes[0] ?? null;
     const claims =
       supplierProduct === null
         ? []
@@ -197,6 +206,7 @@ export const getEvidence = internalQuery({
       ...(rfq === null ? [] : [`rfqs:${rfq._id}`, `suppliers:${rfq.supplierId}`]),
       ...(emailLink === null ? [] : [`emailLinks:${emailLink._id}`]),
       ...(inboundEvidence === null ? [] : [`inboundEmailEvidence:${inboundEvidence._id}`]),
+      ...(latestQuote === null ? [] : [`quotes:${latestQuote._id}`]),
       ...claims.map((claim) => `supplierProductClaims:${claim._id}`),
       ...events.map((event) => `procurementEvents:${event._id}`),
     ];
@@ -263,6 +273,17 @@ export const getEvidence = internalQuery({
                 subject: inboundEvidence.subject ?? null,
                 extractedText: inboundEvidence.extractedText,
                 observedAt: inboundEvidence.observedAt,
+              },
+        latestQuote:
+          latestQuote === null
+            ? null
+            : {
+                id: `quotes:${latestQuote._id}`,
+                revision: latestQuote.revision,
+                missingInformation: latestQuote.missingInformation,
+                quantityAvailable: latestQuote.quantityAvailable ?? null,
+                freightCents: latestQuote.freightCents ?? null,
+                estimatedArrivalDate: latestQuote.estimatedArrivalDate ?? null,
               },
         claims: claims.map((claim) => ({
           id: `supplierProductClaims:${claim._id}`,
@@ -438,6 +459,72 @@ export const completeRun = internalMutation({
           actorType: "agent",
         });
       }
+      const followUpFields = output.missingFields.filter(
+        (field) =>
+          field === "quantity_available" || field === "freight" || field === "arrival_date",
+      );
+      if (followUpFields.length > 0 && rfq.automaticFollowUpCount < 2) {
+        const followUpRunId = await ctx.db.insert("aiRuns", {
+          organizationId: procurement.organizationId,
+          procurementId: procurement._id,
+          rfqId: rfq._id,
+          emailLinkId: emailLink._id,
+          intent: `Draft a concise reply in the existing supplier thread. Request only these missing fields: ${followUpFields.join(", ")}. Do not change quantities, dates, or commercial terms.`,
+          task: "follow_up_wording",
+          transport: "openai",
+          model: "gpt-5.4-mini",
+          status: "pending",
+          evidenceRefs: [],
+          createdAt: now,
+        });
+        await ctx.scheduler.runAfter(0, internal.aiNode.runStructuredTask, {
+          aiRunId: followUpRunId,
+        });
+      } else if (followUpFields.length > 0) {
+        await ctx.db.patch("procurements", procurement._id, {
+          reviewStatus: "required",
+          reviewReason: "The supplier quote is still incomplete after two automatic follow-ups.",
+          updatedAt: now,
+        });
+        await ctx.db.insert("procurementEvents", {
+          procurementId: procurement._id,
+          demoRunId: procurement.demoRunId,
+          type: "review_required",
+          summary: "Automatic follow-ups reached the two-attempt limit; buyer review is required.",
+          actorType: "agent",
+          relatedRecordId: quoteId,
+          createdAt: now,
+        });
+      }
+    }
+    if (run.rfqId !== undefined && args.result.output.task === "follow_up_wording") {
+      const rfqId = run.rfqId;
+      const rfq = await ctx.db.get("rfqs", rfqId);
+      const latestQuotes = await ctx.db
+        .query("quotes")
+        .withIndex("by_rfq_revision", (q) => q.eq("rfqId", rfqId))
+        .order("desc")
+        .take(1);
+      const quote = latestQuotes[0];
+      if (rfq === null || quote === undefined) {
+        throw new Error("Follow-up wording is missing its quote context.");
+      }
+      const allowed = new Set(quote.missingInformation);
+      const requestedFields = args.result.output.requestedFields.filter(
+        (field) =>
+          allowed.has(field) &&
+          (field === "quantity_available" || field === "freight" || field === "arrival_date"),
+      );
+      if (requestedFields.length === 0) {
+        throw new Error("Follow-up wording did not request a currently missing required field.");
+      }
+      await ctx.runMutation(internal.mail.queueFollowUp, {
+        rfqId,
+        sourceQuoteId: quote._id,
+        requestedFields,
+        subject: args.result.output.subject,
+        body: args.result.output.body,
+      });
     }
     if (link !== null) {
       await ctx.db.patch("agentThreadLinks", link._id, {

@@ -384,6 +384,7 @@ function FocusedProcurement({
   const purchasingInbox = useQuery(api.mail.getInboxForProcurement, { procurementId });
   const delivery = useQuery(api.mail.getDelivery, { procurementId });
   const quotes = useQuery(api.inbound.listQuotes, { procurementId });
+  const followUps = useQuery(api.mail.listFollowUps, { procurementId });
   const startSourcing = useAction(api.sourcing.start);
   const ensurePurchasingInbox = useAction(api.mail.ensurePurchasingInbox);
   const prepareRfqs = useMutation(api.rfqs.prepare);
@@ -815,6 +816,41 @@ function FocusedProcurement({
                     <p className="mt-2 text-xs text-amber-800">
                       Missing: {quote.missingInformation.join(", ").replaceAll("_", " ")}
                     </p>
+                  ) : null}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
+        {followUps && followUps.length > 0 ? (
+          <Card className="border-stone-300 bg-white/80 shadow-none">
+            <CardHeader>
+              <CardDescription>Threaded supplier outreach · BC-12</CardDescription>
+              <CardTitle className="text-base">Automatic follow-ups</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {followUps.map((followUp) => (
+                <div
+                  key={followUp.followUpId}
+                  className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-medium">
+                      {followUp.supplierName} · attempt {followUp.attempt} of 2
+                    </p>
+                    <Badge variant="outline">{followUp.status.replaceAll("_", " ")}</Badge>
+                  </div>
+                  <p className="mt-2 text-xs text-stone-500">
+                    Requested: {followUp.requestedFields.join(", ").replaceAll("_", " ")}
+                  </p>
+                  <div className="mt-3 rounded-md bg-stone-50 p-3">
+                    <p className="font-medium">{followUp.subject}</p>
+                    <p className="mt-2 leading-6 whitespace-pre-wrap text-stone-600">
+                      {followUp.body}
+                    </p>
+                  </div>
+                  {followUp.errorMessage ? (
+                    <p className="mt-2 text-xs text-red-700">{followUp.errorMessage}</p>
                   ) : null}
                 </div>
               ))}
