@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -8,12 +8,16 @@ import {
   Radar,
   Send,
   ShieldCheck,
+  RotateCcw,
+  Play,
 } from "lucide-react";
+import { useState } from "react";
 
 import { api } from "../../convex/_generated/api";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const buildLanes = [
@@ -43,10 +47,48 @@ const integrationLabels: Record<(typeof integrationNames)[number], string> = {
   agentmail: "AgentMail",
 } as const;
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    demo: search.demo === "1" || search.demo === 1 || search.demo === true,
+  }),
+  component: Home,
+});
 
 function Home() {
   const integrations = useQuery(api.integrations.getStatus);
+  const scenario = useQuery(api.demo.getCurrentScenario);
+  const resetScenario = useMutation(api.demo.resetScenario);
+  const startScenario = useMutation(api.demo.startScenario);
+  const { demo } = Route.useSearch();
+  const [controlState, setControlState] = useState<"idle" | "resetting" | "starting">("idle");
+  const [controlError, setControlError] = useState<string | null>(null);
+
+  async function reset() {
+    setControlError(null);
+    setControlState("resetting");
+    try {
+      await resetScenario({});
+    } catch (error) {
+      setControlError(error instanceof Error ? error.message : "The scenario could not be reset.");
+    } finally {
+      setControlState("idle");
+    }
+  }
+
+  async function start() {
+    if (scenario === undefined || scenario === null) return;
+    setControlError(null);
+    setControlState("starting");
+    try {
+      await startScenario({ demoRunId: scenario.demoRunId });
+    } catch (error) {
+      setControlError(
+        error instanceof Error ? error.message : "The scenario could not be started.",
+      );
+    } finally {
+      setControlState("idle");
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,oklch(0.96_0.04_70),transparent_38%),linear-gradient(to_bottom,oklch(0.995_0.003_75),oklch(0.97_0.01_70))] px-5 py-8 sm:px-8 sm:py-12">
@@ -150,6 +192,79 @@ function Home() {
             ))}
           </div>
         </section>
+
+        {demo ? (
+          <Card className="border-dashed bg-card/75" data-testid="demo-controls">
+            <CardHeader>
+              <CardDescription>
+                Hidden rehearsal controls · local scenario data only
+              </CardDescription>
+              <CardTitle className="flex items-center justify-between gap-4 text-lg">
+                Demo run
+                <Badge variant="outline">{scenario?.status ?? "not seeded"}</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {scenario ? (
+                <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
+                  <div>
+                    <p className="text-muted-foreground">Critical inventory</p>
+                    <p className="font-medium tabular-nums">
+                      {scenario.inventory
+                        .find((item) => item.sku === "LID-16-TE")
+                        ?.quantityOnHand.toLocaleString() ?? "—"}{" "}
+                      lids
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Recent use</p>
+                    <p className="font-medium tabular-nums">
+                      {scenario.inventory
+                        .find((item) => item.sku === "LID-16-TE")
+                        ?.averageDailyUsage.toLocaleString() ?? "—"}
+                      /day
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Seeded history</p>
+                    <p className="font-medium tabular-nums">
+                      {scenario.usageRecordCount} usage · {scenario.purchaseHistoryCount} Apex
+                      orders
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Controlled identities</p>
+                    <p className="font-medium tabular-nums">
+                      {scenario.controlledIdentityCount} demo only
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Create the repeatable Acme Foods starting state before rehearsal.
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={reset} disabled={controlState !== "idle"} variant="outline">
+                  <RotateCcw aria-hidden="true" />
+                  {controlState === "resetting" ? "Resetting…" : "Reset scenario"}
+                </Button>
+                <Button
+                  onClick={start}
+                  disabled={controlState !== "idle" || !scenario || scenario.status !== "ready"}
+                >
+                  <Play aria-hidden="true" />
+                  {controlState === "starting" ? "Starting…" : "Start run"}
+                </Button>
+              </div>
+              {controlError ? <p className="text-sm text-destructive">{controlError}</p> : null}
+              <p className="text-xs leading-5 text-muted-foreground">
+                Every value above is seeded demo data. Reset creates a new run ID and never deletes
+                AgentMail provider history.
+              </p>
+            </CardContent>
+          </Card>
+        ) : null}
 
         <footer className="rounded-lg border border-dashed border-border bg-background/55 px-4 py-3 text-sm text-muted-foreground">
           This is the app foundation only. Product workflows, external sends, and production

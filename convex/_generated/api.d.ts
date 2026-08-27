@@ -9,6 +9,7 @@
  */
 
 import type * as approvals from "../approvals.js";
+import type * as demo from "../demo.js";
 import type * as domain from "../domain.js";
 import type * as domain_inventory from "../domain/inventory.js";
 import type * as domain_money from "../domain/money.js";
@@ -25,6 +26,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   approvals: typeof approvals;
+  demo: typeof demo;
   domain: typeof domain;
   "domain/inventory": typeof domain_inventory;
   "domain/money": typeof domain_money;

@@ -68,7 +68,9 @@ export default defineSchema({
     startedAt: timestampValidator,
     completedAt: v.optional(timestampValidator),
     isDemo: v.boolean(),
-  }).index("by_status_created", ["status", "startedAt"]),
+  })
+    .index("by_status_created", ["status", "startedAt"])
+    .index("by_started_at", ["startedAt"]),
 
   inventoryItems: defineTable({
     organizationId: v.id("organizations"),
@@ -91,9 +93,11 @@ export default defineSchema({
     preferredCoverageDays: v.number(),
     maximumInventoryDays: v.optional(v.number()),
     status: inventoryStatusValidator,
+    isDemo: v.boolean(),
   })
     .index("by_org_sku", ["organizationId", "sku"])
-    .index("by_org_status", ["organizationId", "status"]),
+    .index("by_org_status", ["organizationId", "status"])
+    .index("by_demo_run", ["demoRunId"]),
 
   inventoryUsage: defineTable({
     inventoryItemId: v.id("inventoryItems"),
@@ -101,7 +105,9 @@ export default defineSchema({
     date: dateValidator,
     quantityConsumed: v.number(),
     isDemo: v.boolean(),
-  }).index("by_item_date", ["inventoryItemId", "date"]),
+  })
+    .index("by_item_date", ["inventoryItemId", "date"])
+    .index("by_demo_run", ["demoRunId"]),
 
   expectedInventory: defineTable({
     inventoryItemId: v.id("inventoryItems"),
@@ -135,9 +141,46 @@ export default defineSchema({
     priorFreightCents: v.optional(v.number()),
     paymentTerms: v.optional(v.string()),
     sourceUrl: v.optional(v.string()),
+    isDemo: v.boolean(),
   })
     .index("by_org_domain", ["organizationId", "domain"])
     .index("by_demo_run", ["demoRunId"]),
+
+  demoSupplierIdentities: defineTable({
+    demoRunId: v.id("demoRuns"),
+    supplierId: v.id("suppliers"),
+    label: v.union(v.literal("incumbent"), v.literal("winning"), v.literal("cheapest")),
+    displayName: v.string(),
+    email: v.string(),
+    responsePlan: v.string(),
+    isDemo: v.literal(true),
+  }).index("by_demo_run", ["demoRunId"]),
+
+  purchaseHistory: defineTable({
+    demoRunId: v.id("demoRuns"),
+    organizationId: v.id("organizations"),
+    inventoryItemId: v.id("inventoryItems"),
+    supplierId: v.id("suppliers"),
+    purchasedOn: dateValidator,
+    quantity: v.number(),
+    unitPriceMicrodollars: v.number(),
+    freightCents: v.number(),
+    leadTimeDays: v.number(),
+    arrivedOnTime: v.boolean(),
+    isDemo: v.literal(true),
+  })
+    .index("by_demo_run", ["demoRunId"])
+    .index("by_item_and_purchased_on", ["inventoryItemId", "purchasedOn"]),
+
+  historicalMetrics: defineTable({
+    demoRunId: v.id("demoRuns"),
+    organizationId: v.id("organizations"),
+    annualSpendCents: v.number(),
+    savingsIdentifiedCents: v.number(),
+    projectedStockouts: v.number(),
+    autonomousProcurementPercent: v.number(),
+    isDemo: v.literal(true),
+  }).index("by_demo_run", ["demoRunId"]),
 
   supplierProducts: defineTable({
     procurementId: v.id("procurements"),
@@ -192,7 +235,8 @@ export default defineSchema({
     updatedAt: timestampValidator,
   })
     .index("by_org_status", ["organizationId", "status"])
-    .index("by_item_active", ["inventoryItemId", "isActive"]),
+    .index("by_item_active", ["inventoryItemId", "isActive"])
+    .index("by_demo_run", ["demoRunId"]),
 
   searchRuns: defineTable({
     procurementId: v.id("procurements"),

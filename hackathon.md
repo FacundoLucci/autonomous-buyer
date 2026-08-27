@@ -8,11 +8,11 @@
 - **Frontend:** Convex static hosting
 - **Convex deployment:** https://festive-coyote-483.convex.cloud (development)
 - **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @firecrawl/firecrawl-convex, @agentmail/convex
-- **Convex features:** typed schema, indexed data model, typed environment contract, reactive integration-status query
+- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries
 - **Auth:** none
 - **AI models:** none
 - **Started:** 2026-08-27T00:36:38Z
-- **Last updated:** 2026-08-27T12:48:38Z
+- **Last updated:** 2026-08-27T15:26:14Z
 
 ## Log
 
@@ -54,3 +54,16 @@ diagnostic verified the visible calculations and policy outcomes with zero conso
 errors or warnings, then was removed. The development Convex push and full static
 checks passed. No unit-test suite, external calls, emails, public deployment, or
 production changes were added.
+
+### 2026-08-27 — BC-04
+
+Added a repeatable Acme Foods demo run with 90 days of varied usage for three
+inventory items, the exact 3,240-lid and 612/day starting state, three Apex
+purchase-history records, three separate controlled supplier identities, and
+clearly marked demo metrics. Hidden browser controls at `/?demo=1` start or
+reset only local scenario records; reset never calls AgentMail or deletes its
+provider history. Browser proof showed ready → active → ready, restored all
+starting values, and reported zero console errors or warnings. A fresh reset
+created a different `demoRunId`. Convex development push and full static checks
+passed; no external calls, emails, public deployment, or production changes
+were made.
