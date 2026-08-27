@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-14 implemented. Live BC-10 through BC-13 proof awaits the approved controlled-recipient email flow; BC-14 judge sign-in is browser-proven.
+Status: BC-00 through BC-15 implemented. Live email proof awaits approved controlled recipients; BC-14 judge sign-in is browser-proven.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -595,7 +595,7 @@ in the audit trail awaits the live quote flow.
 
 ### BC-15 — Purchase order generation and send
 
-Depends on: BC-10, BC-13, BC-14.
+Depends on: BC-10, BC-13, BC-14. Status: implemented; real delivery is gated.
 
 Load: spec section 19 and the approved recommendation snapshot.
 
@@ -610,8 +610,10 @@ Work:
 
 Approval gate: the user must approve the real PO recipient before external send.
 
-Exit proof: approve in the browser, inspect the exact PO, and verify the
-controlled supplier inbox genuinely receives it once.
+Exit proof: the draft, deterministic totals, exact quote revision, accessible
+HTML, auth checks, and idempotent delivery path pass static and development
+backend checks. Browser receipt proof awaits explicit approval of a real PO
+recipient.
 
 ### BC-16 — Confirmation and inventory projection
 

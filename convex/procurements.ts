@@ -48,7 +48,10 @@ async function requireTransitionEvidence(
       .order("desc")
       .take(1);
     const approval = approvals[0];
-    if (approval?.status !== "approved" || approval.approvedByUserId !== actorUserId) {
+    if (
+      (approval?.status !== "approved" && approval?.status !== "modified") ||
+      approval.approvedByUserId !== actorUserId
+    ) {
       throw new Error("Cannot approve without a matching durable approval record.");
     }
     const [user, recommendation, quote] = await Promise.all([
@@ -109,7 +112,7 @@ async function requireTransitionEvidence(
     }
     const approval = await ctx.db.get("approvals", purchaseOrder.approvalId);
     if (
-      approval?.status !== "approved" ||
+      (approval?.status !== "approved" && approval?.status !== "modified") ||
       approval.procurementId !== procurementId ||
       approval.approvedQuoteId !== purchaseOrder.quoteId
     ) {

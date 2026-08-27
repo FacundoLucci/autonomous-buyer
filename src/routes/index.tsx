@@ -612,6 +612,9 @@ function FocusedProcurement({
         {view === "approval" && procurement.recommendation ? (
           <ApprovalAccessCard procurement={procurement} />
         ) : null}
+        {view === "order" && procurement.purchaseOrder ? (
+          <PurchaseOrderDeliveryCard procurement={procurement} />
+        ) : null}
         <Card className="border-stone-300 bg-white/80 shadow-none">
           <CardHeader>
             <CardDescription>Live supplier evidence · BC-08</CardDescription>
@@ -1056,6 +1059,7 @@ type ProcurementDetail = NonNullable<
 >;
 
 function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail }) {
+  const navigate = Route.useNavigate();
   const recommendation = procurement.recommendation;
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { signIn, signOut } = useAuthActions();
@@ -1169,6 +1173,16 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
               {procurement.approval.decidedBy}
               {procurement.approval.isJudgeDemo ? " · judge demo identity" : " · configured buyer"}
             </p>
+            {procurement.purchaseOrder ? (
+              <Button
+                className="mt-3"
+                variant="outline"
+                onClick={() => navigate({ search: (current) => ({ ...current, view: "order" }) })}
+              >
+                Inspect {procurement.purchaseOrder.poNumber}
+                <ArrowRight />
+              </Button>
+            ) : null}
           </div>
         ) : !isAuthenticated ? (
           <>
@@ -1301,6 +1315,114 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
   );
 }
 
+function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDetail }) {
+  const order = procurement.purchaseOrder;
+  const { isAuthenticated } = useConvexAuth();
+  const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
+  const approveRecipient = useMutation(api.purchaseOrders.approveRecipient);
+  const sendApprovedOrder = useMutation(api.purchaseOrders.sendApproved);
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [state, setState] = useState<"idle" | "approving" | "sending">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  if (order === null) return null;
+  const purchaseOrderId = order.purchaseOrderId;
+
+  async function approveExactRecipient() {
+    setError(null);
+    setState("approving");
+    try {
+      await approveRecipient({
+        purchaseOrderId,
+        recipientEmail,
+        confirmation,
+      });
+    } catch (approvalError) {
+      setError(
+        approvalError instanceof Error ? approvalError.message : "PO recipient approval failed.",
+      );
+    } finally {
+      setState("idle");
+    }
+  }
+
+  async function sendOrder() {
+    setError(null);
+    setState("sending");
+    try {
+      await sendApprovedOrder({ purchaseOrderId });
+    } catch (sendError) {
+      setError(sendError instanceof Error ? sendError.message : "The purchase order was not sent.");
+    } finally {
+      setState("idle");
+    }
+  }
+
+  const configuredBuyer =
+    currentUser !== null &&
+    currentUser !== undefined &&
+    !currentUser.isJudgeDemo &&
+    (currentUser.role === "buyer" || currentUser.role === "admin");
+
+  return (
+    <Card className="border-amber-300 bg-amber-50/80 shadow-none">
+      <CardHeader>
+        <CardDescription>External-send gate · AgentMail</CardDescription>
+        <CardTitle className="text-lg">Approve the exact PO recipient</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {order.status === "sent" || order.status === "confirmed" ? (
+          <p className="text-sm text-emerald-800">
+            {order.poNumber} was delivered once and is waiting for supplier confirmation.
+          </p>
+        ) : !configuredBuyer ? (
+          <p className="text-sm leading-6 text-stone-700">
+            Judge mode can approve the demo purchase, but it can never send external email. Sign in
+            as the configured buyer to approve a real recipient.
+          </p>
+        ) : order.recipientApprovedAt === null ? (
+          <>
+            <p className="text-sm leading-6 text-stone-700">
+              Enter the exact controlled supplier inbox shown in your test setup. It is stored only
+              after this explicit confirmation.
+            </p>
+            <Input
+              type="email"
+              value={recipientEmail}
+              onChange={(event) => setRecipientEmail(event.target.value)}
+              placeholder="Controlled supplier email"
+              aria-label="Purchase order recipient email"
+            />
+            <Input
+              value={confirmation}
+              onChange={(event) => setConfirmation(event.target.value)}
+              placeholder="Type APPROVE PO RECIPIENT"
+              aria-label="Purchase order recipient approval confirmation"
+            />
+            <Button onClick={() => void approveExactRecipient()} disabled={state !== "idle"}>
+              {state === "approving" ? "Approving recipient…" : "Approve exact recipient"}
+            </Button>
+          </>
+        ) : (
+          <div className="space-y-3">
+            <Badge variant="outline">Exact recipient approved</Badge>
+            <p className="text-sm text-stone-700">
+              Sending is idempotent: retries reuse the same delivery record and cannot create a
+              second purchase order.
+            </p>
+            <Button onClick={() => void sendOrder()} disabled={state !== "idle"}>
+              {state === "sending" ? "Sending once…" : `Send ${order.poNumber} once`}
+            </Button>
+          </div>
+        )}
+        {order.errorMessage ? <p className="text-sm text-red-700">{order.errorMessage}</p> : null}
+        {error ? <p className="text-sm text-red-700">{error}</p> : null}
+      </CardContent>
+    </Card>
+  );
+}
+
 function FocusedViewBody({
   procurement,
   view,
@@ -1407,10 +1529,34 @@ function FocusedViewBody({
           <Fact label="Purchase order" value={order.poNumber} />
           <Fact label="Supplier" value={order.supplierName} />
           <Fact label="Quantity" value={`${order.quantity.toLocaleString()} units`} />
+          <Fact
+            label="Unit price"
+            value={money(Math.round(order.unitPriceMicrodollars / 10_000))}
+          />
+          <Fact label="Extended" value={money(order.extendedPriceCents)} />
+          <Fact label="Freight" value={money(order.freightCents)} />
           <Fact label="Total" value={money(order.totalCents)} />
           <Fact label="Required by" value={order.requiredBy} />
+          <Fact label="Payment terms" value={order.paymentTerms} />
+          <Fact label="Approved quote" value={`Revision ${order.quoteRevision}`} />
           <Fact label="Status" value={order.status.replace("_", " ")} />
         </div>
+        <div className="grid gap-4 rounded-lg border border-stone-200 bg-white p-5 sm:grid-cols-2">
+          <div>
+            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Ship to</p>
+            <p className="mt-2 text-sm whitespace-pre-line">{order.shipTo}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Bill to</p>
+            <p className="mt-2 text-sm whitespace-pre-line">{order.billTo}</p>
+          </div>
+        </div>
+        <iframe
+          title={`${order.poNumber} accessible HTML preview`}
+          srcDoc={order.htmlBody}
+          sandbox=""
+          className="h-[34rem] w-full rounded-lg border border-stone-300 bg-white"
+        />
         <p className="text-sm text-stone-600">
           {order.sentAt === null
             ? "This order has not been marked sent."

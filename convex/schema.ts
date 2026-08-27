@@ -512,13 +512,27 @@ export default defineSchema({
     supplierId: v.id("suppliers"),
     approvalId: v.id("approvals"),
     quoteId: v.id("quotes"),
+    quoteRevision: v.number(),
+    rfqId: v.id("rfqs"),
     poNumber: v.string(),
+    buyerEntity: v.string(),
+    shipTo: v.string(),
+    billTo: v.string(),
+    sku: v.string(),
+    productDescription: v.string(),
     quantity: v.number(),
     unitPriceMicrodollars: v.number(),
     extendedPriceCents: v.number(),
     freightCents: v.number(),
     totalCents: v.number(),
     requiredBy: dateValidator,
+    paymentTerms: v.string(),
+    recipientEmail: v.string(),
+    recipientApprovedAt: v.optional(timestampValidator),
+    recipientApprovedByUserId: v.optional(v.id("users")),
+    subject: v.string(),
+    textBody: v.string(),
+    htmlBody: v.string(),
     status: v.union(
       v.literal("draft"),
       v.literal("queued"),
@@ -528,10 +542,14 @@ export default defineSchema({
       v.literal("cancelled"),
     ),
     providerMessageId: v.optional(v.string()),
+    providerOutboundId: v.optional(v.string()),
+    providerThreadId: v.optional(v.string()),
+    errorMessage: v.optional(v.string()),
     createdAt: timestampValidator,
     sentAt: v.optional(timestampValidator),
   })
     .index("by_procurement", ["procurementId"])
+    .index("by_approval", ["approvalId"])
     .index("by_number", ["poNumber"]),
 
   procurementEvents: defineTable({

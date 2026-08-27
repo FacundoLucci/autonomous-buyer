@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 import { mutation } from "./_generated/server";
 import { purchaseOrderTotals } from "./domain/money";
+import { createPurchaseOrderDraft } from "./purchaseOrders";
 
 export const decideRecommendation = mutation({
   args: {
@@ -110,7 +111,7 @@ export const decideRecommendation = mutation({
       procurementId: procurement._id,
       demoRunId: procurement.demoRunId,
       type: "approval_recorded",
-      summary: `Judge decision recorded: ${args.decision} for quote revision ${quote.revision}.`,
+      summary: `Buyer decision recorded: ${args.decision} for quote revision ${quote.revision}.`,
       actorType: "user",
       actorUserId: user._id,
       fromState: procurement.status,
@@ -118,6 +119,20 @@ export const decideRecommendation = mutation({
       relatedRecordId: approvalId,
       createdAt: now,
     });
+    if (args.decision !== "rejected") {
+      await createPurchaseOrderDraft(ctx, {
+        procurement,
+        approvalId,
+        approval: {
+          approvedQuantity: quantity,
+          approvedUnitPriceMicrodollars: unitPriceMicrodollars,
+          approvedFreightCents: freightCents,
+          approvedTotalCents: totals.totalCents,
+        },
+        quote,
+        createdAt: now,
+      });
+    }
     return approvalId;
   },
 });

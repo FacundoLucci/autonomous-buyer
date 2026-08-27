@@ -98,3 +98,14 @@ Approve, Modify, and Reject transitions. A live browser proved the public page
 and judge-auth round trip, while the Convex development push and all static
 checks passed. Full approval audit proof awaits a recommendation from real quote
 replies.
+
+### 2026-08-27 — BC-15
+
+Added one stable purchase order per signed approval. Each stored order includes
+the buyer and supplier, ship-to and bill-to, item, exact approved quote revision,
+deterministic price math, required date, payment terms, RFQ reference, and an
+accessible HTML preview. Judge identities cannot send email. A configured buyer
+must separately approve a real recipient with an exact confirmation phrase;
+AgentMail delivery is then idempotent and advances the workflow only after a
+successful provider receipt. The development backend, full static checks, and a
+live browser reload passed. No purchase order was sent.
