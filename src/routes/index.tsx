@@ -171,6 +171,7 @@ function Home() {
               Agent · {dashboard?.agent.state.replace("_", " ") ?? "watching"}
             </Badge>
             <JudgeModeButton />
+            {search.demo ? <ConfiguredBuyerButton /> : null}
           </div>
         </header>
 
@@ -1848,6 +1849,126 @@ function JudgeModeButton() {
       </Button>
       {error ? <span className="max-w-48 text-xs text-red-700">{error}</span> : null}
     </div>
+  );
+}
+
+function ConfiguredBuyerButton() {
+  const { isAuthenticated } = useConvexAuth();
+  const { signIn, signOut } = useAuthActions();
+  const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
+  const claimConfiguredBuyer = useMutation(api.authData.claimConfiguredBuyer);
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [state, setState] = useState<"idle" | "working">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  async function claimAfterHandshake() {
+    let lastError: unknown = null;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return await claimConfiguredBuyer({});
+      } catch (claimError) {
+        lastError = claimError;
+        if (claimError instanceof Error && !claimError.message.includes("Sign in first")) {
+          throw claimError;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error("Buyer access did not activate.");
+  }
+
+  async function submit(flow: "signIn" | "signUp") {
+    setError(null);
+    setState("working");
+    try {
+      await signIn("password", { email, password, name, flow });
+      await claimAfterHandshake();
+      setPassword("");
+      setOpen(false);
+    } catch (authError) {
+      setError(authError instanceof Error ? authError.message : "Buyer sign-in failed.");
+    } finally {
+      setState("idle");
+    }
+  }
+
+  const configuredBuyer =
+    currentUser !== null &&
+    currentUser !== undefined &&
+    !currentUser.isJudgeDemo &&
+    (currentUser.role === "buyer" || currentUser.role === "admin");
+
+  return (
+    <>
+      {configuredBuyer ? (
+        <Button variant="outline" className="bg-white/70" onClick={() => void signOut()}>
+          <ShieldCheck />
+          Buyer active
+        </Button>
+      ) : (
+        <Button
+          variant="outline"
+          className="bg-white/70"
+          onClick={() => setOpen(true)}
+          disabled={currentUser?.isJudgeDemo === true}
+          title={currentUser?.isJudgeDemo ? "Leave judge mode first" : undefined}
+        >
+          Buyer sign in
+        </Button>
+      )}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>Configured buyer</SheetTitle>
+            <SheetDescription>
+              This account can approve real recipients and external email. Passwords stay in the
+              auth form and are never shown in the public dashboard.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="space-y-4 p-4">
+            <Input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Buyer email"
+              aria-label="Configured buyer email"
+              autoComplete="email"
+            />
+            <Input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password"
+              aria-label="Configured buyer password"
+              autoComplete="current-password"
+            />
+            <Input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Name for first-time setup"
+              aria-label="Configured buyer name"
+              autoComplete="name"
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => void submit("signIn")} disabled={state !== "idle"}>
+                Sign in
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => void submit("signUp")}
+                disabled={state !== "idle"}
+              >
+                Create buyer account
+              </Button>
+            </div>
+            {error ? <p className="text-sm text-red-700">{error}</p> : null}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 
