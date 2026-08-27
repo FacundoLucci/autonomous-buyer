@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-09 complete; BC-10 is next.
+Status: BC-00 through BC-10 implemented; live BC-10 send proof awaits approved real recipients. BC-11 is next.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a

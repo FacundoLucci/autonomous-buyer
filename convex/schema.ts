@@ -318,13 +318,36 @@ export default defineSchema({
     isControlledRecipient: v.optional(v.boolean()),
     preparedAt: v.optional(timestampValidator),
     recipientApprovedAt: v.optional(timestampValidator),
+    providerOutboundId: v.optional(v.string()),
+    providerMessageId: v.optional(v.string()),
     providerThreadId: v.optional(v.string()),
+    deliveryState: v.optional(
+      v.union(
+        v.literal("pending"),
+        v.literal("sent"),
+        v.literal("delivered"),
+        v.literal("failed"),
+        v.literal("bounced"),
+        v.literal("complained"),
+        v.literal("rejected"),
+      ),
+    ),
     automaticFollowUpCount: v.number(),
     createdAt: timestampValidator,
     sentAt: v.optional(timestampValidator),
   })
     .index("by_procurement", ["procurementId"])
     .index("by_thread", ["providerThreadId"]),
+
+  purchasingInboxes: defineTable({
+    organizationId: v.id("organizations"),
+    provider: v.literal("agentmail"),
+    inboxId: v.string(),
+    email: v.string(),
+    selectedAt: timestampValidator,
+  })
+    .index("by_organization_and_provider", ["organizationId", "provider"])
+    .index("by_inbox_id", ["inboxId"]),
 
   emailLinks: defineTable({
     procurementId: v.id("procurements"),

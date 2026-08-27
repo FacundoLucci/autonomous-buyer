@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -380,8 +381,13 @@ function FocusedProcurement({
   const procurement = useQuery(api.purchasing.getProcurement, { procurementId });
   const sourcing = useQuery(api.sourcing.getLatest, { procurementId });
   const rfqs = useQuery(api.rfqs.listForProcurement, { procurementId });
+  const purchasingInbox = useQuery(api.mail.getInboxForProcurement, { procurementId });
+  const delivery = useQuery(api.mail.getDelivery, { procurementId });
   const startSourcing = useAction(api.sourcing.start);
+  const ensurePurchasingInbox = useAction(api.mail.ensurePurchasingInbox);
   const prepareRfqs = useMutation(api.rfqs.prepare);
+  const approveRecipients = useMutation(api.mail.approveRecipients);
+  const sendApprovedRfqs = useMutation(api.mail.sendApproved);
   const startStructuredTask = useMutation(api.ai.startStructuredTask);
   const markThreadRead = useMutation(api.ai.markThreadRead);
   const [openThread, setOpenThread] = useState<string | null>(null);
@@ -391,6 +397,10 @@ function FocusedProcurement({
   const [sourcingError, setSourcingError] = useState<string | null>(null);
   const [rfqState, setRfqState] = useState<"idle" | "working">("idle");
   const [rfqError, setRfqError] = useState<string | null>(null);
+  const [recipientDrafts, setRecipientDrafts] = useState<Record<string, string>>({});
+  const [approvalConfirmation, setApprovalConfirmation] = useState("");
+  const [mailState, setMailState] = useState<"idle" | "inbox" | "approving" | "sending">("idle");
+  const [mailError, setMailError] = useState<string | null>(null);
   const aiRun = useQuery(api.ai.getRun, aiRunId === null ? "skip" : { aiRunId });
   const threadMessages = useQuery(
     api.ai.listThreadMessages,
@@ -446,6 +456,52 @@ function FocusedProcurement({
       setRfqError(error instanceof Error ? error.message : "RFQ preparation failed.");
     } finally {
       setRfqState("idle");
+    }
+  }
+
+  async function selectPurchasingInbox() {
+    setMailError(null);
+    setMailState("inbox");
+    try {
+      await ensurePurchasingInbox({ procurementId, createIfMissing: true });
+    } catch (error) {
+      setMailError(
+        error instanceof Error ? error.message : "The purchasing inbox could not be selected.",
+      );
+    } finally {
+      setMailState("idle");
+    }
+  }
+
+  async function approveExactRecipients() {
+    if (!rfqs) return;
+    setMailError(null);
+    setMailState("approving");
+    try {
+      await approveRecipients({
+        procurementId,
+        recipients: rfqs.map((rfq) => ({
+          rfqId: rfq.rfqId,
+          email: recipientDrafts[rfq.rfqId] ?? rfq.recipientEmail,
+        })),
+        confirmation: approvalConfirmation,
+      });
+    } catch (error) {
+      setMailError(error instanceof Error ? error.message : "Recipient approval failed.");
+    } finally {
+      setMailState("idle");
+    }
+  }
+
+  async function sendRfqs() {
+    setMailError(null);
+    setMailState("sending");
+    try {
+      await sendApprovedRfqs({ procurementId });
+    } catch (error) {
+      setMailError(error instanceof Error ? error.message : "The RFQs could not be queued.");
+    } finally {
+      setMailState("idle");
     }
   }
 
@@ -620,6 +676,22 @@ function FocusedProcurement({
                   <Badge variant="outline">Controlled demo recipient</Badge>
                 </div>
                 <p className="mt-1 font-mono text-xs text-stone-500">{rfq.recipientEmail}</p>
+                {rfq.recipientApprovedAt === null ? (
+                  <Input
+                    className="mt-3"
+                    type="email"
+                    aria-label={`${rfq.supplierName} controlled recipient email`}
+                    value={recipientDrafts[rfq.rfqId] ?? rfq.recipientEmail}
+                    onChange={(event) =>
+                      setRecipientDrafts((current) => ({
+                        ...current,
+                        [rfq.rfqId]: event.target.value,
+                      }))
+                    }
+                  />
+                ) : (
+                  <p className="mt-2 text-xs text-emerald-700">Exact recipient approved</p>
+                )}
                 <div className="mt-3 grid gap-3 sm:grid-cols-3">
                   <Fact
                     label="Quantity"
@@ -641,13 +713,62 @@ function FocusedProcurement({
               </div>
             ))}
             {rfqs && rfqs.length > 0 ? (
-              <p className="text-xs leading-5 text-stone-500">
-                These identities are controlled test recipients, not claims about the legal entities
-                found online. No email can be sent until the exact addresses are reviewed and
-                explicitly approved.
-              </p>
+              <div className="space-y-3 border-t border-stone-200 pt-4">
+                <p className="text-xs leading-5 text-stone-500">
+                  These identities are controlled test recipients, not claims about the legal
+                  entities found online. No email can be sent until the exact addresses are reviewed
+                  and explicitly approved.
+                </p>
+                {rfqs.every((rfq) => rfq.recipientApprovedAt !== null) ? (
+                  <div className="flex flex-wrap items-center gap-3">
+                    {purchasingInbox ? (
+                      <Badge variant="outline">From {purchasingInbox.email}</Badge>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onClick={() => void selectPurchasingInbox()}
+                        disabled={mailState !== "idle"}
+                      >
+                        {mailState === "inbox" ? "Selecting inbox…" : "Create or select Acme inbox"}
+                      </Button>
+                    )}
+                    <Button
+                      onClick={() => void sendRfqs()}
+                      disabled={mailState !== "idle" || purchasingInbox === null}
+                    >
+                      {mailState === "sending" ? "Queueing…" : "Send approved RFQs"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Input
+                      value={approvalConfirmation}
+                      onChange={(event) => setApprovalConfirmation(event.target.value)}
+                      placeholder="Type APPROVE CONTROLLED RFQ RECIPIENTS"
+                      aria-label="Recipient approval confirmation"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => void approveExactRecipients()}
+                      disabled={mailState !== "idle"}
+                    >
+                      {mailState === "approving" ? "Approving…" : "Approve exact recipients"}
+                    </Button>
+                  </div>
+                )}
+                {delivery && delivery.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {delivery.map((item) => (
+                      <Badge key={item.rfqId} variant="outline">
+                        {item.status ?? "queued"}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             ) : null}
             {rfqError ? <p className="text-sm text-red-700">{rfqError}</p> : null}
+            {mailError ? <p className="text-sm text-red-700">{mailError}</p> : null}
           </CardContent>
         </Card>
         {demo ? (
