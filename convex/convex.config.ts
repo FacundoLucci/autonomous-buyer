@@ -9,7 +9,7 @@ import firecrawl from "@firecrawl/firecrawl-convex/convex.config";
 // Your own HTTP endpoints (convex/http.ts) are served under /api so the
 // static site can own the root.
 const app = defineApp({
-  httpPrefix: "/api",
+  httpPrefix: "/",
   env: {
     OPENAI_API_KEY: v.optional(v.string()),
     OPENROUTER_API_KEY: v.optional(v.string()),
@@ -18,6 +18,7 @@ const app = defineApp({
     AGENTMAIL_API_KEY: v.optional(v.string()),
     AGENTMAIL_WEBHOOK_SECRET: v.optional(v.string()),
     AGENTMAIL_BASE_URL: v.optional(v.string()),
+    BUYER_EMAIL: v.optional(v.string()),
   },
 });
 

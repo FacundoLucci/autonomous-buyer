@@ -1,7 +1,8 @@
 import { ConvexQueryClient } from "@convex-dev/react-query";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
 
 import { routeTree } from "./routeTree.gen";
 
@@ -29,9 +30,9 @@ export function getRouter() {
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
     Wrap: ({ children }) => (
-      <ConvexProvider client={convex}>
+      <ConvexAuthProvider client={convex}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </ConvexProvider>
+      </ConvexAuthProvider>
     ),
   });
 

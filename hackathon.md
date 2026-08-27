@@ -7,9 +7,9 @@
 - **Repo:** none
 - **Frontend:** Convex static hosting
 - **Convex deployment:** https://festive-coyote-483.convex.cloud (development)
-- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @firecrawl/firecrawl-convex, @agentmail/convex
-- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries
-- **Auth:** none
+- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @firecrawl/firecrawl-convex, @agentmail/convex, @convex-dev/auth
+- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries, server-enforced approval identity
+- **Auth:** stable Convex Auth password account plus one-click anonymous judge-demo access
 - **AI models:** none
 - **Started:** 2026-08-27T00:36:38Z
 - **Last updated:** 2026-08-27T15:26:14Z
@@ -87,3 +87,14 @@ and payment terms. The selected quote and every losing reason are stored before
 OpenAI writes a sourced explanation; the model cannot change the winner. The
 browser comparison exposes each input and its source label. Convex development
 push and all static checks passed. Live three-reply proof remains pending.
+
+### 2026-08-27 — BC-14
+
+Kept the dashboard public while adding stable Convex Auth for protected approval
+actions. The configured buyer can use a password account; judges can enter a
+real anonymous auth session with one click and may approve demo procurements
+only. The server derives organization, role, and approver identity and validates
+Approve, Modify, and Reject transitions. A live browser proved the public page
+and judge-auth round trip, while the Convex development push and all static
+checks passed. Full approval audit proof awaits a recommendation from real quote
+replies.

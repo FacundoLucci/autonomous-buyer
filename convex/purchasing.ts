@@ -242,6 +242,7 @@ export const getProcurement = query({
       ),
       recommendation: v.union(
         v.object({
+          recommendationId: v.id("recommendations"),
           supplierName: v.string(),
           explanation: v.string(),
           quantityAvailable: v.union(v.number(), v.null()),
@@ -272,6 +273,8 @@ export const getProcurement = query({
           approvedQuantity: v.number(),
           approvedTotalCents: v.number(),
           decidedAt: v.number(),
+          decidedBy: v.string(),
+          isJudgeDemo: v.boolean(),
         }),
         v.null(),
       ),
@@ -345,6 +348,8 @@ export const getProcurement = query({
       .order("desc")
       .take(1);
     const approval = approvals[0];
+    const approvingUser =
+      approval === undefined ? null : await ctx.db.get("users", approval.approvedByUserId);
     const purchaseOrders = await ctx.db
       .query("purchaseOrders")
       .withIndex("by_procurement", (q) => q.eq("procurementId", procurement._id))
@@ -382,6 +387,7 @@ export const getProcurement = query({
         recommendation === undefined || selectedQuote === null || selectedSupplier === null
           ? null
           : {
+              recommendationId: recommendation._id,
               supplierName: selectedSupplier.name,
               explanation: recommendation.explanation,
               quantityAvailable: selectedQuote.quantityAvailable ?? null,
@@ -400,6 +406,8 @@ export const getProcurement = query({
               approvedQuantity: approval.approvedQuantity,
               approvedTotalCents: approval.approvedTotalCents,
               decidedAt: approval.decidedAt,
+              decidedBy: approvingUser?.name ?? approvingUser?.email ?? "Authenticated buyer",
+              isJudgeDemo: approvingUser?.isAnonymous === true,
             },
       purchaseOrder:
         purchaseOrder === undefined || purchaseOrderSupplier === null

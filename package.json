@@ -21,8 +21,10 @@
   },
   "dependencies": {
     "@agentmail/convex": "0.1.0",
+    "@auth/core": "0.41.3",
     "@base-ui/react": "^1.7.0",
     "@convex-dev/agent": "^0.7.1",
+    "@convex-dev/auth": "0.0.95",
     "@convex-dev/react-query": "^0.1.0",
     "@convex-dev/static-hosting": "^0.2.1",
     "@convex-dev/workflow": "0.4.2",
@@ -41,6 +43,7 @@
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.5.0",
+    "jose": "^6.2.10",
     "lucide-react": "^0.544.0",
     "react": "^19.2.4",
     "react-day-picker": "^10.0.1",

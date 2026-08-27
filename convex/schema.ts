@@ -1,3 +1,4 @@
+import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
@@ -52,15 +53,27 @@ export default defineSchema({
   }).index("by_name", ["name"]),
 
   users: defineTable({
-    organizationId: v.id("organizations"),
-    identityToken: v.string(),
+    organizationId: v.optional(v.id("organizations")),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
-    role: roleValidator,
-    isActive: v.boolean(),
+    image: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+    role: v.optional(roleValidator),
+    isActive: v.optional(v.boolean()),
   })
-    .index("by_identity", ["identityToken"])
+    .index("email", ["email"])
+    .index("phone", ["phone"])
     .index("by_org", ["organizationId"]),
+
+  authSessions: authTables.authSessions,
+  authAccounts: authTables.authAccounts,
+  authRefreshTokens: authTables.authRefreshTokens,
+  authVerificationCodes: authTables.authVerificationCodes,
+  authVerifiers: authTables.authVerifiers,
+  authRateLimits: authTables.authRateLimits,
 
   demoRuns: defineTable({
     label: v.string(),

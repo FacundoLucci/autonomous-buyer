@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-13 implemented. Live BC-10 through BC-13 proof awaits the approved controlled-recipient email flow.
+Status: BC-00 through BC-14 implemented. Live BC-10 through BC-13 proof awaits the approved controlled-recipient email flow; BC-14 judge sign-in is browser-proven.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -149,7 +149,7 @@ flowchart TD
   BC11[BC-11 Inbound quote extraction]
   BC12[BC-12 Autonomous follow-up]
   BC13[BC-13 Comparison and recommendation]
-  BC14[BC-14 Passkey auth and approval]
+  BC14[BC-14 Stable auth and approval]
   BC15[BC-15 Purchase order]
   BC16[BC-16 Confirmation and projection]
   BC17[BC-17 Audit, safety, and polish]
@@ -574,22 +574,24 @@ Work:
 Exit proof: the browser explains why the cheapest quote lost and exposes every
 number used in the decision.
 
-### BC-14 — Passkey auth and approval identity
+### BC-14 — Stable auth and approval identity
 
-Depends on: BC-02, BC-05. May run beside BC-06–13.
+Depends on: BC-02, BC-05. Status: implemented; full approval proof awaits a recommendation.
 
 Load: spec section 18, Convex Auth guidance, and public-judge access rules.
 
 Work:
 
-- Add Convex Auth passkeys.
+- Add stable Convex Auth password sign-in for the configured buyer.
 - Keep the dashboard and demo observation public.
+- Add one-click anonymous judge mode for demo approvals only.
 - Require sign-in only for approval and admin actions.
 - Derive organization, role, and approver identity server-side.
 - Implement Approve, Modify, and Reject with valid-state and policy checks.
 
-Exit proof: complete a real passkey sign-in in the browser, approve the pending
-recommendation, and show the authenticated buyer in the audit trail.
+Exit proof: the public dashboard and real one-click judge sign-in passed in the
+browser. Approving a pending recommendation and showing the authenticated buyer
+in the audit trail awaits the live quote flow.
 
 ### BC-15 — Purchase order generation and send
 
@@ -692,7 +694,8 @@ Work:
 - Deploy backend and static frontend through the static-hosting command.
 - Read back the exact `convex.site` URL and deployment marker.
 - Run the controlled end-to-end flow in a live browser against the public host.
-- Verify anonymous judge access; approval actions may still require passkey.
+- Verify anonymous judge access; demo approvals use one-click judge auth while
+  non-demo approvals require the configured buyer account.
 
 Exit proof: the real public URL completes the controlled flow. A local build or
 localhost run is not deployment proof.
@@ -758,7 +761,7 @@ slice, use the live app and record:
 | Inbound        | manually sent email becomes a quote without a database edit   |
 | Follow-up      | incomplete reply causes one real threaded follow-up           |
 | Recommendation | cheapest-late option visibly loses for the correct rule       |
-| Approval       | real passkey identity signs the decision                      |
+| Approval       | real buyer or judge-demo identity signs the decision          |
 | PO             | exact approved PO is received once                            |
 | Confirmation   | real reply changes projection to Covered                      |
 | Public release | same controlled flow works on the exact `convex.site` host    |
@@ -800,7 +803,8 @@ reviews these choices:
 3. Supply OpenAI, Firecrawl, and AgentMail credentials through Convex env,
    never chat-visible source files. OpenRouter is optional.
 4. Approve controlled supplier email identities and recipients before any send.
-5. Confirm passkey auth for approval while keeping judge views public.
+5. Use stable Convex Auth password sign-in for the configured buyer and
+   one-click anonymous auth for judge-demo approvals; keep judge views public.
 6. `HUMAN_REVIEW_REQUIRED` is a typed `reviewStatus` flag on the procurement
    procurement, not a separate workflow state.
 7. Confirm the product-match threshold (`0.85`) after the first real sources.
