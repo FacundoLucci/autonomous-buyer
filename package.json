@@ -17,9 +17,12 @@
     "deploy": "pnpm dlx @convex-dev/static-hosting deploy --dist dist/client --build-command \"pnpm build\""
   },
   "dependencies": {
+    "@agentmail/convex": "0.1.0",
     "@base-ui/react": "^1.7.0",
     "@convex-dev/react-query": "^0.1.0",
     "@convex-dev/static-hosting": "^0.2.1",
+    "@convex-dev/workflow": "0.4.2",
+    "@firecrawl/firecrawl-convex": "0.1.1",
     "@shadcn/react": "^0.3.0",
     "@tanstack/react-query": "^5.102.6",
     "@tanstack/react-router": "^1.170.32",

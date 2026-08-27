@@ -17,7 +17,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "An autonomous purchasing workflow for stockout risk.",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/convex.svg", type: "image/svg+xml" },
+    ],
   }),
   component: RootComponent,
   errorComponent: RootError,

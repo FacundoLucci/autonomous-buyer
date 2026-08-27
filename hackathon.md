@@ -7,12 +7,12 @@
 - **Repo:** none
 - **Frontend:** Convex static hosting
 - **Convex deployment:** https://festive-coyote-483.convex.cloud (development)
-- **Components:** @convex-dev/static-hosting
-- **Convex features:** none yet
+- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @firecrawl/firecrawl-convex, @agentmail/convex
+- **Convex features:** typed schema, indexed data model, typed environment contract, reactive integration-status query
 - **Auth:** none
 - **AI models:** none
 - **Started:** 2026-08-27T00:36:38Z
-- **Last updated:** 2026-08-27T03:42:31Z
+- **Last updated:** 2026-08-27T11:20:14Z
 
 ## Log
 
@@ -35,3 +35,12 @@ supplied product spec and dependency-ordered implementation plan. No public
 frontend deployment, AI model, authentication, or external supplier interaction
 exists yet. The scaffold loads in a live browser with all three build stages
 visible and no console errors.
+
+### 2026-08-27 — BC-02
+
+Registered the durable workflow, Firecrawl, and AgentMail components on the
+development deployment. Added the app's typed schema and indexes, a typed
+provider environment contract, and a public query that reports only configured
+or missing. A live browser showed OpenAI, OpenRouter, Firecrawl, and AgentMail as
+missing without exposing values, with zero console errors or warnings. No real
+provider credentials were added and no external calls or emails were sent.

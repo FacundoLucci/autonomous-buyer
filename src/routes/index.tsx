@@ -1,5 +1,16 @@
-import { ArrowRight, Boxes, CheckCircle2, Radar, Send, ShieldCheck } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  CircleDashed,
+  PlugZap,
+  Radar,
+  Send,
+  ShieldCheck,
+} from "lucide-react";
+
+import { api } from "../../convex/_generated/api";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,9 +34,20 @@ const buildLanes = [
   },
 ];
 
+const integrationNames = ["openai", "openrouter", "firecrawl", "agentmail"] as const;
+
+const integrationLabels: Record<(typeof integrationNames)[number], string> = {
+  openai: "OpenAI",
+  openrouter: "OpenRouter",
+  firecrawl: "Firecrawl",
+  agentmail: "AgentMail",
+} as const;
+
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
+  const integrations = useQuery(api.integrations.getStatus);
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,oklch(0.96_0.04_70),transparent_38%),linear-gradient(to_bottom,oklch(0.995_0.003_75),oklch(0.97_0.01_70))] px-5 py-8 sm:px-8 sm:py-12">
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-10">
@@ -51,18 +73,48 @@ function Home() {
 
           <Card className="border-primary/15 bg-card/80 shadow-sm backdrop-blur">
             <CardHeader>
-              <CardDescription>Foundation</CardDescription>
+              <CardDescription>Development systems</CardDescription>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Boxes aria-hidden="true" className="size-5" />
-                Ready to build
+                <PlugZap aria-hidden="true" className="size-5" />
+                Integration status
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <p>Convex development backend connected.</p>
-              <Separator />
-              <p>TanStack Start static app prepared for convex.site.</p>
-              <Separator />
-              <p>shadcn Base UI catalog and OXC tooling installed.</p>
+            <CardContent>
+              <div className="grid min-h-39 content-start gap-3" aria-live="polite">
+                {(integrations ?? integrationNames.map((name) => ({ name }))).map((integration) => {
+                  const status = "status" in integration ? integration.status : "loading";
+
+                  return (
+                    <div
+                      key={integration.name}
+                      className="flex min-h-7 items-center justify-between gap-4 text-sm"
+                    >
+                      <span className="text-muted-foreground">
+                        {integrationLabels[integration.name]}
+                      </span>
+                      <Badge
+                        variant={status === "configured" ? "default" : "outline"}
+                        className="min-w-21 justify-center tabular-nums"
+                      >
+                        {status === "configured" ? (
+                          <CheckCircle2 aria-hidden="true" className="size-3.5" />
+                        ) : (
+                          <CircleDashed aria-hidden="true" className="size-3.5" />
+                        )}
+                        {status === "loading"
+                          ? "Checking"
+                          : status === "configured"
+                            ? "Ready"
+                            : "Missing"}
+                      </Badge>
+                    </div>
+                  );
+                })}
+              </div>
+              <Separator className="my-4" />
+              <p className="text-xs leading-5 text-muted-foreground">
+                Credentials stay in the Convex development environment and are never shown here.
+              </p>
             </CardContent>
           </Card>
         </header>

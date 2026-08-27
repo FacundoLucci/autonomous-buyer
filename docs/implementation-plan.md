@@ -233,7 +233,7 @@ shows the honest scaffold shell.
 
 ### BC-02 — Component registrations, environment contract, schema, and indexes
 
-Depends on: BC-01.
+Depends on: BC-01. Status: complete.
 
 Load: spec sections 23–27, the state list, and each selected component's setup
 guide.
@@ -754,7 +754,8 @@ reviews these choices:
    never chat-visible source files. OpenRouter is optional.
 4. Approve controlled supplier email identities and recipients before any send.
 5. Confirm passkey auth for approval while keeping judge views public.
-6. Confirm the `HUMAN_REVIEW_REQUIRED` state versus typed review flag.
+6. `HUMAN_REVIEW_REQUIRED` is a typed `reviewStatus` flag on the procurement
+   case, not a separate workflow state.
 7. Confirm the product-match threshold (`0.85`) after the first real sources.
 
 ## 12. Current hackathon constraints
