@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 import {
+  structuredAiResultValidator,
   aiTaskValidator,
   procurementEventTypeValidator,
   integrationNameValidator,
@@ -267,8 +268,10 @@ export default defineSchema({
     ),
     createdAt: timestampValidator,
     updatedAt: timestampValidator,
+    lastMessageAt: v.optional(timestampValidator),
   })
     .index("by_procurement_and_anchor", ["procurementId", "anchorKey"])
+    .index("by_component_thread_id", ["componentThreadId"])
     .index("by_organization_and_updated_at", ["organizationId", "updatedAt"]),
 
   searchRuns: defineTable({
@@ -459,17 +462,24 @@ export default defineSchema({
     .index("by_procurement_and_operation_and_status", ["procurementId", "operation", "status"]),
 
   aiRuns: defineTable({
+    organizationId: v.optional(v.id("organizations")),
+    buyerUserId: v.optional(v.id("users")),
     procurementId: v.optional(v.id("procurements")),
+    agentThreadLinkId: v.optional(v.id("agentThreadLinks")),
+    anchorKey: v.optional(v.string()),
+    intent: v.optional(v.string()),
     task: aiTaskValidator,
     transport: v.union(v.literal("openai"), v.literal("openrouter")),
     model: v.string(),
     status: operationStatusValidator,
     evidenceRefs: v.array(v.string()),
     outputConfidence: v.optional(v.number()),
+    result: v.optional(structuredAiResultValidator),
     errorMessage: v.optional(v.string()),
     createdAt: timestampValidator,
     completedAt: v.optional(timestampValidator),
   })
     .index("by_procurement_and_task", ["procurementId", "task"])
+    .index("by_agent_thread_link_and_created_at", ["agentThreadLinkId", "createdAt"])
     .index("by_status", ["status"]),
 });

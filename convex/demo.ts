@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 
+import { components } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { mutation, query, type MutationCtx } from "./_generated/server";
 import {
@@ -131,6 +132,16 @@ async function deleteRunData(ctx: MutationCtx, demoRunId: Id<"demoRuns">) {
       .withIndex("by_procurement_and_task", (q) => q.eq("procurementId", procurement._id))
       .take(200);
     for (const aiRun of aiRuns) await ctx.db.delete("aiRuns", aiRun._id);
+    const threadLinks = await ctx.db
+      .query("agentThreadLinks")
+      .withIndex("by_procurement_and_anchor", (q) => q.eq("procurementId", procurement._id))
+      .take(100);
+    for (const link of threadLinks) {
+      await ctx.runMutation(components.agent.threads.deleteAllForThreadIdAsync, {
+        threadId: link.componentThreadId,
+      });
+      await ctx.db.delete("agentThreadLinks", link._id);
+    }
     await ctx.db.delete("procurements", procurement._id);
   }
 

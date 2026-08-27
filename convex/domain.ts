@@ -161,3 +161,73 @@ export const aiTaskValidator = v.union(
   v.literal("confirmation_extraction"),
   v.literal("exception_explanation"),
 );
+
+export const aiEvidenceFieldValidator = v.object({
+  field: v.string(),
+  value: v.string(),
+  evidenceRefs: v.array(v.string()),
+  confidence: v.union(v.number(), v.null()),
+});
+
+export const aiTaskOutputValidator = v.union(
+  v.object({
+    task: v.literal("supplier_search_queries"),
+    queries: v.array(v.string()),
+    rationale: v.string(),
+  }),
+  v.object({
+    task: v.literal("product_equivalency"),
+    assessment: matchStatusValidator,
+    matchingAttributes: v.array(v.string()),
+    conflicts: v.array(v.string()),
+    missingEvidence: v.array(v.string()),
+  }),
+  v.object({
+    task: v.literal("quote_extraction"),
+    supplierName: v.union(v.string(), v.null()),
+    quantityAvailable: v.union(v.number(), v.null()),
+    unitPriceMicrodollars: v.union(v.number(), v.null()),
+    freightCents: v.union(v.number(), v.null()),
+    estimatedArrivalDate: v.union(v.string(), v.null()),
+    missingFields: v.array(missingQuoteFieldValidator),
+  }),
+  v.object({
+    task: v.literal("missing_information"),
+    missingFields: v.array(missingQuoteFieldValidator),
+    needsFollowUp: v.boolean(),
+  }),
+  v.object({
+    task: v.literal("follow_up_wording"),
+    subject: v.string(),
+    body: v.string(),
+    requestedFields: v.array(missingQuoteFieldValidator),
+  }),
+  v.object({
+    task: v.literal("recommendation_explanation"),
+    explanation: v.string(),
+    strengths: v.array(v.string()),
+    tradeoffs: v.array(v.string()),
+  }),
+  v.object({
+    task: v.literal("confirmation_extraction"),
+    confirmed: v.boolean(),
+    supplierConfirmationNumber: v.union(v.string(), v.null()),
+    quantity: v.union(v.number(), v.null()),
+    estimatedArrivalDate: v.union(v.string(), v.null()),
+    changedTerms: v.array(v.string()),
+  }),
+  v.object({
+    task: v.literal("exception_explanation"),
+    explanation: v.string(),
+    severity: v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
+    differences: v.array(v.string()),
+  }),
+);
+
+export const structuredAiResultValidator = v.object({
+  summary: v.string(),
+  confidence: v.number(),
+  confirmedFields: v.array(aiEvidenceFieldValidator),
+  inferredFields: v.array(aiEvidenceFieldValidator),
+  output: aiTaskOutputValidator,
+});

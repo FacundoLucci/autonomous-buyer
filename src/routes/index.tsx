@@ -129,6 +129,7 @@ function Home() {
       <FocusedProcurement
         procurementId={search.procurement as Id<"procurements">}
         view={search.view}
+        demo={search.demo}
         onBack={() =>
           navigate({
             search: (current) => ({
@@ -368,14 +369,53 @@ function Home() {
 function FocusedProcurement({
   procurementId,
   view,
+  demo,
   onBack,
 }: {
   procurementId: Id<"procurements">;
   view: FocusView;
+  demo: boolean;
   onBack: () => void;
 }) {
   const procurement = useQuery(api.purchasing.getProcurement, { procurementId });
+  const startStructuredTask = useMutation(api.ai.startStructuredTask);
+  const markThreadRead = useMutation(api.ai.markThreadRead);
   const [openThread, setOpenThread] = useState<string | null>(null);
+  const [aiRunId, setAiRunId] = useState<Id<"aiRuns"> | null>(null);
+  const [diagnosticError, setDiagnosticError] = useState<string | null>(null);
+  const aiRun = useQuery(api.ai.getRun, aiRunId === null ? "skip" : { aiRunId });
+  const threadMessages = useQuery(
+    api.ai.listThreadMessages,
+    openThread === null
+      ? "skip"
+      : { threadId: openThread, paginationOpts: { cursor: null, numItems: 50 } },
+  );
+
+  async function openContextualThread(threadId: string) {
+    setOpenThread(threadId);
+    try {
+      await markThreadRead({ threadId });
+    } catch {
+      // The live query still gives the buyer a readable thread if the read receipt races creation.
+    }
+  }
+
+  async function runDiagnostic() {
+    setDiagnosticError(null);
+    try {
+      const started = await startStructuredTask({
+        procurementId,
+        task: "supplier_search_queries",
+        anchorKey: "procurement:procurement",
+      });
+      setAiRunId(started.aiRunId);
+      setOpenThread(started.componentThreadId);
+    } catch (error) {
+      setDiagnosticError(
+        error instanceof Error ? error.message : "The AI diagnostic could not start.",
+      );
+    }
+  }
 
   if (procurement === undefined) {
     return (
@@ -446,7 +486,7 @@ function FocusedProcurement({
                   size="icon"
                   variant="outline"
                   aria-label={`Open ${thread.status} thread`}
-                  onClick={() => setOpenThread(thread.componentThreadId)}
+                  onClick={() => void openContextualThread(thread.componentThreadId)}
                 >
                   <MessageCircle />
                   <span className="sr-only">{thread.unreadCount} unread</span>
@@ -471,6 +511,53 @@ function FocusedProcurement({
             )}
           </CardContent>
         </Card>
+        {demo ? (
+          <Card className="border-dashed border-stone-400 bg-white/60 shadow-none">
+            <CardHeader>
+              <CardDescription>Demo diagnostic · BC-07</CardDescription>
+              <CardTitle className="text-base">Structured supplier-search task</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button
+                variant="outline"
+                onClick={() => void runDiagnostic()}
+                disabled={aiRun?.status === "pending"}
+              >
+                <Sparkles />
+                {aiRun?.status === "pending" ? "OpenAI is working…" : "Run AI diagnostic"}
+              </Button>
+              {aiRun ? (
+                <div className="rounded-lg border border-stone-200 bg-white p-4 text-sm">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge status={aiRun.status} />
+                    <span className="font-mono text-xs text-stone-500">
+                      {aiRun.transport} · {aiRun.model}
+                    </span>
+                  </div>
+                  {aiRun.result ? (
+                    <div className="mt-3 space-y-2">
+                      <p>{aiRun.result.summary}</p>
+                      {aiRun.result.output.task === "supplier_search_queries" ? (
+                        <ul className="list-disc space-y-1 pl-5 text-stone-600">
+                          {aiRun.result.output.queries.map((query) => (
+                            <li key={query}>{query}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      <p className="text-xs text-stone-500">
+                        {aiRun.evidenceRefs.length} stored evidence references · confidence{" "}
+                        {Math.round(aiRun.result.confidence * 100)}%
+                      </p>
+                    </div>
+                  ) : aiRun.errorMessage ? (
+                    <p className="mt-3 text-red-700">{aiRun.errorMessage}</p>
+                  ) : null}
+                </div>
+              ) : null}
+              {diagnosticError ? <p className="text-sm text-red-700">{diagnosticError}</p> : null}
+            </CardContent>
+          </Card>
+        ) : null}
         <AgentCard
           state="working"
           message="I’m checking suppliers against the required date and product specification."
@@ -486,7 +573,29 @@ function FocusedProcurement({
             </SheetDescription>
           </SheetHeader>
           <div className="p-4 text-sm text-stone-600">
-            Thread messages will load through the agent component in BC-07.
+            {threadMessages === undefined ? (
+              <p>Loading thread…</p>
+            ) : threadMessages.page.length === 0 ? (
+              <p>The agent is preparing this thread.</p>
+            ) : (
+              <div className="space-y-3">
+                {threadMessages.page.map((message) => (
+                  <div
+                    key={message.id}
+                    className={
+                      message.role === "assistant"
+                        ? "rounded-lg bg-amber-50 p-3 text-stone-800"
+                        : "rounded-lg bg-stone-100 p-3"
+                    }
+                  >
+                    <p className="mb-1 text-xs font-semibold text-stone-500 uppercase">
+                      {message.role === "assistant" ? "Autonomous Buyer" : message.role}
+                    </p>
+                    <p className="leading-6">{message.text}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>
