@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-15 implemented. Live email proof awaits approved controlled recipients; BC-14 judge sign-in is browser-proven.
+Status: BC-00 through BC-16 implemented. Live email proof awaits approved controlled recipients; BC-14 judge sign-in is browser-proven.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -617,7 +617,7 @@ recipient.
 
 ### BC-16 — Confirmation and inventory projection
 
-Depends on: BC-03, BC-11, BC-15.
+Depends on: BC-03, BC-11, BC-15. Status: implemented; real inbound proof is gated.
 
 Load: spec sections 20–21.
 
@@ -632,8 +632,10 @@ Work:
   `CONFIRMED`, then optionally `CLOSED`.
 - Update the projection from Action Required to Covered.
 
-Exit proof: a manually sent real confirmation updates the procurement and projection
-in both browser windows with no database edit.
+Exit proof: confirmation routing, structured extraction, deterministic difference
+checks, exception handling, and the Covered projection pass development backend
+and static checks. Two-window realtime proof awaits the approved controlled email
+flow and a manually sent confirmation.
 
 ### BC-17 — Auditability, safety, resume behavior, and polish
 

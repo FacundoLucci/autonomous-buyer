@@ -154,8 +154,16 @@ export const taskSchemas = {
           task: z.literal("confirmation_extraction"),
           confirmed: z.boolean(),
           supplierConfirmationNumber: z.string().nullable(),
+          sku: z.string().nullable(),
           quantity: z.number().int().nonnegative().nullable(),
-          estimatedArrivalDate: z.string().nullable(),
+          unitPriceMicrodollars: z.number().int().nonnegative().nullable(),
+          freightCents: z.number().int().nonnegative().nullable(),
+          totalCents: z.number().int().nonnegative().nullable(),
+          estimatedArrivalDate: z
+            .string()
+            .regex(/^\d{4}-\d{2}-\d{2}$/)
+            .nullable(),
+          paymentTerms: z.string().nullable(),
           changedTerms: z.array(z.string()),
         })
         .strict(),

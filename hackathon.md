@@ -109,3 +109,14 @@ must separately approve a real recipient with an exact confirmation phrase;
 AgentMail delivery is then idempotent and advances the workflow only after a
 successful provider receipt. The development backend, full static checks, and a
 live browser reload passed. No purchase order was sent.
+
+### 2026-08-27 — BC-16
+
+Added durable supplier-confirmation processing on the exact purchase-order email
+thread. OpenAI extracts only the terms stated in the reply; deterministic code
+checks quantity, SKU, price, freight, total, arrival, and payment terms against
+the approved order. Material changes create a visible exception. Matching terms
+create confirmed incoming inventory and change the public inventory status from
+Action Required to Covered. The development backend, static checks, and live
+browser surface passed. Real reply and two-window realtime proof remain gated by
+the controlled email flow.

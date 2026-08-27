@@ -57,6 +57,7 @@ const statusLabels: Record<string, string> = {
   evaluating: "Evaluating",
   approval_required: "Approval Required",
   ordered: "Ordered",
+  covered: "Covered",
   confirmed: "Confirmed",
   exception: "Exception",
 };
@@ -227,7 +228,12 @@ function Home() {
                             <p className="mt-0.5 font-mono text-xs text-stone-500">{item.sku}</p>
                           </td>
                           <td className="px-3 py-4 tabular-nums">
-                            {Math.round(item.quantityOnHand).toLocaleString()}
+                            <span>{Math.round(item.quantityOnHand).toLocaleString()}</span>
+                            {item.confirmedIncoming > 0 ? (
+                              <span className="mt-1 block text-xs font-medium text-emerald-700">
+                                +{item.confirmedIncoming.toLocaleString()} confirmed
+                              </span>
+                            ) : null}
                           </td>
                           <td className="px-3 py-4 tabular-nums">
                             {Math.round(item.averageDailyUsage).toLocaleString()}
@@ -1562,6 +1568,38 @@ function FocusedViewBody({
             ? "This order has not been marked sent."
             : `Sent ${new Date(order.sentAt).toLocaleString()}. Confirmation appears only after matching provider evidence.`}
         </p>
+        {procurement.confirmation ? (
+          <div
+            className={`rounded-lg border p-5 ${
+              procurement.confirmation.matchesApprovedTerms
+                ? "border-emerald-200 bg-emerald-50"
+                : "border-red-200 bg-red-50"
+            }`}
+          >
+            <p className="font-medium">
+              {procurement.confirmation.matchesApprovedTerms
+                ? "Supplier terms match · inventory covered"
+                : "Supplier terms changed · buyer review required"}
+            </p>
+            <p className="mt-1 text-sm text-stone-600">
+              Confirmation {procurement.confirmation.supplierConfirmationNumber ?? "number pending"}
+              {procurement.confirmation.confirmedArrivalDate
+                ? ` · arriving ${procurement.confirmation.confirmedArrivalDate}`
+                : ""}
+              {` · ${Math.round(procurement.confirmation.extractionConfidence * 100)}% extraction confidence`}
+            </p>
+            {procurement.confirmation.differences.length > 0 ? (
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
+                {procurement.confirmation.differences.map((difference) => (
+                  <li key={difference.field}>
+                    {difference.field}: approved {difference.approved}, confirmed{" "}
+                    {difference.confirmed}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
       </>
     );
   }

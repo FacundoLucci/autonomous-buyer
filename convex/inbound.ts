@@ -41,10 +41,17 @@ export const onMessageReceived = internalMutation({
       )
       .unique();
     if (priorLink !== null) return null;
-    const rfq = await ctx.db
-      .query("rfqs")
+    const purchaseOrder = await ctx.db
+      .query("purchaseOrders")
       .withIndex("by_thread", (q) => q.eq("providerThreadId", providerThreadId))
       .unique();
+    const rfq =
+      purchaseOrder === null
+        ? await ctx.db
+            .query("rfqs")
+            .withIndex("by_thread", (q) => q.eq("providerThreadId", providerThreadId))
+            .unique()
+        : await ctx.db.get("rfqs", purchaseOrder.rfqId);
     if (rfq === null) {
       await ctx.db.insert("integrationReceipts", {
         provider: "agentmail",
@@ -53,7 +60,7 @@ export const onMessageReceived = internalMutation({
         status: "failed",
         providerRecordId: providerMessageId,
         requestHash: providerMessageId,
-        errorMessage: "Inbound AgentMail thread is not linked to an RFQ.",
+        errorMessage: "Inbound AgentMail thread is not linked to an RFQ or purchase order.",
         createdAt: Date.now(),
         completedAt: Date.now(),
       });
@@ -85,7 +92,7 @@ export const onMessageReceived = internalMutation({
       providerMessageId,
       providerThreadId,
       direction: "inbound",
-      purpose: "quote",
+      purpose: purchaseOrder === null ? "quote" : "confirmation",
       createdAt: now,
     });
     await ctx.db.insert("inboundEmailEvidence", {
@@ -101,7 +108,10 @@ export const onMessageReceived = internalMutation({
       procurementId: procurement._id,
       demoRunId: procurement.demoRunId,
       type: "email_received",
-      summary: "A controlled supplier reply arrived through AgentMail.",
+      summary:
+        purchaseOrder === null
+          ? "A controlled supplier quote arrived through AgentMail."
+          : `A supplier confirmation arrived for ${purchaseOrder.poNumber}.`,
       actorType: "provider",
       relatedRecordId: emailLinkId,
       createdAt: now,
@@ -112,8 +122,10 @@ export const onMessageReceived = internalMutation({
       rfqId: rfq._id,
       emailLinkId,
       intent:
-        "Extract only commercial terms stated in the supplier email. Convert dollars to integer microdollars or cents as named by the schema. Use null for absent fields and list every missing required field.",
-      task: "quote_extraction",
+        purchaseOrder === null
+          ? "Extract only commercial terms stated in the supplier email. Convert dollars to integer microdollars or cents as named by the schema. Use null for absent fields and list every missing required field."
+          : "Extract only the supplier confirmation terms stated in this email. Return dates as YYYY-MM-DD. Convert prices to integer microdollars or cents as named by the schema. Use null for absent fields. Do not compare or calculate terms.",
+      task: purchaseOrder === null ? "quote_extraction" : "confirmation_extraction",
       transport: "openai",
       model: "gpt-5.4-mini",
       status: "pending",

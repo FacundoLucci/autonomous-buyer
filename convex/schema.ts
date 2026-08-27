@@ -136,7 +136,9 @@ export default defineSchema({
       v.literal("cancelled"),
     ),
     isDemo: v.boolean(),
-  }).index("by_item_arrival", ["inventoryItemId", "arrivalDate"]),
+  })
+    .index("by_item_arrival", ["inventoryItemId", "arrivalDate"])
+    .index("by_purchase_order", ["purchaseOrderId"]),
 
   suppliers: defineTable({
     organizationId: v.id("organizations"),
@@ -550,7 +552,36 @@ export default defineSchema({
   })
     .index("by_procurement", ["procurementId"])
     .index("by_approval", ["approvalId"])
+    .index("by_thread", ["providerThreadId"])
     .index("by_number", ["poNumber"]),
+
+  confirmations: defineTable({
+    procurementId: v.id("procurements"),
+    purchaseOrderId: v.id("purchaseOrders"),
+    emailLinkId: v.id("emailLinks"),
+    supplierConfirmationNumber: v.optional(v.string()),
+    supplierConfirmed: v.boolean(),
+    sku: v.optional(v.string()),
+    quantity: v.optional(v.number()),
+    unitPriceMicrodollars: v.optional(v.number()),
+    freightCents: v.optional(v.number()),
+    totalCents: v.optional(v.number()),
+    estimatedArrivalDate: v.optional(dateValidator),
+    paymentTerms: v.optional(v.string()),
+    matchesApprovedTerms: v.boolean(),
+    differences: v.array(
+      v.object({
+        field: v.string(),
+        approved: v.string(),
+        confirmed: v.string(),
+      }),
+    ),
+    extractionConfidence: v.number(),
+    createdAt: timestampValidator,
+  })
+    .index("by_procurement", ["procurementId"])
+    .index("by_purchase_order", ["purchaseOrderId"])
+    .index("by_email_link", ["emailLinkId"]),
 
   procurementEvents: defineTable({
     procurementId: v.id("procurements"),

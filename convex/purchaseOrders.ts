@@ -361,6 +361,7 @@ export const reconcileDelivery = internalMutation({
         });
       }
       if (procurement.status === "approved") {
+        await ctx.db.patch("inventoryItems", procurement.inventoryItemId, { status: "ordered" });
         await ctx.runMutation(internal.procurements.transition, {
           procurementId: procurement._id,
           toState: "po_sent",

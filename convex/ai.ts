@@ -2,7 +2,7 @@ import { createThread, listUIMessages, saveMessage } from "@convex-dev/agent";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
-import type { Id } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { components, internal } from "./_generated/api";
 import {
   internalMutation,
@@ -12,7 +12,7 @@ import {
   type MutationCtx,
 } from "./_generated/server";
 import { aiTaskValidator, structuredAiResultValidator } from "./domain";
-import { landedCostCents } from "./domain/money";
+import { landedCostCents, purchaseOrderTotals } from "./domain/money";
 import { qualifyQuote } from "./domain/quotes";
 import schema from "./schema";
 
@@ -27,6 +27,70 @@ const intentByTask = {
   confirmation_extraction: "Extract confirmation terms from a stored supplier message.",
   exception_explanation: "Explain a deterministic difference using stored evidence.",
 } as const;
+
+type ConfirmationOutput = {
+  confirmed: boolean;
+  sku: string | null;
+  quantity: number | null;
+  unitPriceMicrodollars: number | null;
+  freightCents: number | null;
+  totalCents: number | null;
+  estimatedArrivalDate: string | null;
+  paymentTerms: string | null;
+};
+
+function confirmationDifferences(order: Doc<"purchaseOrders">, output: ConfirmationOutput) {
+  const differences: Array<{ field: string; approved: string; confirmed: string }> = [];
+  const add = (field: string, approved: string | number | boolean, confirmed: unknown) =>
+    differences.push({
+      field,
+      approved: String(approved),
+      confirmed: confirmed === null ? "missing" : String(confirmed),
+    });
+  if (!output.confirmed) add("confirmationStatus", true, false);
+  if (output.sku === null || output.sku.trim().toUpperCase() !== order.sku.toUpperCase()) {
+    add("sku", order.sku, output.sku);
+  }
+  if (output.quantity === null || output.quantity < order.quantity) {
+    add("quantity", order.quantity, output.quantity);
+  }
+  if (
+    output.unitPriceMicrodollars === null ||
+    output.unitPriceMicrodollars > order.unitPriceMicrodollars
+  ) {
+    add("unitPriceMicrodollars", order.unitPriceMicrodollars, output.unitPriceMicrodollars);
+  }
+  if (output.freightCents === null || output.freightCents > order.freightCents) {
+    add("freightCents", order.freightCents, output.freightCents);
+  }
+  const calculatedTotal =
+    output.quantity === null ||
+    output.unitPriceMicrodollars === null ||
+    output.freightCents === null
+      ? null
+      : purchaseOrderTotals({
+          quantity: output.quantity,
+          unitPriceMicrodollars: output.unitPriceMicrodollars,
+          freightCents: output.freightCents,
+        }).totalCents;
+  const confirmedTotal = output.totalCents ?? calculatedTotal;
+  if (confirmedTotal === null || confirmedTotal > order.totalCents) {
+    add("totalCents", order.totalCents, confirmedTotal);
+  }
+  if (
+    output.estimatedArrivalDate === null ||
+    output.estimatedArrivalDate.localeCompare(order.requiredBy) > 0
+  ) {
+    add("estimatedArrivalDate", order.requiredBy, output.estimatedArrivalDate);
+  }
+  if (
+    output.paymentTerms === null ||
+    output.paymentTerms.trim().toLowerCase() !== order.paymentTerms.trim().toLowerCase()
+  ) {
+    add("paymentTerms", order.paymentTerms, output.paymentTerms);
+  }
+  return differences;
+}
 
 const threadMessageValidator = v.object({
   id: v.string(),
@@ -178,6 +242,13 @@ export const getEvidence = internalQuery({
             .query("inboundEmailEvidence")
             .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
             .unique();
+    const purchaseOrder =
+      emailLink === null || emailLink.purpose !== "confirmation"
+        ? null
+        : await ctx.db
+            .query("purchaseOrders")
+            .withIndex("by_thread", (q) => q.eq("providerThreadId", emailLink.providerThreadId))
+            .unique();
     const latestQuotes =
       rfq === null
         ? []
@@ -226,6 +297,7 @@ export const getEvidence = internalQuery({
       ...(rfq === null ? [] : [`rfqs:${rfq._id}`, `suppliers:${rfq.supplierId}`]),
       ...(emailLink === null ? [] : [`emailLinks:${emailLink._id}`]),
       ...(inboundEvidence === null ? [] : [`inboundEmailEvidence:${inboundEvidence._id}`]),
+      ...(purchaseOrder === null ? [] : [`purchaseOrders:${purchaseOrder._id}`]),
       ...(latestQuote === null ? [] : [`quotes:${latestQuote._id}`]),
       ...(recommendation === null ? [] : [`recommendations:${recommendation._id}`]),
       ...recommendationEntries.map((entry) => `recommendationEntries:${entry._id}`),
@@ -296,6 +368,23 @@ export const getEvidence = internalQuery({
                 subject: inboundEvidence.subject ?? null,
                 extractedText: inboundEvidence.extractedText,
                 observedAt: inboundEvidence.observedAt,
+              },
+        approvedPurchaseOrder:
+          purchaseOrder === null
+            ? null
+            : {
+                id: `purchaseOrders:${purchaseOrder._id}`,
+                poNumber: purchaseOrder.poNumber,
+                sku: purchaseOrder.sku,
+                productDescription: purchaseOrder.productDescription,
+                quantity: purchaseOrder.quantity,
+                unitPriceMicrodollars: purchaseOrder.unitPriceMicrodollars,
+                freightCents: purchaseOrder.freightCents,
+                totalCents: purchaseOrder.totalCents,
+                requiredBy: purchaseOrder.requiredBy,
+                paymentTerms: purchaseOrder.paymentTerms,
+                quoteId: `quotes:${purchaseOrder.quoteId}`,
+                quoteRevision: purchaseOrder.quoteRevision,
               },
         latestQuote:
           latestQuote === null
@@ -547,6 +636,120 @@ export const completeRun = internalMutation({
       await ctx.runMutation(internal.recommendations.recompute, {
         procurementId: procurement._id,
       });
+    }
+    if (run.emailLinkId !== undefined && args.result.output.task === "confirmation_extraction") {
+      const emailLink = await ctx.db.get("emailLinks", run.emailLinkId);
+      const order =
+        emailLink === null
+          ? null
+          : await ctx.db
+              .query("purchaseOrders")
+              .withIndex("by_thread", (q) => q.eq("providerThreadId", emailLink.providerThreadId))
+              .unique();
+      const procurement =
+        order === null ? null : await ctx.db.get("procurements", order.procurementId);
+      if (emailLink === null || order === null || procurement === null) {
+        throw new Error("Confirmation extraction is missing its purchase-order context.");
+      }
+      const existing = await ctx.db
+        .query("confirmations")
+        .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
+        .unique();
+      if (existing === null) {
+        const output = args.result.output;
+        const differences = confirmationDifferences(order, output);
+        const confirmationId = await ctx.db.insert("confirmations", {
+          procurementId: procurement._id,
+          purchaseOrderId: order._id,
+          emailLinkId: emailLink._id,
+          supplierConfirmationNumber: output.supplierConfirmationNumber ?? undefined,
+          supplierConfirmed: output.confirmed,
+          sku: output.sku ?? undefined,
+          quantity: output.quantity ?? undefined,
+          unitPriceMicrodollars: output.unitPriceMicrodollars ?? undefined,
+          freightCents: output.freightCents ?? undefined,
+          totalCents: output.totalCents ?? undefined,
+          estimatedArrivalDate: output.estimatedArrivalDate ?? undefined,
+          paymentTerms: output.paymentTerms ?? undefined,
+          matchesApprovedTerms: differences.length === 0,
+          differences,
+          extractionConfidence: args.result.confidence,
+          createdAt: now,
+        });
+        if (differences.length === 0 && output.estimatedArrivalDate !== null) {
+          const demoRun = await ctx.db.get("demoRuns", procurement.demoRunId);
+          const incoming = await ctx.db
+            .query("expectedInventory")
+            .withIndex("by_purchase_order", (q) => q.eq("purchaseOrderId", order._id))
+            .unique();
+          if (incoming === null) {
+            await ctx.db.insert("expectedInventory", {
+              inventoryItemId: procurement.inventoryItemId,
+              procurementId: procurement._id,
+              purchaseOrderId: order._id,
+              quantity: order.quantity,
+              arrivalDate: output.estimatedArrivalDate,
+              status: "confirmed",
+              isDemo: demoRun?.isDemo ?? false,
+            });
+          }
+          await ctx.db.patch("purchaseOrders", order._id, { status: "confirmed" });
+          await ctx.db.patch("inventoryItems", procurement.inventoryItemId, {
+            status: "covered",
+          });
+          if (procurement.status === "confirmation_pending") {
+            await ctx.runMutation(internal.procurements.transition, {
+              procurementId: procurement._id,
+              toState: "confirmed",
+              summary: `${order.poNumber} matches the approved terms; incoming inventory is now covered.`,
+              actorType: "provider",
+              relatedRecordId: confirmationId,
+            });
+          }
+          await ctx.db.insert("procurementEvents", {
+            procurementId: procurement._id,
+            demoRunId: procurement.demoRunId,
+            type: "confirmation_received",
+            summary: `${order.poNumber} was confirmed with matching supplier terms.`,
+            actorType: "agent",
+            sourceKind: "supplier_confirmed",
+            relatedRecordId: confirmationId,
+            createdAt: now,
+          });
+        } else {
+          await ctx.db.patch("purchaseOrders", order._id, {
+            status: "exception",
+            errorMessage: `Confirmation differs on: ${differences.map((difference) => difference.field).join(", ")}.`,
+          });
+          await ctx.db.patch("procurements", procurement._id, {
+            reviewStatus: "required",
+            reviewReason: "Supplier confirmation differs materially from the approved PO.",
+            updatedAt: now,
+          });
+          await ctx.db.patch("inventoryItems", procurement.inventoryItemId, {
+            status: "exception",
+          });
+          if (procurement.status === "confirmation_pending") {
+            await ctx.runMutation(internal.procurements.transition, {
+              procurementId: procurement._id,
+              toState: "exception",
+              summary: `Supplier confirmation requires review: ${differences.map((difference) => difference.field).join(", ")}.`,
+              actorType: "agent",
+              relatedRecordId: confirmationId,
+            });
+          }
+          await ctx.db.insert("procurementEvents", {
+            procurementId: procurement._id,
+            demoRunId: procurement.demoRunId,
+            type: "exception_recorded",
+            summary: `Material confirmation differences: ${differences.map((difference) => difference.field).join(", ")}.`,
+            actorType: "agent",
+            sourceKind: "supplier_confirmed",
+            relatedRecordId: confirmationId,
+            createdAt: now,
+          });
+        }
+      }
     }
     if (run.rfqId !== undefined && args.result.output.task === "follow_up_wording") {
       const rfqId = run.rfqId;

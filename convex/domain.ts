@@ -9,6 +9,7 @@ export const inventoryStatuses = [
   "evaluating",
   "approval_required",
   "ordered",
+  "covered",
   "confirmed",
   "exception",
 ] as const;
@@ -22,6 +23,7 @@ export const inventoryStatusValidator = v.union(
   v.literal("evaluating"),
   v.literal("approval_required"),
   v.literal("ordered"),
+  v.literal("covered"),
   v.literal("confirmed"),
   v.literal("exception"),
 );
@@ -224,8 +226,13 @@ export const aiTaskOutputValidator = v.union(
     task: v.literal("confirmation_extraction"),
     confirmed: v.boolean(),
     supplierConfirmationNumber: v.union(v.string(), v.null()),
+    sku: v.union(v.string(), v.null()),
     quantity: v.union(v.number(), v.null()),
+    unitPriceMicrodollars: v.union(v.number(), v.null()),
+    freightCents: v.union(v.number(), v.null()),
+    totalCents: v.union(v.number(), v.null()),
     estimatedArrivalDate: v.union(v.string(), v.null()),
+    paymentTerms: v.union(v.string(), v.null()),
     changedTerms: v.array(v.string()),
   }),
   v.object({

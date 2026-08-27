@@ -71,6 +71,13 @@ async function deleteRunData(ctx: MutationCtx, demoRunId: Id<"demoRuns">) {
     .take(500);
 
   for (const procurement of procurements) {
+    const confirmations = await ctx.db
+      .query("confirmations")
+      .withIndex("by_procurement", (q) => q.eq("procurementId", procurement._id))
+      .take(100);
+    for (const confirmation of confirmations) {
+      await ctx.db.delete("confirmations", confirmation._id);
+    }
     const searchRuns = await ctx.db
       .query("searchRuns")
       .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))

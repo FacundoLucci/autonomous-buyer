@@ -8,6 +8,7 @@ const inventoryRowValidator = v.object({
   sku: v.string(),
   name: v.string(),
   quantityOnHand: v.number(),
+  confirmedIncoming: v.number(),
   averageDailyUsage: v.number(),
   daysRemaining: v.union(v.number(), v.null()),
   safetyStockDays: v.number(),
@@ -98,11 +99,18 @@ export const getDashboard = query({
       const averageDailyUsage =
         usage.reduce((total, record) => total + record.quantityConsumed, 0) / 30;
       const active = activeByItem.get(item._id);
+      const expected = await ctx.db
+        .query("expectedInventory")
+        .withIndex("by_item_arrival", (q) => q.eq("inventoryItemId", item._id))
+        .take(100);
       inventory.push({
         inventoryItemId: item._id,
         sku: item.sku,
         name: item.name,
         quantityOnHand: item.quantityOnHand,
+        confirmedIncoming: expected
+          .filter((record) => record.status === "confirmed")
+          .reduce((total, record) => total + record.quantity, 0),
         averageDailyUsage,
         daysRemaining: averageDailyUsage === 0 ? null : item.quantityOnHand / averageDailyUsage,
         safetyStockDays: item.safetyStockDays,
@@ -120,7 +128,10 @@ export const getDashboard = query({
       });
     }
     inventory.sort((a, b) => {
-      const priority = { action_required: 0, watch: 1, healthy: 2 } as Record<string, number>;
+      const priority = { action_required: 0, watch: 1, covered: 2, healthy: 3 } as Record<
+        string,
+        number
+      >;
       return (priority[a.status] ?? 1) - (priority[b.status] ?? 1);
     });
 
@@ -313,6 +324,19 @@ export const getProcurement = query({
         }),
         v.null(),
       ),
+      confirmation: v.union(
+        v.object({
+          supplierConfirmationNumber: v.union(v.string(), v.null()),
+          matchesApprovedTerms: v.boolean(),
+          confirmedQuantity: v.union(v.number(), v.null()),
+          confirmedArrivalDate: v.union(v.string(), v.null()),
+          differences: v.array(
+            v.object({ field: v.string(), approved: v.string(), confirmed: v.string() }),
+          ),
+          extractionConfidence: v.number(),
+        }),
+        v.null(),
+      ),
     }),
     v.null(),
   ),
@@ -374,6 +398,14 @@ export const getProcurement = query({
     const purchaseOrder = purchaseOrders[0];
     const purchaseOrderSupplier =
       purchaseOrder === undefined ? null : await ctx.db.get("suppliers", purchaseOrder.supplierId);
+    const confirmation =
+      purchaseOrder === undefined
+        ? null
+        : await ctx.db
+            .query("confirmations")
+            .withIndex("by_purchase_order", (q) => q.eq("purchaseOrderId", purchaseOrder._id))
+            .order("desc")
+            .first();
     return {
       procurementId: procurement._id,
       code: procurementCode(procurement.code, procurement._creationTime),
@@ -452,6 +484,17 @@ export const getProcurement = query({
               errorMessage: purchaseOrder.errorMessage ?? null,
               status: purchaseOrder.status,
               sentAt: purchaseOrder.sentAt ?? null,
+            },
+      confirmation:
+        confirmation === null
+          ? null
+          : {
+              supplierConfirmationNumber: confirmation.supplierConfirmationNumber ?? null,
+              matchesApprovedTerms: confirmation.matchesApprovedTerms,
+              confirmedQuantity: confirmation.quantity ?? null,
+              confirmedArrivalDate: confirmation.estimatedArrivalDate ?? null,
+              differences: confirmation.differences,
+              extractionConfidence: confirmation.extractionConfidence,
             },
     };
   },
