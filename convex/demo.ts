@@ -2,9 +2,16 @@ import { v } from "convex/values";
 
 import type { Id } from "./_generated/dataModel";
 import { mutation, query, type MutationCtx } from "./_generated/server";
+import {
+  coverageDemand,
+  projectedStockoutDate,
+  roundOrderQuantity,
+  trailing30DayAverageUsage,
+} from "./domain/inventory";
 
 const DAY_MS = 86_400_000;
 const SCENARIO_VERSION = "bc-04-v1";
+const RISK_CALCULATION_VERSION = "inventory-risk-v1";
 
 const scenarioValidator = v.object({
   demoRunId: v.id("demoRuns"),
@@ -219,7 +226,7 @@ export const resetScenario = mutation({
         casePack: 500,
         preferredCoverageDays: 14,
         maximumInventoryDays: 30,
-        status: "action_required" as const,
+        status: "watch" as const,
       },
       {
         sku: "CONTAINER-16",
@@ -385,6 +392,115 @@ export const startScenario = mutation({
     const run = await ctx.db.get("demoRuns", args.demoRunId);
     if (run === null || !run.isDemo) throw new Error("Demo run not found.");
     if (run.status !== "ready") throw new Error("Only a ready demo run can be started.");
+    const inventoryItems = await ctx.db
+      .query("inventoryItems")
+      .withIndex("by_demo_run", (q) => q.eq("demoRunId", run._id))
+      .take(20);
+    const asOfDate = new Date().toISOString().slice(0, 10);
+
+    for (const item of inventoryItems) {
+      if (item.sku !== "LID-16-TE") continue;
+      const usage = await ctx.db
+        .query("inventoryUsage")
+        .withIndex("by_item_date", (q) => q.eq("inventoryItemId", item._id))
+        .order("desc")
+        .take(90);
+      const averageDailyUsage = trailing30DayAverageUsage(usage, asOfDate);
+      const stockoutDate = projectedStockoutDate(asOfDate, item.quantityOnHand, averageDailyUsage);
+      if (stockoutDate === null) continue;
+
+      const supplierLeadTimeDays = 7;
+      const safetyThreshold = averageDailyUsage * (supplierLeadTimeDays + item.safetyStockDays);
+      if (item.quantityOnHand > safetyThreshold) continue;
+
+      const existing = await ctx.db
+        .query("procurements")
+        .withIndex("by_demo_run_and_item_and_is_active", (q) =>
+          q.eq("demoRunId", run._id).eq("inventoryItemId", item._id).eq("isActive", true),
+        )
+        .unique();
+      if (existing !== null) continue;
+
+      const requiredInventory = coverageDemand(
+        averageDailyUsage,
+        supplierLeadTimeDays,
+        item.safetyStockDays,
+        item.preferredCoverageDays,
+      );
+      const rounded = roundOrderQuantity({
+        requiredQuantity: requiredInventory,
+        casePack: item.casePack,
+      });
+      if (rounded.status !== "ok" || rounded.quantity === null) {
+        throw new Error(`Could not calculate a safe order quantity for ${item.sku}.`);
+      }
+
+      const now = Date.now();
+      const code = `PC-${String(Math.floor(now / 1000) % 10_000).padStart(4, "0")}`;
+      const triggerReason = "Projected stockout before normal replenishment can arrive.";
+      const procurementId = await ctx.db.insert("procurements", {
+        organizationId: item.organizationId,
+        inventoryItemId: item._id,
+        demoRunId: run._id,
+        status: "detected",
+        reviewStatus: "resolved",
+        isActive: true,
+        triggerReason,
+        quantityRequired: rounded.quantity,
+        requiredBy: stockoutDate,
+        averageDailyUsage,
+        projectedStockoutDate: stockoutDate,
+        calculationVersion: RISK_CALCULATION_VERSION,
+        calculationInputs: {
+          asOfDate,
+          quantityOnHand: item.quantityOnHand,
+          trailingUsageDays: 30,
+          safetyStockDays: item.safetyStockDays,
+          supplierLeadTimeDays,
+          coverageDays: item.preferredCoverageDays,
+          casePack: item.casePack,
+          incomingQuantity: 0,
+        },
+        code,
+        createdAt: now,
+        updatedAt: now,
+      });
+      await ctx.db.insert("procurementEvents", {
+        procurementId,
+        demoRunId: run._id,
+        type: "risk_detected",
+        summary: triggerReason,
+        actorType: "system",
+        toState: "detected",
+        createdAt: now,
+      });
+      await ctx.db.insert("procurementEvents", {
+        procurementId,
+        demoRunId: run._id,
+        type: "state_transitioned",
+        summary: "Inventory inputs are being checked.",
+        actorType: "agent",
+        fromState: "detected",
+        toState: "analyzing",
+        createdAt: now + 1,
+      });
+      await ctx.db.patch("procurements", procurementId, {
+        status: "sourcing",
+        updatedAt: now + 2,
+      });
+      await ctx.db.insert("procurementEvents", {
+        procurementId,
+        demoRunId: run._id,
+        type: "state_transitioned",
+        summary: "Risk confirmed. Supplier sourcing has started.",
+        actorType: "agent",
+        fromState: "analyzing",
+        toState: "sourcing",
+        createdAt: now + 2,
+      });
+      await ctx.db.patch("inventoryItems", item._id, { status: "action_required" });
+    }
+
     await ctx.db.patch("demoRuns", run._id, { status: "active" });
     return null;
   },

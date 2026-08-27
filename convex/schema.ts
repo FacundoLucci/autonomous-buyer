@@ -231,12 +231,45 @@ export default defineSchema({
     averageDailyUsage: v.number(),
     projectedStockoutDate: dateValidator,
     calculationVersion: v.string(),
+    calculationInputs: v.optional(
+      v.object({
+        asOfDate: dateValidator,
+        quantityOnHand: v.number(),
+        trailingUsageDays: v.number(),
+        safetyStockDays: v.number(),
+        supplierLeadTimeDays: v.number(),
+        coverageDays: v.number(),
+        casePack: v.number(),
+        incomingQuantity: v.number(),
+      }),
+    ),
+    code: v.optional(v.string()),
     createdAt: timestampValidator,
     updatedAt: timestampValidator,
   })
     .index("by_org_status", ["organizationId", "status"])
     .index("by_item_active", ["inventoryItemId", "isActive"])
-    .index("by_demo_run", ["demoRunId"]),
+    .index("by_demo_run", ["demoRunId"])
+    .index("by_demo_run_and_item_and_is_active", ["demoRunId", "inventoryItemId", "isActive"]),
+
+  agentThreadLinks: defineTable({
+    organizationId: v.id("organizations"),
+    buyerUserId: v.optional(v.id("users")),
+    procurementId: v.optional(v.id("procurements")),
+    anchorKey: v.string(),
+    componentThreadId: v.string(),
+    unreadCount: v.number(),
+    status: v.union(
+      v.literal("read"),
+      v.literal("unread"),
+      v.literal("thinking"),
+      v.literal("failed"),
+    ),
+    createdAt: timestampValidator,
+    updatedAt: timestampValidator,
+  })
+    .index("by_procurement_and_anchor", ["procurementId", "anchorKey"])
+    .index("by_organization_and_updated_at", ["organizationId", "updatedAt"]),
 
   searchRuns: defineTable({
     procurementId: v.id("procurements"),
