@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: scaffold complete; product implementation not started.
+Status: BC-00 through BC-07 complete; BC-08 is next.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -344,7 +344,7 @@ view. Do not add unit tests.
 
 ### BC-04 — Seed and repeatable demo run
 
-Depends on: BC-03.
+Depends on: BC-03. Status: complete.
 
 Load: spec sections 3 and 29–32.
 
@@ -363,7 +363,7 @@ creates a clean local run without pretending external replies occurred.
 
 ### BC-05 — Realtime product shell
 
-Depends on: BC-04.
+Depends on: BC-04. Status: complete.
 
 Load: spec sections 5, 22, 28, and only the UI/query contracts required here.
 
@@ -400,7 +400,7 @@ window update from a Convex subscription without refresh.
 
 ### BC-06 — Inventory risk and procurement-creation vertical slice
 
-Depends on: BC-03, BC-04, BC-05.
+Depends on: BC-03, BC-04, BC-05. Status: complete.
 
 Load: spec sections 6–8 and the procurement transition API.
 
@@ -418,7 +418,7 @@ both browser windows without a database edit.
 
 ### BC-07 — Structured OpenAI tasks and contextual threads
 
-Depends on: BC-02. May run beside BC-03–06.
+Depends on: BC-02. Status: complete. May run beside BC-03–06.
 
 Load: spec section 24, AI gateway guidance, and the `aiRuns` contract.
 
