@@ -96,7 +96,13 @@ export const taskSchemas = {
           quantityAvailable: z.number().int().nonnegative().nullable(),
           unitPriceMicrodollars: z.number().int().nonnegative().nullable(),
           freightCents: z.number().int().nonnegative().nullable(),
+          taxesCents: z.number().int().nonnegative().nullable(),
+          earliestShipDate: z.string().nullable(),
           estimatedArrivalDate: z.string().nullable(),
+          minimumOrderQuantity: z.number().int().nonnegative().nullable(),
+          packSize: z.number().int().nonnegative().nullable(),
+          paymentTerms: z.string().nullable(),
+          expiresOn: z.string().nullable(),
           missingFields: z.array(missingQuoteFieldSchema),
         })
         .strict(),

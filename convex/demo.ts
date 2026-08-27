@@ -97,7 +97,20 @@ async function deleteRunData(ctx: MutationCtx, demoRunId: Id<"demoRuns">) {
       await ctx.db.delete("supplierProducts", product._id);
     }
 
-    for (const table of ["rfqs", "emailLinks", "quotes", "approvals", "purchaseOrders"] as const) {
+    const emailLinks = await ctx.db
+      .query("emailLinks")
+      .withIndex("by_procurement", (q) => q.eq("procurementId", procurement._id))
+      .take(100);
+    for (const emailLink of emailLinks) {
+      const evidence = await ctx.db
+        .query("inboundEmailEvidence")
+        .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
+        .take(20);
+      for (const record of evidence) await ctx.db.delete("inboundEmailEvidence", record._id);
+      await ctx.db.delete("emailLinks", emailLink._id);
+    }
+
+    for (const table of ["rfqs", "quotes", "approvals", "purchaseOrders"] as const) {
       const records = await ctx.db
         .query(table)
         .withIndex("by_procurement", (q) => q.eq("procurementId", procurement._id))

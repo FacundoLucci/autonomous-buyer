@@ -370,6 +370,16 @@ export default defineSchema({
     .index("by_procurement", ["procurementId"])
     .index("by_procurement_and_purpose_and_direction", ["procurementId", "purpose", "direction"]),
 
+  inboundEmailEvidence: defineTable({
+    emailLinkId: v.id("emailLinks"),
+    providerEventId: v.string(),
+    subject: v.optional(v.string()),
+    extractedText: v.string(),
+    observedAt: timestampValidator,
+  })
+    .index("by_email_link", ["emailLinkId"])
+    .index("by_provider_event_id", ["providerEventId"]),
+
   quotes: defineTable({
     procurementId: v.id("procurements"),
     rfqId: v.id("rfqs"),
@@ -397,6 +407,7 @@ export default defineSchema({
       v.literal("human_review"),
     ),
     rawProviderMessageId: v.string(),
+    extractionVersion: v.optional(v.string()),
     createdAt: timestampValidator,
   })
     .index("by_procurement", ["procurementId"])
@@ -497,6 +508,7 @@ export default defineSchema({
     procurementId: v.optional(v.id("procurements")),
     supplierProductId: v.optional(v.id("supplierProducts")),
     rfqId: v.optional(v.id("rfqs")),
+    emailLinkId: v.optional(v.id("emailLinks")),
     agentThreadLinkId: v.optional(v.id("agentThreadLinks")),
     anchorKey: v.optional(v.string()),
     intent: v.optional(v.string()),

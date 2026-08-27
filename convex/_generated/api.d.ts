@@ -18,6 +18,8 @@ import type * as domain_inventory from "../domain/inventory.js";
 import type * as domain_money from "../domain/money.js";
 import type * as domain_procurement from "../domain/procurement.js";
 import type * as domain_quotes from "../domain/quotes.js";
+import type * as http from "../http.js";
+import type * as inbound from "../inbound.js";
 import type * as integrations from "../integrations.js";
 import type * as mail from "../mail.js";
 import type * as procurements from "../procurements.js";
@@ -42,6 +44,8 @@ declare const fullApi: ApiFromModules<{
   "domain/money": typeof domain_money;
   "domain/procurement": typeof domain_procurement;
   "domain/quotes": typeof domain_quotes;
+  http: typeof http;
+  inbound: typeof inbound;
   integrations: typeof integrations;
   mail: typeof mail;
   procurements: typeof procurements;

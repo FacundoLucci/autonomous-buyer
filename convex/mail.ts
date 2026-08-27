@@ -4,7 +4,9 @@ import { v } from "convex/values";
 import { components, internal } from "./_generated/api";
 import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 
-const agentmail = new AgentMail(components.agentmail);
+const agentmail = new AgentMail(components.agentmail, {
+  onMessageReceived: internal.inbound.onMessageReceived,
+});
 const APPROVAL_TEXT = "APPROVE CONTROLLED RFQ RECIPIENTS";
 
 type Inbox = { inbox_id: string; email: string; display_name?: string; client_id?: string };

@@ -12,6 +12,8 @@ import {
   type MutationCtx,
 } from "./_generated/server";
 import { aiTaskValidator, structuredAiResultValidator } from "./domain";
+import { landedCostCents } from "./domain/money";
+import { qualifyQuote } from "./domain/quotes";
 import schema from "./schema";
 
 const intentByTask = {
@@ -167,6 +169,15 @@ export const getEvidence = internalQuery({
       supplierProduct === null ? null : await ctx.db.get("suppliers", supplierProduct.supplierId);
     const rfq = run.rfqId === undefined ? null : await ctx.db.get("rfqs", run.rfqId);
     const rfqSupplier = rfq === null ? null : await ctx.db.get("suppliers", rfq.supplierId);
+    const emailLink =
+      run.emailLinkId === undefined ? null : await ctx.db.get("emailLinks", run.emailLinkId);
+    const inboundEvidence =
+      emailLink === null
+        ? null
+        : await ctx.db
+            .query("inboundEmailEvidence")
+            .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
+            .unique();
     const claims =
       supplierProduct === null
         ? []
@@ -184,6 +195,8 @@ export const getEvidence = internalQuery({
       `inventoryItems:${item._id}`,
       ...(supplierProduct === null ? [] : [`supplierProducts:${supplierProduct._id}`]),
       ...(rfq === null ? [] : [`rfqs:${rfq._id}`, `suppliers:${rfq.supplierId}`]),
+      ...(emailLink === null ? [] : [`emailLinks:${emailLink._id}`]),
+      ...(inboundEvidence === null ? [] : [`inboundEmailEvidence:${inboundEvidence._id}`]),
       ...claims.map((claim) => `supplierProductClaims:${claim._id}`),
       ...events.map((event) => `procurementEvents:${event._id}`),
     ];
@@ -238,6 +251,18 @@ export const getEvidence = internalQuery({
                 productName: item.name,
                 sku: item.sku,
                 specification: item.specification,
+              },
+        inboundMessage:
+          emailLink === null || inboundEvidence === null
+            ? null
+            : {
+                emailLinkId: `emailLinks:${emailLink._id}`,
+                evidenceId: `inboundEmailEvidence:${inboundEvidence._id}`,
+                providerMessageId: emailLink.providerMessageId,
+                providerThreadId: emailLink.providerThreadId,
+                subject: inboundEvidence.subject ?? null,
+                extractedText: inboundEvidence.extractedText,
+                observedAt: inboundEvidence.observedAt,
               },
         claims: claims.map((claim) => ({
           id: `supplierProductClaims:${claim._id}`,
@@ -334,6 +359,84 @@ export const completeRun = internalMutation({
             createdAt: now,
           });
         }
+      }
+    }
+    if (run.emailLinkId !== undefined && args.result.output.task === "quote_extraction") {
+      const emailLink = await ctx.db.get("emailLinks", run.emailLinkId);
+      const rfq = emailLink?.rfqId === undefined ? null : await ctx.db.get("rfqs", emailLink.rfqId);
+      const procurement = rfq === null ? null : await ctx.db.get("procurements", rfq.procurementId);
+      if (emailLink === null || rfq === null || procurement === null) {
+        throw new Error("Quote extraction is missing its RFQ context.");
+      }
+      const output = args.result.output;
+      const totals =
+        output.unitPriceMicrodollars === null
+          ? null
+          : landedCostCents({
+              quantity: rfq.requestedQuantity,
+              unitPriceMicrodollars: output.unitPriceMicrodollars,
+              freightCents: output.freightCents ?? undefined,
+              taxesCents: output.taxesCents ?? undefined,
+            });
+      const qualification = qualifyQuote({
+        arrivalDate: output.estimatedArrivalDate ?? undefined,
+        requiredBy: rfq.requiredBy,
+        quantityAvailable: output.quantityAvailable ?? undefined,
+        requestedQuantity: rfq.requestedQuantity,
+        minimumOrderQuantity: output.minimumOrderQuantity ?? undefined,
+        criticalPropertiesConfirmed: rfq.isControlledRecipient === true,
+        productMatchConfidence: rfq.isControlledRecipient === true ? 0.9 : 0,
+        requiredCertifications: [],
+        confirmedCertifications: [],
+        missingInformation: output.missingFields,
+      });
+      const prior = await ctx.db
+        .query("quotes")
+        .withIndex("by_rfq_revision", (q) => q.eq("rfqId", rfq._id))
+        .order("desc")
+        .take(1);
+      const quoteId = await ctx.db.insert("quotes", {
+        procurementId: procurement._id,
+        rfqId: rfq._id,
+        supplierId: rfq.supplierId,
+        revision: (prior[0]?.revision ?? 0) + 1,
+        quantityAvailable: output.quantityAvailable ?? undefined,
+        unitPriceMicrodollars: output.unitPriceMicrodollars ?? undefined,
+        extendedPriceCents: totals?.extendedPriceCents,
+        freightCents: output.freightCents ?? undefined,
+        taxesCents: output.taxesCents ?? undefined,
+        landedCostCents: totals?.landedCostCents,
+        earliestShipDate: output.earliestShipDate ?? undefined,
+        estimatedArrivalDate: output.estimatedArrivalDate ?? undefined,
+        minimumOrderQuantity: output.minimumOrderQuantity ?? undefined,
+        packSize: output.packSize ?? undefined,
+        paymentTerms: output.paymentTerms ?? undefined,
+        expiresOn: output.expiresOn ?? undefined,
+        missingInformation: output.missingFields,
+        matchConfidence: rfq.isControlledRecipient === true ? 0.9 : 0,
+        responseConfidence: args.result.confidence,
+        qualification: qualification.qualification,
+        rawProviderMessageId: emailLink.providerMessageId,
+        extractionVersion: "quote-extraction-v1",
+        createdAt: now,
+      });
+      await ctx.db.patch("rfqs", rfq._id, { status: "responded" });
+      await ctx.db.insert("procurementEvents", {
+        procurementId: procurement._id,
+        demoRunId: procurement.demoRunId,
+        type: "quote_recorded",
+        summary: `Quote revision ${(prior[0]?.revision ?? 0) + 1} was extracted and deterministically qualified.`,
+        actorType: "agent",
+        relatedRecordId: quoteId,
+        createdAt: now,
+      });
+      if (procurement.status === "awaiting_quotes") {
+        await ctx.runMutation(internal.procurements.transition, {
+          procurementId: procurement._id,
+          toState: "evaluating",
+          summary: "A supplier quote arrived and comparison has started.",
+          actorType: "agent",
+        });
       }
     }
     if (link !== null) {

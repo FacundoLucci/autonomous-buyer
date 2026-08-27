@@ -383,6 +383,7 @@ function FocusedProcurement({
   const rfqs = useQuery(api.rfqs.listForProcurement, { procurementId });
   const purchasingInbox = useQuery(api.mail.getInboxForProcurement, { procurementId });
   const delivery = useQuery(api.mail.getDelivery, { procurementId });
+  const quotes = useQuery(api.inbound.listQuotes, { procurementId });
   const startSourcing = useAction(api.sourcing.start);
   const ensurePurchasingInbox = useAction(api.mail.ensurePurchasingInbox);
   const prepareRfqs = useMutation(api.rfqs.prepare);
@@ -771,6 +772,55 @@ function FocusedProcurement({
             {mailError ? <p className="text-sm text-red-700">{mailError}</p> : null}
           </CardContent>
         </Card>
+        {quotes && quotes.length > 0 ? (
+          <Card className="border-stone-300 bg-white/80 shadow-none">
+            <CardHeader>
+              <CardDescription>Live inbound evidence · BC-11</CardDescription>
+              <CardTitle className="text-base">Supplier quotes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {quotes.map((quote) => (
+                <div
+                  key={quote.quoteId}
+                  className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-medium">
+                      {quote.supplierName} · revision {quote.revision}
+                    </p>
+                    <Badge variant="outline">{quote.qualification.replaceAll("_", " ")}</Badge>
+                  </div>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    <Fact
+                      label="Available"
+                      value={
+                        quote.quantityAvailable === null
+                          ? "Missing"
+                          : `${quote.quantityAvailable.toLocaleString()} units`
+                      }
+                    />
+                    <Fact
+                      label="Landed cost"
+                      value={
+                        quote.landedCostCents === null ? "Incomplete" : money(quote.landedCostCents)
+                      }
+                    />
+                    <Fact label="Arrival" value={quote.estimatedArrivalDate ?? "Missing"} />
+                  </div>
+                  <p className="mt-3 text-xs text-stone-500">
+                    {Math.round(quote.responseConfidence * 100)}% extraction confidence · raw
+                    AgentMail message {quote.rawProviderMessageId}
+                  </p>
+                  {quote.missingInformation.length > 0 ? (
+                    <p className="mt-2 text-xs text-amber-800">
+                      Missing: {quote.missingInformation.join(", ").replaceAll("_", " ")}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
         {demo ? (
           <Card className="border-dashed border-stone-400 bg-white/60 shadow-none">
             <CardHeader>

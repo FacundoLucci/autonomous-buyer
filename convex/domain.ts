@@ -194,7 +194,13 @@ export const aiTaskOutputValidator = v.union(
     quantityAvailable: v.union(v.number(), v.null()),
     unitPriceMicrodollars: v.union(v.number(), v.null()),
     freightCents: v.union(v.number(), v.null()),
+    taxesCents: v.union(v.number(), v.null()),
+    earliestShipDate: v.union(v.string(), v.null()),
     estimatedArrivalDate: v.union(v.string(), v.null()),
+    minimumOrderQuantity: v.union(v.number(), v.null()),
+    packSize: v.union(v.number(), v.null()),
+    paymentTerms: v.union(v.string(), v.null()),
+    expiresOn: v.union(v.string(), v.null()),
     missingFields: v.array(missingQuoteFieldValidator),
   }),
   v.object({
