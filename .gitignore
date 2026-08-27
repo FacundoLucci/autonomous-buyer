@@ -43,3 +43,4 @@ yarn-error.log*
 .quickstart-logs
 .quickstart-bootstrap.log
 .quickstart-runbook.md
+.product-integrity/out/

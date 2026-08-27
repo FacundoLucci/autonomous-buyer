@@ -87,6 +87,9 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
+      '@facundolucci/product-integrity':
+        specifier: github:FacundoLucci/product-integrity#v0.1.1
+        version: git+https://git@github.com:FacundoLucci/product-integrity.git#380fad2d35f9e46968b7a0bc1c2d182825593062
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@20.19.43)(esbuild@0.27.0)(jiti@2.7.0))
@@ -484,6 +487,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@facundolucci/product-integrity@git+https://git@github.com:FacundoLucci/product-integrity.git#380fad2d35f9e46968b7a0bc1c2d182825593062':
+    resolution: {commit: 380fad2d35f9e46968b7a0bc1c2d182825593062, repo: git@github.com:FacundoLucci/product-integrity.git, type: git}
+    version: 0.1.1
+    engines: {node: '>=20'}
+    hasBin: true
 
   '@firecrawl/firecrawl-convex@0.1.1':
     resolution: {integrity: sha512-fecepodOAcKLUKFD+4dyqRfU8ATn3y15nYtayyAmmQAV0FT/6sVwKNY0+rpq8/NKTLrEpuHr+cE0htNQ+ssU+g==}
@@ -3649,6 +3658,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.0':
     optional: true
+
+  '@facundolucci/product-integrity@git+https://git@github.com:FacundoLucci/product-integrity.git#380fad2d35f9e46968b7a0bc1c2d182825593062': {}
 
   '@firecrawl/firecrawl-convex@0.1.1(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.8))(hono@4.13.5)(react@19.2.8)(typescript@6.0.3)(zod@3.25.76)':
     dependencies:

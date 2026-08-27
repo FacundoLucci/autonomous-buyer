@@ -3,13 +3,13 @@ import { v } from "convex/values";
 
 import {
   aiTaskValidator,
-  caseEventTypeValidator,
+  procurementEventTypeValidator,
   integrationNameValidator,
   integrationOperationValidator,
   inventoryStatusValidator,
   matchStatusValidator,
   missingQuoteFieldValidator,
-  procurementCaseStateValidator,
+  procurementStateValidator,
   reviewStatusValidator,
   sourceKindValidator,
   supplierClaimFieldValidator,
@@ -44,8 +44,7 @@ export default defineSchema({
     }),
     timezone: v.string(),
     approvalPolicy: v.object({
-      humanApprovalRequired: v.boolean(),
-      approvalLimitCents: v.optional(v.number()),
+      humanApprovalRequired: v.literal(true),
       maximumAutomaticFollowUps: v.number(),
     }),
     isDemo: v.boolean(),
@@ -106,7 +105,7 @@ export default defineSchema({
 
   expectedInventory: defineTable({
     inventoryItemId: v.id("inventoryItems"),
-    procurementCaseId: v.optional(v.id("procurementCases")),
+    procurementId: v.optional(v.id("procurements")),
     purchaseOrderId: v.optional(v.id("purchaseOrders")),
     quantity: v.number(),
     arrivalDate: dateValidator,
@@ -141,7 +140,7 @@ export default defineSchema({
     .index("by_demo_run", ["demoRunId"]),
 
   supplierProducts: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     supplierId: v.id("suppliers"),
     inventoryItemId: v.id("inventoryItems"),
     externalSku: v.optional(v.string()),
@@ -159,7 +158,7 @@ export default defineSchema({
     publishedAvailability: v.optional(v.string()),
     observedAt: timestampValidator,
   })
-    .index("by_case_supplier", ["procurementCaseId", "supplierId"])
+    .index("by_procurement_and_supplier", ["procurementId", "supplierId"])
     .index("by_supplier", ["supplierId"]),
 
   supplierProductClaims: defineTable({
@@ -175,11 +174,11 @@ export default defineSchema({
     .index("by_product", ["supplierProductId"])
     .index("by_source_url", ["sourceUrl"]),
 
-  procurementCases: defineTable({
+  procurements: defineTable({
     organizationId: v.id("organizations"),
     inventoryItemId: v.id("inventoryItems"),
     demoRunId: v.id("demoRuns"),
-    status: procurementCaseStateValidator,
+    status: procurementStateValidator,
     reviewStatus: reviewStatusValidator,
     reviewReason: v.optional(v.string()),
     isActive: v.boolean(),
@@ -196,7 +195,7 @@ export default defineSchema({
     .index("by_item_active", ["inventoryItemId", "isActive"]),
 
   searchRuns: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     demoRunId: v.id("demoRuns"),
     query: v.string(),
     status: operationStatusValidator,
@@ -204,11 +203,11 @@ export default defineSchema({
     errorMessage: v.optional(v.string()),
     createdAt: timestampValidator,
     completedAt: v.optional(timestampValidator),
-  }).index("by_case_created", ["procurementCaseId", "createdAt"]),
+  }).index("by_procurement_and_created", ["procurementId", "createdAt"]),
 
   searchResults: defineTable({
     searchRunId: v.id("searchRuns"),
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     url: v.string(),
     title: v.string(),
     supplierName: v.optional(v.string()),
@@ -217,7 +216,7 @@ export default defineSchema({
   }).index("by_search_run", ["searchRunId"]),
 
   rfqs: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     supplierId: v.id("suppliers"),
     demoRunId: v.id("demoRuns"),
     status: v.union(
@@ -237,11 +236,11 @@ export default defineSchema({
     createdAt: timestampValidator,
     sentAt: v.optional(timestampValidator),
   })
-    .index("by_case", ["procurementCaseId"])
+    .index("by_procurement", ["procurementId"])
     .index("by_thread", ["providerThreadId"]),
 
   emailLinks: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     rfqId: v.optional(v.id("rfqs")),
     supplierId: v.id("suppliers"),
     provider: v.literal("agentmail"),
@@ -258,10 +257,11 @@ export default defineSchema({
     createdAt: timestampValidator,
   })
     .index("by_provider_message", ["provider", "providerMessageId"])
-    .index("by_case", ["procurementCaseId"]),
+    .index("by_procurement", ["procurementId"])
+    .index("by_procurement_and_purpose_and_direction", ["procurementId", "purpose", "direction"]),
 
   quotes: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     rfqId: v.id("rfqs"),
     supplierId: v.id("suppliers"),
     revision: v.number(),
@@ -289,33 +289,36 @@ export default defineSchema({
     rawProviderMessageId: v.string(),
     createdAt: timestampValidator,
   })
-    .index("by_case", ["procurementCaseId"])
+    .index("by_procurement", ["procurementId"])
     .index("by_rfq_revision", ["rfqId", "revision"]),
 
   recommendations: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     selectedQuoteId: v.id("quotes"),
     explanation: v.string(),
     rankingVersion: v.string(),
     createdAt: timestampValidator,
-  }).index("by_case_created", ["procurementCaseId", "createdAt"]),
+  }).index("by_procurement_and_created", ["procurementId", "createdAt"]),
 
   approvals: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     recommendationId: v.id("recommendations"),
+    approvedQuoteId: v.id("quotes"),
+    approvedQuoteRevision: v.number(),
     status: v.union(v.literal("approved"), v.literal("modified"), v.literal("rejected")),
     approvedByUserId: v.id("users"),
     approvedQuantity: v.number(),
     approvedUnitPriceMicrodollars: v.number(),
     approvedFreightCents: v.number(),
+    approvedTotalCents: v.number(),
     decisionNote: v.optional(v.string()),
     decidedAt: timestampValidator,
   })
     .index("by_recommendation", ["recommendationId"])
-    .index("by_case", ["procurementCaseId"]),
+    .index("by_procurement", ["procurementId"]),
 
   purchaseOrders: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+    procurementId: v.id("procurements"),
     supplierId: v.id("suppliers"),
     approvalId: v.id("approvals"),
     quoteId: v.id("quotes"),
@@ -338,13 +341,13 @@ export default defineSchema({
     createdAt: timestampValidator,
     sentAt: v.optional(timestampValidator),
   })
-    .index("by_case", ["procurementCaseId"])
+    .index("by_procurement", ["procurementId"])
     .index("by_number", ["poNumber"]),
 
-  caseEvents: defineTable({
-    procurementCaseId: v.id("procurementCases"),
+  procurementEvents: defineTable({
+    procurementId: v.id("procurements"),
     demoRunId: v.id("demoRuns"),
-    type: caseEventTypeValidator,
+    type: procurementEventTypeValidator,
     summary: v.string(),
     actorType: v.union(
       v.literal("system"),
@@ -353,18 +356,18 @@ export default defineSchema({
       v.literal("provider"),
     ),
     actorUserId: v.optional(v.id("users")),
-    fromState: v.optional(procurementCaseStateValidator),
-    toState: v.optional(procurementCaseStateValidator),
+    fromState: v.optional(procurementStateValidator),
+    toState: v.optional(procurementStateValidator),
     sourceKind: v.optional(sourceKindValidator),
     sourceUrl: v.optional(v.string()),
     relatedRecordId: v.optional(v.string()),
     createdAt: timestampValidator,
   })
-    .index("by_case_created", ["procurementCaseId", "createdAt"])
+    .index("by_procurement_and_created", ["procurementId", "createdAt"])
     .index("by_run_created", ["demoRunId", "createdAt"]),
 
   integrationReceipts: defineTable({
-    procurementCaseId: v.optional(v.id("procurementCases")),
+    procurementId: v.optional(v.id("procurements")),
     provider: integrationNameValidator,
     idempotencyKey: v.string(),
     operation: integrationOperationValidator,
@@ -374,10 +377,12 @@ export default defineSchema({
     errorMessage: v.optional(v.string()),
     createdAt: timestampValidator,
     completedAt: v.optional(timestampValidator),
-  }).index("by_provider_key", ["provider", "idempotencyKey"]),
+  })
+    .index("by_provider_key", ["provider", "idempotencyKey"])
+    .index("by_procurement_and_operation_and_status", ["procurementId", "operation", "status"]),
 
   aiRuns: defineTable({
-    procurementCaseId: v.optional(v.id("procurementCases")),
+    procurementId: v.optional(v.id("procurements")),
     task: aiTaskValidator,
     transport: v.union(v.literal("openai"), v.literal("openrouter")),
     model: v.string(),
@@ -388,6 +393,6 @@ export default defineSchema({
     createdAt: timestampValidator,
     completedAt: v.optional(timestampValidator),
   })
-    .index("by_case_task", ["procurementCaseId", "task"])
+    .index("by_procurement_and_task", ["procurementId", "task"])
     .index("by_status", ["status"]),
 });

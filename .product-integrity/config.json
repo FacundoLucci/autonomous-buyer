@@ -1,0 +1,24 @@
+{
+  "codex": {
+    "approvalPolicy": "never",
+    "command": "codex",
+    "fixModel": "gpt-5.6-luna",
+    "fixReasoningEffort": "max",
+    "fixSandbox": "workspace-write",
+    "reviewModel": "gpt-5.6-sol",
+    "reviewReasoningEffort": "high",
+    "reviewSandbox": "read-only"
+  },
+  "commands": {
+    "fastChecks": ["pnpm lint", "pnpm fmt:check", "pnpm typecheck"],
+    "guardrails": ["product-integrity guardrails"]
+  },
+  "loop": {
+    "maxAttempts": 2
+  },
+  "protectedPaths": [
+    ".product-integrity/config.json",
+    ".product-integrity/domain.md",
+    ".product-integrity/known-antipatterns.json"
+  ]
+}

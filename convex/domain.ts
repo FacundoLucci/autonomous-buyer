@@ -26,7 +26,7 @@ export const inventoryStatusValidator = v.union(
   v.literal("exception"),
 );
 
-export const procurementCaseStates = [
+export const procurementStates = [
   "detected",
   "analyzing",
   "sourcing",
@@ -46,7 +46,7 @@ export const procurementCaseStates = [
   "cancelled",
 ] as const;
 
-export const procurementCaseStateValidator = v.union(
+export const procurementStateValidator = v.union(
   v.literal("detected"),
   v.literal("analyzing"),
   v.literal("sourcing"),
@@ -66,11 +66,7 @@ export const procurementCaseStateValidator = v.union(
   v.literal("cancelled"),
 );
 
-export const reviewStatusValidator = v.union(
-  v.literal("not_required"),
-  v.literal("required"),
-  v.literal("resolved"),
-);
+export const reviewStatusValidator = v.union(v.literal("required"), v.literal("resolved"));
 
 export const matchStatusValidator = v.union(
   v.literal("exact_match"),
@@ -136,7 +132,7 @@ export const integrationOperationValidator = v.union(
   v.literal("openrouter_structured_task"),
 );
 
-export const caseEventTypeValidator = v.union(
+export const procurementEventTypeValidator = v.union(
   v.literal("risk_detected"),
   v.literal("state_transitioned"),
   v.literal("review_required"),

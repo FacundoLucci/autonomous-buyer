@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 const buildLanes = [
   {
     title: "Detect the risk",
-    detail: "Watch inventory and open one procurement case before stockout.",
+    detail: "Watch inventory and open one procurement before stockout.",
     icon: Radar,
   },
   {

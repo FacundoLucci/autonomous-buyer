@@ -8,8 +8,14 @@
  * @module
  */
 
+import type * as approvals from "../approvals.js";
 import type * as domain from "../domain.js";
+import type * as domain_inventory from "../domain/inventory.js";
+import type * as domain_money from "../domain/money.js";
+import type * as domain_procurement from "../domain/procurement.js";
+import type * as domain_quotes from "../domain/quotes.js";
 import type * as integrations from "../integrations.js";
+import type * as procurements from "../procurements.js";
 
 import type {
   ApiFromModules,
@@ -18,8 +24,14 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  approvals: typeof approvals;
   domain: typeof domain;
+  "domain/inventory": typeof domain_inventory;
+  "domain/money": typeof domain_money;
+  "domain/procurement": typeof domain_procurement;
+  "domain/quotes": typeof domain_quotes;
   integrations: typeof integrations;
+  procurements: typeof procurements;
 }>;
 
 /**

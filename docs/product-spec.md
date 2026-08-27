@@ -151,6 +151,15 @@ Statuses:
 
 For the hackathon, only one SKU needs the complete workflow. Additional healthy SKUs may be seeded to make the dashboard believable.
 
+The dashboard is the only dense screen. Every screen opened from it must guide
+the buyer through one current step with one explanation, collapsed evidence,
+and no more than one primary action.
+
+The agent is visibly present as a real-time collaborator. It may explain,
+navigate after consent, highlight one relevant region, and prepare a draft. It
+may not approve, reject, accept changed supplier terms, or bypass an external
+send confirmation. The workflow remains usable when agent guidance is absent.
+
 ---
 
 # 6. Inventory Risk Detection
@@ -213,11 +222,11 @@ When projected inventory falls below the configured threshold:
 
 Create:
 
-`ProcurementCase`
+`Procurement`
 
 Example:
 
-**Procurement Case PC-1024**
+**Procurement PC-1024**
 
 Item:
 
@@ -235,11 +244,11 @@ Target quantity:
 
 15,000 units
 
-The procurement case becomes the central state machine for the entire workflow.
+The procurement becomes the central state machine for the entire workflow.
 
 ---
 
-# 8. Procurement Case State Machine
+# 8. Procurement State Machine
 
 States:
 
@@ -459,7 +468,7 @@ AgentMail handles:
 
 Each email thread must map to:
 
-- Procurement case
+- Procurement
 - Supplier
 - RFQ
 - Quote
@@ -472,10 +481,10 @@ When a supplier replies:
 
 1. AgentMail receives the email.
 2. Webhook creates an inbound message event.
-3. Convex associates the email with its procurement case.
+3. Convex associates the email with its procurement.
 4. OpenAI extracts structured commercial terms.
 5. Quote record is updated.
-6. The case is reevaluated.
+6. The procurement is reevaluated.
 
 ## Structured quote output
 
@@ -673,7 +682,7 @@ After approval, generate a purchase order.
 - Required delivery date
 - Payment terms
 - RFQ reference
-- Procurement case reference
+- Procurement reference
 
 Example:
 
@@ -727,7 +736,7 @@ After:
 
 Incoming delivery appears before stockout.
 
-Case changes:
+Procurement changes:
 
 **Action Required**
 
@@ -797,7 +806,7 @@ Store:
 - Inventory transactions
 - Suppliers
 - Supplier products
-- Procurement cases
+- Procurements
 - Search results
 - RFQs
 - Email threads
@@ -975,7 +984,7 @@ Email should not be mocked during the final demonstration.
 
 ---
 
-## procurementCases
+## procurements
 
 `id`
 
@@ -999,7 +1008,7 @@ Email should not be mocked during the final demonstration.
 
 `id`
 
-`procurementCaseId`
+`procurementId`
 
 `supplierId`
 
@@ -1045,7 +1054,7 @@ Email should not be mocked during the final demonstration.
 
 `id`
 
-`procurementCaseId`
+`procurementId`
 
 `selectedQuoteId`
 
@@ -1073,7 +1082,7 @@ Email should not be mocked during the final demonstration.
 
 `id`
 
-`procurementCaseId`
+`procurementId`
 
 `supplierId`
 
@@ -1093,11 +1102,35 @@ Email should not be mocked during the final demonstration.
 
 ---
 
+## agentThreadLinks
+
+`id`
+
+`organizationId`
+
+`userId`
+
+`procurementId`
+
+`anchorKey`
+
+`componentThreadId`
+
+`unreadCount`
+
+`agentStatus`
+
+`lastMessageAt`
+
+`createdAt`
+
+---
+
 ## agentEvents
 
 `id`
 
-`procurementCaseId`
+`procurementId`
 
 `type`
 
@@ -1116,7 +1149,7 @@ Email should not be mocked during the final demonstration.
 Shows:
 
 - Inventory health
-- Active procurement cases
+- Open buys
 - Projected stockouts
 - Agent activity
 - Current autonomous spend
@@ -1125,45 +1158,34 @@ Primary demo starts here.
 
 ---
 
-## Screen 2 — Procurement Case
+## Screen 2 — Procurement
 
 Shows:
 
 - Item
-- Inventory projection
-- Required-by date
-- Recommended quantity
-- Current agent state
-- Supplier candidates
-- RFQ status
-- Quote comparison
-- Event stream
+- Current procurement step
+- Completed and upcoming milestones
+- Latest relevant event
+- Current agent state and explanation
+- Collapsed activity and evidence
 
-This is the main demo screen.
+If the buyer has nothing to do, the screen says so and returns them to the
+dashboard. It does not show tabs, a comparison table, or a second activity feed.
 
 ---
 
-## Screen 3 — Supplier Comparison
+## Screen 3 — Recommendation
 
-Columns:
+Shows:
 
-- Supplier
-- Match quality
-- Quantity
-- Unit cost
-- Freight
-- Landed cost
-- Arrival
-- Reliability
-- Result
+- Recommended supplier and exact terms
+- Why it is the safest qualified option
+- Product-match confidence and material risk
+- One primary action to review approval
+- Rejected alternatives as collapsed cards
 
-Clearly visually distinguish:
-
-Recommended
-
-Viable
-
-Rejected
+The buyer may ask the agent to highlight why a cheaper alternative lost. The
+full comparison evidence remains available without becoming the main layout.
 
 ---
 
@@ -1187,6 +1209,9 @@ Modify
 
 Reject
 
+Approve is the single primary action. Modify is secondary. Reject is visually
+separated and requires a reason.
+
 ---
 
 ## Screen 5 — Purchase Order
@@ -1197,6 +1222,33 @@ Shows:
 - Sent timestamp
 - Supplier confirmation
 - Delivery status
+
+Sent and confirmed states appear only after matching durable provider evidence.
+
+---
+
+## Agent Collaborator
+
+States:
+
+- Watching
+- Working
+- Needs you
+- Guiding
+
+The agent may offer “Take me there” or “Show me.” Highlighting uses a quiet
+outline and anchored explanation, never a fake cursor. It never steals focus,
+and it is not the only way to reach an action or its evidence.
+
+There is no dedicated AI chat page. Conversation uses contextual threads
+attached to meaningful components, decisions, or highlighted claims. A thread
+icon shows read, unread, thinking, or failed state. Selecting an unread thread
+navigates to and highlights its attached component. Desktop threads open as an
+anchored sidecar; mobile threads open as a bottom sheet.
+
+Threads use stable product anchors rather than page coordinates or CSS
+selectors. Conversation history is separate from the procurement audit trail.
+Any agent action still uses the same authorized backend path as the UI.
 
 ---
 
@@ -1211,7 +1263,7 @@ It may:
 - Clear prior emails
 - Trigger inventory analysis
 - Set simulated current inventory
-- Reset procurement case
+- Reset procurement
 - Display external integration status
 
 It must not fake supplier replies or recommendation results during the submitted demonstration.
@@ -1409,11 +1461,11 @@ Difference between selected landed cost and baseline/incumbent purchase cost.
 
 ### Stockouts Avoided
 
-Cases where projected stockout was resolved before reaching zero.
+Procurements where projected stockout was resolved before reaching zero.
 
 ### Autonomous Resolution Rate
 
-Percentage of procurement cases reaching approval without manual buyer intervention.
+Percentage of procurements reaching approval without manual buyer intervention.
 
 ### Average Buyer Touches Per Order
 
@@ -1441,7 +1493,7 @@ Projected stockouts
 
 **71%**
 
-Procurement cases handled without buyer intervention before final approval
+Procurements handled without buyer intervention before final approval
 
 Clearly identify seeded historical metrics as demo data.
 

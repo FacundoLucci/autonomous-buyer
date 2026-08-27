@@ -12,7 +12,7 @@ Build one honest, repeatable purchasing loop for Acme Foods and SKU
 `LID-16-TE`:
 
 1. Detect a near-term stockout with deterministic inventory math.
-2. Open one persisted procurement case.
+2. Open one persisted procurement.
 3. Discover and verify real supplier options with Firecrawl.
 4. Send real RFQs and receive real replies through AgentMail.
 5. Use an OpenAI model to extract and explain structured information.
@@ -45,6 +45,10 @@ reasoning.
 - Every external claim must point to a website, supplier message, historical
   record, or clearly marked inference.
 - All purchase orders require human approval for the demo.
+- The dashboard is the only dense screen. Every other screen presents one
+  current step, one explanation, and at most one primary action.
+- Agent guidance may navigate, highlight, explain, and prepare drafts. It may
+  not approve, reject, accept changed terms, or bypass an external-send gate.
 - Maximum automatic follow-ups: two per supplier.
 - External sends and provider callbacks must be idempotent.
 - Never store secrets in source, events, logs, or browser-visible values.
@@ -53,11 +57,26 @@ reasoning.
 
 ## 3. Architecture decisions
 
-### Workflow, not chat agent
+### Workflow core with a guided agent surface
 
 Use `@convex-dev/workflow` for durable orchestration. The product is a persisted
-business state machine with a few AI-assisted steps; it is not a chat agent and
-does not need `@convex-dev/agent`, RAG, or vectors.
+business state machine with a few AI-assisted steps. The visible agent is a
+real-time collaborator over that workflow: it explains the current state,
+offers a next step, navigates after consent, and highlights stored evidence.
+It does not become a second source of truth or a hidden path around mutations.
+
+Use contextual guidance derived from procurement state and durable events. Add
+`@convex-dev/agent` for conversation, with threads attached to stable component
+or highlight anchors inside a procurement. There is no dedicated AI chat page.
+Conversation history stays separate from business events, and agent tools call
+the same authorized workflow functions as the UI. RAG and vectors are not
+needed for the demo.
+
+Store a small app-owned thread link for each anchor: organization, procurement,
+buyer, stable `anchorKey`, component thread ID, unread state, and timestamps.
+The component owns the visual entry point; `@convex-dev/agent` owns messages.
+Anchors identify product concepts such as `recommendation`,
+`recommendation.arrival`, or `alternative:{supplierId}`, never CSS selectors.
 
 Each workflow step must be safe to resume. Before an external action, write a
 stable intent/idempotency key. After it returns, store the provider receipt.
@@ -247,34 +266,34 @@ Work:
 - Define validators, tables, indexes, and typed domain constants.
 - Add a public integration-status query that returns only configured/missing,
   never values.
-- Add a single append-only `caseEvents` trail used by both UI activity and
+- Add a single append-only `procurementEvents` trail used by both UI activity and
   audit views.
 
 Core tables:
 
-| Table                   | Purpose                              | Required indexes                    |
-| ----------------------- | ------------------------------------ | ----------------------------------- |
-| `organizations`         | buyer entity and approval policy     | `by_name`                           |
-| `users`                 | organization membership and role     | `by_identity`, `by_org`             |
-| `inventoryItems`        | current SKU state and policy         | `by_org_sku`, `by_org_status`       |
-| `inventoryUsage`        | dated consumption                    | `by_item_date`                      |
-| `expectedInventory`     | confirmed inbound supply             | `by_item_arrival`                   |
-| `suppliers`             | controlled or discovered supplier    | `by_org_domain`, `by_demo_run`      |
-| `supplierProducts`      | candidate product summary            | `by_case_supplier`                  |
-| `supplierProductClaims` | sourced facts and provenance         | `by_product`, `by_source_url`       |
-| `procurementCases`      | central state machine                | `by_org_status`, `by_item_active`   |
-| `searchRuns`            | Firecrawl job state                  | `by_case_created`                   |
-| `searchResults`         | discovered pages/candidates          | `by_search_run`                     |
-| `rfqs`                  | structured request and thread link   | `by_case`, `by_thread`              |
-| `emailLinks`            | provider message/thread receipts     | `by_provider_message`, `by_case`    |
-| `quotes`                | versioned extracted commercial terms | `by_case`, `by_rfq_revision`        |
-| `recommendations`       | immutable ranked snapshot            | `by_case_created`                   |
-| `approvals`             | signed decision and changes          | `by_recommendation`, `by_case`      |
-| `purchaseOrders`        | approved order and send receipt      | `by_case`, `by_number`              |
-| `caseEvents`            | visible activity and audit trail     | `by_case_created`, `by_run_created` |
-| `integrationReceipts`   | idempotency and provider receipts    | `by_provider_key`                   |
-| `aiRuns`                | structured model evidence            | `by_case_task`, `by_status`         |
-| `demoRuns`              | repeatable scenario isolation        | `by_status_created`                 |
+| Table                   | Purpose                              | Required indexes                               |
+| ----------------------- | ------------------------------------ | ---------------------------------------------- |
+| `organizations`         | buyer entity and approval policy     | `by_name`                                      |
+| `users`                 | organization membership and role     | `by_identity`, `by_org`                        |
+| `inventoryItems`        | current SKU state and policy         | `by_org_sku`, `by_org_status`                  |
+| `inventoryUsage`        | dated consumption                    | `by_item_date`                                 |
+| `expectedInventory`     | confirmed inbound supply             | `by_item_arrival`                              |
+| `suppliers`             | controlled or discovered supplier    | `by_org_domain`, `by_demo_run`                 |
+| `supplierProducts`      | candidate product summary            | `by_procurement_and_supplier`                  |
+| `supplierProductClaims` | sourced facts and provenance         | `by_product`, `by_source_url`                  |
+| `procurements`          | central state machine                | `by_org_status`, `by_item_active`              |
+| `searchRuns`            | Firecrawl job state                  | `by_procurement_and_created`                   |
+| `searchResults`         | discovered pages/candidates          | `by_search_run`                                |
+| `rfqs`                  | structured request and thread link   | `by_procurement`, `by_thread`                  |
+| `emailLinks`            | provider message/thread receipts     | `by_provider_message`, `by_procurement`        |
+| `quotes`                | versioned extracted commercial terms | `by_procurement`, `by_rfq_revision`            |
+| `recommendations`       | immutable ranked snapshot            | `by_procurement_and_created`                   |
+| `approvals`             | signed decision and changes          | `by_recommendation`, `by_procurement`          |
+| `purchaseOrders`        | approved order and send receipt      | `by_procurement`, `by_number`                  |
+| `procurementEvents`     | visible activity and audit trail     | `by_procurement_and_created`, `by_run_created` |
+| `integrationReceipts`   | idempotency and provider receipts    | `by_provider_key`                              |
+| `aiRuns`                | structured model evidence            | `by_procurement_and_task`, `by_status`         |
+| `demoRuns`              | repeatable scenario isolation        | `by_status_created`                            |
 
 Use bounded indexed queries. Do not introduce generic JSON blobs where a field
 drives policy, filtering, state, or money math.
@@ -284,7 +303,7 @@ configured/missing integration status.
 
 ### BC-03 — Deterministic domain engine
 
-Depends on: BC-02.
+Depends on: BC-02. Status: complete.
 
 Load: spec sections 6, 8, 16, 19–21, plus the schema contracts.
 
@@ -350,30 +369,45 @@ Load: spec sections 5, 22, 28, and only the UI/query contracts required here.
 
 Build real-data views for:
 
-- purchasing dashboard;
-- procurement case detail;
-- supplier comparison;
-- approval;
-- purchase order;
+- one dense purchasing dashboard;
+- focused procurement progress;
+- focused recommendation and alternatives;
+- focused approval;
+- focused purchase-order and confirmation status;
 - hidden demo controls.
 
-Show inventory, projection, case state, source badges, confirmed/inferred
-labels, provider status, and the live activity feed. Do not expose prompts,
-tool-call traces, API keys, or chain-of-thought.
+The dashboard may combine inventory, open buys, activity, and agent presence.
+Every other screen shows one question, collapsed evidence, and no secondary
+dashboard or tab set. Show source badges and confirmed/inferred labels. Do not
+expose prompts, tool-call traces, API keys, or chain-of-thought.
+
+Add an agent collaborator with `watching`, `working`, `needs_you`, and `guiding`
+states. “Take me there” may navigate; “Show me” may highlight one stable target.
+Guidance never steals keyboard focus, covers required content, or becomes the
+only route to a feature.
+
+Add contextual thread icons to meaningful cards, decisions, and agent
+highlights. Show read, unread, thinking, and failed states without layout shift.
+Only one thread opens at a time: an anchored sidecar on desktop and a bottom
+sheet on mobile. The agent presence card summarizes unread threads and returns
+the buyer to the attached component.
+
+Do not render a thread icon until its backing thread link exists. Never seed a
+fake agent reply to make a component look active.
 
 Exit proof: change one record from a browser action and watch a second browser
 window update from a Convex subscription without refresh.
 
-### BC-06 — Inventory risk and case-creation vertical slice
+### BC-06 — Inventory risk and procurement-creation vertical slice
 
 Depends on: BC-03, BC-04, BC-05.
 
-Load: spec sections 6–8 and the case transition API.
+Load: spec sections 6–8 and the procurement transition API.
 
 Work:
 
 - Analyze inventory deterministically when a demo starts.
-- Open no more than one active case for the same item and run.
+- Open no more than one active procurement for the same item and run.
 - Persist reason, required-by date, target quantity, calculation inputs, and
   calculation version.
 - Transition through `DETECTED` and `ANALYZING`, then start sourcing.
@@ -382,7 +416,7 @@ Work:
 Exit proof: click Start demo; lids become Action Required and `PC-*` appears in
 both browser windows without a database edit.
 
-### BC-07 — Structured OpenAI task layer
+### BC-07 — Structured OpenAI tasks and contextual threads
 
 Depends on: BC-02. May run beside BC-03–06.
 
@@ -391,11 +425,16 @@ Load: spec section 24, AI gateway guidance, and the `aiRuns` contract.
 Setup:
 
 - Install `@tanstack/ai` and `@tanstack/ai-openai`.
+- Install and mount `@convex-dev/agent` for component-attached conversation.
 - Add one `"use node"` Convex action module for provider calls.
 - Implement a server-only `getLanguageModel()` adapter with direct OpenAI as
   the default and OpenRouter as an optional fallback.
 - Write intent and status before scheduling the action; persist the validated
   result through one internal mutation.
+- Add `agentThreadLinks` with organization, buyer, procurement, stable
+  `anchorKey`, component thread ID, unread metadata, and timestamps.
+- Create one component thread per buyer, procurement, and anchor. Anchors name
+  product concepts and never contain CSS selectors or viewport coordinates.
 
 Supported tasks:
 
@@ -412,9 +451,15 @@ Every task uses a strict schema and references stored evidence IDs. Store
 confirmed fields separately from inferred fields. A parse/schema failure is an
 explicit failed run and never silently becomes business data.
 
+Contextual thread tools may read stored evidence, navigate, highlight, and
+prepare drafts. Business writes still call the same authorized functions as
+the UI. Thread messages never replace procurement events or provider receipts.
+
 Exit proof: a browser-triggered diagnostic produces structured, inspectable
-output with transport/model metadata and no raw reasoning. Remove or hide the
-diagnostic afterward.
+output with transport/model metadata and no raw reasoning. A real component
+thread updates from thinking to unread in a second browser, opens at the same
+anchor, and contains no fake business event. Remove or hide the diagnostic
+afterward.
 
 ### BC-08 — Firecrawl supplier discovery and provenance
 
@@ -447,7 +492,7 @@ Work:
 - Prepare Apex, SupplyCo, and RestaurantSupply controlled identities.
 - Label controlled recipients honestly; never claim they are the legal entities
   discovered online.
-- Map each prepared RFQ to case, supplier, requested quantity, and required date.
+- Map each prepared RFQ to procurement, supplier, requested quantity, and required date.
 
 Exit proof: the browser shows three complete RFQ previews, their recipients,
 and evidence before any email is sent.
@@ -482,7 +527,7 @@ Load: spec section 14 and the AgentMail callback contract.
 Work:
 
 - Deduplicate callbacks by provider event/message ID.
-- Map thread to RFQ, supplier, case, and demo run.
+- Map thread to RFQ, supplier, procurement, and demo run.
 - Retain the raw message in the AgentMail component and link its ID.
 - Extract a versioned structured quote with the OpenAI task layer.
 - Calculate extended price, landed cost, and qualification deterministically.
@@ -557,7 +602,7 @@ Work:
 - Generate one stable PO number and one PO per approval.
 - Render accessible HTML first; PDF is optional.
 - Calculate all amounts deterministically.
-- Link RFQ, case, supplier, approval, and exact approved quote revision.
+- Link RFQ, procurement, supplier, approval, and exact approved quote revision.
 - Send exactly once through AgentMail.
 - Transition `APPROVED → PO_SENT → CONFIRMATION_PENDING`.
 
@@ -583,7 +628,7 @@ Work:
   `CONFIRMED`, then optionally `CLOSED`.
 - Update the projection from Action Required to Covered.
 
-Exit proof: a manually sent real confirmation updates the case and projection
+Exit proof: a manually sent real confirmation updates the procurement and projection
 in both browser windows with no database edit.
 
 ### BC-17 — Auditability, safety, resume behavior, and polish
@@ -599,6 +644,8 @@ Work:
   inferred.
 - Add safe resume controls that cannot duplicate external sends.
 - Enforce confidence/review policies and the follow-up cap.
+- Verify the agent can guide and highlight without bypassing approval or send
+  gates, and that the full workflow remains usable when guidance is unavailable.
 - Check keyboard flow, focus, labels, contrast, mobile layout, and loading/error
   states in the browser.
 - Run OXC, format check, typecheck, and production build.
@@ -672,17 +719,17 @@ an invite.
 
 ## 7. Provider and idempotency boundaries
 
-| Boundary         | Intent key                          | Receipt/evidence                      | Retry owner                            |
-| ---------------- | ----------------------------------- | ------------------------------------- | -------------------------------------- |
-| Firecrawl search | `search:{caseId}:{searchVersion}`   | component job/run ID                  | Firecrawl component                    |
-| Firecrawl scrape | `scrape:{searchResultId}:{urlHash}` | source URL + observed time            | Firecrawl component                    |
-| AI task          | `ai:{caseId}:{task}:{inputHash}`    | `aiRun` with model and schema version | workflow step, no business side effect |
-| RFQ send         | `rfq:{rfqId}:initial`               | AgentMail message/thread ID           | AgentMail component                    |
-| Follow-up send   | `rfq:{rfqId}:followup:{n}`          | AgentMail message ID                  | AgentMail component                    |
-| Inbound callback | `agentmail:{providerEventId}`       | `integrationReceipt`                  | callback dedupe                        |
-| PO generation    | `po:{approvalId}`                   | PO record/number                      | Convex mutation                        |
-| PO send          | `po:{purchaseOrderId}:send`         | AgentMail message ID                  | AgentMail component                    |
-| Confirmation     | `confirmation:{providerMessageId}`  | quote/confirmation revision           | callback dedupe                        |
+| Boundary         | Intent key                               | Receipt/evidence                      | Retry owner                            |
+| ---------------- | ---------------------------------------- | ------------------------------------- | -------------------------------------- |
+| Firecrawl search | `search:{procurementId}:{searchVersion}` | component job/run ID                  | Firecrawl component                    |
+| Firecrawl scrape | `scrape:{searchResultId}:{urlHash}`      | source URL + observed time            | Firecrawl component                    |
+| AI task          | `ai:{procurementId}:{task}:{inputHash}`  | `aiRun` with model and schema version | workflow step, no business side effect |
+| RFQ send         | `rfq:{rfqId}:initial`                    | AgentMail message/thread ID           | AgentMail component                    |
+| Follow-up send   | `rfq:{rfqId}:followup:{n}`               | AgentMail message ID                  | AgentMail component                    |
+| Inbound callback | `agentmail:{providerEventId}`            | `integrationReceipt`                  | callback dedupe                        |
+| PO generation    | `po:{approvalId}`                        | PO record/number                      | Convex mutation                        |
+| PO send          | `po:{purchaseOrderId}:send`              | AgentMail message ID                  | AgentMail component                    |
+| Confirmation     | `confirmation:{providerMessageId}`       | quote/confirmation revision           | callback dedupe                        |
 
 Never retry an uncertain external send by issuing a new provider call. Resolve
 it from the intent key or provider readback first.
@@ -691,7 +738,7 @@ it from the intent key or provider readback first.
 
 | Sponsor   | Real product work                                                         | Persisted evidence                               | Browser moment                           |
 | --------- | ------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------- |
-| Convex    | schema, queries, mutations, workflow, auth, subscriptions, static hosting | cases, events, receipts, component state         | the whole case changes live              |
+| Convex    | schema, queries, mutations, workflow, auth, subscriptions, static hosting | procurements, events, receipts, component state  | the whole procurement changes live       |
 | OpenAI    | query generation, matching, extraction, follow-up, explanations           | task, model, evidence, confidence, output status | sourced fields and grounded explanation  |
 | Firecrawl | live supplier search and page extraction                                  | search jobs, claims, URLs, observed times        | candidates and sources appear live       |
 | AgentMail | RFQs, replies, follow-up, PO, confirmation                                | thread/message IDs and delivery state            | email lifecycle advances without refresh |
@@ -705,7 +752,7 @@ slice, use the live app and record:
 | -------------- | ------------------------------------------------------------- |
 | Scaffold       | page loads at desktop and mobile widths with no runtime error |
 | Realtime       | a second window updates without refresh                       |
-| Risk           | Start demo creates one visible case with visible math         |
+| Risk           | Start demo creates one visible procurement with visible math  |
 | Sourcing       | real Firecrawl results and source links appear                |
 | RFQ            | approved real recipients receive messages                     |
 | Inbound        | manually sent email becomes a quote without a database edit   |
@@ -731,7 +778,7 @@ They are not counted as user-flow tests.
 ## 10. Scope that waits
 
 - PDF PO rendering; accessible HTML is sufficient.
-- `@convex-dev/agent`, chat, RAG, embeddings, or vectors.
+- A dedicated or global AI chat page, RAG, embeddings, or vectors.
 - Full multi-company administration or advanced RBAC.
 - Generic supplier CRUD and procurement-suite screens.
 - Sophisticated forecasting beyond the stated 30-day rule.
@@ -755,7 +802,7 @@ reviews these choices:
 4. Approve controlled supplier email identities and recipients before any send.
 5. Confirm passkey auth for approval while keeping judge views public.
 6. `HUMAN_REVIEW_REQUIRED` is a typed `reviewStatus` flag on the procurement
-   case, not a separate workflow state.
+   procurement, not a separate workflow state.
 7. Confirm the product-match threshold (`0.85`) after the first real sources.
 
 ## 12. Current hackathon constraints

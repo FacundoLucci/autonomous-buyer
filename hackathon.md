@@ -12,7 +12,7 @@
 - **Auth:** none
 - **AI models:** none
 - **Started:** 2026-08-27T00:36:38Z
-- **Last updated:** 2026-08-27T11:20:14Z
+- **Last updated:** 2026-08-27T12:48:38Z
 
 ## Log
 
@@ -44,3 +44,13 @@ provider environment contract, and a public query that reports only configured
 or missing. A live browser showed OpenAI, OpenRouter, Firecrawl, and AgentMail as
 missing without exposing values, with zero console errors or warnings. No real
 provider credentials were added and no external calls or emails were sent.
+
+### 2026-08-27 — BC-03
+
+Added the deterministic inventory, ordering, money, quote, approval, purchase-order,
+confirmation, and procurement-state engine. One internal mutation now validates every
+procurement-state change and writes its matching audit event atomically. A temporary browser
+diagnostic verified the visible calculations and policy outcomes with zero console
+errors or warnings, then was removed. The development Convex push and full static
+checks passed. No unit-test suite, external calls, emails, public deployment, or
+production changes were added.
