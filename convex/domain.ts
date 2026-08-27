@@ -154,6 +154,7 @@ export const procurementEventTypeValidator = v.union(
 export const aiTaskValidator = v.union(
   v.literal("supplier_search_queries"),
   v.literal("product_equivalency"),
+  v.literal("rfq_wording"),
   v.literal("quote_extraction"),
   v.literal("missing_information"),
   v.literal("follow_up_wording"),
@@ -181,6 +182,11 @@ export const aiTaskOutputValidator = v.union(
     matchingAttributes: v.array(v.string()),
     conflicts: v.array(v.string()),
     missingEvidence: v.array(v.string()),
+  }),
+  v.object({
+    task: v.literal("rfq_wording"),
+    subject: v.string(),
+    body: v.string(),
   }),
   v.object({
     task: v.literal("quote_extraction"),

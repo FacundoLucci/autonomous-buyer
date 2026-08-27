@@ -3,6 +3,7 @@ import { z } from "zod";
 export const aiTasks = [
   "supplier_search_queries",
   "product_equivalency",
+  "rfq_wording",
   "quote_extraction",
   "missing_information",
   "follow_up_wording",
@@ -69,6 +70,18 @@ export const taskSchemas = {
           matchingAttributes: z.array(z.string()),
           conflicts: z.array(z.string()),
           missingEvidence: z.array(z.string()),
+        })
+        .strict(),
+    })
+    .strict(),
+  rfq_wording: z
+    .object({
+      ...common,
+      output: z
+        .object({
+          task: z.literal("rfq_wording"),
+          subject: z.string().min(1),
+          body: z.string().min(1),
         })
         .strict(),
     })

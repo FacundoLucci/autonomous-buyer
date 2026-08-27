@@ -379,7 +379,9 @@ function FocusedProcurement({
 }) {
   const procurement = useQuery(api.purchasing.getProcurement, { procurementId });
   const sourcing = useQuery(api.sourcing.getLatest, { procurementId });
+  const rfqs = useQuery(api.rfqs.listForProcurement, { procurementId });
   const startSourcing = useAction(api.sourcing.start);
+  const prepareRfqs = useMutation(api.rfqs.prepare);
   const startStructuredTask = useMutation(api.ai.startStructuredTask);
   const markThreadRead = useMutation(api.ai.markThreadRead);
   const [openThread, setOpenThread] = useState<string | null>(null);
@@ -387,6 +389,8 @@ function FocusedProcurement({
   const [diagnosticError, setDiagnosticError] = useState<string | null>(null);
   const [sourcingState, setSourcingState] = useState<"idle" | "working">("idle");
   const [sourcingError, setSourcingError] = useState<string | null>(null);
+  const [rfqState, setRfqState] = useState<"idle" | "working">("idle");
+  const [rfqError, setRfqError] = useState<string | null>(null);
   const aiRun = useQuery(api.ai.getRun, aiRunId === null ? "skip" : { aiRunId });
   const threadMessages = useQuery(
     api.ai.listThreadMessages,
@@ -430,6 +434,18 @@ function FocusedProcurement({
       setSourcingError(error instanceof Error ? error.message : "Supplier discovery failed.");
     } finally {
       setSourcingState("idle");
+    }
+  }
+
+  async function prepareControlledRfqs() {
+    setRfqError(null);
+    setRfqState("working");
+    try {
+      await prepareRfqs({ procurementId });
+    } catch (error) {
+      setRfqError(error instanceof Error ? error.message : "RFQ preparation failed.");
+    } finally {
+      setRfqState("idle");
     }
   }
 
@@ -576,6 +592,62 @@ function FocusedProcurement({
               <p className="text-sm text-red-700">{sourcing.run.errorMessage}</p>
             ) : null}
             {sourcingError ? <p className="text-sm text-red-700">{sourcingError}</p> : null}
+          </CardContent>
+        </Card>
+        <Card className="border-stone-300 bg-white/80 shadow-none">
+          <CardHeader>
+            <CardDescription>Controlled previews · BC-09</CardDescription>
+            <CardTitle className="text-base">Requests for quote</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {rfqs?.length === 0 ? (
+              <Button
+                variant="outline"
+                onClick={() => void prepareControlledRfqs()}
+                disabled={rfqState === "working" || sourcing?.run.status !== "succeeded"}
+              >
+                <Sparkles />
+                {rfqState === "working" ? "Writing previews…" : "Prepare three RFQs"}
+              </Button>
+            ) : null}
+            {rfqs?.map((rfq) => (
+              <div
+                key={rfq.rfqId}
+                className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-medium">{rfq.supplierName}</p>
+                  <Badge variant="outline">Controlled demo recipient</Badge>
+                </div>
+                <p className="mt-1 font-mono text-xs text-stone-500">{rfq.recipientEmail}</p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                  <Fact
+                    label="Quantity"
+                    value={`${rfq.requestedQuantity.toLocaleString()} units`}
+                  />
+                  <Fact label="Required by" value={rfq.requiredBy} />
+                  <Fact label="Ship to" value={rfq.destination} />
+                </div>
+                {rfq.subject && rfq.body ? (
+                  <div className="mt-4 rounded-md bg-stone-50 p-3">
+                    <p className="font-medium">{rfq.subject}</p>
+                    <p className="mt-2 leading-6 whitespace-pre-wrap text-stone-600">{rfq.body}</p>
+                  </div>
+                ) : (
+                  <p className="mt-3 text-stone-500">
+                    OpenAI is writing wording from the fixed fields…
+                  </p>
+                )}
+              </div>
+            ))}
+            {rfqs && rfqs.length > 0 ? (
+              <p className="text-xs leading-5 text-stone-500">
+                These identities are controlled test recipients, not claims about the legal entities
+                found online. No email can be sent until the exact addresses are reviewed and
+                explicitly approved.
+              </p>
+            ) : null}
+            {rfqError ? <p className="text-sm text-red-700">{rfqError}</p> : null}
           </CardContent>
         </Card>
         {demo ? (

@@ -17,6 +17,7 @@ import schema from "./schema";
 const intentByTask = {
   supplier_search_queries: "Prepare supplier search queries from stored procurement evidence.",
   product_equivalency: "Assess product equivalency from stored product evidence.",
+  rfq_wording: "Write clear RFQ email wording using only the stored required fields.",
   quote_extraction: "Extract quote fields from a stored supplier message.",
   missing_information: "Detect missing quote fields from stored evidence.",
   follow_up_wording: "Draft a follow-up that requests only missing stored fields.",
@@ -164,6 +165,8 @@ export const getEvidence = internalQuery({
         : await ctx.db.get("supplierProducts", run.supplierProductId);
     const supplier =
       supplierProduct === null ? null : await ctx.db.get("suppliers", supplierProduct.supplierId);
+    const rfq = run.rfqId === undefined ? null : await ctx.db.get("rfqs", run.rfqId);
+    const rfqSupplier = rfq === null ? null : await ctx.db.get("suppliers", rfq.supplierId);
     const claims =
       supplierProduct === null
         ? []
@@ -180,6 +183,7 @@ export const getEvidence = internalQuery({
       `procurements:${procurement._id}`,
       `inventoryItems:${item._id}`,
       ...(supplierProduct === null ? [] : [`supplierProducts:${supplierProduct._id}`]),
+      ...(rfq === null ? [] : [`rfqs:${rfq._id}`, `suppliers:${rfq.supplierId}`]),
       ...claims.map((claim) => `supplierProductClaims:${claim._id}`),
       ...events.map((event) => `procurementEvents:${event._id}`),
     ];
@@ -219,6 +223,21 @@ export const getEvidence = internalQuery({
                 material: supplierProduct.material ?? null,
                 dimensions: supplierProduct.dimensions ?? null,
                 packSize: supplierProduct.packSize ?? null,
+              },
+        rfq:
+          rfq === null
+            ? null
+            : {
+                id: `rfqs:${rfq._id}`,
+                supplierId: `suppliers:${rfq.supplierId}`,
+                supplierName: rfqSupplier?.name ?? null,
+                recipientEmail: rfq.recipientEmail ?? null,
+                requestedQuantity: rfq.requestedQuantity,
+                requiredBy: rfq.requiredBy,
+                destination: rfq.destination,
+                productName: item.name,
+                sku: item.sku,
+                specification: item.specification,
               },
         claims: claims.map((claim) => ({
           id: `supplierProductClaims:${claim._id}`,
@@ -279,6 +298,43 @@ export const completeRun = internalMutation({
         matchStatus: args.result.output.assessment,
         matchConfidence: args.result.confidence,
       });
+    }
+    if (run.rfqId !== undefined && args.result.output.task === "rfq_wording") {
+      await ctx.db.patch("rfqs", run.rfqId, {
+        subject: args.result.output.subject,
+        body: args.result.output.body,
+        preparedAt: now,
+      });
+      const rfq = await ctx.db.get("rfqs", run.rfqId);
+      if (rfq !== null) {
+        const procurement = await ctx.db.get("procurements", rfq.procurementId);
+        const allRfqs = await ctx.db
+          .query("rfqs")
+          .withIndex("by_procurement", (q) => q.eq("procurementId", rfq.procurementId))
+          .take(20);
+        if (
+          procurement?.status === "sourcing" &&
+          allRfqs.length === 3 &&
+          allRfqs.every(
+            (candidate) => candidate.subject !== undefined && candidate.body !== undefined,
+          )
+        ) {
+          await ctx.db.patch("procurements", procurement._id, {
+            status: "rfq_ready",
+            updatedAt: now,
+          });
+          await ctx.db.insert("procurementEvents", {
+            procurementId: procurement._id,
+            demoRunId: procurement.demoRunId,
+            type: "rfq_prepared",
+            summary: "Three controlled RFQs are ready for recipient review.",
+            actorType: "agent",
+            fromState: "sourcing",
+            toState: "rfq_ready",
+            createdAt: now,
+          });
+        }
+      }
     }
     if (link !== null) {
       await ctx.db.patch("agentThreadLinks", link._id, {

@@ -67,6 +67,8 @@ async function runTask(
       return await chat({ ...options, outputSchema: taskSchemas.supplier_search_queries });
     case "product_equivalency":
       return await chat({ ...options, outputSchema: taskSchemas.product_equivalency });
+    case "rfq_wording":
+      return await chat({ ...options, outputSchema: taskSchemas.rfq_wording });
     case "quote_extraction":
       return await chat({ ...options, outputSchema: taskSchemas.quote_extraction });
     case "missing_information":
