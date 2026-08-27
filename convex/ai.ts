@@ -15,6 +15,7 @@ import { aiTaskValidator, structuredAiResultValidator } from "./domain";
 import { landedCostCents, purchaseOrderTotals } from "./domain/money";
 import { qualifyQuote } from "./domain/quotes";
 import schema from "./schema";
+import { requireDemoOperator } from "./authz";
 
 const intentByTask = {
   supplier_search_queries: "Prepare supplier search queries from stored procurement evidence.",
@@ -126,8 +127,7 @@ export const startStructuredTask = mutation({
     componentThreadId: v.string(),
   }),
   handler: async (ctx, args) => {
-    const procurement = await ctx.db.get("procurements", args.procurementId);
-    if (procurement === null) throw new Error("Procurement not found.");
+    const { procurement } = await requireDemoOperator(ctx, args.procurementId);
     const demoRun = await ctx.db.get("demoRuns", procurement.demoRunId);
     if (demoRun === null || !demoRun.isDemo) {
       throw new Error("Structured tasks require an authorized demo procurement until BC-14.");

@@ -9,6 +9,7 @@ import {
   roundOrderQuantity,
   trailing30DayAverageUsage,
 } from "./domain/inventory";
+import { requireConfiguredBuyer } from "./authz";
 
 const DAY_MS = 86_400_000;
 const SCENARIO_VERSION = "bc-04-v1";
@@ -212,6 +213,7 @@ export const resetScenario = mutation({
   args: {},
   returns: v.id("demoRuns"),
   handler: async (ctx) => {
+    await requireConfiguredBuyer(ctx);
     const priorRuns = await ctx.db.query("demoRuns").withIndex("by_started_at").take(100);
     for (const run of priorRuns) {
       await deleteRunData(ctx, run._id);
@@ -431,6 +433,7 @@ export const startScenario = mutation({
   args: { demoRunId: v.id("demoRuns") },
   returns: v.null(),
   handler: async (ctx, args) => {
+    await requireConfiguredBuyer(ctx);
     const run = await ctx.db.get("demoRuns", args.demoRunId);
     if (run === null || !run.isDemo) throw new Error("Demo run not found.");
     if (run.status !== "ready") throw new Error("Only a ready demo run can be started.");

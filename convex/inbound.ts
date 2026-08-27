@@ -157,7 +157,7 @@ export const listQuotes = query({
       ),
       missingInformation: v.array(v.string()),
       responseConfidence: v.number(),
-      rawProviderMessageId: v.string(),
+      evidenceLabel: v.string(),
       createdAt: v.number(),
     }),
   ),
@@ -183,7 +183,7 @@ export const listQuotes = query({
         qualification: quote.qualification,
         missingInformation: quote.missingInformation,
         responseConfidence: quote.responseConfidence,
-        rawProviderMessageId: quote.rawProviderMessageId,
+        evidenceLabel: `Supplier email · quote revision ${quote.revision}`,
         createdAt: quote.createdAt,
       });
     }

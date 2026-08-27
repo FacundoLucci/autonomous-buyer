@@ -14,6 +14,7 @@ import type * as aiNode from "../aiNode.js";
 import type * as approvals from "../approvals.js";
 import type * as auth from "../auth.js";
 import type * as authData from "../authData.js";
+import type * as authz from "../authz.js";
 import type * as demo from "../demo.js";
 import type * as domain from "../domain.js";
 import type * as domain_inventory from "../domain/inventory.js";
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   approvals: typeof approvals;
   auth: typeof auth;
   authData: typeof authData;
+  authz: typeof authz;
   demo: typeof demo;
   domain: typeof domain;
   "domain/inventory": typeof domain_inventory;

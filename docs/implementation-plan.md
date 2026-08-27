@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-16 implemented. Live email proof awaits approved controlled recipients; BC-14 judge sign-in is browser-proven.
+Status: BC-00 through BC-17 implemented. Live email proof awaits approved controlled recipients; public judge safety is browser-proven.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -639,7 +639,7 @@ flow and a manually sent confirmation.
 
 ### BC-17 — Auditability, safety, resume behavior, and polish
 
-Depends on: BC-05, BC-14, BC-16.
+Depends on: BC-05, BC-14, BC-16. Status: implemented; configured-buyer reset proof is gated.
 
 Load: spec sections 22, 33, 35–38.
 
@@ -656,8 +656,11 @@ Work:
   states in the browser.
 - Run OXC, format check, typecheck, and production build.
 
-Exit proof: reset and repeat a run without old messages contaminating it or any
-external send occurring twice.
+Exit proof: Computer browser proof shows provider readiness, source labels,
+masked recipients, disabled shared reset controls, and no external-send controls
+for judge mode. Static and development backend checks pass. A configured-buyer
+reset/repeat and delivery resume await the buyer email and controlled recipients
+needed for BC-18.
 
 ### BC-18 — Full live-browser rehearsal
 

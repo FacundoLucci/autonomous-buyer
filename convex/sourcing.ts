@@ -46,6 +46,9 @@ export const start = action({
     ctx,
     args,
   ): Promise<{ searchRunId: Id<"searchRuns">; candidateCount: number }> => {
+    await ctx.runQuery(internal.authz.assertDemoOperator, {
+      procurementId: args.procurementId,
+    });
     const searchRunId: Id<"searchRuns"> = await ctx.runMutation(internal.sourcing.begin, {
       procurementId: args.procurementId,
       query: SEARCH_QUERY,

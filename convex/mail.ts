@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { components, internal } from "./_generated/api";
 import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { missingQuoteFieldValidator } from "./domain";
+import { canSeePrivateProviderData, requireExternalBuyer } from "./authz";
 
 const agentmail = new AgentMail(components.agentmail, {
   onMessageReceived: internal.inbound.onMessageReceived,
@@ -30,6 +31,9 @@ export const ensurePurchasingInbox = action({
   args: { procurementId: v.id("procurements"), createIfMissing: v.boolean() },
   returns: v.object({ inboxId: v.string(), email: v.string(), created: v.boolean() }),
   handler: async (ctx, args): Promise<{ inboxId: string; email: string; created: boolean }> => {
+    await ctx.runQuery(internal.authz.assertExternalBuyer, {
+      procurementId: args.procurementId,
+    });
     const context = await ctx.runQuery(internal.mail.getInboxContext, {
       procurementId: args.procurementId,
     });
@@ -85,13 +89,19 @@ export const getStoredInbox = query({
   args: { organizationId: v.id("organizations") },
   returns: v.union(v.object({ inboxId: v.string(), email: v.string() }), v.null()),
   handler: async (ctx, args) => {
+    const canSeePrivate = await canSeePrivateProviderData(ctx, args.organizationId);
     const inbox = await ctx.db
       .query("purchasingInboxes")
       .withIndex("by_organization_and_provider", (q) =>
         q.eq("organizationId", args.organizationId).eq("provider", "agentmail"),
       )
       .unique();
-    return inbox === null ? null : { inboxId: inbox.inboxId, email: inbox.email };
+    return inbox === null
+      ? null
+      : {
+          inboxId: canSeePrivate ? inbox.inboxId : "private",
+          email: canSeePrivate ? inbox.email : "Configured purchasing inbox",
+        };
   },
 });
 
@@ -101,13 +111,19 @@ export const getInboxForProcurement = query({
   handler: async (ctx, args) => {
     const procurement = await ctx.db.get("procurements", args.procurementId);
     if (procurement === null) return null;
+    const canSeePrivate = await canSeePrivateProviderData(ctx, procurement.organizationId);
     const inbox = await ctx.db
       .query("purchasingInboxes")
       .withIndex("by_organization_and_provider", (q) =>
         q.eq("organizationId", procurement.organizationId).eq("provider", "agentmail"),
       )
       .unique();
-    return inbox === null ? null : { inboxId: inbox.inboxId, email: inbox.email };
+    return inbox === null
+      ? null
+      : {
+          inboxId: canSeePrivate ? inbox.inboxId : "private",
+          email: canSeePrivate ? inbox.email : "Configured purchasing inbox",
+        };
   },
 });
 
@@ -156,6 +172,7 @@ export const approveRecipients = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
+    await requireExternalBuyer(ctx, args.procurementId);
     if (args.confirmation !== APPROVAL_TEXT)
       throw new Error(`Type ${APPROVAL_TEXT} to approve the exact recipients.`);
     const rfqs = await ctx.db
@@ -188,8 +205,8 @@ export const sendApproved = mutation({
   args: { procurementId: v.id("procurements") },
   returns: v.array(vOutboundId),
   handler: async (ctx, args) => {
-    const procurement = await ctx.db.get("procurements", args.procurementId);
-    if (procurement === null || procurement.status !== "rfq_ready")
+    const { procurement } = await requireExternalBuyer(ctx, args.procurementId);
+    if (procurement.status !== "rfq_ready")
       throw new Error("Procurement is not ready to send RFQs.");
     const inbox = await ctx.db
       .query("purchasingInboxes")
@@ -574,8 +591,6 @@ export const getDelivery = query({
     v.object({
       rfqId: v.id("rfqs"),
       status: v.union(vOutboundStatus, v.null()),
-      providerMessageId: v.union(v.string(), v.null()),
-      providerThreadId: v.union(v.string(), v.null()),
     }),
   ),
   handler: async (ctx, args) => {
@@ -590,8 +605,6 @@ export const getDelivery = query({
       rows.push({
         rfqId: rfq._id,
         status: status?.status ?? null,
-        providerMessageId: status?.agentmailMessageId ?? null,
-        providerThreadId: status?.threadId ?? null,
       });
     }
     return rows;

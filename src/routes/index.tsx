@@ -91,6 +91,7 @@ function shortTime(timestamp: number) {
 
 function Home() {
   const dashboard = useQuery(api.purchasing.getDashboard);
+  const integrations = useQuery(api.integrations.getStatus);
   const scenario = useQuery(api.demo.getCurrentScenario);
   const resetScenario = useMutation(api.demo.resetScenario);
   const startScenario = useMutation(api.demo.startScenario);
@@ -172,6 +173,27 @@ function Home() {
             <JudgeModeButton />
           </div>
         </header>
+
+        {search.demo && integrations ? (
+          <div className="flex flex-wrap items-center gap-2" aria-label="Provider readiness">
+            {integrations.map((integration) => (
+              <Badge
+                key={integration.name}
+                variant="outline"
+                className={
+                  integration.status === "configured" ? "bg-white/70" : "border-red-300 bg-red-50"
+                }
+              >
+                {integration.name} · {integration.status}
+              </Badge>
+            ))}
+            {integrations.some((integration) => integration.status === "missing") ? (
+              <span className="text-xs text-red-700">
+                Add the missing development environment value before running that provider step.
+              </span>
+            ) : null}
+          </div>
+        ) : null}
 
         {dashboard === undefined ? (
           <DashboardSkeleton />
@@ -270,6 +292,10 @@ function Home() {
                       ))}
                     </tbody>
                   </table>
+                  <p className="border-t border-stone-200 px-6 py-3 text-xs text-stone-500">
+                    On hand · historical records · Days left · calculated · Incoming ·
+                    supplier-confirmed
+                  </p>
                 </CardContent>
               </Card>
 
@@ -390,6 +416,8 @@ function FocusedProcurement({
   demo: boolean;
   onBack: () => void;
 }) {
+  const { isAuthenticated } = useConvexAuth();
+  const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
   const procurement = useQuery(api.purchasing.getProcurement, { procurementId });
   const sourcing = useQuery(api.sourcing.getLatest, { procurementId });
   const rfqs = useQuery(api.rfqs.listForProcurement, { procurementId });
@@ -543,6 +571,13 @@ function FocusedProcurement({
     );
   }
 
+  const canOperateDemo = currentUser?.canApproveDemo === true;
+  const canSendExternal =
+    currentUser !== null &&
+    currentUser !== undefined &&
+    !currentUser.isJudgeDemo &&
+    (currentUser.role === "buyer" || currentUser.role === "admin");
+
   const thread = procurement.threadLinks.find((link) => link.anchorKey === `procurement:${view}`);
   const viewAvailable =
     view === "procurement" ||
@@ -629,7 +664,9 @@ function FocusedProcurement({
           <CardContent className="space-y-4">
             <Button
               onClick={() => void sourceSuppliers()}
-              disabled={sourcingState === "working" || sourcing?.run.status === "pending"}
+              disabled={
+                !canOperateDemo || sourcingState === "working" || sourcing?.run.status === "pending"
+              }
             >
               <Search />
               {sourcingState === "working" || sourcing?.run.status === "pending"
@@ -638,6 +675,11 @@ function FocusedProcurement({
                   ? "Search again"
                   : "Start sourcing"}
             </Button>
+            {!canOperateDemo ? (
+              <p className="text-sm text-stone-600">
+                Enter judge mode to run provider-backed demo steps. Public observation stays open.
+              </p>
+            ) : null}
             {sourcing?.candidates.map((candidate) => (
               <div
                 key={candidate.resultId}
@@ -645,7 +687,7 @@ function FocusedProcurement({
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-medium">{candidate.supplierName}</p>
-                  <Badge variant="outline">Real discovered supplier</Badge>
+                  <Badge variant="outline">Website · Firecrawl</Badge>
                 </div>
                 <p className="mt-1 text-stone-600">{candidate.title}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-stone-500">
@@ -682,7 +724,9 @@ function FocusedProcurement({
               <Button
                 variant="outline"
                 onClick={() => void prepareControlledRfqs()}
-                disabled={rfqState === "working" || sourcing?.run.status !== "succeeded"}
+                disabled={
+                  !canOperateDemo || rfqState === "working" || sourcing?.run.status !== "succeeded"
+                }
               >
                 <Sparkles />
                 {rfqState === "working" ? "Writing previews…" : "Prepare three RFQs"}
@@ -698,7 +742,7 @@ function FocusedProcurement({
                   <Badge variant="outline">Controlled demo recipient</Badge>
                 </div>
                 <p className="mt-1 font-mono text-xs text-stone-500">{rfq.recipientEmail}</p>
-                {rfq.recipientApprovedAt === null ? (
+                {rfq.recipientApprovedAt === null && canSendExternal ? (
                   <Input
                     className="mt-3"
                     type="email"
@@ -712,7 +756,11 @@ function FocusedProcurement({
                     }
                   />
                 ) : (
-                  <p className="mt-2 text-xs text-emerald-700">Exact recipient approved</p>
+                  <p className="mt-2 text-xs text-stone-600">
+                    {rfq.recipientApprovedAt === null
+                      ? "Exact recipient is visible only to the configured buyer"
+                      : "Exact recipient approved"}
+                  </p>
                 )}
                 <div className="mt-3 grid gap-3 sm:grid-cols-3">
                   <Fact
@@ -741,7 +789,12 @@ function FocusedProcurement({
                   entities found online. No email can be sent until the exact addresses are reviewed
                   and explicitly approved.
                 </p>
-                {rfqs.every((rfq) => rfq.recipientApprovedAt !== null) ? (
+                {!canSendExternal ? (
+                  <p className="rounded-lg border border-stone-200 bg-stone-50 p-3 text-sm text-stone-600">
+                    External email controls require the configured buyer. Judge mode cannot reveal
+                    recipients, create inboxes, or send messages.
+                  </p>
+                ) : rfqs.every((rfq) => rfq.recipientApprovedAt !== null) ? (
                   <div className="flex flex-wrap items-center gap-3">
                     {purchasingInbox ? (
                       <Badge variant="outline">From {purchasingInbox.email}</Badge>
@@ -830,7 +883,7 @@ function FocusedProcurement({
                   </div>
                   <p className="mt-3 text-xs text-stone-500">
                     {Math.round(quote.responseConfidence * 100)}% extraction confidence · raw
-                    AgentMail message {quote.rawProviderMessageId}
+                    {quote.evidenceLabel}
                   </p>
                   {quote.missingInformation.length > 0 ? (
                     <p className="mt-2 text-xs text-amber-800">
@@ -1418,7 +1471,11 @@ function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDe
               second purchase order.
             </p>
             <Button onClick={() => void sendOrder()} disabled={state !== "idle"}>
-              {state === "sending" ? "Sending once…" : `Send ${order.poNumber} once`}
+              {state === "sending"
+                ? "Checking delivery…"
+                : order.status === "queued" || order.errorMessage
+                  ? "Resume existing delivery check"
+                  : `Send ${order.poNumber} once`}
             </Button>
           </div>
         )}
@@ -1546,6 +1603,13 @@ function FocusedViewBody({
           <Fact label="Payment terms" value={order.paymentTerms} />
           <Fact label="Approved quote" value={`Revision ${order.quoteRevision}`} />
           <Fact label="Status" value={order.status.replace("_", " ")} />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline">Calculated · price totals</Badge>
+          <Badge variant="outline">Approved · quote revision {order.quoteRevision}</Badge>
+          {procurement.confirmation ? (
+            <Badge variant="outline">Supplier-confirmed · email reply</Badge>
+          ) : null}
         </div>
         <div className="grid gap-4 rounded-lg border border-stone-200 bg-white p-5 sm:grid-cols-2">
           <div>
@@ -1841,6 +1905,13 @@ function DemoControls({
   onReset: () => void;
   onStart: () => void;
 }) {
+  const { isAuthenticated } = useConvexAuth();
+  const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
+  const configuredBuyer =
+    currentUser !== null &&
+    currentUser !== undefined &&
+    !currentUser.isJudgeDemo &&
+    (currentUser.role === "buyer" || currentUser.role === "admin");
   return (
     <Card className="border-dashed border-stone-400 bg-white/55" data-testid="demo-controls">
       <CardHeader>
@@ -1852,13 +1923,19 @@ function DemoControls({
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-2">
-          <Button onClick={onReset} disabled={state !== "idle"} variant="outline">
+          <Button
+            onClick={onReset}
+            disabled={state !== "idle" || !configuredBuyer}
+            variant="outline"
+          >
             <RotateCcw />
             {state === "resetting" ? "Resetting…" : "Reset scenario"}
           </Button>
           <Button
             onClick={onStart}
-            disabled={state !== "idle" || !scenario || scenario.status !== "ready"}
+            disabled={
+              state !== "idle" || !configuredBuyer || !scenario || scenario.status !== "ready"
+            }
           >
             <Play />
             {state === "starting" ? "Starting…" : "Start demo"}
@@ -1869,6 +1946,12 @@ function DemoControls({
           Reset creates a fresh run. Start demo performs deterministic inventory analysis; it does
           not fake supplier replies.
         </p>
+        {!configuredBuyer ? (
+          <p className="text-xs text-amber-800">
+            Shared reset and start controls require the configured buyer. Judge mode cannot reset
+            shared data or send external email.
+          </p>
+        ) : null}
       </CardContent>
     </Card>
   );

@@ -120,3 +120,16 @@ create confirmed incoming inventory and change the public inventory status from
 Action Required to Covered. The development backend, static checks, and live
 browser surface passed. Real reply and two-window realtime proof remain gated by
 the controlled email flow.
+
+### 2026-08-27 — BC-17
+
+Hardened the public demo boundary and resume behavior. Public and judge views
+hide recipient addresses and provider record IDs. Judge mode may run demo-only
+steps but cannot reset shared data, create an AgentMail inbox, approve external
+recipients, or send email. Failed PO delivery resumes the same durable outbound
+record instead of creating another message. Provider readiness, evidence-source
+labels, actionable safe errors, loading states, keyboard labels, responsive
+layouts, and the two-attempt follow-up cap remain visible. Computer browser proof
+confirmed the judge-safe controls, while the development backend and all static
+checks passed. Configured-buyer reset and real delivery resume proof remain
+gated by the controlled live rehearsal.

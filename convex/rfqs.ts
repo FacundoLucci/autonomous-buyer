@@ -2,6 +2,8 @@ import { v } from "convex/values";
 
 import { internal } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
+import { canSeePrivateProviderData } from "./authz";
+import { requireDemoOperator } from "./authz";
 
 function formatDestination(address: {
   line1: string;
@@ -25,8 +27,8 @@ export const prepare = mutation({
   args: { procurementId: v.id("procurements") },
   returns: v.array(v.id("rfqs")),
   handler: async (ctx, args) => {
-    const procurement = await ctx.db.get("procurements", args.procurementId);
-    if (procurement === null || procurement.status !== "sourcing") {
+    const { procurement } = await requireDemoOperator(ctx, args.procurementId);
+    if (procurement.status !== "sourcing") {
       throw new Error("Procurement is not ready for RFQ preparation.");
     }
     const run = await ctx.db.get("demoRuns", procurement.demoRunId);
@@ -121,6 +123,9 @@ export const listForProcurement = query({
     }),
   ),
   handler: async (ctx, args) => {
+    const procurement = await ctx.db.get("procurements", args.procurementId);
+    if (procurement === null) return [];
+    const canSeePrivate = await canSeePrivateProviderData(ctx, procurement.organizationId);
     const rfqs = await ctx.db
       .query("rfqs")
       .withIndex("by_procurement", (q) => q.eq("procurementId", args.procurementId))
@@ -132,7 +137,9 @@ export const listForProcurement = query({
       rows.push({
         rfqId: rfq._id,
         supplierName: supplier.name,
-        recipientEmail: rfq.recipientEmail ?? supplier.email ?? "",
+        recipientEmail: canSeePrivate
+          ? (rfq.recipientEmail ?? supplier.email ?? "")
+          : "Controlled recipient hidden",
         isControlledRecipient: rfq.isControlledRecipient ?? false,
         status: rfq.status,
         requestedQuantity: rfq.requestedQuantity,

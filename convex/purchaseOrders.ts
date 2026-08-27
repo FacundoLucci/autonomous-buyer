@@ -1,4 +1,3 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { AgentMail, type OutboundId } from "@agentmail/convex";
 import { v } from "convex/values";
 
@@ -6,6 +5,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import { components, internal } from "./_generated/api";
 import { internalMutation, mutation, type MutationCtx } from "./_generated/server";
 import { purchaseOrderTotals } from "./domain/money";
+import { requireExternalBuyer } from "./authz";
 
 const agentmail = new AgentMail(components.agentmail, {
   onMessageReceived: internal.inbound.onMessageReceived,
@@ -180,22 +180,6 @@ export async function createPurchaseOrderDraft(
   });
 }
 
-async function requireConfiguredBuyer(ctx: MutationCtx) {
-  const userId = await getAuthUserId(ctx);
-  if (userId === null) throw new Error("Sign in as the configured buyer.");
-  const user = await ctx.db.get("users", userId);
-  if (
-    user === null ||
-    user.isAnonymous === true ||
-    user.isActive !== true ||
-    (user.role !== "buyer" && user.role !== "admin") ||
-    user.organizationId === undefined
-  ) {
-    throw new Error("A configured buyer must approve external PO delivery.");
-  }
-  return user;
-}
-
 export const approveRecipient = mutation({
   args: {
     purchaseOrderId: v.id("purchaseOrders"),
@@ -204,13 +188,9 @@ export const approveRecipient = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const user = await requireConfiguredBuyer(ctx);
     const order = await ctx.db.get("purchaseOrders", args.purchaseOrderId);
     if (order === null) throw new Error("Purchase order not found.");
-    const procurement = await ctx.db.get("procurements", order.procurementId);
-    if (procurement === null || procurement.organizationId !== user.organizationId) {
-      throw new Error("You cannot approve this purchase-order recipient.");
-    }
+    const { user } = await requireExternalBuyer(ctx, order.procurementId);
     const recipientEmail = args.recipientEmail.trim().toLowerCase();
     if (args.confirmation !== RECIPIENT_APPROVAL_TEXT) {
       throw new Error(`Type ${RECIPIENT_APPROVAL_TEXT} to approve the exact recipient.`);
@@ -234,14 +214,20 @@ export const sendApproved = mutation({
   args: { purchaseOrderId: v.id("purchaseOrders") },
   returns: v.string(),
   handler: async (ctx, args) => {
-    const user = await requireConfiguredBuyer(ctx);
     const order = await ctx.db.get("purchaseOrders", args.purchaseOrderId);
     if (order === null) throw new Error("Purchase order not found.");
-    const procurement = await ctx.db.get("procurements", order.procurementId);
-    if (procurement === null || procurement.organizationId !== user.organizationId) {
-      throw new Error("You cannot send this purchase order.");
+    const { procurement } = await requireExternalBuyer(ctx, order.procurementId);
+    if (order.providerOutboundId !== undefined) {
+      await ctx.db.patch("purchaseOrders", order._id, {
+        status: "queued",
+        errorMessage: undefined,
+      });
+      await ctx.scheduler.runAfter(0, internal.purchaseOrders.reconcileDelivery, {
+        purchaseOrderId: order._id,
+        attempt: 0,
+      });
+      return order.providerOutboundId;
     }
-    if (order.providerOutboundId !== undefined) return order.providerOutboundId;
     if (
       order.status !== "draft" ||
       order.recipientApprovedAt === undefined ||
@@ -334,8 +320,9 @@ export const reconcileDelivery = internalMutation({
       status: succeeded ? "sent" : "draft",
       providerMessageId: status?.agentmailMessageId ?? undefined,
       providerThreadId: status?.threadId ?? undefined,
-      errorMessage:
-        status?.errorMessage ?? (status === null ? "Delivery status unavailable." : undefined),
+      errorMessage: succeeded
+        ? undefined
+        : "AgentMail has not confirmed delivery. Resume the existing delivery check; no new email will be created.",
       sentAt: succeeded ? now : undefined,
     });
     if (succeeded && status?.agentmailMessageId && status.threadId) {
