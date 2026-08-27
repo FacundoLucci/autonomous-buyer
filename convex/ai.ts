@@ -199,6 +199,26 @@ export const getEvidence = internalQuery({
       .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))
       .order("desc")
       .take(20);
+    const recommendations = await ctx.db
+      .query("recommendations")
+      .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))
+      .order("desc")
+      .take(1);
+    const recommendation = recommendations[0] ?? null;
+    const recommendationEntries =
+      recommendation === null
+        ? []
+        : await ctx.db
+            .query("recommendationEntries")
+            .withIndex("by_recommendation", (q) => q.eq("recommendationId", recommendation._id))
+            .take(20);
+    const recommendationSupplierNames = new Map<Id<"suppliers">, string>();
+    for (const entry of recommendationEntries) {
+      const entrySupplier = await ctx.db.get("suppliers", entry.supplierId);
+      if (entrySupplier !== null) {
+        recommendationSupplierNames.set(entry.supplierId, entrySupplier.name);
+      }
+    }
     const evidenceRefs = [
       `procurements:${procurement._id}`,
       `inventoryItems:${item._id}`,
@@ -207,6 +227,9 @@ export const getEvidence = internalQuery({
       ...(emailLink === null ? [] : [`emailLinks:${emailLink._id}`]),
       ...(inboundEvidence === null ? [] : [`inboundEmailEvidence:${inboundEvidence._id}`]),
       ...(latestQuote === null ? [] : [`quotes:${latestQuote._id}`]),
+      ...(recommendation === null ? [] : [`recommendations:${recommendation._id}`]),
+      ...recommendationEntries.map((entry) => `recommendationEntries:${entry._id}`),
+      ...recommendationEntries.map((entry) => `suppliers:${entry.supplierId}`),
       ...claims.map((claim) => `supplierProductClaims:${claim._id}`),
       ...events.map((event) => `procurementEvents:${event._id}`),
     ];
@@ -284,6 +307,31 @@ export const getEvidence = internalQuery({
                 quantityAvailable: latestQuote.quantityAvailable ?? null,
                 freightCents: latestQuote.freightCents ?? null,
                 estimatedArrivalDate: latestQuote.estimatedArrivalDate ?? null,
+              },
+        recommendation:
+          recommendation === null
+            ? null
+            : {
+                id: `recommendations:${recommendation._id}`,
+                selectedQuoteId: `quotes:${recommendation.selectedQuoteId}`,
+                rankingVersion: recommendation.rankingVersion,
+                entries: recommendationEntries.map((entry) => ({
+                  id: `recommendationEntries:${entry._id}`,
+                  quoteId: `quotes:${entry.quoteId}`,
+                  supplierId: `suppliers:${entry.supplierId}`,
+                  supplierName: recommendationSupplierNames.get(entry.supplierId) ?? null,
+                  selected: entry.selected,
+                  rank: entry.rank ?? null,
+                  qualification: entry.qualification,
+                  reasons: entry.reasons,
+                  projectedStockoutDays: entry.projectedStockoutDays,
+                  productMatchConfidence: entry.productMatchConfidence,
+                  landedCostCents: entry.landedCostCents ?? null,
+                  excessInventory: entry.excessInventory,
+                  supplierReliability: entry.supplierReliability,
+                  paymentTermsScore: entry.paymentTermsScore,
+                  estimatedArrivalDate: entry.estimatedArrivalDate ?? null,
+                })),
               },
         claims: claims.map((claim) => ({
           id: `supplierProductClaims:${claim._id}`,
@@ -496,6 +544,9 @@ export const completeRun = internalMutation({
           createdAt: now,
         });
       }
+      await ctx.runMutation(internal.recommendations.recompute, {
+        procurementId: procurement._id,
+      });
     }
     if (run.rfqId !== undefined && args.result.output.task === "follow_up_wording") {
       const rfqId = run.rfqId;
@@ -525,6 +576,25 @@ export const completeRun = internalMutation({
         subject: args.result.output.subject,
         body: args.result.output.body,
       });
+    }
+    if (
+      run.procurementId !== undefined &&
+      args.result.output.task === "recommendation_explanation"
+    ) {
+      const recommendations = await ctx.db
+        .query("recommendations")
+        .withIndex("by_procurement_and_created", (q) =>
+          q.eq("procurementId", run.procurementId as Id<"procurements">),
+        )
+        .order("desc")
+        .take(1);
+      const recommendation = recommendations[0];
+      if (recommendation !== undefined) {
+        await ctx.db.patch("recommendations", recommendation._id, {
+          explanation: args.result.output.explanation,
+          explanationStatus: "succeeded",
+        });
+      }
     }
     if (link !== null) {
       await ctx.db.patch("agentThreadLinks", link._id, {
@@ -557,6 +627,19 @@ export const failRun = internalMutation({
       errorMessage: args.errorMessage.slice(0, 500),
       completedAt: now,
     });
+    if (run.procurementId !== undefined && run.task === "recommendation_explanation") {
+      const procurementId = run.procurementId;
+      const recommendations = await ctx.db
+        .query("recommendations")
+        .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurementId))
+        .order("desc")
+        .take(1);
+      if (recommendations[0] !== undefined) {
+        await ctx.db.patch("recommendations", recommendations[0]._id, {
+          explanationStatus: "failed",
+        });
+      }
+    }
     if (run.agentThreadLinkId !== undefined) {
       await ctx.db.patch("agentThreadLinks", run.agentThreadLinkId, {
         status: "failed",

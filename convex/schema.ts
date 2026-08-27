@@ -443,8 +443,39 @@ export default defineSchema({
     selectedQuoteId: v.id("quotes"),
     explanation: v.string(),
     rankingVersion: v.string(),
+    sourceRevisionKey: v.optional(v.string()),
+    explanationStatus: v.optional(
+      v.union(v.literal("pending"), v.literal("succeeded"), v.literal("failed")),
+    ),
     createdAt: timestampValidator,
   }).index("by_procurement_and_created", ["procurementId", "createdAt"]),
+
+  recommendationEntries: defineTable({
+    recommendationId: v.id("recommendations"),
+    procurementId: v.id("procurements"),
+    quoteId: v.id("quotes"),
+    supplierId: v.id("suppliers"),
+    rank: v.optional(v.number()),
+    selected: v.boolean(),
+    qualification: v.union(
+      v.literal("pending"),
+      v.literal("viable"),
+      v.literal("disqualified"),
+      v.literal("human_review"),
+    ),
+    reasons: v.array(v.string()),
+    projectedStockoutDays: v.number(),
+    productMatchConfidence: v.number(),
+    landedCostCents: v.optional(v.number()),
+    excessInventory: v.number(),
+    supplierReliability: v.number(),
+    paymentTermsScore: v.number(),
+    estimatedArrivalDate: v.optional(dateValidator),
+    sourceKind: v.literal("supplier_confirmed"),
+    createdAt: timestampValidator,
+  })
+    .index("by_recommendation", ["recommendationId"])
+    .index("by_procurement_and_created_at", ["procurementId", "createdAt"]),
 
   approvals: defineTable({
     procurementId: v.id("procurements"),

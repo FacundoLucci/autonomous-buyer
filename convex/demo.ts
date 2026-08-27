@@ -110,6 +110,12 @@ async function deleteRunData(ctx: MutationCtx, demoRunId: Id<"demoRuns">) {
       await ctx.db.delete("emailLinks", emailLink._id);
     }
 
+    const followUps = await ctx.db
+      .query("rfqFollowUps")
+      .withIndex("by_procurement_and_created_at", (q) => q.eq("procurementId", procurement._id))
+      .take(100);
+    for (const followUp of followUps) await ctx.db.delete("rfqFollowUps", followUp._id);
+
     for (const table of ["rfqs", "quotes", "approvals", "purchaseOrders"] as const) {
       const records = await ctx.db
         .query(table)
@@ -123,6 +129,11 @@ async function deleteRunData(ctx: MutationCtx, demoRunId: Id<"demoRuns">) {
       .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))
       .take(100);
     for (const recommendation of recommendations) {
+      const entries = await ctx.db
+        .query("recommendationEntries")
+        .withIndex("by_recommendation", (q) => q.eq("recommendationId", recommendation._id))
+        .take(20);
+      for (const entry of entries) await ctx.db.delete("recommendationEntries", entry._id);
       await ctx.db.delete("recommendations", recommendation._id);
     }
 

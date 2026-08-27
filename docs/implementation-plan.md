@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-12 implemented. Live BC-10 through BC-12 proof awaits the approved controlled-recipient email flow.
+Status: BC-00 through BC-13 implemented. Live BC-10 through BC-13 proof awaits the approved controlled-recipient email flow.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -555,7 +555,7 @@ reply creates a complete quote and the UI updates live.
 
 ### BC-13 — Quote comparison and recommendation
 
-Depends on: BC-03, BC-11, BC-12.
+Depends on: BC-03, BC-11, BC-12. Status: implemented; live quote proof pending.
 
 Load: spec sections 16–17 and the deterministic engine API.
 

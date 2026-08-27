@@ -24,6 +24,7 @@ import type * as integrations from "../integrations.js";
 import type * as mail from "../mail.js";
 import type * as procurements from "../procurements.js";
 import type * as purchasing from "../purchasing.js";
+import type * as recommendations from "../recommendations.js";
 import type * as rfqs from "../rfqs.js";
 import type * as sourcing from "../sourcing.js";
 
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   mail: typeof mail;
   procurements: typeof procurements;
   purchasing: typeof purchasing;
+  recommendations: typeof recommendations;
   rfqs: typeof rfqs;
   sourcing: typeof sourcing;
 }>;

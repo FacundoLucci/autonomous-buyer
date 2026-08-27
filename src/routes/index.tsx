@@ -385,6 +385,8 @@ function FocusedProcurement({
   const delivery = useQuery(api.mail.getDelivery, { procurementId });
   const quotes = useQuery(api.inbound.listQuotes, { procurementId });
   const followUps = useQuery(api.mail.listFollowUps, { procurementId });
+  const comparison = useQuery(api.recommendations.getLatestComparison, { procurementId });
+  const navigate = Route.useNavigate();
   const startSourcing = useAction(api.sourcing.start);
   const ensurePurchasingInbox = useAction(api.mail.ensurePurchasingInbox);
   const prepareRfqs = useMutation(api.rfqs.prepare);
@@ -854,6 +856,84 @@ function FocusedProcurement({
                   ) : null}
                 </div>
               ))}
+            </CardContent>
+          </Card>
+        ) : null}
+        {comparison ? (
+          <Card className="border-stone-300 bg-white/80 shadow-none">
+            <CardHeader>
+              <CardDescription>Deterministic decision · BC-13</CardDescription>
+              <CardTitle className="text-base">Quote comparison</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm leading-6 text-stone-700">{comparison.explanation}</p>
+              <div className="space-y-3">
+                {comparison.entries.map((entry) => (
+                  <div
+                    key={entry.quoteId}
+                    className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-medium">
+                        {entry.rank === null ? "—" : `#${entry.rank}`} {entry.supplierName}
+                      </p>
+                      <Badge variant="outline">
+                        {entry.selected ? "recommended" : entry.qualification.replaceAll("_", " ")}
+                      </Badge>
+                    </div>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                      <Fact
+                        label="Landed cost · supplier"
+                        value={
+                          entry.landedCostCents === null
+                            ? "Incomplete"
+                            : money(entry.landedCostCents)
+                        }
+                      />
+                      <Fact
+                        label="Arrival · supplier"
+                        value={entry.estimatedArrivalDate ?? "Missing"}
+                      />
+                      <Fact
+                        label="Match · calculated"
+                        value={`${Math.round(entry.productMatchConfidence * 100)}%`}
+                      />
+                      <Fact
+                        label="Stockout delay · calculated"
+                        value={`${entry.projectedStockoutDays} days`}
+                      />
+                      <Fact
+                        label="Excess · calculated"
+                        value={`${entry.excessInventory.toLocaleString()} units`}
+                      />
+                      <Fact
+                        label="Reliability · historical"
+                        value={`${Math.round(entry.supplierReliability * 100)}%`}
+                      />
+                    </div>
+                    {entry.reasons.length > 0 ? (
+                      <p className="mt-3 text-xs text-amber-800">
+                        Lost because: {entry.reasons.join(", ").replaceAll("_", " ")}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  onClick={() =>
+                    navigate({
+                      search: (current) => ({ ...current, view: "recommendation" }),
+                    })
+                  }
+                >
+                  Review recommendation
+                  <ArrowRight />
+                </Button>
+                <span className="font-mono text-xs text-stone-500">
+                  {comparison.rankingVersion} · explanation {comparison.explanationStatus}
+                </span>
+              </div>
             </CardContent>
           </Card>
         ) : null}

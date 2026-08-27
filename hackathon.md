@@ -78,3 +78,12 @@ the exact requested fields and wording for every attempt. Convex development
 push, OXC, type checking, production build, and local browser load passed. The
 real incomplete-reply and completed-reply proof remains pending; this change
 did not send email.
+
+### 2026-08-27 — BC-13
+
+Added immutable quote-comparison snapshots and deterministic ranking across
+arrival, product match, landed cost, excess inventory, supplier reliability,
+and payment terms. The selected quote and every losing reason are stored before
+OpenAI writes a sourced explanation; the model cannot change the winner. The
+browser comparison exposes each input and its source label. Convex development
+push and all static checks passed. Live three-reply proof remains pending.
