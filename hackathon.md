@@ -3,17 +3,16 @@
 - **Project:** Autonomous Buyer
 - **Event:** Convex All Gas Hackathon
 - **What it does:** Detects stockout risk and coordinates a human-approved supplier sourcing, RFQ, quote, and purchase-order workflow.
-- **Live app:** not deployed
-- **Repo:** none
-- **Live demo:** https://reliable-albatross-463.convex.site
+- **Live app:** https://reliable-albatross-463.convex.site
+- **Repo:** https://github.com/FacundoLucci/autonomous-buyer
 - **Frontend:** Convex static hosting
 - **Convex deployment:** https://reliable-albatross-463.convex.cloud (production)
-- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @convex-dev/agent, @firecrawl/firecrawl-convex, @agentmail/convex, @convex-dev/auth
+- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @convex-dev/agent, @firecrawl/firecrawl-convex, @agentmail/convex
 - **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries, actions, scheduled functions, component-backed threads, server-enforced approval identity
-- **Auth:** stable Convex Auth password account plus one-click anonymous judge-demo access
+- **Auth:** Convex Auth
 - **AI models:** OpenAI `gpt-5.4-mini`
 - **Started:** 2026-08-27T00:36:38Z
-- **Last updated:** 2026-08-28T01:25:49Z
+- **Last updated:** 2026-08-28T23:09:56Z
 
 ## Log
 
@@ -200,7 +199,7 @@ now merge into immutable quote revisions, and missing fields are derived from
 the merged record instead of trusting inconsistent model labels. The stored
 comparison selected SupplyCo at $3,000 with arrival on 2026-09-01; the cheaper
 RestaurantSupply quote and Apex quote were both rejected for late arrival.
-Facundo approved exact quote revision 3, and AgentMail delivered purchase order
+The configured buyer approved exact quote revision 3, and AgentMail delivered purchase order
 `PO-PC-0180-8DBWV3` exactly once to the approved controlled recipient. OpenAI
 extracted supplier confirmation `SC-2026-0827-0180` at 99% confidence; every
 term matched, the procurement reached Confirmed, and a confirmed 15,000-unit
@@ -208,7 +207,7 @@ expected inventory record was created. Browser proof also exposed and fixed the
 approval review-state transition and the unit-price display. No production
 deployment or public repository action occurred.
 
-### 2026-08-28 — BC-19
+### 2026-08-28 - 569e612
 
 Deployed the backend and static frontend to production deployment
 `reliable-albatross-463` and completed the controlled flow on the exact public
