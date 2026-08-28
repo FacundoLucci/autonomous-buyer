@@ -40,6 +40,58 @@ type ConfirmationOutput = {
   paymentTerms: string | null;
 };
 
+type QuoteTerms = {
+  quantityAvailable: number | null;
+  unitPriceMicrodollars: number | null;
+  freightCents: number | null;
+  taxesCents: number | null;
+  earliestShipDate: string | null;
+  estimatedArrivalDate: string | null;
+  minimumOrderQuantity: number | null;
+  packSize: number | null;
+  paymentTerms: string | null;
+  expiresOn: string | null;
+};
+
+type MissingQuoteField =
+  | "quantity_available"
+  | "unit_price"
+  | "freight"
+  | "arrival_date"
+  | "minimum_order_quantity"
+  | "pack_size"
+  | "payment_terms"
+  | "quote_expiration";
+
+function mergeQuoteTerms(output: QuoteTerms, prior: Doc<"quotes"> | null): QuoteTerms {
+  return {
+    quantityAvailable: output.quantityAvailable ?? prior?.quantityAvailable ?? null,
+    unitPriceMicrodollars: output.unitPriceMicrodollars ?? prior?.unitPriceMicrodollars ?? null,
+    freightCents: output.freightCents ?? prior?.freightCents ?? null,
+    taxesCents: output.taxesCents ?? prior?.taxesCents ?? null,
+    earliestShipDate: output.earliestShipDate ?? prior?.earliestShipDate ?? null,
+    estimatedArrivalDate: output.estimatedArrivalDate ?? prior?.estimatedArrivalDate ?? null,
+    minimumOrderQuantity: output.minimumOrderQuantity ?? prior?.minimumOrderQuantity ?? null,
+    packSize: output.packSize ?? prior?.packSize ?? null,
+    paymentTerms: output.paymentTerms ?? prior?.paymentTerms ?? null,
+    expiresOn: output.expiresOn ?? prior?.expiresOn ?? null,
+  };
+}
+
+function missingQuoteTerms(terms: QuoteTerms) {
+  const entries: Array<[MissingQuoteField, unknown]> = [
+    ["quantity_available", terms.quantityAvailable],
+    ["unit_price", terms.unitPriceMicrodollars],
+    ["freight", terms.freightCents],
+    ["arrival_date", terms.estimatedArrivalDate],
+    ["minimum_order_quantity", terms.minimumOrderQuantity],
+    ["pack_size", terms.packSize],
+    ["payment_terms", terms.paymentTerms],
+    ["quote_expiration", terms.expiresOn],
+  ];
+  return entries.filter((entry) => entry[1] === null).map((entry) => entry[0]);
+}
+
 function confirmationDifferences(order: Doc<"purchaseOrders">, output: ConfirmationOutput) {
   const differences: Array<{ field: string; approved: string; confirmed: string }> = [];
   const add = (field: string, approved: string | number | boolean, confirmed: unknown) =>
@@ -527,50 +579,53 @@ export const completeRun = internalMutation({
         throw new Error("Quote extraction is missing its RFQ context.");
       }
       const output = args.result.output;
-      const totals =
-        output.unitPriceMicrodollars === null
-          ? null
-          : landedCostCents({
-              quantity: rfq.requestedQuantity,
-              unitPriceMicrodollars: output.unitPriceMicrodollars,
-              freightCents: output.freightCents ?? undefined,
-              taxesCents: output.taxesCents ?? undefined,
-            });
-      const qualification = qualifyQuote({
-        arrivalDate: output.estimatedArrivalDate ?? undefined,
-        requiredBy: rfq.requiredBy,
-        quantityAvailable: output.quantityAvailable ?? undefined,
-        requestedQuantity: rfq.requestedQuantity,
-        minimumOrderQuantity: output.minimumOrderQuantity ?? undefined,
-        criticalPropertiesConfirmed: rfq.isControlledRecipient === true,
-        productMatchConfidence: rfq.isControlledRecipient === true ? 0.9 : 0,
-        requiredCertifications: [],
-        confirmedCertifications: [],
-        missingInformation: output.missingFields,
-      });
       const prior = await ctx.db
         .query("quotes")
         .withIndex("by_rfq_revision", (q) => q.eq("rfqId", rfq._id))
         .order("desc")
         .take(1);
+      const previousQuote = prior[0] ?? null;
+      const terms = mergeQuoteTerms(output, previousQuote);
+      const missingInformation = missingQuoteTerms(terms);
+      const totals =
+        terms.unitPriceMicrodollars === null
+          ? null
+          : landedCostCents({
+              quantity: rfq.requestedQuantity,
+              unitPriceMicrodollars: terms.unitPriceMicrodollars,
+              freightCents: terms.freightCents ?? undefined,
+              taxesCents: terms.taxesCents ?? undefined,
+            });
+      const qualification = qualifyQuote({
+        arrivalDate: terms.estimatedArrivalDate ?? undefined,
+        requiredBy: rfq.requiredBy,
+        quantityAvailable: terms.quantityAvailable ?? undefined,
+        requestedQuantity: rfq.requestedQuantity,
+        minimumOrderQuantity: terms.minimumOrderQuantity ?? undefined,
+        criticalPropertiesConfirmed: rfq.isControlledRecipient === true,
+        productMatchConfidence: rfq.isControlledRecipient === true ? 0.9 : 0,
+        requiredCertifications: [],
+        confirmedCertifications: [],
+        missingInformation,
+      });
       const quoteId = await ctx.db.insert("quotes", {
         procurementId: procurement._id,
         rfqId: rfq._id,
         supplierId: rfq.supplierId,
         revision: (prior[0]?.revision ?? 0) + 1,
-        quantityAvailable: output.quantityAvailable ?? undefined,
-        unitPriceMicrodollars: output.unitPriceMicrodollars ?? undefined,
+        quantityAvailable: terms.quantityAvailable ?? undefined,
+        unitPriceMicrodollars: terms.unitPriceMicrodollars ?? undefined,
         extendedPriceCents: totals?.extendedPriceCents,
-        freightCents: output.freightCents ?? undefined,
-        taxesCents: output.taxesCents ?? undefined,
+        freightCents: terms.freightCents ?? undefined,
+        taxesCents: terms.taxesCents ?? undefined,
         landedCostCents: totals?.landedCostCents,
-        earliestShipDate: output.earliestShipDate ?? undefined,
-        estimatedArrivalDate: output.estimatedArrivalDate ?? undefined,
-        minimumOrderQuantity: output.minimumOrderQuantity ?? undefined,
-        packSize: output.packSize ?? undefined,
-        paymentTerms: output.paymentTerms ?? undefined,
-        expiresOn: output.expiresOn ?? undefined,
-        missingInformation: output.missingFields,
+        earliestShipDate: terms.earliestShipDate ?? undefined,
+        estimatedArrivalDate: terms.estimatedArrivalDate ?? undefined,
+        minimumOrderQuantity: terms.minimumOrderQuantity ?? undefined,
+        packSize: terms.packSize ?? undefined,
+        paymentTerms: terms.paymentTerms ?? undefined,
+        expiresOn: terms.expiresOn ?? undefined,
+        missingInformation,
         matchConfidence: rfq.isControlledRecipient === true ? 0.9 : 0,
         responseConfidence: args.result.confidence,
         qualification: qualification.qualification,
@@ -596,7 +651,7 @@ export const completeRun = internalMutation({
           actorType: "agent",
         });
       }
-      const followUpFields = output.missingFields.filter(
+      const followUpFields = missingInformation.filter(
         (field) =>
           field === "quantity_available" || field === "freight" || field === "arrival_date",
       );

@@ -2,7 +2,7 @@ import { AgentMail, type OutboundId, vOutboundId, vOutboundStatus } from "@agent
 import { v } from "convex/values";
 
 import { components, internal } from "./_generated/api";
-import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { action, env, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { missingQuoteFieldValidator } from "./domain";
 import { canSeePrivateProviderData, requireExternalBuyer } from "./authz";
 
@@ -39,6 +39,18 @@ export const ensurePurchasingInbox = action({
     });
     const stored = context.inbox;
     if (stored !== null) return { inboxId: stored.inboxId, email: stored.email, created: false };
+    const configuredInboxId = env.AGENTMAIL_INBOX_ID?.trim();
+    const configuredInboxEmail =
+      env.AGENTMAIL_INBOX_EMAIL?.trim() ??
+      (configuredInboxId?.includes("@") ? configuredInboxId : undefined);
+    if (configuredInboxId !== undefined && configuredInboxEmail !== undefined) {
+      await ctx.runMutation(internal.mail.storeInbox, {
+        organizationId: context.organizationId,
+        inboxId: configuredInboxId,
+        email: configuredInboxEmail,
+      });
+      return { inboxId: configuredInboxId, email: configuredInboxEmail, created: false };
+    }
     const listed = inboxesFrom(await agentmail.listInboxes(ctx, { limit: 100 }));
     let inbox = listed.find((candidate) => candidate.client_id === "acme-purchasing-v1");
     let created = false;

@@ -182,6 +182,7 @@ export const transition = internalMutation({
     const now = Date.now();
     await ctx.db.patch("procurements", args.procurementId, {
       status: args.toState,
+      ...(args.toState === "approval_required" ? { reviewStatus: "required" as const } : {}),
       updatedAt: now,
     });
     await ctx.db.insert("procurementEvents", {
@@ -196,6 +197,25 @@ export const transition = internalMutation({
       relatedRecordId: args.relatedRecordId,
       createdAt: now,
     });
+    return null;
+  },
+});
+
+export const repairApprovalReviewStatus = internalMutation({
+  args: { procurementId: v.id("procurements") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const procurement = await ctx.db.get("procurements", args.procurementId);
+    if (procurement === null) throw new Error("Procurement not found.");
+    if (procurement.status !== "approval_required") {
+      throw new Error("Only an approval-required procurement can be repaired.");
+    }
+    if (procurement.reviewStatus !== "required") {
+      await ctx.db.patch("procurements", procurement._id, {
+        reviewStatus: "required",
+        updatedAt: Date.now(),
+      });
+    }
     return null;
   },
 });

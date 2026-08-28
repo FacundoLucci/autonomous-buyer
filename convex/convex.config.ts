@@ -18,6 +18,8 @@ const app = defineApp({
     AGENTMAIL_API_KEY: v.optional(v.string()),
     AGENTMAIL_WEBHOOK_SECRET: v.optional(v.string()),
     AGENTMAIL_BASE_URL: v.optional(v.string()),
+    AGENTMAIL_INBOX_ID: v.optional(v.string()),
+    AGENTMAIL_INBOX_EMAIL: v.optional(v.string()),
     BUYER_EMAIL: v.optional(v.string()),
   },
 });
@@ -32,6 +34,12 @@ app.use(firecrawl, {
     FIRECRAWL_WEBHOOK_SECRET: app.env.FIRECRAWL_WEBHOOK_SECRET,
   },
 });
-app.use(agentmail);
+app.use(agentmail, {
+  env: {
+    AGENTMAIL_API_KEY: app.env.AGENTMAIL_API_KEY,
+    AGENTMAIL_BASE_URL: app.env.AGENTMAIL_BASE_URL,
+    AGENTMAIL_WEBHOOK_SECRET: app.env.AGENTMAIL_WEBHOOK_SECRET,
+  },
+});
 
 export default app;

@@ -19,6 +19,12 @@ function optionalString(value: unknown) {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : undefined;
 }
 
+function emailAddress(value: string) {
+  const bracketed = value.match(/<([^<>]+)>/)?.[1];
+  const candidate = (bracketed ?? value).trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(candidate) ? candidate : undefined;
+}
+
 export const onMessageReceived = internalMutation({
   args: { message: v.any(), thread: v.any(), eventId: v.string() },
   returns: v.null(),
@@ -61,6 +67,26 @@ export const onMessageReceived = internalMutation({
         providerRecordId: providerMessageId,
         requestHash: providerMessageId,
         errorMessage: "Inbound AgentMail thread is not linked to an RFQ or purchase order.",
+        createdAt: Date.now(),
+        completedAt: Date.now(),
+      });
+      return null;
+    }
+    const senderEmail = emailAddress(requiredString(message.from, "from"));
+    if (
+      senderEmail === undefined ||
+      rfq.recipientEmail === undefined ||
+      senderEmail !== rfq.recipientEmail.trim().toLowerCase()
+    ) {
+      await ctx.db.insert("integrationReceipts", {
+        procurementId: rfq.procurementId,
+        provider: "agentmail",
+        idempotencyKey,
+        operation: "agentmail_receive_message",
+        status: "failed",
+        providerRecordId: providerMessageId,
+        requestHash: `${providerMessageId}|${providerThreadId}`,
+        errorMessage: "Inbound sender does not match the approved RFQ recipient.",
         createdAt: Date.now(),
         completedAt: Date.now(),
       });

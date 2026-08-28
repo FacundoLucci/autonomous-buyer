@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-17 implemented. Live email proof awaits approved controlled recipients; public judge safety is browser-proven.
+Status: BC-00 through BC-18 complete in the development deployment. BC-19 awaits explicit approval for production configuration and deployment.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -502,7 +502,7 @@ before BC-10 performs external email writes.
 
 ### BC-10 — AgentMail outbound RFQs
 
-Depends on: BC-09.
+Depends on: BC-09. Status: complete; three controlled RFQ deliveries proven.
 
 Load: spec section 13 and the AgentMail component guide.
 
@@ -520,7 +520,7 @@ confirm at least two controlled external inboxes genuinely receive RFQs.
 
 ### BC-11 — Inbound email and quote extraction
 
-Depends on: BC-07, BC-10.
+Depends on: BC-07, BC-10. Status: complete; live inbound extraction proven.
 
 Load: spec section 14 and the AgentMail callback contract.
 
@@ -538,7 +538,7 @@ browser without refresh or database editing.
 
 ### BC-12 — Autonomous follow-up
 
-Depends on: BC-11. Status: implemented; live email proof pending.
+Depends on: BC-11. Status: complete; live follow-up and merged revision proven.
 
 Load: spec section 15 and the follow-up policy only.
 
@@ -555,7 +555,7 @@ reply creates a complete quote and the UI updates live.
 
 ### BC-13 — Quote comparison and recommendation
 
-Depends on: BC-03, BC-11, BC-12. Status: implemented; live quote proof pending.
+Depends on: BC-03, BC-11, BC-12. Status: complete; live three-quote ranking proven.
 
 Load: spec sections 16–17 and the deterministic engine API.
 
@@ -576,7 +576,7 @@ number used in the decision.
 
 ### BC-14 — Stable auth and approval identity
 
-Depends on: BC-02, BC-05. Status: implemented; full approval proof awaits a recommendation.
+Depends on: BC-02, BC-05. Status: complete; configured-buyer approval proven.
 
 Load: spec section 18, Convex Auth guidance, and public-judge access rules.
 
@@ -595,7 +595,7 @@ in the audit trail awaits the live quote flow.
 
 ### BC-15 — Purchase order generation and send
 
-Depends on: BC-10, BC-13, BC-14. Status: implemented; real delivery is gated.
+Depends on: BC-10, BC-13, BC-14. Status: complete; controlled PO delivery proven.
 
 Load: spec section 19 and the approved recommendation snapshot.
 
@@ -617,7 +617,7 @@ recipient.
 
 ### BC-16 — Confirmation and inventory projection
 
-Depends on: BC-03, BC-11, BC-15. Status: implemented; real inbound proof is gated.
+Depends on: BC-03, BC-11, BC-15. Status: complete; matching confirmation and expected inventory proven.
 
 Load: spec sections 20–21.
 
@@ -639,7 +639,7 @@ flow and a manually sent confirmation.
 
 ### BC-17 — Auditability, safety, resume behavior, and polish
 
-Depends on: BC-05, BC-14, BC-16. Status: implemented; configured-buyer reset proof is gated.
+Depends on: BC-05, BC-14, BC-16. Status: complete; configured-buyer live flow proven.
 
 Load: spec sections 22, 33, 35–38.
 
@@ -664,7 +664,7 @@ needed for BC-18.
 
 ### BC-18 — Full live-browser rehearsal
 
-Depends on: BC-17.
+Depends on: BC-17. Status: complete in development.
 
 Load: only the demo script, credentials checklist, and provider-status screen.
 
@@ -686,6 +686,16 @@ Perform one uninterrupted real flow:
 No unit tests, Playwright suites, mocked supplier replies, or manual database
 edits. Capture provider receipts and browser-visible proof for each external
 step.
+
+Exit proof: Computer drove the configured buyer and two user-controlled
+supplier inboxes through the full development flow. AgentMail receipts prove
+three RFQs, focused automatic follow-ups, one idempotent PO send, and inbound
+replies. OpenAI extracted merged quote revisions and the final confirmation.
+The stored ranking selected SupplyCo as the only on-time quote, buyer Facundo
+approved revision 3, PO `PO-PC-0180-8DBWV3` was delivered once, supplier
+confirmation `SC-2026-0827-0180` matched every approved term, and confirmed
+expected inventory records 15,000 units arriving 2026-09-01. No production
+deployment or public URL was changed.
 
 ### BC-19 — Public `convex.site` deployment
 

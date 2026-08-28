@@ -85,6 +85,15 @@ function money(cents: number) {
   }).format(cents / 100);
 }
 
+function unitPrice(microdollars: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  }).format(microdollars / 1_000_000);
+}
+
 function shortTime(timestamp: number) {
   return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(timestamp);
 }
@@ -1593,10 +1602,7 @@ function FocusedViewBody({
           <Fact label="Purchase order" value={order.poNumber} />
           <Fact label="Supplier" value={order.supplierName} />
           <Fact label="Quantity" value={`${order.quantity.toLocaleString()} units`} />
-          <Fact
-            label="Unit price"
-            value={money(Math.round(order.unitPriceMicrodollars / 10_000))}
-          />
+          <Fact label="Unit price" value={unitPrice(order.unitPriceMicrodollars)} />
           <Fact label="Extended" value={money(order.extendedPriceCents)} />
           <Fact label="Freight" value={money(order.freightCents)} />
           <Fact label="Total" value={money(order.totalCents)} />
