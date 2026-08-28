@@ -1,9 +1,12 @@
 # Autonomous Buyer
 
-Hackathon scaffold for an autonomous purchasing workflow built on Convex.
+An autonomous purchasing workflow built on Convex.
 
-The current app is a reviewable foundation. Product workflows, external email
-sends, and public deployment have not started.
+**Live demo:** https://reliable-albatross-463.convex.site
+
+The dashboard is public. Select **Enter judge mode** for one-click access to the
+completed procurement evidence. Shared resets, controlled recipient details,
+buyer approval, and external email sends remain protected.
 
 ## Read first
 
@@ -47,3 +50,7 @@ proved through real user flows in a live browser.
 `pnpm deploy` builds and uploads only `dist/client` to Convex static hosting,
 but it performs real production writes. Run it only after the full live-browser
 rehearsal and explicit deployment approval.
+
+Production is currently served from
+https://reliable-albatross-463.convex.site with its backend at
+https://reliable-albatross-463.convex.cloud.

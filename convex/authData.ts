@@ -64,10 +64,26 @@ export const claimConfiguredBuyer = mutation({
     ) {
       throw new Error("This account is not configured as the demo buyer.");
     }
-    const organization = await ctx.db
+    let organization = await ctx.db
       .query("organizations")
       .withIndex("by_name", (q) => q.eq("name", "Acme Foods"))
       .unique();
+    if (organization === null && user.isAnonymous !== true) {
+      const organizationId = await ctx.db.insert("organizations", {
+        name: "Acme Foods",
+        address: {
+          line1: "100 Demo Way",
+          city: "Cedar Rapids",
+          region: "IA",
+          postalCode: "52401",
+          countryCode: "US",
+        },
+        timezone: "America/Chicago",
+        approvalPolicy: { humanApprovalRequired: true, maximumAutomaticFollowUps: 1 },
+        isDemo: true,
+      });
+      organization = await ctx.db.get("organizations", organizationId);
+    }
     if (organization === null) throw new Error("Start the demo before claiming buyer access.");
     const name = user.isAnonymous === true ? "Judge demo buyer" : (user.name ?? user.email);
     await ctx.db.patch("users", user._id, {

@@ -158,6 +158,20 @@ function Home() {
     );
   }
 
+  const modelProviderReady = integrations?.some(
+    (integration) =>
+      (integration.name === "openai" || integration.name === "openrouter") &&
+      integration.status === "configured",
+  );
+  const requiredProviderMissing =
+    integrations !== undefined &&
+    (!modelProviderReady ||
+      integrations.some(
+        (integration) =>
+          (integration.name === "firecrawl" || integration.name === "agentmail") &&
+          integration.status === "missing",
+      ));
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7f4ed_0%,#eeeadf_100%)] px-4 py-5 text-stone-950 sm:px-7 sm:py-7">
       <div className="mx-auto max-w-7xl space-y-5">
@@ -191,15 +205,18 @@ function Home() {
                 key={integration.name}
                 variant="outline"
                 className={
-                  integration.status === "configured" ? "bg-white/70" : "border-red-300 bg-red-50"
+                  integration.status === "configured" || integration.name === "openrouter"
+                    ? "bg-white/70"
+                    : "border-red-300 bg-red-50"
                 }
               >
-                {integration.name} · {integration.status}
+                {integration.name}
+                {integration.name === "openrouter" ? " fallback" : ""} · {integration.status}
               </Badge>
             ))}
-            {integrations.some((integration) => integration.status === "missing") ? (
+            {requiredProviderMissing ? (
               <span className="text-xs text-red-700">
-                Add the missing development environment value before running that provider step.
+                A required production provider is unavailable.
               </span>
             ) : null}
           </div>
@@ -1165,9 +1182,6 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
         return await claimConfiguredBuyer({});
       } catch (claimError) {
         lastError = claimError;
-        if (claimError instanceof Error && !claimError.message.includes("Sign in first")) {
-          throw claimError;
-        }
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
     }
@@ -1443,7 +1457,9 @@ function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDe
       <CardContent className="space-y-4">
         {order.status === "sent" || order.status === "confirmed" ? (
           <p className="text-sm text-emerald-800">
-            {order.poNumber} was delivered once and is waiting for supplier confirmation.
+            {order.status === "confirmed"
+              ? `${order.poNumber} was delivered once and the supplier confirmation matches.`
+              : `${order.poNumber} was delivered once and is waiting for supplier confirmation.`}
           </p>
         ) : !configuredBuyer ? (
           <p className="text-sm leading-6 text-stone-700">
@@ -1811,7 +1827,8 @@ function JudgeModeButton() {
     setState("working");
     setError(null);
     try {
-      if (!isAuthenticated) await signIn("anonymous");
+      if (isAuthenticated && !currentUser?.isJudgeDemo) await signOut();
+      if (!isAuthenticated || !currentUser?.isJudgeDemo) await signIn("anonymous");
       let lastError: unknown = null;
       for (let attempt = 0; attempt < 20; attempt += 1) {
         try {
@@ -1819,9 +1836,6 @@ function JudgeModeButton() {
           return;
         } catch (claimError) {
           lastError = claimError;
-          if (claimError instanceof Error && !claimError.message.includes("Sign in first")) {
-            throw claimError;
-          }
           await new Promise((resolve) => setTimeout(resolve, 150));
         }
       }
@@ -1877,9 +1891,6 @@ function ConfiguredBuyerButton() {
         return await claimConfiguredBuyer({});
       } catch (claimError) {
         lastError = claimError;
-        if (claimError instanceof Error && !claimError.message.includes("Sign in first")) {
-          throw claimError;
-        }
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
     }

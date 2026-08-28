@@ -20,7 +20,7 @@ export const allowedStateTransitions: Readonly<
   closed: [],
   no_viable_supplier: [],
   rejected: [],
-  exception: [],
+  exception: ["confirmed"],
   cancelled: [],
 };
 

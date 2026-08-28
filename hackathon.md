@@ -5,10 +5,11 @@
 - **What it does:** Detects stockout risk and coordinates a human-approved supplier sourcing, RFQ, quote, and purchase-order workflow.
 - **Live app:** not deployed
 - **Repo:** none
+- **Live demo:** https://reliable-albatross-463.convex.site
 - **Frontend:** Convex static hosting
-- **Convex deployment:** https://festive-coyote-483.convex.cloud (development)
-- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @firecrawl/firecrawl-convex, @agentmail/convex, @convex-dev/auth
-- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries, server-enforced approval identity
+- **Convex deployment:** https://reliable-albatross-463.convex.cloud (production)
+- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @convex-dev/agent, @firecrawl/firecrawl-convex, @agentmail/convex, @convex-dev/auth
+- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries, actions, scheduled functions, component-backed threads, server-enforced approval identity
 - **Auth:** stable Convex Auth password account plus one-click anonymous judge-demo access
 - **AI models:** OpenAI `gpt-5.4-mini`
 - **Started:** 2026-08-27T00:36:38Z
@@ -55,18 +56,74 @@ errors or warnings, then was removed. The development Convex push and full stati
 checks passed. No unit-test suite, external calls, emails, public deployment, or
 production changes were added.
 
-### 2026-08-27 — BC-04
+### 2026-08-27 - d1453d3
 
-Added a repeatable Acme Foods demo run with 90 days of varied usage for three
-inventory items, the exact 3,240-lid and 612/day starting state, three Apex
-purchase-history records, three separate controlled supplier identities, and
-clearly marked demo metrics. Hidden browser controls at `/?demo=1` start or
-reset only local scenario records; reset never calls AgentMail or deletes its
-provider history. Browser proof showed ready → active → ready, restored all
-starting values, and reported zero console errors or warnings. A fresh reset
-created a different `demoRunId`. Convex development push and full static checks
-passed; no external calls, emails, public deployment, or production changes
-were made.
+Added repeatable Acme Foods demo runs with 90 days of varied usage across three
+inventory items. Reset restores 3,240 lids at 612/day with three safety-stock
+days, creates a fresh `demoRunId`, and preserves external AgentMail history.
+It also seeds Apex purchase history, separate controlled identities, and
+clearly marked demo metrics. Hidden `/?demo=1` controls proved ready → active →
+ready with zero browser console errors. Convex features: schema, tables,
+indexes, mutations, query, and realtime query (`convex/schema.ts`,
+`convex/demo.ts`, `src/routes/index.tsx`). No external calls or emails occurred.
+
+### 2026-08-27 — BC-05 + BC-06 — fdd65b0
+
+Replaced the scaffold with a realtime purchasing dashboard and focused
+procurement, recommendation, approval, and purchase-order views backed by
+Convex queries. Added contextual thread-link states without rendering an icon
+until a stored link exists. Starting the demo now calculates lid risk from
+stored usage, creates at most one active `PC-*` buy for that item and run,
+persists the inputs and calculation version, records Detected and Analyzing,
+then begins sourcing (`convex/purchasing.ts`, `convex/demo.ts`,
+`convex/schema.ts`, `src/routes/index.tsx`).
+
+### 2026-08-27 — BC-07 — f9fc6e3
+
+Added eight strict AI task contracts for sourcing, product matching, quote
+understanding, follow-ups, recommendations, confirmations, and exceptions.
+Queued Convex Node actions use OpenAI `gpt-5.4-mini` by default with an
+OpenRouter fallback, validate stored evidence references, separate confirmed
+from inferred fields, and persist explicit failures. Registered
+`@convex-dev/agent` for stable procurement-anchored threads with realtime
+thinking, unread, and read states (`convex/ai.ts`, `convex/aiNode.ts`,
+`convex/aiContracts.ts`, `convex/convex.config.ts`, `src/routes/index.tsx`).
+
+### 2026-08-27 — BC-08 — 340207e
+
+Added Firecrawl-backed supplier discovery that requires at least two distinct
+supplier websites and stores search runs, results, supplier products, and
+source claims. Each candidate schedules structured product-equivalence analysis,
+while the realtime UI exposes match status and source links. Convex features:
+action, mutations, query, and scheduled functions (`convex/sourcing.ts`,
+`convex/schema.ts`, `src/routes/index.tsx`).
+
+### 2026-08-27 — BC-09 — 9e7e1e6
+
+Added controlled RFQ preparation after real supplier discovery. It creates
+three previews for separate controlled identities, asks AI to draft the fixed
+commercial questions without changing supplied fields, and keeps recipient
+approval and sending as separate later steps (`convex/rfqs.ts`,
+`convex/ai.ts`, `convex/aiContracts.ts`, `src/routes/index.tsx`).
+
+### 2026-08-27 — BC-10 — 8f22e83
+
+Added buyer-gated AgentMail RFQ delivery. Sending requires the exact confirmation
+phrase, three approved external recipients, and complete previews. Stable
+idempotency keys and provider receipts prevent duplicate sends; delivery
+reconciliation stores message and thread links and advances to Awaiting quotes
+only after provider success (`convex/mail.ts`, `convex/schema.ts`,
+`src/routes/index.tsx`). No email was sent during this phase.
+
+### 2026-08-27 — BC-11 — bcbe968
+
+Added signed AgentMail webhook handling for inbound supplier replies. It
+deduplicates event and provider message IDs, maps the provider thread to its RFQ,
+stores source evidence, and schedules structured quote extraction. A development
+test accepted a signed `message.received` example, rejected unsigned traffic
+with `401 invalid signature`, and ignored the duplicate replay; the canned
+unlinked thread correctly did not create a quote (`convex/http.ts`,
+`convex/inbound.ts`, `convex/ai.ts`, `convex/schema.ts`).
 
 ### 2026-08-27 — BC-12
 
@@ -150,3 +207,18 @@ term matched, the procurement reached Confirmed, and a confirmed 15,000-unit
 expected inventory record was created. Browser proof also exposed and fixed the
 approval review-state transition and the unit-price display. No production
 deployment or public repository action occurred.
+
+### 2026-08-28 — BC-19
+
+Deployed the backend and static frontend to production deployment
+`reliable-albatross-463` and completed the controlled flow on the exact public
+host. Procurement `PC-9258` selected the only on-time SupplyCo quote: 15,000
+units at $0.20 each, $0 freight, $3,000 total, arriving 2026-09-02 on Net 30.
+AgentMail delivered `PO-PC-9258-8DAPKN` once to the approved controlled address.
+OpenAI extracted supplier confirmation `SC-2026-0828-9258`; the deterministic
+comparison matched every approved term and created 15,000 confirmed incoming
+units, changing inventory to Covered. A fresh browser session entered judge
+mode with one click, displayed the complete dashboard and evidence, hid
+controlled recipient addresses, disabled shared reset/start controls, and
+could not send external email. OXC, formatting, TypeScript, and production
+build checks passed. No repository publication or hackathon submission occurred.

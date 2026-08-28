@@ -1,6 +1,6 @@
 # Autonomous Buyer implementation plan
 
-Status: BC-00 through BC-18 complete in the development deployment. BC-19 awaits explicit approval for production configuration and deployment.
+Status: BC-00 through BC-19 complete. BC-20 awaits public publication and submission approval.
 
 This document turns the [product spec](./product-spec.md) into ordered build
 contexts. Each context is intentionally small enough to hand to an agent or a
@@ -699,7 +699,7 @@ deployment or public URL was changed.
 
 ### BC-19 — Public `convex.site` deployment
 
-Depends on: BC-18 and explicit user approval.
+Depends on: BC-18 and explicit user approval. Status: complete in production.
 
 Load: deploy checklist, environment names, webhook routes, and release commit.
 
@@ -714,8 +714,14 @@ Work:
 - Verify anonymous judge access; demo approvals use one-click judge auth while
   non-demo approvals require the configured buyer account.
 
-Exit proof: the real public URL completes the controlled flow. A local build or
-localhost run is not deployment proof.
+Exit proof: https://reliable-albatross-463.convex.site completed the controlled
+flow against production deployment `reliable-albatross-463`. Procurement
+`PC-9258` reached Confirmed after `PO-PC-9258-8DAPKN` was delivered once and
+supplier confirmation `SC-2026-0828-9258` matched the approved terms. The live
+dashboard shows 15,000 confirmed incoming units and Covered inventory. A fresh
+one-click judge session displayed the full dashboard and procurement evidence,
+kept controlled recipients hidden, disabled shared reset/start controls, and
+could not send external email. Static checks and the production build passed.
 
 ### BC-20 — Hackathon submission package
 

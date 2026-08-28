@@ -31,6 +31,7 @@ const intentByTask = {
 
 type ConfirmationOutput = {
   confirmed: boolean;
+  supplierConfirmationNumber: string | null;
   sku: string | null;
   quantity: number | null;
   unitPriceMicrodollars: number | null;
@@ -90,6 +91,32 @@ function missingQuoteTerms(terms: QuoteTerms) {
     ["quote_expiration", terms.expiresOn],
   ];
   return entries.filter((entry) => entry[1] === null).map((entry) => entry[0]);
+}
+
+function hasExplicitFreightEvidence(text: string) {
+  return /\b(?:freight|shipping(?:\s+(?:cost|charge|fee))?)\b[\s\S]{0,40}(?:\$|usd\b|\bzero\b|\bfree\b|\bno charge\b|\bincluded\b)/i.test(
+    text,
+  );
+}
+
+function labeledDollarCents(text: string, label: "Freight" | "Total") {
+  const match = text.match(
+    new RegExp(
+      `(?:^|\\n)\\s*${label}\\s*:\\s*\\$\\s*([0-9][0-9,]*(?:\\.[0-9]{1,2})?)\\s*(?:$|\\n)`,
+      "i",
+    ),
+  );
+  if (match === null) return null;
+  const dollars = Number(match[1].replaceAll(",", ""));
+  return Number.isFinite(dollars) ? Math.round(dollars * 100) : null;
+}
+
+function evidenceBoundConfirmation(text: string, output: ConfirmationOutput): ConfirmationOutput {
+  return {
+    ...output,
+    freightCents: labeledDollarCents(text, "Freight") ?? output.freightCents,
+    totalCents: labeledDollarCents(text, "Total") ?? output.totalCents,
+  };
 }
 
 function confirmationDifferences(order: Doc<"purchaseOrders">, output: ConfirmationOutput) {
@@ -579,13 +606,46 @@ export const completeRun = internalMutation({
         throw new Error("Quote extraction is missing its RFQ context.");
       }
       const output = args.result.output;
+      const inboundEvidence = await ctx.db
+        .query("inboundEmailEvidence")
+        .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
+        .unique();
+      const evidenceText = inboundEvidence?.extractedText ?? "";
+      const evidenceBoundOutput: QuoteTerms = {
+        ...output,
+        freightCents: hasExplicitFreightEvidence(evidenceText) ? output.freightCents : null,
+      };
       const prior = await ctx.db
         .query("quotes")
         .withIndex("by_rfq_revision", (q) => q.eq("rfqId", rfq._id))
         .order("desc")
         .take(1);
       const previousQuote = prior[0] ?? null;
-      const terms = mergeQuoteTerms(output, previousQuote);
+      let evidenceBoundPreviousQuote = previousQuote;
+      if (previousQuote !== null) {
+        const previousEmailLink = await ctx.db
+          .query("emailLinks")
+          .withIndex("by_provider_message", (q) =>
+            q
+              .eq("provider", "agentmail")
+              .eq("providerMessageId", previousQuote.rawProviderMessageId),
+          )
+          .unique();
+        const previousEvidence =
+          previousEmailLink === null
+            ? null
+            : await ctx.db
+                .query("inboundEmailEvidence")
+                .withIndex("by_email_link", (q) => q.eq("emailLinkId", previousEmailLink._id))
+                .unique();
+        if (
+          previousEvidence !== null &&
+          !hasExplicitFreightEvidence(previousEvidence.extractedText)
+        ) {
+          evidenceBoundPreviousQuote = { ...previousQuote, freightCents: undefined };
+        }
+      }
+      const terms = mergeQuoteTerms(evidenceBoundOutput, evidenceBoundPreviousQuote);
       const missingInformation = missingQuoteTerms(terms);
       const totals =
         terms.unitPriceMicrodollars === null
@@ -711,7 +771,14 @@ export const completeRun = internalMutation({
         .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
         .unique();
       if (existing === null) {
-        const output = args.result.output;
+        const inboundEvidence = await ctx.db
+          .query("inboundEmailEvidence")
+          .withIndex("by_email_link", (q) => q.eq("emailLinkId", emailLink._id))
+          .unique();
+        const output = evidenceBoundConfirmation(
+          inboundEvidence?.extractedText ?? "",
+          args.result.output,
+        );
         const differences = confirmationDifferences(order, output);
         const confirmationId = await ctx.db.insert("confirmations", {
           procurementId: procurement._id,
@@ -748,11 +815,19 @@ export const completeRun = internalMutation({
               isDemo: demoRun?.isDemo ?? false,
             });
           }
-          await ctx.db.patch("purchaseOrders", order._id, { status: "confirmed" });
+          await ctx.db.patch("purchaseOrders", order._id, {
+            status: "confirmed",
+            errorMessage: undefined,
+          });
+          await ctx.db.patch("procurements", procurement._id, {
+            reviewStatus: "resolved",
+            reviewReason: undefined,
+            updatedAt: now,
+          });
           await ctx.db.patch("inventoryItems", procurement.inventoryItemId, {
             status: "covered",
           });
-          if (procurement.status === "confirmation_pending") {
+          if (procurement.status === "confirmation_pending" || procurement.status === "exception") {
             await ctx.runMutation(internal.procurements.transition, {
               procurementId: procurement._id,
               toState: "confirmed",

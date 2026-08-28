@@ -47,7 +47,9 @@ const systemPrompt = `You perform one structured procurement-language task.
 Use only the supplied stored evidence. Never do inventory arithmetic, price calculations,
 policy decisions, state transitions, approvals, or purchase-order totals. Do not reveal raw
 reasoning. Put facts directly supported by evidence in confirmedFields and interpretations in
-inferredFields. Every field must cite only evidence IDs supplied in the prompt.`;
+inferredFields. Every field must cite only evidence IDs supplied in the prompt. For quote
+extraction, set any commercial term not explicitly stated by the supplier to null. Never treat
+omitted freight, shipping, or tax amounts as zero.`;
 
 async function runTask(
   adapter: AnyTextAdapter,
