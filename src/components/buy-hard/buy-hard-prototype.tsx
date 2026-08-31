@@ -1,8 +1,14 @@
 import { Activity, ArrowLeft, ChevronRight, Filter, Search, Signal } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 import "./buy-hard-prototype.css";
 import { DotMatrixDisplay } from "./dot-matrix-display";
+import {
+  DEFAULT_EINK_SETTINGS,
+  EinkCanvasSurface,
+  EinkTuner,
+  type EinkSettings,
+} from "./eink-canvas-display";
 
 type BuyStatus = "awaiting_quotes" | "confirmed" | "covered" | "delivered" | "monitoring";
 
@@ -206,12 +212,15 @@ function StatusText({ status }: { status: BuyStatus }) {
 function BuyList({
   selectedBuyId,
   onBuySelect,
+  settings,
 }: {
   selectedBuyId: string;
   onBuySelect: (buyId: string) => void;
+  settings: EinkSettings;
 }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<BuyStatus | "all">("all");
+  const sourceRef = useRef<HTMLDivElement>(null);
 
   const normalizedQuery = query.trim().toLowerCase();
   const visibleBuys = buys.filter((buy) => {
@@ -221,93 +230,110 @@ function BuyList({
     return matchesQuery && (status === "all" || buy.status === status);
   });
 
+  const revision = `${selectedBuyId}|${query}|${status}|${visibleBuys
+    .map((buy) => buy.id)
+    .join(",")}`;
+  const displayStyle = {
+    "--bh-eink-paper": settings.paper,
+    "--bh-eink-ink": settings.ink,
+    "--bh-blue": settings.accent,
+  } as CSSProperties;
+
   return (
-    <section className="bh-panel bh-buy-list" id="all-buys" aria-labelledby="all-buys-title">
-      <div className="bh-panel__header bh-list-header">
-        <div>
-          <p className="bh-kicker">Buy desk / mock data</p>
-          <h2 id="all-buys-title">All buys</h2>
-        </div>
-        <div className="bh-list-tools">
-          <label className="bh-search">
-            <span className="sr-only">Search buys</span>
-            <Search aria-hidden="true" />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search buys"
-            />
-          </label>
-          <label className="bh-filter">
-            <span className="sr-only">Filter buys by status</span>
-            <Filter aria-hidden="true" />
-            <select
-              value={status}
-              onChange={(event) => setStatus(event.target.value as BuyStatus | "all")}
-            >
-              <option value="all">All statuses</option>
-              {Object.entries(statusLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <ul className="bh-buy-rows" aria-label="Buy records">
-        {visibleBuys.map((buy) => {
-          const selected = buy.id === selectedBuyId;
-          return (
-            <li key={buy.id}>
-              <button
-                type="button"
-                className="bh-buy-row"
-                data-selected={selected ? "true" : "false"}
-                data-status={buy.status}
-                aria-pressed={selected}
-                aria-controls="buy-detail"
-                onClick={() => onBuySelect(buy.id)}
+    <section
+      className="bh-panel bh-buy-list"
+      id="all-buys"
+      aria-labelledby="all-buys-title"
+      style={displayStyle}
+    >
+      <div className="bh-eink-dom" ref={sourceRef}>
+        <div className="bh-panel__header bh-list-header">
+          <div>
+            <p className="bh-kicker">Buy desk / mock data</p>
+            <h2 id="all-buys-title">All buys</h2>
+          </div>
+          <div className="bh-list-tools">
+            <label className="bh-search">
+              <span className="sr-only">Search buys</span>
+              <Search aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search buys"
+              />
+            </label>
+            <label className="bh-filter">
+              <span className="sr-only">Filter buys by status</span>
+              <Filter aria-hidden="true" />
+              <select
+                value={status}
+                onChange={(event) => setStatus(event.target.value as BuyStatus | "all")}
               >
-                <span className="bh-buy-row__identity">
-                  <span className="bh-buy-row__id">{buy.id}</span>
-                  <span className="bh-buy-row__name">{buy.itemName}</span>
-                </span>
-                <span className="bh-buy-row__schedule">
-                  <span>{buy.quantity}</span>
-                  <span>Due {buy.dueDate}</span>
-                </span>
-                <StatusText status={buy.status} />
-                <ChevronRight className="bh-buy-row__chevron" aria-hidden="true" />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      {visibleBuys.length === 0 ? (
-        <div className="bh-empty">
-          <p>No buys match this view.</p>
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("");
-              setStatus("all");
-            }}
-          >
-            Clear filters
-          </button>
+                <option value="all">All statuses</option>
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         </div>
-      ) : null}
 
-      <div className="bh-pagination" aria-label="Pagination preview">
-        <span>
-          1–{visibleBuys.length} of {buys.length} buys
-        </span>
-        <span aria-hidden="true">01 / 01</span>
+        <ul className="bh-buy-rows" aria-label="Buy records">
+          {visibleBuys.map((buy) => {
+            const selected = buy.id === selectedBuyId;
+            return (
+              <li key={buy.id}>
+                <button
+                  type="button"
+                  className="bh-buy-row"
+                  data-selected={selected ? "true" : "false"}
+                  data-status={buy.status}
+                  aria-pressed={selected}
+                  aria-controls="buy-detail"
+                  onClick={() => onBuySelect(buy.id)}
+                >
+                  <span className="bh-buy-row__identity">
+                    <span className="bh-buy-row__id">{buy.id}</span>
+                    <span className="bh-buy-row__name">{buy.itemName}</span>
+                  </span>
+                  <span className="bh-buy-row__schedule">
+                    <span>{buy.quantity}</span>
+                    <span>Due {buy.dueDate}</span>
+                  </span>
+                  <StatusText status={buy.status} />
+                  <ChevronRight className="bh-buy-row__chevron" aria-hidden="true" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        {visibleBuys.length === 0 ? (
+          <div className="bh-empty">
+            <p>No buys match this view.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setStatus("all");
+              }}
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : null}
+
+        <div className="bh-pagination" aria-label="Pagination preview">
+          <span>
+            {visibleBuys.length === 0 ? "0" : `1–${visibleBuys.length}`} of {buys.length} buys
+          </span>
+          <span aria-hidden="true">01 / 01</span>
+        </div>
       </div>
+      <EinkCanvasSurface sourceRef={sourceRef} settings={settings} revision={revision} />
     </section>
   );
 }
@@ -422,11 +448,16 @@ function BuyDetail({ buy, onBack }: { buy: Buy; onBack: () => void }) {
 export function BuyHardPrototype() {
   const [selectedBuyId, setSelectedBuyId] = useState(buys[0].id);
   const [mobileView, setMobileView] = useState<"detail" | "list">("list");
+  const [einkSettings, setEinkSettings] = useState(DEFAULT_EINK_SETTINGS);
   const selectedBuy = buys.find((buy) => buy.id === selectedBuyId) ?? buys[0];
 
   function selectBuy(buyId: string) {
     setSelectedBuyId(buyId);
     setMobileView("detail");
+  }
+
+  function changeEinkSetting<Key extends keyof EinkSettings>(key: Key, value: EinkSettings[Key]) {
+    setEinkSettings((current) => ({ ...current, [key]: value }));
   }
 
   return (
@@ -445,10 +476,17 @@ export function BuyHardPrototype() {
           </a>
           <a href="#activity-feed">Activity</a>
         </nav>
-        <div className="bh-agent-status">
-          <Signal aria-hidden="true" />
-          <span>Agent: working</span>
-          <span className="bh-agent-status__light" aria-hidden="true" />
+        <div className="bh-app-actions">
+          <EinkTuner
+            settings={einkSettings}
+            onChange={changeEinkSetting}
+            onReset={() => setEinkSettings(DEFAULT_EINK_SETTINGS)}
+          />
+          <div className="bh-agent-status">
+            <Signal aria-hidden="true" />
+            <span>Agent: working</span>
+            <span className="bh-agent-status__light" aria-hidden="true" />
+          </div>
         </div>
       </header>
 
@@ -461,7 +499,7 @@ export function BuyHardPrototype() {
         <MetricRack />
 
         <div className="bh-workspace">
-          <BuyList selectedBuyId={selectedBuy.id} onBuySelect={selectBuy} />
+          <BuyList selectedBuyId={selectedBuy.id} onBuySelect={selectBuy} settings={einkSettings} />
           <BuyDetail buy={selectedBuy} onBack={() => setMobileView("list")} />
         </div>
       </div>
