@@ -18,6 +18,7 @@ import { createContext, useCallback, useContext, useRef, useState } from "react"
 
 import { HardwareMetric, HardwareMetricRack } from "@/components/buy-hard/hardware-metric";
 import { LiveBuyList } from "@/components/buy-hard/live-buy-list";
+import { getOpenBuys } from "@/components/buy-hard/open-buys";
 import { SponsorCredit } from "@/components/buy-hard/sponsor-credit";
 import { DemoWalkthrough, type DemoWalkthroughStep } from "@/components/buy-hard/demo-walkthrough";
 import { QuoteComparison, QuoteHistory } from "@/components/buy-hard/purchase-evidence";
@@ -182,6 +183,7 @@ function Home() {
   const resetScenario = useMutation(api.demo.resetScenario);
   const startScenario = useMutation(api.demo.startScenario);
   const search = Route.useSearch();
+  const walkthroughReturnSearch = useRef<typeof search | null>(null);
   const routeNavigate = Route.useNavigate();
   const displayRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation | null>(null);
@@ -197,6 +199,7 @@ function Home() {
   const [controlState, setControlState] = useState<"idle" | "resetting" | "starting">("idle");
   const [controlError, setControlError] = useState<string | null>(null);
   const [displayNavigating, setDisplayNavigating] = useState(false);
+  const [listResetVersion, setListResetVersion] = useState(0);
 
   const navigate: DisplayNavigate = async (options) => {
     const version = ++navigationVersion.current;
@@ -257,6 +260,7 @@ function Home() {
   function startWalkthrough() {
     const procurementId = dashboard?.latestConfirmedProcurementId;
     if (!procurementId) return;
+    if (search.tour === undefined) walkthroughReturnSearch.current = search;
     void navigate({
       search: (current) => ({
         ...current,
@@ -271,6 +275,21 @@ function Home() {
   function changeDemoStep(index: number) {
     void navigate({
       search: (current) => ({ ...current, view: demoViews[index] ?? "procurement", tour: index }),
+    });
+  }
+
+  function closeWalkthrough() {
+    const previousSearch = walkthroughReturnSearch.current;
+    walkthroughReturnSearch.current = null;
+    void navigate({
+      search: (current) =>
+        previousSearch ?? {
+          ...current,
+          demo: false,
+          tour: undefined,
+          procurement: undefined,
+          view: "procurement",
+        },
     });
   }
 
@@ -336,9 +355,12 @@ function Home() {
             aria-label="BUY HARD home"
             onClick={(event) => {
               event.preventDefault();
+              setListResetVersion((version) => version + 1);
+              walkthroughReturnSearch.current = null;
               void navigate({
                 search: (current) => ({
                   ...current,
+                  demo: false,
                   procurement: undefined,
                   view: "procurement",
                   tour: undefined,
@@ -437,6 +459,7 @@ function Home() {
                     />
                   ) : (
                     <LiveBuyList
+                      key={`${dashboard.demoRunId}:${listResetVersion}`}
                       dashboard={dashboard}
                       selectedId={search.procurement}
                       onSelect={selectBuy}
@@ -467,7 +490,8 @@ function Home() {
                       }
                     />
                   ) : (
-                    <LatestPurchaseSummary
+                    <BuyDeskSummary
+                      nextOpenBuy={dashboard ? getOpenBuys(dashboard.inventory)[0] : undefined}
                       procurementId={dashboard?.latestConfirmedProcurementId}
                       onOpen={(id) =>
                         void navigate({
@@ -479,6 +503,7 @@ function Home() {
                           }),
                         })
                       }
+                      onOpenBuy={selectBuy}
                     />
                   )}
                 </div>
@@ -552,9 +577,7 @@ function Home() {
             currentStep={search.tour}
             loading={displayNavigating}
             onStepChange={changeDemoStep}
-            onClose={() =>
-              void navigate({ search: (current) => ({ ...current, demo: false, tour: undefined }) })
-            }
+            onClose={closeWalkthrough}
           />
         ) : null}
       </main>
@@ -562,21 +585,40 @@ function Home() {
   );
 }
 
-function LatestPurchaseSummary({
+function BuyDeskSummary({
+  nextOpenBuy,
   procurementId,
   onOpen,
+  onOpenBuy,
 }: {
+  nextOpenBuy?: Dashboard["inventory"][number];
   procurementId?: Id<"procurements"> | null;
   onOpen: (id: string) => void;
+  onOpenBuy: (id: string) => void;
 }) {
   const procurement = useQuery(
     api.purchasing.getProcurement,
-    procurementId ? { procurementId } : "skip",
+    procurementId && !nextOpenBuy ? { procurementId } : "skip",
   );
   return (
     <div className="buy-desk-idle buy-desk-latest">
       <ScanLine aria-hidden="true" />
-      {procurement?.confirmation ? (
+      {nextOpenBuy?.procurement ? (
+        <>
+          <p className="bh-kicker">Open buy · {nextOpenBuy.procurement.code}</p>
+          <h2>{nextOpenBuy.name}</h2>
+          <p>
+            {procurementLabels[nextOpenBuy.procurement.status] ?? "Purchase in progress"} · due{" "}
+            {nextOpenBuy.procurement.requiredBy}
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => onOpenBuy(nextOpenBuy.procurement!.procurementId)}
+          >
+            Open buy <ArrowRight aria-hidden="true" />
+          </Button>
+        </>
+      ) : procurement?.confirmation ? (
         <>
           <p className="bh-kicker">Latest confirmation · {procurement.code}</p>
           <h2>{procurement.itemName}</h2>
@@ -887,7 +929,7 @@ function FocusedProcurement({
             Procurement not found
           </h2>
           <Button className="mt-5" onClick={onBack}>
-            All buys
+            Buy desk
           </Button>
         </div>
       </div>
@@ -923,7 +965,7 @@ function FocusedProcurement({
         <header className="flex items-center justify-between border-b border-border pb-4">
           <Button variant="ghost" className="buy-desk-back" onClick={onBack}>
             <ArrowLeft />
-            All buys
+            Buy desk
           </Button>
           <div className="flex items-center gap-2">
             <span className="font-mono text-sm text-muted-foreground">{procurement.code}</span>

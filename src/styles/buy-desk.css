@@ -203,15 +203,18 @@
 }
 .buy-desk-list-tabs {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.2rem;
 }
 .buy-desk-list-tab {
+  flex: 0 0 auto;
   min-height: 44px;
   padding: 0.5rem 0.6rem;
   border-bottom: 1px solid transparent;
   color: var(--bh-eink-muted);
   font-size: 0.7rem;
+  white-space: nowrap;
   cursor: pointer;
 }
 .buy-desk-list-tab[aria-pressed="true"] {

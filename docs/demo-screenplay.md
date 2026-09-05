@@ -5,8 +5,8 @@ purchase. The guide only navigates; it does not sign in, send email, or approve 
 
 ## Setup
 
-- Open the [development review app](https://festive-coyote-483.convex.site/?demo=1).
-- Stay signed out. Click **Start walkthrough** to select the latest confirmed
+- Open the [development review app](https://festive-coyote-483.convex.site/).
+- Stay signed out. Click **Demo** to select the latest confirmed
   purchase in the current scenario.
 - The production URL still hosts an older release. Do not use it to review this design.
 - Confirm the selected record, dates, quantities and provider credits before recording.
@@ -24,9 +24,21 @@ purchase. The guide only navigates; it does not sign in, send email, or approve 
 | 1:50–2:15 | The buyer keeps control                 | The recorded decision and exact purchase terms. Do not make a new approval. **Inspect PO** continues to the confirmation step.                                                         |
 | 2:15–2:45 | Close the loop with supplier evidence   | Supplier-confirmed quantity and arrival, matching terms and the purchase order document. AgentMail and the actual extraction provider are credited beside their work.                  |
 
-Use **Next** at each stop. **Finish** removes the overlay and leaves the real order
-open. The everyday app exposes the same quote history, comparison and order evidence
+Use **Next** at each stop. **Finish** or closing the guide restores the view used
+before starting the walkthrough. A directly opened tour link returns to the Open buys
+queue. The everyday app exposes the same quote history, comparison and order evidence
 without a demo narrator.
+
+## Everyday entry
+
+- **Open buys** is the default queue, using the same server-owned open flag as the
+  metric. Reviews and exceptions come first, then required date.
+- **Recent buys** keeps the latest linked purchase per inventory item accessible,
+  including confirmed purchases. **Inventory** remains a separate tab.
+- The **Demo** button selects recorded evidence directly; an empty Open buys queue
+  does not prevent the walkthrough. It never reopens a completed purchase.
+- The **BUY HARD** home link resets the list and filters to Open buys. Returning from
+  an individual purchase keeps the list view and filters used to open it.
 
 ## Claims to keep precise
 

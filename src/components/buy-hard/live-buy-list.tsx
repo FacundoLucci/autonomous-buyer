@@ -3,13 +3,20 @@ import { ChevronRight, Filter, Search } from "lucide-react";
 import { useId, useState } from "react";
 
 import type { api } from "../../../convex/_generated/api";
+import { getOpenBuys } from "./open-buys";
 
 export type Dashboard = NonNullable<
   ReturnType<typeof useQuery<typeof api.purchasing.getDashboard>>
 >;
 
 type InventoryItem = Dashboard["inventory"][number];
-type ListView = "buys" | "inventory";
+type ListView = "open" | "buys" | "inventory";
+
+const viewLabels: Record<ListView, string> = {
+  open: "Open buys",
+  buys: "Recent buys",
+  inventory: "Inventory",
+};
 
 type LiveBuyListProps = {
   dashboard: Dashboard;
@@ -90,19 +97,22 @@ function InventoryContent({ item }: { item: InventoryItem }) {
 
 export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProps) {
   const headingId = useId();
-  const [view, setView] = useState<ListView>("buys");
+  const [view, setView] = useState<ListView>("open");
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<ListView, string>>({
+    open: "all",
     buys: "all",
     inventory: "all",
   });
 
   const recentItems = dashboard.inventory.filter((item) => item.procurement !== null);
-  const items = view === "buys" ? recentItems : dashboard.inventory;
+  const openItems = getOpenBuys(dashboard.inventory);
+  const items = view === "open" ? openItems : view === "buys" ? recentItems : dashboard.inventory;
+  const viewLabel = viewLabels[view];
   const activeStatus = filters[view];
   const normalizedQuery = query.trim().toLowerCase();
   const itemStatus = (item: InventoryItem) =>
-    view === "buys" ? (item.procurement?.status ?? item.status) : item.status;
+    view !== "inventory" ? (item.procurement?.status ?? item.status) : item.status;
   const statuses = Array.from(
     new Set([...items.map(itemStatus), ...(activeStatus === "all" ? [] : [activeStatus])]),
   ).sort((first, second) => statusLabel(first).localeCompare(statusLabel(second)));
@@ -123,9 +133,17 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
     <div className="buy-desk-list" data-view={view}>
       <header className="buy-desk-list-header">
         <div className="buy-desk-list-heading">
-          <h2 id={headingId}>{view === "buys" ? "Recent buys" : "Inventory"}</h2>
+          <h2 id={headingId}>{viewLabel}</h2>
         </div>
         <fieldset className="buy-desk-list-tabs min-w-0 border-0 p-0" aria-label="Buy desk view">
+          <button
+            type="button"
+            className="buy-desk-list-tab"
+            aria-pressed={view === "open"}
+            onClick={() => setView("open")}
+          >
+            Open buys <span className="tabular-nums">{openItems.length}</span>
+          </button>
           <button
             type="button"
             className="buy-desk-list-tab"
@@ -147,7 +165,7 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
 
       <div className="buy-desk-list-tools">
         <label className="buy-desk-list-search">
-          <span className="sr-only">Search {view === "buys" ? "recent buys" : "inventory"}</span>
+          <span className="sr-only">Search {viewLabel.toLowerCase()}</span>
           <Search aria-hidden="true" />
           <input
             type="search"
@@ -159,9 +177,7 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
           />
         </label>
         <label className="buy-desk-list-filter">
-          <span className="sr-only">
-            Filter {view === "buys" ? "recent buys" : "inventory"} by status
-          </span>
+          <span className="sr-only">Filter {viewLabel.toLowerCase()} by status</span>
           <Filter aria-hidden="true" />
           <select
             value={activeStatus}
@@ -187,7 +203,7 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
 
             return (
               <li key={item.inventoryItemId}>
-                {view === "buys" && procurement ? (
+                {view !== "inventory" && procurement ? (
                   <button
                     type="button"
                     className="buy-desk-list-row"
@@ -241,16 +257,22 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
         <div className="buy-desk-list-empty">
           <p>
             {hasFilters
-              ? `No ${view === "buys" ? "recent buys" : "inventory items"} match your filters.`
-              : view === "buys"
-                ? "No recent buys are linked to this inventory."
-                : "No inventory items are available."}
+              ? `No ${view === "inventory" ? "inventory items" : viewLabel.toLowerCase()} match your filters.`
+              : view === "open"
+                ? "No open buys. Inventory monitoring continues."
+                : view === "buys"
+                  ? "No recent buys are linked to this inventory."
+                  : "No inventory items are available."}
           </p>
           {hasFilters ? (
             <button type="button" onClick={clearFilters}>
               Clear filters
             </button>
-          ) : view === "buys" && dashboard.inventory.length > 0 ? (
+          ) : view === "open" && recentItems.length > 0 ? (
+            <button type="button" onClick={() => setView("buys")}>
+              View recent buys
+            </button>
+          ) : view !== "inventory" && dashboard.inventory.length > 0 ? (
             <button type="button" onClick={() => setView("inventory")}>
               View inventory
             </button>
@@ -260,12 +282,15 @@ export function LiveBuyList({ dashboard, selectedId, onSelect }: LiveBuyListProp
 
       <footer className="buy-desk-list-footer text-muted-foreground">
         <output aria-live="polite" aria-atomic="true">
-          {visibleItems.length} of {items.length} {view === "buys" ? "recent buys" : "items"}
+          {visibleItems.length} of {items.length}{" "}
+          {view === "inventory" ? "items" : viewLabel.toLowerCase()}
         </output>
         <span>
-          {view === "buys"
-            ? "Latest linked buy per inventory item · live"
-            : "On hand · recorded / Days left · calculated / Incoming · supplier-confirmed"}
+          {view === "open"
+            ? "Buyer review first · then required date · live"
+            : view === "buys"
+              ? "Latest linked buy per inventory item · live"
+              : "On hand · recorded / Days left · calculated / Incoming · supplier-confirmed"}
         </span>
       </footer>
     </div>
