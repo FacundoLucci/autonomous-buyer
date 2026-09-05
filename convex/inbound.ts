@@ -72,6 +72,28 @@ export const onMessageReceived = internalMutation({
       });
       return null;
     }
+    const procurement = await ctx.db.get("procurements", rfq.procurementId);
+    if (procurement === null) throw new Error("Procurement not found for inbound RFQ.");
+    const purchasingInbox = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_organization_and_provider", (q) =>
+        q.eq("organizationId", procurement.organizationId).eq("provider", "agentmail"),
+      )
+      .unique();
+    if (!purchasingInbox || optionalString(message.inbox_id) !== purchasingInbox.inboxId) {
+      await ctx.db.insert("integrationReceipts", {
+        provider: "agentmail",
+        idempotencyKey,
+        operation: "agentmail_receive_message",
+        status: "failed",
+        providerRecordId: providerMessageId,
+        requestHash: `${providerMessageId}|${providerThreadId}`,
+        errorMessage: "Inbound inbox does not belong to the company for this purchase.",
+        createdAt: Date.now(),
+        completedAt: Date.now(),
+      });
+      return null;
+    }
     const senderEmail = emailAddress(requiredString(message.from, "from"));
     if (
       senderEmail === undefined ||
@@ -128,8 +150,6 @@ export const onMessageReceived = internalMutation({
       extractedText,
       observedAt: now,
     });
-    const procurement = await ctx.db.get("procurements", rfq.procurementId);
-    if (procurement === null) throw new Error("Procurement not found for inbound RFQ.");
     await ctx.db.insert("procurementEvents", {
       procurementId: procurement._id,
       demoRunId: procurement.demoRunId,

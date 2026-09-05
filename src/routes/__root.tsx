@@ -96,10 +96,10 @@ function NotFound() {
           <p className="bh-kicker">404 / Page not found</p>
           <h1 className="text-xl font-semibold">Nothing at this address.</h1>
           <p className="text-sm leading-6 text-muted-foreground">
-            Head back to your buy desk to keep things moving.
+            Head home to keep things moving.
           </p>
           <a href="/" className={buttonVariants()} data-variant="default">
-            Open buy desk
+            Go home
           </a>
         </div>
       </main>

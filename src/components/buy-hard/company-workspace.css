@@ -1,0 +1,226 @@
+.company-sign-out {
+  font-size: 11px;
+  border: 1px solid var(--bh-line-strong);
+  padding: 10px 15px;
+  min-height: 44px;
+}
+.company-desk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 24px;
+  margin-top: 35px;
+}
+.company-inventory-intro {
+  padding: 25px;
+  border-bottom: 1px solid var(--bh-eink-rule);
+}
+.company-inventory-intro h2 {
+  font-size: 17px;
+}
+.company-inventory-intro p {
+  margin-top: 9px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--bh-eink-muted);
+}
+.company-item {
+  padding: 27px;
+  border-bottom: 1px solid var(--bh-eink-rule);
+}
+.company-item:last-child {
+  border-bottom: none;
+}
+.company-item-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 20px;
+}
+.company-item-heading p {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--bh-eink-muted);
+}
+.company-item-heading h3 {
+  font-size: 18px;
+  margin-top: 9px;
+}
+.company-stock-status {
+  flex-shrink: 0;
+  font-size: 9px;
+  border: 1px solid var(--bh-eink-rule);
+  padding: 7px 9px;
+}
+.company-stock-status[data-action="true"] {
+  color: var(--destructive);
+  border-color: #d3978055;
+}
+.company-stock-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+.company-stock-grid span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: var(--bh-eink-muted);
+}
+.company-stock-grid strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: 450;
+  overflow-wrap: anywhere;
+}
+.company-stock-grid small {
+  font-size: 10px;
+  color: var(--bh-eink-muted);
+}
+.company-reorder-note {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--bh-eink-muted);
+  margin-top: 22px;
+}
+.company-edit-stock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 12px;
+  font-size: 10px;
+}
+.company-edit-stock svg {
+  width: 12px;
+}
+.company-stock-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  font-size: 11px;
+}
+.company-stock-form input {
+  font-size: 16px;
+  width: 110px;
+  min-height: 44px;
+  padding: 7px;
+  border: 1px solid var(--bh-eink-rule);
+}
+.company-stock-form button {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--bh-eink-rule);
+}
+.company-stock-form button svg {
+  width: 14px;
+}
+.company-stock-form p {
+  flex-basis: 100%;
+  color: var(--destructive);
+}
+.company-inbox {
+  padding: 25px;
+}
+.company-inbox > svg {
+  width: 26px;
+  margin-bottom: 22px;
+}
+.company-inbox h2 {
+  font-size: 16px;
+}
+.company-inbox p {
+  margin-top: 12px;
+  font-size: 11px;
+  line-height: 1.85;
+  color: var(--bh-eink-muted);
+}
+.company-inbox .company-inbox-address {
+  color: var(--bh-eink-ink);
+  overflow-wrap: anywhere;
+}
+.company-inbox a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  font-size: 11px;
+  margin-top: 17px;
+}
+.company-inbox a svg {
+  width: 14px;
+}
+.company-inbox .company-inbox-note {
+  font-size: 9px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--bh-eink-rule);
+  margin-top: 20px;
+}
+.company-delivery {
+  margin-top: 25px;
+  padding: 0 5px;
+}
+.company-delivery p {
+  white-space: pre-line;
+  margin-top: 10px;
+  font-size: 10px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.company-next-step {
+  display: flex;
+  align-items: start;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 22px 25px;
+}
+.company-next-step svg {
+  width: 18px;
+  flex-shrink: 0;
+}
+.company-next-step h2 {
+  font-size: 12px;
+}
+.company-next-step p {
+  font-size: 11px;
+  color: var(--bh-eink-muted);
+  margin-top: 8px;
+  line-height: 1.85;
+}
+.company-stock-form :is(button, input):focus-visible,
+.company-edit-stock:focus-visible,
+.company-sign-out:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .company-desk-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .company-item,
+  .company-inventory-intro {
+    padding: 21px;
+  }
+  .company-item-heading {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .company-stock-grid {
+    gap: 12px;
+  }
+  .company-stock-grid strong {
+    font-size: 20px;
+  }
+  .company-stock-grid small {
+    display: block;
+    margin-top: 4px;
+  }
+}

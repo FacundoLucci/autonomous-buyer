@@ -2,14 +2,34 @@
 
 An autonomous purchasing workflow built on Convex.
 
-**Development review:** [Current design and demo](https://festive-coyote-483.convex.site/?demo=1)
+Company onboarding is available at `/setup`: one question at a time,
+a private company workspace, its first inventory item, and dedicated purchasing
+email setup. See [onboarding behavior and validation](docs/onboarding.md).
+
+**Development review:** [Landing page](https://festive-coyote-483.convex.site/) · [Buy desk demo](https://festive-coyote-483.convex.site/?demo=1)
 
 **Deployed production (older release):** https://reliable-albatross-463.convex.site
 
-The dashboard is public. Select **Demo** or **Start walkthrough** to follow the
+The demo dashboard is public. Select **Demo** or **Start walkthrough** to follow the
 latest confirmed purchase without signing in or running any actions. Everyday
 purchasing uses the same evidence without guide overlays. Shared resets, controlled recipient details,
 buyer approval, and external email sends remain protected.
+
+## App routes
+
+| Address                         | Destination                                                                                                                                             |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                             | Landing page for visitors; company workspace for signed-in members; setup for an unfinished account. Existing demo buyer accounts keep their demo desk. |
+| `/landing`                      | Public landing page, including its interactive sample receipts.                                                                                         |
+| `/setup`                        | Company setup and account creation.                                                                                                                     |
+| `/setup?mode=login`             | Sign in, then return to the member's workspace.                                                                                                         |
+| `/?demo=1`                      | Public Acme Foods buy desk, starting with Open buys.                                                                                                    |
+| `/?demo=1&procurement=…&view=…` | A saved demo purchase, recommendation, approval, or order. Older purchase links without the demo flag also work.                                        |
+| `/?demo=1&procurement=…&tour=0` | Guided demo; closing a shared tour returns to Open buys.                                                                                                |
+| `/prototype`                    | Earlier design prototype, kept for reference.                                                                                                           |
+
+New company workspaces support setup and inventory. Supplier sourcing and
+automated ordering for those workspaces are still unfinished.
 
 ## Read first
 

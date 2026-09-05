@@ -26,7 +26,9 @@ function money(cents: number) {
 }
 
 function address(organization: Doc<"organizations">) {
+  if (organization.shippingAddress) return organization.shippingAddress;
   const value = organization.address;
+  if (!value) throw new Error("Add a delivery address before preparing a purchase order.");
   return [
     value.line1,
     value.line2,

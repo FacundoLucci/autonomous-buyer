@@ -36,21 +36,27 @@ const operationStatusValidator = v.union(
 export default defineSchema({
   organizations: defineTable({
     name: v.string(),
-    address: v.object({
-      line1: v.string(),
-      line2: v.optional(v.string()),
-      city: v.string(),
-      region: v.string(),
-      postalCode: v.string(),
-      countryCode: v.string(),
-    }),
+    address: v.optional(
+      v.object({
+        line1: v.string(),
+        line2: v.optional(v.string()),
+        city: v.string(),
+        region: v.string(),
+        postalCode: v.string(),
+        countryCode: v.string(),
+      }),
+    ),
+    shippingAddress: v.optional(v.string()),
+    mailPodId: v.optional(v.string()),
     timezone: v.string(),
     approvalPolicy: v.object({
       humanApprovalRequired: v.literal(true),
       maximumAutomaticFollowUps: v.number(),
     }),
     isDemo: v.boolean(),
-  }).index("by_name", ["name"]),
+  })
+    .index("by_name", ["name"])
+    .index("by_is_demo_and_name", ["isDemo", "name"]),
 
   users: defineTable({
     organizationId: v.optional(v.id("organizations")),
@@ -102,6 +108,9 @@ export default defineSchema({
       foodContactCompliant: v.optional(v.boolean()),
     }),
     quantityOnHand: v.number(),
+    unit: v.optional(v.string()),
+    estimatedDailyUsage: v.optional(v.number()),
+    supplierLeadTimeDays: v.optional(v.number()),
     safetyStockDays: v.number(),
     casePack: v.number(),
     preferredCoverageDays: v.number(),
@@ -359,6 +368,7 @@ export default defineSchema({
     provider: v.literal("agentmail"),
     inboxId: v.string(),
     email: v.string(),
+    podId: v.optional(v.string()),
     selectedAt: timestampValidator,
   })
     .index("by_organization_and_provider", ["organizationId", "provider"])

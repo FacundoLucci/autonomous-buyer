@@ -1,0 +1,18 @@
+{
+  "target": "https://festive-coyote-483.convex.cloud",
+  "run": "60feddd6",
+  "checks": [
+    "Unauthenticated company creation rejected",
+    "Unauthenticated inbox provisioning rejected before provider call",
+    "Guest cannot read private workspace",
+    "Invalid stock rejected without creating partial company",
+    "Company and first item saved atomically; repeat completion creates no duplicate",
+    "Private item absent from public demo",
+    "Second account gets separate company and cannot update first company stock",
+    "New company admin cannot reset or claim shared demo",
+    "Owner stock update persists",
+    "Sign out and password login restore company, role, and inventory"
+  ],
+  "providerWrites": 0,
+  "companyIds": ["k970k95pe9sa1ymysb8harzp0s8dv8th", "k97ayjn280njk0w7xx5dvy9xy58dv2yn"]
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-05",
+  "environment": "development",
+  "site": "https://festive-coyote-483.convex.site",
+  "deploymentId": "c511d0ae-49cd-446d-a66b-777d468c1a12",
+  "frontendOnly": true,
+  "publishedHtmlMatchesBuild": true,
+  "checks": {
+    "lint": "passed",
+    "formattingOfChangedFiles": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "diffWhitespace": "passed",
+    "publicRoutes": ["/", "/landing", "/setup", "/setup?mode=login", "/?demo=1", "/prototype"],
+    "savedPurchaseViews": ["procurement", "recommendation", "approval", "order"],
+    "savedOrderRefresh": "passed",
+    "sharedTourReturnsToOpenBuys": "passed",
+    "existingTourRestoresListContext": "passed in built local app",
+    "legacyPurchaseLinksAndBack": "passed in built local app",
+    "missingPageReturnsHome": "passed",
+    "sampleReceiptDialog": "passed",
+    "landingViewportWidths": [320, 390, 820, 1440],
+    "horizontalOverflow": false,
+    "missingAssets": 0,
+    "browserErrors": 0
+  },
+  "notExercised": ["Password submission", "Account creation", "Purchasing inbox provisioning"],
+  "knownIncomplete": ["Supplier sourcing and automated ordering for new company workspaces"]
+}

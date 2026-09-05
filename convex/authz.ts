@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 import type { Id } from "./_generated/dataModel";
-import { internalQuery, type MutationCtx, type QueryCtx } from "./_generated/server";
+import { env, internalQuery, type MutationCtx, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 type DatabaseCtx = MutationCtx | QueryCtx;
@@ -15,9 +15,15 @@ export async function requireConfiguredBuyer(ctx: DatabaseCtx) {
     user.isAnonymous === true ||
     user.isActive !== true ||
     (user.role !== "buyer" && user.role !== "admin") ||
-    user.organizationId === undefined
+    user.organizationId === undefined ||
+    !env.BUYER_EMAIL ||
+    user.email?.trim().toLowerCase() !== env.BUYER_EMAIL.trim().toLowerCase()
   ) {
     throw new Error("A configured buyer must authorize this shared demo change.");
+  }
+  const organization = await ctx.db.get("organizations", user.organizationId);
+  if (organization?.isDemo !== true) {
+    throw new Error("This action is reserved for the configured demo workspace.");
   }
   return user;
 }

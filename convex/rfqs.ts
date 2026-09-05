@@ -61,6 +61,10 @@ export const prepare = mutation({
     if (existing.length > 0) return existing.map((rfq) => rfq._id);
     const organization = await ctx.db.get("organizations", procurement.organizationId);
     if (organization === null) throw new Error("Organization not found.");
+    const destination =
+      organization.shippingAddress ??
+      (organization.address ? formatDestination(organization.address) : undefined);
+    if (!destination) throw new Error("Add a delivery address before requesting quotes.");
     const now = Date.now();
     const ids = [];
     for (const [index, identity] of identities.entries()) {
@@ -71,7 +75,7 @@ export const prepare = mutation({
         status: "draft",
         requestedQuantity: procurement.quantityRequired,
         requiredBy: procurement.requiredBy,
-        destination: formatDestination(organization.address),
+        destination,
         recipientEmail: identity.email,
         isControlledRecipient: true,
         automaticFollowUpCount: 0,

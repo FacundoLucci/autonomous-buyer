@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useAuthActions, useConvexAuth } from "@convex-dev/auth/react";
 import { useAction, useMutation, useQuery } from "convex/react";
 import {
@@ -17,6 +17,10 @@ import {
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 
 import { HardwareMetric, HardwareMetricRack } from "@/components/buy-hard/hardware-metric";
+import { CompanyWorkspace } from "@/components/buy-hard/company-workspace";
+import { Setup } from "@/components/buy-hard/setup";
+import { AutonomousLanding } from "@/components/landing/autonomous-landing";
+import { landingHead } from "@/components/landing/landing-head";
 import { LiveBuyList } from "@/components/buy-hard/live-buy-list";
 import { getOpenBuys } from "@/components/buy-hard/open-buys";
 import { SponsorCredit } from "@/components/buy-hard/sponsor-credit";
@@ -44,6 +48,20 @@ import {
 
 type FocusView = "procurement" | "recommendation" | "approval" | "order";
 
+function isDemoDestination(search: {
+  demo: boolean;
+  tour?: number;
+  procurement?: string;
+  view: FocusView;
+}) {
+  return (
+    search.demo ||
+    search.tour !== undefined ||
+    Boolean(search.procurement) ||
+    search.view !== "procurement"
+  );
+}
+
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
     demo:
@@ -61,6 +79,11 @@ export const Route = createFileRoute("/")({
         ? search.view
         : ("procurement" as FocusView),
   }),
+  search: {
+    middlewares: [stripSearchParams({ demo: false, view: "procurement" })],
+  },
+  head: ({ match }) =>
+    isDemoDestination(match.search) ? { meta: [{ title: "BUY HARD — Buy Desk" }] } : landingHead(),
   component: Home,
 });
 
@@ -177,6 +200,20 @@ function useDisplayNavigate() {
 }
 
 function Home() {
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  const workspace = useQuery(api.onboarding.getWorkspace, isAuthenticated ? {} : "skip");
+  const user = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
+  const search = Route.useSearch();
+  // Keep existing purchase and walkthrough links reachable from outside the app.
+  if (isDemoDestination(search)) return <DemoHome />;
+  if (isLoading || (isAuthenticated && (workspace === undefined || user === undefined)))
+    return <DashboardSkeleton />;
+  if (workspace) return <CompanyWorkspace workspace={workspace} />;
+  if (user && !user.isJudgeDemo && user.role === "viewer") return <Setup mode="signup" />;
+  return user ? <DemoHome /> : <AutonomousLanding />;
+}
+
+function DemoHome() {
   const dashboard = useQuery(api.purchasing.getDashboard);
   const integrations = useQuery(api.integrations.getStatus);
   const scenario = useQuery(api.demo.getCurrentScenario);
@@ -250,6 +287,7 @@ function Home() {
     void navigate({
       search: (current) => ({
         ...current,
+        demo: true,
         procurement: procurementId,
         view: "procurement",
         tour: undefined,
@@ -285,7 +323,7 @@ function Home() {
       search: (current) =>
         previousSearch ?? {
           ...current,
-          demo: false,
+          demo: true,
           tour: undefined,
           procurement: undefined,
           view: "procurement",
@@ -384,7 +422,16 @@ function Home() {
             >
               <Play aria-hidden="true" /> Demo
             </Button>
-            <ConfiguredBuyerButton />
+            {search.demo ? (
+              <ConfiguredBuyerButton />
+            ) : (
+              <a href="/setup?mode=login" className="company-sign-out">
+                Sign in
+              </a>
+            )}
+            <a href="/setup" className="company-sign-out">
+              Set up my company <ArrowRight className="inline size-3" />
+            </a>
           </div>
         </header>
 
@@ -482,6 +529,7 @@ function Home() {
                         void navigate({
                           search: (current) => ({
                             ...current,
+                            demo: true,
                             procurement: undefined,
                             view: "procurement",
                             tour: undefined,
@@ -497,6 +545,7 @@ function Home() {
                         void navigate({
                           search: (current) => ({
                             ...current,
+                            demo: true,
                             procurement: id,
                             view: "order",
                             tour: undefined,

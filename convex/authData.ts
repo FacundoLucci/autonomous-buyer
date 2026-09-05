@@ -19,7 +19,7 @@ export const getDemoOrganizationId = internalQuery({
   handler: async (ctx) => {
     const organization = await ctx.db
       .query("organizations")
-      .withIndex("by_name", (q) => q.eq("name", "Acme Foods"))
+      .withIndex("by_is_demo_and_name", (q) => q.eq("isDemo", true).eq("name", "Acme Foods"))
       .unique();
     if (organization === null) throw new Error("Start the demo before creating a judge identity.");
     return organization._id;
@@ -35,6 +35,9 @@ export const getCurrentUser = query({
     const user = await ctx.db.get("users", userId);
     if (user === null) return null;
     const role = user.role ?? "viewer";
+    const organization = user.organizationId
+      ? await ctx.db.get("organizations", user.organizationId)
+      : null;
     return {
       userId: user._id,
       name: user.name ?? user.email ?? "Signed-in viewer",
@@ -44,7 +47,7 @@ export const getCurrentUser = query({
       canApproveDemo:
         user.isActive === true &&
         (role === "buyer" || role === "admin") &&
-        user.organizationId !== undefined,
+        organization?.isDemo === true,
     };
   },
 });
@@ -66,7 +69,7 @@ export const claimConfiguredBuyer = mutation({
     }
     let organization = await ctx.db
       .query("organizations")
-      .withIndex("by_name", (q) => q.eq("name", "Acme Foods"))
+      .withIndex("by_is_demo_and_name", (q) => q.eq("isDemo", true).eq("name", "Acme Foods"))
       .unique();
     if (organization === null && user.isAnonymous !== true) {
       const organizationId = await ctx.db.insert("organizations", {
@@ -85,6 +88,9 @@ export const claimConfiguredBuyer = mutation({
       organization = await ctx.db.get("organizations", organizationId);
     }
     if (organization === null) throw new Error("Start the demo before claiming buyer access.");
+    if (user.organizationId && user.organizationId !== organization._id) {
+      throw new Error("This account already belongs to another company.");
+    }
     const name = user.isAnonymous === true ? "Judge demo buyer" : (user.name ?? user.email);
     await ctx.db.patch("users", user._id, {
       organizationId: organization._id,

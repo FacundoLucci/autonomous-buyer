@@ -1,0 +1,694 @@
+.bh-setup {
+  min-height: 100svh;
+}
+.bh-app .bh-setup-bar {
+  max-width: 1440px;
+  margin: auto;
+  padding: 22px 40px;
+}
+.bh-setup-bar > .bh-face-caption {
+  margin-left: 28px;
+  font-size: 10px;
+}
+.bh-setup-exit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  min-height: 44px;
+  font-size: 11px;
+  color: var(--bh-text-muted);
+}
+.bh-setup-exit span {
+  font-size: 22px;
+}
+.bh-setup-shell {
+  width: min(1140px, calc(100% - 80px));
+  margin: clamp(30px, 6vh, 80px) auto 40px;
+}
+.bh-setup-label,
+.bh-setup-base {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.bh-setup-label {
+  padding: 0 4px 18px;
+}
+.bh-setup-device {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 276px;
+  gap: 44px;
+  align-items: start;
+}
+.bh-setup-screen {
+  min-height: 550px;
+  display: flex;
+  flex-direction: column;
+}
+.bh-setup-screen-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 22px 32px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-screen-top > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.bh-setup-screen-top i {
+  width: 5px;
+  height: 5px;
+  background: var(--bh-eink-ink);
+  box-shadow: 0 0 0 3px rgb(221 218 202 / 8%);
+}
+.bh-setup-progress {
+  height: 1px;
+  background: var(--bh-eink-rule);
+}
+.bh-setup-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--bh-eink-ink);
+  transform-origin: left;
+  transition: transform 220ms ease-out;
+}
+.bh-setup-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 44px 28px;
+  min-width: 0;
+}
+.bh-setup-question {
+  flex: 1;
+  padding: 49px 0 12px;
+  min-width: 0;
+}
+.bh-setup-screen > .bh-setup-question {
+  padding-inline: 44px;
+}
+.bh-setup-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  color: var(--bh-eink-muted);
+  margin-bottom: 20px;
+}
+.bh-setup-question h1 {
+  font-size: clamp(29px, 3.15vw, 43px);
+  line-height: 1.18;
+  font-weight: 450;
+  letter-spacing: -0.045em;
+  max-width: 18ch;
+}
+.bh-setup-question > p:not(.bh-setup-eyebrow):not(.bh-setup-error) {
+  margin-top: 19px;
+  max-width: 47ch;
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-input-wrap {
+  position: relative;
+  margin-top: 30px;
+}
+.bh-setup-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 60px;
+  border: 0;
+  border-bottom: 1px solid var(--bh-eink-rule);
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+  padding: 10px 0;
+  color: var(--bh-eink-ink);
+  font: inherit;
+  font-size: clamp(23px, 2.45vw, 32px);
+  line-height: 1.5;
+  letter-spacing: -0.045em;
+  caret-color: #d7d0b7;
+  transition: border-color 150ms ease;
+}
+.bh-setup-input::placeholder {
+  color: var(--bh-eink-muted);
+  opacity: 0.55;
+}
+.bh-setup-input:focus {
+  border-color: var(--bh-eink-ink);
+}
+.bh-app .bh-setup-input:focus-visible {
+  outline: none;
+  border-bottom-width: 2px;
+  padding-bottom: 9px;
+}
+.bh-setup-input[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+.bh-setup-input:disabled {
+  opacity: 0.5;
+}
+.bh-setup-input[type="number"] {
+  padding-right: 125px;
+  appearance: textfield;
+}
+.bh-setup-input::-webkit-inner-spin-button,
+.bh-setup-input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.bh-setup-input[name="password"] {
+  padding-right: 48px;
+}
+.bh-setup-input-suffix {
+  position: absolute;
+  bottom: 23px;
+  right: 0;
+  font-size: 12px;
+  pointer-events: none;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-password {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-password svg {
+  width: 18px;
+}
+.bh-setup-address {
+  resize: vertical;
+  margin-top: 25px;
+  min-height: 120px;
+  max-height: 240px;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+.bh-setup-error {
+  min-height: 32px;
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--destructive);
+}
+.bh-setup-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+.bh-setup-back {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  width: 46px;
+  border: 1px solid var(--bh-eink-rule);
+  border-radius: 2px;
+  color: var(--bh-eink-muted);
+  flex-shrink: 0;
+}
+.bh-setup-back:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.bh-setup-back svg {
+  width: 17px;
+}
+.bh-setup-primary {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 1px solid #bcbca9;
+  border-radius: 2px;
+  color: #20241c;
+  background: #c5c5af;
+  font-size: 12px;
+  font-weight: 550;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 140ms ease,
+    transform 100ms ease;
+}
+.bh-setup-primary svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.bh-setup-primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.bh-setup-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.bh-setup-key {
+  font-size: 9px;
+  color: var(--bh-eink-muted);
+  white-space: nowrap;
+}
+.bh-setup-key kbd {
+  font: inherit;
+  margin-left: 3px;
+}
+.bh-setup-account-switch {
+  display: block;
+  margin-top: 20px;
+  min-height: 20px;
+  font-size: 10px;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-account-switch a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 0;
+  color: var(--bh-eink-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.bh-setup-account-switch svg {
+  width: 12px;
+  height: 12px;
+}
+.bh-setup-receipt-wrap {
+  position: relative;
+  padding: 3px 10px 0;
+}
+.bh-setup-printer-slot {
+  height: 9px;
+  width: calc(100% + 20px);
+  margin-left: -10px;
+  background: #060707;
+  border-bottom: 1px solid #ffffff0c;
+  border-radius: 3px;
+  box-shadow: inset 0 2px 3px #000;
+}
+.bh-setup-receipt {
+  padding: 27px 23px 22px;
+  margin-top: -4px;
+  box-shadow: 0 12px 22px #0003;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 6px),
+    97% 100%,
+    94% calc(100% - 6px),
+    91% 100%,
+    88% calc(100% - 6px),
+    85% 100%,
+    82% calc(100% - 6px),
+    79% 100%,
+    76% calc(100% - 6px),
+    73% 100%,
+    70% calc(100% - 6px),
+    67% 100%,
+    64% calc(100% - 6px),
+    61% 100%,
+    58% calc(100% - 6px),
+    55% 100%,
+    52% calc(100% - 6px),
+    49% 100%,
+    46% calc(100% - 6px),
+    43% 100%,
+    40% calc(100% - 6px),
+    37% 100%,
+    34% calc(100% - 6px),
+    31% 100%,
+    28% calc(100% - 6px),
+    25% 100%,
+    22% calc(100% - 6px),
+    19% 100%,
+    16% calc(100% - 6px),
+    13% 100%,
+    10% calc(100% - 6px),
+    7% 100%,
+    4% calc(100% - 6px),
+    0 100%
+  );
+}
+.bh-setup-receipt-brand {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  padding-bottom: 21px;
+  border-bottom: 1px dashed #797d6d;
+}
+.bh-setup-receipt-brand span {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  margin-top: 8px;
+}
+.bh-setup-receipt-empty {
+  padding: 30px 0;
+  text-align: center;
+}
+.bh-setup-receipt-empty svg {
+  margin: 0 auto 18px;
+  width: 32px;
+  height: 32px;
+  color: #777d6c;
+}
+.bh-setup-receipt-empty p {
+  font-size: 17px;
+  line-height: 1.7;
+  letter-spacing: -0.04em;
+}
+.bh-setup-receipt-note {
+  text-align: center;
+  font-size: 8px;
+  line-height: 1.8;
+  color: #5e6455;
+}
+.bh-setup-barcode {
+  height: 27px;
+  width: 115px;
+  margin: 26px auto 11px;
+  background: repeating-linear-gradient(
+    90deg,
+    #464c3f 0 1px,
+    transparent 1px 3px,
+    #464c3f 3px 5px,
+    transparent 5px 6px,
+    #464c3f 6px 7px,
+    transparent 7px 10px,
+    #464c3f 10px 14px,
+    transparent 14px 17px
+  );
+  opacity: 0.7;
+}
+.bh-setup-receipt-section {
+  padding: 17px 0;
+  border-bottom: 1px dashed #90917f;
+  overflow-wrap: anywhere;
+}
+.bh-setup-receipt-label {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: #626755;
+  margin-bottom: 9px;
+}
+.bh-setup-receipt-section > button {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  width: 100%;
+  min-height: 32px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.bh-setup-receipt-section > button svg {
+  height: 10px;
+  width: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.6;
+}
+.bh-setup-receipt-section > .bh-setup-receipt-address {
+  white-space: pre-line;
+  font-size: 9px;
+  line-height: 1.7;
+  font-weight: 400;
+  padding-block: 3px;
+}
+.bh-setup-receipt-section > .bh-setup-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 9px;
+  font-weight: 400;
+  min-height: 27px;
+}
+.bh-setup-receipt-row strong {
+  font-weight: 500;
+  text-align: right;
+}
+.bh-setup-receipt-placeholder {
+  font-size: 9px;
+  color: #727666;
+  line-height: 1.7;
+}
+.bh-setup-receipt-outlook {
+  margin-top: 17px;
+}
+.bh-setup-receipt-outlook > span {
+  font-size: 8px;
+}
+.bh-setup-receipt-outlook strong {
+  display: block;
+  font-size: 22px;
+  margin-top: 3px;
+  letter-spacing: -0.04em;
+}
+.bh-setup-receipt-outlook p {
+  font-size: 9px;
+  margin-top: 6px;
+}
+.bh-setup-base {
+  padding: 23px 4px 0;
+  color: var(--bh-text-muted);
+  font-size: 9px;
+}
+.bh-setup-base span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.bh-setup-base svg {
+  width: 12px;
+  height: 12px;
+}
+.bh-setup-unit-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 24px;
+}
+.bh-setup-unit-options label {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 49px;
+  padding: 10px 12px;
+  border: 1px solid var(--bh-eink-rule);
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.bh-setup-unit-options label[data-selected="true"] {
+  background: #c5c5af12;
+  border-color: #c5c5af88;
+}
+.bh-setup-unit-options input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.bh-setup-unit-options label:has(:focus-visible) {
+  outline: 2px solid var(--bh-eink-ink);
+  outline-offset: 3px;
+}
+.bh-setup-unit-options svg {
+  width: 14px;
+  margin-left: auto;
+}
+.bh-setup-option-key {
+  width: 20px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--bh-eink-rule);
+  font-size: 9px;
+}
+.bh-setup-review {
+  margin-top: 25px;
+  font-size: 12px;
+}
+.bh-setup-review > p {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-block: 10px;
+  overflow-wrap: anywhere;
+}
+.bh-setup-review svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.bh-setup-review-note {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--bh-eink-muted);
+}
+.bh-setup-ready-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 25px;
+  border: 1px solid var(--bh-eink-rule);
+  border-radius: 2px;
+}
+.bh-setup-ready-icon svg {
+  width: 20px;
+}
+.bh-setup-email {
+  border-block: 1px dashed var(--bh-eink-rule);
+  padding-block: 20px;
+  margin-top: 25px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.bh-setup-enter {
+  animation: bh-setup-enter 220ms cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+@keyframes bh-setup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bh-setup :is(button, a):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bh-setup-primary:hover:not(:disabled) {
+    background: #d4d3be;
+  }
+  .bh-setup-receipt-section button:hover {
+    color: #4e6640;
+  }
+  .bh-setup-exit:hover {
+    color: var(--bh-text);
+  }
+}
+@media (max-width: 900px) {
+  .bh-setup-device {
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 24px;
+  }
+  .bh-setup-form {
+    padding-inline: 28px;
+  }
+  .bh-setup-receipt {
+    padding-inline: 17px;
+  }
+  .bh-setup-shell {
+    width: calc(100% - 40px);
+  }
+  .bh-setup-key {
+    display: none;
+  }
+  .bh-setup-bar > .bh-face-caption {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  .bh-app .bh-setup-bar {
+    padding: 14px 20px;
+  }
+  .bh-setup-shell {
+    width: calc(100% - 28px);
+    margin-top: 20px;
+  }
+  .bh-setup-device {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+  .bh-setup-label {
+    font-size: 8px;
+    padding-inline: 6px;
+  }
+  .bh-setup-label span:last-child {
+    display: none;
+  }
+  .bh-setup-screen {
+    min-height: 510px;
+  }
+  .bh-setup-screen-top {
+    padding: 20px 24px;
+    font-size: 9px;
+  }
+  .bh-setup-form {
+    padding: 0 24px 24px;
+  }
+  .bh-setup-question {
+    padding-top: 36px;
+  }
+  .bh-setup-question h1 {
+    font-size: 32px;
+  }
+  .bh-setup-question > p:not(.bh-setup-eyebrow):not(.bh-setup-error) {
+    font-size: 11px;
+  }
+  .bh-setup-input {
+    font-size: 24px;
+  }
+  .bh-setup-address {
+    font-size: 17px;
+  }
+  .bh-setup-receipt-wrap {
+    width: min(100% - 30px, 330px);
+    margin: 0 auto;
+  }
+  .bh-setup-receipt-section > button {
+    min-height: 44px;
+  }
+  .bh-setup-primary {
+    flex: 1;
+    font-size: 11px;
+    gap: 12px;
+  }
+  .bh-setup-base {
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 8px;
+    padding-top: 30px;
+  }
+  .bh-setup-account-switch a {
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bh-setup-enter {
+    animation: none;
+  }
+  .bh-setup-progress > span,
+  .bh-setup-primary,
+  .bh-setup-input {
+    transition: none;
+  }
+}

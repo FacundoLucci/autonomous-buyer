@@ -45,3 +45,5 @@ The app and this preview load these same CSS and SVG files. `--powder-coat-paint
 The app uses one continuous metal layer across the whole face. Its header scrolls with the page and has no separate background. The BUY HARD wordmark uses the recessed `bh-stamped` treatment; section labels use screen printing.
 
 All four summary metrics share one recessed grille, with metallic labels inside. Values use at most four characters (`284k`, `17k`, `1.2m`) at one shared dot spacing and origin. Dollar readouts carry a USD label, and hovering or focusing a value reveals the full amount. Run `node --test src/components/buy-hard/metric-format.test.ts` to check abbreviation limits and rounding boundaries.
+
+The grille holes and lit dots are drawn in the same SVG coordinate system. Circular SVG shapes scale uniformly with the whole grille, avoiding separate CSS tile and grid rounding at fractional sizes. HTML labels and full-value tooltip controls sit above the drawing.

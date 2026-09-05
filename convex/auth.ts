@@ -19,7 +19,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         const email = String(params.email ?? "")
           .trim()
           .toLowerCase();
-        if (!email) throw new Error("Email is required.");
+        if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          throw new Error("Enter a valid email address.");
+        }
+        if (typeof params.name === "string" && params.name.trim().length > 120) {
+          throw new Error("Keep your name under 121 characters.");
+        }
         return {
           email,
           ...(typeof params.name === "string" && params.name.trim()

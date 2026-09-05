@@ -222,7 +222,7 @@ export const resetScenario = mutation({
 
     let organization = await ctx.db
       .query("organizations")
-      .withIndex("by_name", (q) => q.eq("name", "Acme Foods"))
+      .withIndex("by_is_demo_and_name", (q) => q.eq("isDemo", true).eq("name", "Acme Foods"))
       .unique();
     if (organization === null) {
       const organizationId = await ctx.db.insert("organizations", {
