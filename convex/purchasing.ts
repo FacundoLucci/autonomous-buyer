@@ -1,7 +1,25 @@
 import { v } from "convex/values";
 
+import type { Doc } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import { inventoryStatusValidator, procurementStateValidator } from "./domain";
+import { aiTaskValidator, inventoryStatusValidator, procurementStateValidator } from "./domain";
+
+const finishedStatuses = new Set<Doc<"procurements">["status"]>([
+  "confirmed",
+  "closed",
+  "cancelled",
+  "rejected",
+  "no_viable_supplier",
+]);
+
+function isOpenBuy(procurement: Doc<"procurements">) {
+  return procurement.isActive && !finishedStatuses.has(procurement.status);
+}
+
+const matchConfidenceSourceValidator = v.union(
+  v.literal("controlled_demo_assumption"),
+  v.literal("unverified"),
+);
 
 const inventoryRowValidator = v.object({
   inventoryItemId: v.id("inventoryItems"),
@@ -20,6 +38,7 @@ const inventoryRowValidator = v.object({
       status: procurementStateValidator,
       quantityRequired: v.number(),
       requiredBy: v.string(),
+      isOpen: v.optional(v.boolean()),
     }),
     v.null(),
   ),
@@ -46,6 +65,7 @@ const dashboardValidator = v.object({
   inventory: v.array(inventoryRowValidator),
   activity: v.array(activityValidator),
   openBuyCount: v.number(),
+  latestConfirmedProcurementId: v.optional(v.union(v.id("procurements"), v.null())),
   needsActionCount: v.number(),
   annualSpendCents: v.number(),
   savingsIdentifiedCents: v.number(),
@@ -82,12 +102,16 @@ export const getDashboard = query({
     const procurements = await ctx.db
       .query("procurements")
       .withIndex("by_demo_run", (q) => q.eq("demoRunId", run._id))
+      .order("desc")
       .take(100);
-    const activeByItem = new Map(
-      procurements
-        .filter((procurement) => procurement.isActive)
-        .map((procurement) => [procurement.inventoryItemId, procurement]),
-    );
+    // Keep completed evidence reachable, while an open buy takes priority for its item.
+    const latestByItem = new Map<Doc<"procurements">["inventoryItemId"], Doc<"procurements">>();
+    for (const procurement of procurements) {
+      const previous = latestByItem.get(procurement.inventoryItemId);
+      if (previous === undefined || (isOpenBuy(procurement) && !isOpenBuy(previous))) {
+        latestByItem.set(procurement.inventoryItemId, procurement);
+      }
+    }
 
     const inventory = [];
     for (const item of items) {
@@ -98,7 +122,7 @@ export const getDashboard = query({
         .take(30);
       const averageDailyUsage =
         usage.reduce((total, record) => total + record.quantityConsumed, 0) / 30;
-      const active = activeByItem.get(item._id);
+      const linkedBuy = latestByItem.get(item._id);
       const expected = await ctx.db
         .query("expectedInventory")
         .withIndex("by_item_arrival", (q) => q.eq("inventoryItemId", item._id))
@@ -116,14 +140,15 @@ export const getDashboard = query({
         safetyStockDays: item.safetyStockDays,
         status: item.status,
         procurement:
-          active === undefined
+          linkedBuy === undefined
             ? null
             : {
-                procurementId: active._id,
-                code: procurementCode(active.code, active._creationTime),
-                status: active.status,
-                quantityRequired: active.quantityRequired,
-                requiredBy: active.requiredBy,
+                procurementId: linkedBuy._id,
+                code: procurementCode(linkedBuy.code, linkedBuy._creationTime),
+                status: linkedBuy.status,
+                quantityRequired: linkedBuy.quantityRequired,
+                requiredBy: linkedBuy.requiredBy,
+                isOpen: isOpenBuy(linkedBuy),
               },
       });
     }
@@ -171,8 +196,64 @@ export const getDashboard = query({
       .order("desc")
       .take(100);
     const unreadThreadCount = threadLinks.reduce((total, link) => total + link.unreadCount, 0);
-    const open = procurements.filter((procurement) => procurement.isActive);
-    const needsBuyer = open.some((procurement) => procurement.status === "approval_required");
+    const open = procurements.filter(isOpenBuy);
+    const needsReview = [...latestByItem.values()].filter(
+      (procurement) =>
+        procurement.isActive &&
+        (procurement.status === "approval_required" ||
+          procurement.status === "exception" ||
+          procurement.status === "no_viable_supplier"),
+    );
+    const needsBuyer = needsReview.length > 0;
+    const actionItemIds = new Set([
+      ...inventory
+        .filter((item) =>
+          ["action_required", "approval_required", "exception"].includes(item.status),
+        )
+        .map((item) => item.inventoryItemId),
+      ...needsReview.map((procurement) => procurement.inventoryItemId),
+    ]);
+    const latestConfirmed = procurements
+      .filter(
+        (procurement) => procurement.status === "confirmed" || procurement.status === "closed",
+      )
+      .sort((first, second) => second.updatedAt - first.updatedAt)[0];
+    const waitingForConfirmation = open.some((procurement) =>
+      ["po_sent", "confirmation_pending"].includes(procurement.status),
+    );
+    const waitingForQuotes = open.some((procurement) =>
+      ["rfq_sent", "awaiting_quotes"].includes(procurement.status),
+    );
+    const preparingDelivery = open.some((procurement) =>
+      ["rfq_ready", "approved"].includes(procurement.status),
+    );
+    const doingWork = open.some((procurement) =>
+      ["detected", "analyzing", "sourcing", "evaluating"].includes(procurement.status),
+    );
+    const agentState = needsBuyer
+      ? ("needs_you" as const)
+      : doingWork
+        ? ("working" as const)
+        : preparingDelivery
+          ? ("guiding" as const)
+          : ("watching" as const);
+    const agentMessage = needsBuyer
+      ? "A purchase needs your review."
+      : doingWork
+        ? open.some((procurement) => procurement.status === "evaluating")
+          ? "Supplier quotes are being compared against the purchase requirements."
+          : open.some((procurement) => procurement.status === "sourcing")
+            ? "Supplier sourcing is in progress."
+            : "Inventory risk is being analyzed."
+        : preparingDelivery
+          ? "Purchase documents are ready for approved delivery."
+          : waitingForConfirmation
+            ? "The purchase order is sent. Waiting for supplier confirmation."
+            : waitingForQuotes
+              ? "Requests are sent. Waiting for supplier quotes."
+              : latestConfirmed !== undefined
+                ? "The latest purchase is supplier-confirmed. Inventory monitoring continues."
+                : "Inventory monitoring is ready. There are no open purchases.";
     return {
       organizationName: organization.name,
       demoRunId: run._id,
@@ -180,22 +261,15 @@ export const getDashboard = query({
       inventory,
       activity,
       openBuyCount: open.length,
-      needsActionCount: inventory.filter((item) => item.status === "action_required").length,
+      latestConfirmedProcurementId: latestConfirmed?._id ?? null,
+      needsActionCount: actionItemIds.size,
       annualSpendCents: metric?.annualSpendCents ?? 0,
       savingsIdentifiedCents: metric?.savingsIdentifiedCents ?? 0,
       projectedStockouts: metric?.projectedStockouts ?? 0,
       autonomousProcurementPercent: metric?.autonomousProcurementPercent ?? 0,
       agent: {
-        state: needsBuyer
-          ? ("needs_you" as const)
-          : open.length > 0
-            ? ("working" as const)
-            : ("watching" as const),
-        message: needsBuyer
-          ? "I found a purchase that needs your review."
-          : open.length > 0
-            ? "I’m sourcing a safe replenishment option."
-            : "I’m watching inventory. You do not need to do anything.",
+        state: agentState,
+        message: agentMessage,
         unreadThreadCount,
       },
     };
@@ -251,6 +325,31 @@ export const getProcurement = query({
           ),
         }),
       ),
+      providerEvidence: v.optional(
+        v.object({
+          sourcing: v.union(
+            v.object({
+              provider: v.literal("firecrawl"),
+              status: v.union(v.literal("pending"), v.literal("succeeded"), v.literal("failed")),
+              sourceCount: v.number(),
+              createdAt: v.number(),
+              completedAt: v.union(v.number(), v.null()),
+            }),
+            v.null(),
+          ),
+          ai: v.array(
+            v.object({
+              task: aiTaskValidator,
+              transport: v.union(v.literal("openai"), v.literal("openrouter")),
+              model: v.string(),
+              status: v.literal("succeeded"),
+              evidenceCount: v.number(),
+              createdAt: v.number(),
+              completedAt: v.union(v.number(), v.null()),
+            }),
+          ),
+        }),
+      ),
       recommendation: v.union(
         v.object({
           recommendationId: v.id("recommendations"),
@@ -262,6 +361,7 @@ export const getProcurement = query({
           landedCostCents: v.union(v.number(), v.null()),
           estimatedArrivalDate: v.union(v.string(), v.null()),
           matchConfidence: v.number(),
+          matchConfidenceSource: v.optional(matchConfidenceSourceValidator),
           alternatives: v.array(
             v.object({
               supplierName: v.string(),
@@ -366,6 +466,8 @@ export const getProcurement = query({
         : await ctx.db.get("quotes", recommendation.selectedQuoteId);
     const selectedSupplier =
       selectedQuote === null ? null : await ctx.db.get("suppliers", selectedQuote.supplierId);
+    const selectedRfq =
+      selectedQuote === null ? null : await ctx.db.get("rfqs", selectedQuote.rfqId);
     const quotes = await ctx.db
       .query("quotes")
       .withIndex("by_procurement", (q) => q.eq("procurementId", procurement._id))
@@ -406,6 +508,23 @@ export const getProcurement = query({
             .withIndex("by_purchase_order", (q) => q.eq("purchaseOrderId", purchaseOrder._id))
             .order("desc")
             .first();
+    const searchRuns = await ctx.db
+      .query("searchRuns")
+      .withIndex("by_procurement_and_created", (q) => q.eq("procurementId", procurement._id))
+      .order("desc")
+      .take(1);
+    const searchRun = searchRuns[0];
+    const searchResults =
+      searchRun === undefined
+        ? []
+        : await ctx.db
+            .query("searchResults")
+            .withIndex("by_search_run", (q) => q.eq("searchRunId", searchRun._id))
+            .take(20);
+    const aiRuns = await ctx.db
+      .query("aiRuns")
+      .withIndex("by_procurement_and_task", (q) => q.eq("procurementId", procurement._id))
+      .take(100);
     return {
       procurementId: procurement._id,
       code: procurementCode(procurement.code, procurement._creationTime),
@@ -431,6 +550,31 @@ export const getProcurement = query({
         unreadCount: link.unreadCount,
         status: link.status,
       })),
+      providerEvidence: {
+        sourcing:
+          searchRun === undefined
+            ? null
+            : {
+                provider: "firecrawl" as const,
+                status: searchRun.status,
+                sourceCount: searchResults.length,
+                createdAt: searchRun.createdAt,
+                completedAt: searchRun.completedAt ?? null,
+              },
+        // Only completed runs record the actual transport/model returned by the provider call.
+        ai: aiRuns
+          .filter((run) => run.status === "succeeded" && run.result !== undefined)
+          .sort((first, second) => second.createdAt - first.createdAt)
+          .map((run) => ({
+            task: run.task,
+            transport: run.transport,
+            model: run.model,
+            status: "succeeded" as const,
+            evidenceCount: run.evidenceRefs.length,
+            createdAt: run.createdAt,
+            completedAt: run.completedAt ?? null,
+          })),
+      },
       recommendation:
         recommendation === undefined || selectedQuote === null || selectedSupplier === null
           ? null
@@ -444,6 +588,10 @@ export const getProcurement = query({
               landedCostCents: selectedQuote.landedCostCents ?? null,
               estimatedArrivalDate: selectedQuote.estimatedArrivalDate ?? null,
               matchConfidence: selectedQuote.matchConfidence,
+              matchConfidenceSource:
+                selectedRfq?.isControlledRecipient === true
+                  ? ("controlled_demo_assumption" as const)
+                  : ("unverified" as const),
               alternatives,
             },
       approval:

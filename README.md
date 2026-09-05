@@ -2,10 +2,13 @@
 
 An autonomous purchasing workflow built on Convex.
 
-**Live demo:** https://reliable-albatross-463.convex.site
+**Development review:** [Current design and demo](https://festive-coyote-483.convex.site/?demo=1)
 
-The dashboard is public. Select **Enter judge mode** for one-click access to the
-completed procurement evidence. Shared resets, controlled recipient details,
+**Deployed production (older release):** https://reliable-albatross-463.convex.site
+
+The dashboard is public. Select **Demo** or **Start walkthrough** to follow the
+latest confirmed purchase without signing in or running any actions. Everyday
+purchasing uses the same evidence without guide overlays. Shared resets, controlled recipient details,
 buyer approval, and external email sends remain protected.
 
 ## Read first
@@ -42,15 +45,19 @@ pnpm typecheck
 pnpm build
 ```
 
-There is intentionally no unit or comprehensive test suite. Product behavior is
-proved through real user flows in a live browser.
+Compact metric formatting has focused tests: `node --test src/components/buy-hard/metric-format.test.ts`.
+Product behavior is checked through real user flows in a live browser.
 
 ## Deployment
+
+For the configured development review site, run
+`pnpm exec static-hosting upload --dev --dist dist/client --build-command "pnpm build"`.
+This builds with the deployment's asset prefix and uploads the frontend.
 
 `pnpm deploy` builds and uploads only `dist/client` to Convex static hosting,
 but it performs real production writes. Run it only after the full live-browser
 rehearsal and explicit deployment approval.
 
-Production is currently served from
+The older production release is served from
 https://reliable-albatross-463.convex.site with its backend at
 https://reliable-albatross-463.convex.cloud.

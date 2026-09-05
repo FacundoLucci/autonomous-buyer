@@ -234,6 +234,9 @@ export const getLatestComparison = query({
           reasons: v.array(v.string()),
           projectedStockoutDays: v.number(),
           productMatchConfidence: v.number(),
+          matchConfidenceSource: v.optional(
+            v.union(v.literal("controlled_demo_assumption"), v.literal("unverified")),
+          ),
           landedCostCents: v.union(v.number(), v.null()),
           excessInventory: v.number(),
           supplierReliability: v.number(),
@@ -260,6 +263,8 @@ export const getLatestComparison = query({
     for (const entry of entries) {
       const supplier = await ctx.db.get("suppliers", entry.supplierId);
       if (supplier === null) continue;
+      const quote = await ctx.db.get("quotes", entry.quoteId);
+      const rfq = quote === null ? null : await ctx.db.get("rfqs", quote.rfqId);
       rows.push({
         quoteId: entry.quoteId,
         supplierName: supplier.name,
@@ -269,6 +274,10 @@ export const getLatestComparison = query({
         reasons: entry.reasons,
         projectedStockoutDays: entry.projectedStockoutDays,
         productMatchConfidence: entry.productMatchConfidence,
+        matchConfidenceSource:
+          rfq?.isControlledRecipient === true
+            ? ("controlled_demo_assumption" as const)
+            : ("unverified" as const),
         landedCostCents: entry.landedCostCents ?? null,
         excessInventory: entry.excessInventory,
         supplierReliability: entry.supplierReliability,

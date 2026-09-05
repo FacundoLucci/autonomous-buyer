@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>Fine matte powder coat</title>
+  <desc>Seamless, transparent surface relief with soft upper-left lighting. Repeat at 512 CSS pixels and adjust the layer opacity to taste.</desc>
+  <defs>
+    <filter id="powder" x="-2" y="-2" width="516" height="516" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <!-- Stitched, repeatable height map. Smaller frequency makes larger grains. -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.38" numOctaves="3" seed="23" stitchTiles="stitch" x="0" y="0" width="512" height="512" result="noise"/>
+      <!-- Wrap the height map before lighting, including the edge pixels. -->
+      <feTile in="noise" x="-2" y="-2" width="516" height="516" result="wrapped"/>
+      <feColorMatrix in="wrapped" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.2126 0.7152 0.0722 0 0" result="height"/>
+      <feDiffuseLighting in="height" surfaceScale="2" diffuseConstant="1" lighting-color="#ffffff" result="relief">
+        <feDistantLight azimuth="225" elevation="55"/>
+      </feDiffuseLighting>
+      <!-- Split light and shade around the flat surface's brightness (sin 55deg).
+           Both layers fade to transparent, so the underlying paint supplies the color. -->
+      <feColorMatrix in="relief" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.6 0 0 0 -1.31064" result="highlights"/>
+      <feColorMatrix in="relief" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.6 0 0 0 1.31064" result="shadows"/>
+      <feMerge>
+        <feMergeNode in="shadows"/>
+        <feMergeNode in="highlights"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path fill="none" d="M0 0H512V512H0Z" filter="url(#powder)"/>
+</svg>

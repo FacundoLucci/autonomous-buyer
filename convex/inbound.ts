@@ -168,6 +168,7 @@ export const listQuotes = query({
   returns: v.array(
     v.object({
       quoteId: v.id("quotes"),
+      rfqId: v.optional(v.id("rfqs")),
       supplierName: v.string(),
       revision: v.number(),
       quantityAvailable: v.union(v.number(), v.null()),
@@ -175,6 +176,10 @@ export const listQuotes = query({
       freightCents: v.union(v.number(), v.null()),
       landedCostCents: v.union(v.number(), v.null()),
       estimatedArrivalDate: v.union(v.string(), v.null()),
+      minimumOrderQuantity: v.optional(v.union(v.number(), v.null())),
+      packSize: v.optional(v.union(v.number(), v.null())),
+      paymentTerms: v.optional(v.union(v.string(), v.null())),
+      expiresOn: v.optional(v.union(v.string(), v.null())),
       qualification: v.union(
         v.literal("pending"),
         v.literal("viable"),
@@ -199,6 +204,7 @@ export const listQuotes = query({
       if (supplier === null) continue;
       rows.push({
         quoteId: quote._id,
+        rfqId: quote.rfqId,
         supplierName: supplier.name,
         revision: quote.revision,
         quantityAvailable: quote.quantityAvailable ?? null,
@@ -206,6 +212,10 @@ export const listQuotes = query({
         freightCents: quote.freightCents ?? null,
         landedCostCents: quote.landedCostCents ?? null,
         estimatedArrivalDate: quote.estimatedArrivalDate ?? null,
+        minimumOrderQuantity: quote.minimumOrderQuantity ?? null,
+        packSize: quote.packSize ?? null,
+        paymentTerms: quote.paymentTerms ?? null,
+        expiresOn: quote.expiresOn ?? null,
         qualification: quote.qualification,
         missingInformation: quote.missingInformation,
         responseConfidence: quote.responseConfidence,

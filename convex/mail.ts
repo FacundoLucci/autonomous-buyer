@@ -553,6 +553,8 @@ export const listFollowUps = query({
   returns: v.array(
     v.object({
       followUpId: v.id("rfqFollowUps"),
+      rfqId: v.optional(v.id("rfqs")),
+      sourceQuoteId: v.optional(v.id("quotes")),
       supplierName: v.string(),
       attempt: v.number(),
       requestedFields: v.array(missingQuoteFieldValidator),
@@ -582,6 +584,8 @@ export const listFollowUps = query({
       if (supplier === null) continue;
       rows.push({
         followUpId: followUp._id,
+        rfqId: followUp.rfqId,
+        sourceQuoteId: followUp.sourceQuoteId,
         supplierName: supplier.name,
         attempt: followUp.attempt,
         requestedFields: followUp.requestedFields,

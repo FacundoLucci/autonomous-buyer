@@ -1,0 +1,54 @@
+.bh-sponsor-credit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  width: fit-content;
+  max-width: 100%;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+:where(.bh-sponsor-credit) {
+  color: var(--muted-foreground, #94988e);
+}
+
+.bh-sponsor-credit__prefix {
+  margin-right: 0.08rem;
+}
+
+.bh-sponsor-credit__mark {
+  display: inline-block;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  mask: var(--bh-sponsor-logo) center / contain no-repeat;
+  -webkit-mask: var(--bh-sponsor-logo) center / contain no-repeat;
+  pointer-events: none;
+}
+
+a.bh-sponsor-credit {
+  border-radius: 2px;
+  text-underline-offset: 3px;
+  touch-action: manipulation;
+}
+
+a.bh-sponsor-credit:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  text-decoration: underline;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.bh-sponsor-credit:hover {
+    color: var(--foreground, #d4d5cf);
+    text-decoration: underline;
+  }
+}

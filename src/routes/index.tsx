@@ -4,9 +4,9 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import {
   ArrowLeft,
   ArrowRight,
-  Bot,
+  Activity,
+  ScanLine,
   Check,
-  Circle,
   MessageCircle,
   Play,
   RotateCcw,
@@ -14,7 +14,14 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
+
+import { HardwareMetric, HardwareMetricRack } from "@/components/buy-hard/hardware-metric";
+import { LiveBuyList } from "@/components/buy-hard/live-buy-list";
+import { SponsorCredit } from "@/components/buy-hard/sponsor-credit";
+import { DemoWalkthrough, type DemoWalkthroughStep } from "@/components/buy-hard/demo-walkthrough";
+import { QuoteComparison, QuoteHistory } from "@/components/buy-hard/purchase-evidence";
+import "@/styles/buy-desk.css";
 
 import type { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
@@ -38,7 +45,15 @@ type FocusView = "procurement" | "recommendation" | "approval" | "order";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
-    demo: search.demo === "1" || search.demo === 1 || search.demo === true,
+    demo:
+      search.demo === "1" || search.demo === 1 || search.demo === true || search.demo === "true",
+    tour:
+      search.tour !== undefined &&
+      Number.isInteger(Number(search.tour)) &&
+      Number(search.tour) >= 0 &&
+      Number(search.tour) < 6
+        ? Number(search.tour)
+        : undefined,
     procurement: typeof search.procurement === "string" ? search.procurement : undefined,
     view:
       search.view === "recommendation" || search.view === "approval" || search.view === "order"
@@ -47,6 +62,59 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
+
+const demoSteps: readonly DemoWalkthroughStep[] = [
+  {
+    id: "risk",
+    title: "Start with the shortage",
+    description:
+      "The original inventory calculation sets the quantity and deadline. This guide follows a recorded run; it does not place orders or send email.",
+    target: '[data-demo-target="risk"]',
+  },
+  {
+    id: "sources",
+    title: "Inspect the supplier sources",
+    description:
+      "Firecrawl finds product pages; completed model assessments are credited below. Website discoveries and the controlled inboxes used for this run are separate evidence.",
+    target: '[data-demo-target="sources"]',
+  },
+  {
+    id: "followups",
+    title: "Watch an incomplete quote become usable",
+    description:
+      "Follow the missing fields, the exact clarification sent through AgentMail, and the next supplier revision. The record stays visible during everyday purchasing too.",
+    target: '[data-demo-target="followups"]',
+  },
+  {
+    id: "comparison",
+    title: "Compare the actual trade-offs",
+    description:
+      "Latest quotes sit side by side. Cost, arrival and stockout risk explain the choice; demo product-match assumptions are labeled instead of presented as measured certainty.",
+    target: '[data-demo-target="comparison"]',
+  },
+  {
+    id: "approval",
+    title: "The buyer keeps control",
+    description:
+      "Approval applies to an exact quote revision and purchase amount. Reviewing this recorded decision does not approve or send anything.",
+    target: '[data-demo-target="approval"]',
+  },
+  {
+    id: "confirmation",
+    title: "Close the loop with supplier evidence",
+    description:
+      "A matching supplier confirmation updates incoming inventory. The purchase order and received terms remain available for inspection.",
+    target: '[data-demo-target="confirmation"]',
+  },
+];
+const demoViews: readonly FocusView[] = [
+  "procurement",
+  "procurement",
+  "procurement",
+  "recommendation",
+  "approval",
+  "order",
+];
 
 const statusLabels: Record<string, string> = {
   healthy: "Healthy",
@@ -98,6 +166,15 @@ function shortTime(timestamp: number) {
   return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(timestamp);
 }
 
+type Dashboard = NonNullable<ReturnType<typeof useQuery<typeof api.purchasing.getDashboard>>>;
+type DisplayNavigate = ReturnType<typeof Route.useNavigate>;
+const DisplayNavigationContext = createContext<DisplayNavigate | null>(null);
+
+function useDisplayNavigate() {
+  const navigate = Route.useNavigate();
+  return useContext(DisplayNavigationContext) ?? navigate;
+}
+
 function Home() {
   const dashboard = useQuery(api.purchasing.getDashboard);
   const integrations = useQuery(api.integrations.getStatus);
@@ -105,9 +182,97 @@ function Home() {
   const resetScenario = useMutation(api.demo.resetScenario);
   const startScenario = useMutation(api.demo.startScenario);
   const search = Route.useSearch();
-  const navigate = Route.useNavigate();
+  const routeNavigate = Route.useNavigate();
+  const displayRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<Animation | null>(null);
+  const navigationVersion = useRef(0);
+  const lastBuyFocus = useRef<HTMLElement | null>(null);
+  const setDisplayNode = useCallback((node: HTMLDivElement | null) => {
+    displayRef.current = node;
+    if (!node) {
+      navigationVersion.current += 1;
+      animationRef.current?.cancel();
+    }
+  }, []);
   const [controlState, setControlState] = useState<"idle" | "resetting" | "starting">("idle");
   const [controlError, setControlError] = useState<string | null>(null);
+  const [displayNavigating, setDisplayNavigating] = useState(false);
+
+  const navigate: DisplayNavigate = async (options) => {
+    const version = ++navigationVersion.current;
+    setDisplayNavigating(true);
+    animationRef.current?.cancel();
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && focused.closest(".buy-desk-list")) {
+      lastBuyFocus.current = focused;
+    }
+    const surface = displayRef.current;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (surface && !reduceMotion && typeof surface.animate === "function") {
+      const fade = surface.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 110,
+        easing: "ease-out",
+        fill: "forwards",
+      });
+      animationRef.current = fade;
+      await fade.finished.catch(() => {});
+      if (navigationVersion.current !== version) return;
+    }
+    try {
+      await routeNavigate({ ...options, resetScroll: false });
+    } finally {
+      if (navigationVersion.current === version) {
+        setDisplayNavigating(false);
+        animationRef.current?.cancel();
+        if (surface && !reduceMotion && typeof surface.animate === "function") {
+          animationRef.current = surface.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 140,
+            easing: "cubic-bezier(0.215, 0.61, 0.355, 1)",
+          });
+        }
+        window.requestAnimationFrame(() => {
+          if (document.querySelector('[data-testid="demo-walkthrough"]')) return;
+          const heading = displayRef.current?.querySelector<HTMLElement>("[data-display-heading]");
+          if (heading) heading.focus({ preventScroll: true });
+          else lastBuyFocus.current?.focus({ preventScroll: true });
+          if (window.matchMedia("(max-width: 980px)").matches) {
+            displayRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+          }
+        });
+      }
+    }
+  };
+
+  function selectBuy(procurementId: string) {
+    void navigate({
+      search: (current) => ({
+        ...current,
+        procurement: procurementId,
+        view: "procurement",
+        tour: undefined,
+      }),
+    });
+  }
+
+  function startWalkthrough() {
+    const procurementId = dashboard?.latestConfirmedProcurementId;
+    if (!procurementId) return;
+    void navigate({
+      search: (current) => ({
+        ...current,
+        demo: true,
+        procurement: procurementId,
+        view: "procurement",
+        tour: 0,
+      }),
+    });
+  }
+
+  function changeDemoStep(index: number) {
+    void navigate({
+      search: (current) => ({ ...current, view: demoViews[index] ?? "procurement", tour: index }),
+    });
+  }
 
   async function reset() {
     setControlError(null);
@@ -115,7 +280,12 @@ function Home() {
     try {
       await resetScenario({});
       await navigate({
-        search: (current) => ({ ...current, procurement: undefined, view: "procurement" }),
+        search: (current) => ({
+          ...current,
+          procurement: undefined,
+          view: "procurement",
+          tour: undefined,
+        }),
       });
     } catch (error) {
       setControlError(error instanceof Error ? error.message : "The scenario could not be reset.");
@@ -139,25 +309,6 @@ function Home() {
     }
   }
 
-  if (search.procurement) {
-    return (
-      <FocusedProcurement
-        procurementId={search.procurement as Id<"procurements">}
-        view={search.view}
-        demo={search.demo}
-        onBack={() =>
-          navigate({
-            search: (current) => ({
-              ...current,
-              procurement: undefined,
-              view: "procurement",
-            }),
-          })
-        }
-      />
-    );
-  }
-
   const modelProviderReady = integrations?.some(
     (integration) =>
       (integration.name === "openai" || integration.name === "openrouter") &&
@@ -173,262 +324,395 @@ function Home() {
       ));
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7f4ed_0%,#eeeadf_100%)] px-4 py-5 text-stone-950 sm:px-7 sm:py-7">
-      <div className="mx-auto max-w-7xl space-y-5">
-        <header className="flex flex-col gap-4 border-b border-stone-300 pb-5 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
-              {dashboard?.organizationName ?? "Acme Foods"}
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-[-0.04em]">Purchasing overview</h1>
-            <p className="mt-1 text-sm text-stone-600">
-              Inventory risk, open buys, and decisions in one live workspace.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="outline"
-              className="h-8 w-fit gap-2 border-stone-400 bg-white/60 px-3 capitalize"
+    <DisplayNavigationContext value={navigate}>
+      <main className="bh-app powder-coat">
+        <a className="buy-desk-skip" href="#buy-desk-display">
+          Skip to buy desk
+        </a>
+        <header className="bh-app-bar buy-desk-app-bar">
+          <a
+            className="buy-desk-brand"
+            href="/"
+            aria-label="BUY HARD home"
+            onClick={(event) => {
+              event.preventDefault();
+              void navigate({
+                search: (current) => ({
+                  ...current,
+                  procurement: undefined,
+                  view: "procurement",
+                  tour: undefined,
+                }),
+              });
+            }}
+          >
+            <span className="bh-stamped">BUY HARD</span>
+          </a>
+          <div className="buy-desk-account-actions">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={startWalkthrough}
+              disabled={!dashboard?.latestConfirmedProcurementId}
+              title={
+                !dashboard?.latestConfirmedProcurementId
+                  ? "A confirmed run is needed for the walkthrough"
+                  : undefined
+              }
             >
-              <Bot className="size-4" aria-hidden="true" />
-              Agent · {dashboard?.agent.state.replace("_", " ") ?? "watching"}
-            </Badge>
-            <JudgeModeButton />
-            {search.demo ? <ConfiguredBuyerButton /> : null}
+              <Play aria-hidden="true" /> Demo
+            </Button>
+            <ConfiguredBuyerButton />
           </div>
         </header>
 
-        {search.demo && integrations ? (
-          <div className="flex flex-wrap items-center gap-2" aria-label="Provider readiness">
-            {integrations.map((integration) => (
-              <Badge
-                key={integration.name}
-                variant="outline"
-                className={
-                  integration.status === "configured" || integration.name === "openrouter"
-                    ? "bg-white/70"
-                    : "border-red-300 bg-red-50"
-                }
-              >
-                {integration.name}
-                {integration.name === "openrouter" ? " fallback" : ""} · {integration.status}
-              </Badge>
-            ))}
-            {requiredProviderMissing ? (
-              <span className="text-xs text-red-700">
-                A required production provider is unavailable.
-              </span>
-            ) : null}
+        <div className="buy-desk-body">
+          <div className="buy-desk-company-row">
+            <h1 className="bh-face-title screen-print">
+              {dashboard?.organizationName ?? "Acme Foods"}
+            </h1>
+            <p className="bh-face-caption screen-print">Purchasing workspace · live</p>
           </div>
-        ) : null}
 
-        {dashboard === undefined ? (
-          <DashboardSkeleton />
-        ) : dashboard === null ? (
-          <EmptyDashboard demo={search.demo} onReset={reset} busy={controlState !== "idle"} />
-        ) : (
-          <>
-            <section
-              className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-              aria-label="Purchasing summary"
-            >
-              <Metric label="Needs action" value={dashboard.needsActionCount.toString()} />
-              <Metric label="Open buys" value={dashboard.openBuyCount.toString()} />
-              <Metric
-                label="Annual spend"
-                value={money(dashboard.annualSpendCents)}
-                source="Demo history"
-              />
-              <Metric
-                label="Savings identified"
-                value={money(dashboard.savingsIdentifiedCents)}
-                source="Demo history"
-              />
-            </section>
+          <HardwareMetricRack>
+            <HardwareMetric label="Needs action" value={dashboard?.needsActionCount} />
+            <HardwareMetric label="Open buys" value={dashboard?.openBuyCount} />
+            <HardwareMetric
+              label="Annual spend"
+              value={dashboard ? dashboard.annualSpendCents / 100 : undefined}
+              currency="USD"
+              source="Demo history"
+            />
+            <HardwareMetric
+              label="Savings"
+              value={dashboard ? dashboard.savingsIdentifiedCents / 100 : undefined}
+              currency="USD"
+              source="Demo history"
+            />
+          </HardwareMetricRack>
+          <div className="buy-desk-live-credit">
+            <SponsorCredit sponsor="convex" prefix="Live updates via" className="screen-print" />
+          </div>
 
-            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(20rem,0.75fr)]">
-              <Card className="border-stone-300 bg-white/75 shadow-none">
-                <CardHeader className="flex-row items-end justify-between gap-4">
-                  <div>
-                    <CardDescription>Live inventory</CardDescription>
-                    <CardTitle>Packaging items</CardTitle>
-                  </div>
-                  <Badge variant="outline" className="bg-white">
-                    Convex · live
-                  </Badge>
-                </CardHeader>
-                <CardContent className="overflow-x-auto px-0">
-                  <table className="w-full min-w-180 text-left text-sm">
-                    <thead className="border-y border-stone-200 text-xs text-stone-500 uppercase">
-                      <tr>
-                        <th className="px-6 py-3 font-medium">Item</th>
-                        <th className="px-3 py-3 font-medium">On hand</th>
-                        <th className="px-3 py-3 font-medium">Daily use</th>
-                        <th className="px-3 py-3 font-medium">Days left</th>
-                        <th className="px-3 py-3 font-medium">Status</th>
-                        <th className="px-6 py-3 font-medium">Agent action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-stone-200">
-                      {dashboard.inventory.map((item) => (
-                        <tr key={item.inventoryItemId} data-testid={`inventory-${item.sku}`}>
-                          <td className="px-6 py-4">
-                            <p className="font-medium">{item.name}</p>
-                            <p className="mt-0.5 font-mono text-xs text-stone-500">{item.sku}</p>
-                          </td>
-                          <td className="px-3 py-4 tabular-nums">
-                            <span>{Math.round(item.quantityOnHand).toLocaleString()}</span>
-                            {item.confirmedIncoming > 0 ? (
-                              <span className="mt-1 block text-xs font-medium text-emerald-700">
-                                +{item.confirmedIncoming.toLocaleString()} confirmed
-                              </span>
-                            ) : null}
-                          </td>
-                          <td className="px-3 py-4 tabular-nums">
-                            {Math.round(item.averageDailyUsage).toLocaleString()}
-                          </td>
-                          <td className="px-3 py-4 tabular-nums">
-                            {item.daysRemaining?.toFixed(1) ?? "—"}
-                          </td>
-                          <td className="px-3 py-4">
-                            <StatusBadge status={item.status} />
-                          </td>
-                          <td className="px-6 py-4">
-                            {item.procurement ? (
-                              <Button
-                                variant="ghost"
-                                className="-ml-3"
-                                onClick={() =>
-                                  navigate({
-                                    search: (current) => ({
-                                      ...current,
-                                      procurement: item.procurement!.procurementId,
-                                      view: "procurement",
-                                    }),
-                                  })
-                                }
-                              >
-                                {procurementLabels[item.procurement.status] ?? "View buy"}
-                                <ArrowRight />
-                              </Button>
-                            ) : (
-                              <span className="text-stone-500">Monitoring</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <p className="border-t border-stone-200 px-6 py-3 text-xs text-stone-500">
-                    On hand · historical records · Days left · calculated · Incoming ·
-                    supplier-confirmed
-                  </p>
-                </CardContent>
-              </Card>
-
-              <div className="space-y-5">
-                <AgentCard
-                  state={dashboard.agent.state}
-                  message={dashboard.agent.message}
-                  unread={dashboard.agent.unreadThreadCount}
-                />
-                <Card className="border-stone-300 bg-white/75 shadow-none">
-                  <CardHeader>
-                    <CardDescription>Open buys</CardDescription>
-                    <CardTitle className="text-lg">Procurement progress</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {dashboard.inventory.flatMap((item) =>
-                      item.procurement
-                        ? [
-                            <button
-                              key={item.procurement.procurementId}
-                              className="flex min-h-20 w-full items-center justify-between rounded-lg border border-stone-200 bg-white p-4 text-left hover:border-stone-400"
-                              onClick={() =>
-                                navigate({
-                                  search: (current) => ({
-                                    ...current,
-                                    procurement: item.procurement!.procurementId,
-                                    view: "procurement",
-                                  }),
-                                })
-                              }
-                            >
-                              <span>
-                                <span className="font-mono text-xs text-stone-500">
-                                  {item.procurement.code}
-                                </span>
-                                <span className="mt-1 block font-medium">{item.name}</span>
-                                <span className="mt-1 block text-xs text-stone-500">
-                                  {item.procurement.quantityRequired.toLocaleString()} units · due{" "}
-                                  {item.procurement.requiredBy}
-                                </span>
-                              </span>
-                              <ArrowRight className="size-4" />
-                            </button>,
-                          ]
-                        : [],
-                    )}
-                    {dashboard.openBuyCount === 0 ? (
-                      <p className="text-sm leading-6 text-stone-600">
-                        No open buys. Your agent is watching inventory.
-                      </p>
-                    ) : null}
-                  </CardContent>
-                </Card>
-                <Card className="border-stone-300 bg-white/75 shadow-none">
-                  <CardHeader>
-                    <CardDescription>Live activity</CardDescription>
-                    <CardTitle className="text-lg">Latest updates</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {dashboard.activity.length === 0 ? (
-                      <p className="text-sm text-stone-500">No activity yet.</p>
-                    ) : (
-                      dashboard.activity.map((event) => (
-                        <button
-                          key={event.eventId}
-                          className="grid w-full grid-cols-[3rem_1fr] gap-3 text-left text-sm"
-                          onClick={() =>
-                            navigate({
-                              search: (current) => ({
-                                ...current,
-                                procurement: event.procurementId,
-                                view: "procurement",
-                              }),
-                            })
-                          }
-                        >
-                          <span className="font-mono text-xs text-stone-400">
-                            {shortTime(event.createdAt)}
-                          </span>
-                          <span>
-                            <span className="font-medium">{event.summary}</span>
-                            <span className="mt-0.5 block font-mono text-xs text-stone-500">
-                              {event.code}
-                            </span>
-                          </span>
-                        </button>
-                      ))
-                    )}
-                  </CardContent>
-                </Card>
+          {search.demo && search.tour === undefined ? (
+            <div className="buy-desk-demo-intro bh-metal">
+              <div className="screen-print">
+                <p className="bh-face-caption">Demo workspace</p>
+                <p>
+                  Explore a recorded purchase, from inventory risk to supplier confirmation. Real
+                  provider calls, controlled test inboxes.
+                </p>
               </div>
-            </section>
-          </>
-        )}
+              <Button
+                onClick={startWalkthrough}
+                disabled={!dashboard?.latestConfirmedProcurementId}
+              >
+                <Play aria-hidden="true" /> Start walkthrough
+              </Button>
+            </div>
+          ) : null}
 
-        {search.demo ? (
-          <DemoControls
-            scenario={scenario}
-            state={controlState}
-            error={controlError}
-            onReset={reset}
-            onStart={start}
+          <section
+            className="buy-desk-display"
+            id="buy-desk-display"
+            aria-labelledby="buy-desk-label"
+            data-focused={Boolean(search.procurement)}
+          >
+            <header className="bh-face-label">
+              <h2 className="screen-print" id="buy-desk-label">
+                Buy desk
+              </h2>
+              <span className="screen-print">Purchasing display</span>
+            </header>
+            <div className="buy-desk-display-surface bh-eink bh-cutout">
+              <div className="buy-desk-display-content" ref={setDisplayNode}>
+                <div className="buy-desk-master">
+                  {dashboard === undefined ? (
+                    <DashboardSkeleton />
+                  ) : dashboard === null ? (
+                    <EmptyDashboard
+                      demo={search.demo}
+                      onReset={reset}
+                      busy={controlState !== "idle"}
+                    />
+                  ) : (
+                    <LiveBuyList
+                      dashboard={dashboard}
+                      selectedId={search.procurement}
+                      onSelect={selectBuy}
+                    />
+                  )}
+                </div>
+                <div className="buy-desk-detail">
+                  {search.procurement ? (
+                    <FocusedProcurement
+                      key={search.procurement}
+                      procurementId={search.procurement as Id<"procurements">}
+                      view={
+                        search.demo && search.tour !== undefined
+                          ? demoViews[search.tour]
+                          : search.view
+                      }
+                      demo={search.demo}
+                      guidedStep={search.demo ? search.tour : undefined}
+                      onBack={() =>
+                        void navigate({
+                          search: (current) => ({
+                            ...current,
+                            procurement: undefined,
+                            view: "procurement",
+                            tour: undefined,
+                          }),
+                        })
+                      }
+                    />
+                  ) : (
+                    <LatestPurchaseSummary
+                      procurementId={dashboard?.latestConfirmedProcurementId}
+                      onOpen={(id) =>
+                        void navigate({
+                          search: (current) => ({
+                            ...current,
+                            procurement: id,
+                            view: "order",
+                            tour: undefined,
+                          }),
+                        })
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {dashboard ? (
+            <div className="buy-desk-support">
+              <AgentCard
+                state={dashboard.agent.state}
+                message={dashboard.agent.message}
+                unread={dashboard.agent.unreadThreadCount}
+              />
+              <ActivityReceipt dashboard={dashboard} onSelect={selectBuy} />
+            </div>
+          ) : null}
+
+          {search.demo && integrations ? (
+            <details className="buy-desk-service-panel bh-metal">
+              <summary>
+                <span className="screen-print">System connections</span>{" "}
+                <span>{requiredProviderMissing ? "Configuration incomplete" : "Configured"}</span>
+              </summary>
+              <div className="flex flex-wrap gap-2 p-4" aria-label="Provider readiness">
+                {integrations.map((integration) => (
+                  <Badge
+                    key={integration.name}
+                    variant="outline"
+                    data-tone={
+                      integration.status === "configured" || integration.name === "openrouter"
+                        ? "success"
+                        : "danger"
+                    }
+                  >
+                    {integration.name}
+                    {integration.name === "openrouter" ? " fallback" : ""} · {integration.status}
+                  </Badge>
+                ))}
+                {requiredProviderMissing ? (
+                  <p className="text-sm text-destructive">A required provider is not configured.</p>
+                ) : null}
+                <p className="text-xs text-muted-foreground">
+                  Configuration is not a live health check. Provider credits on each purchase
+                  reflect its recorded work.
+                </p>
+              </div>
+            </details>
+          ) : null}
+          {search.demo ? (
+            <details className="buy-desk-service-panel bh-metal">
+              <summary>
+                <span className="screen-print">Demo operator controls</span>
+              </summary>
+              <div className="p-4">
+                <JudgeModeButton />
+                <DemoControls
+                  scenario={scenario}
+                  state={controlState}
+                  error={controlError}
+                  onReset={reset}
+                  onStart={start}
+                />
+              </div>
+            </details>
+          ) : null}
+        </div>
+        {search.demo && search.tour !== undefined && search.procurement ? (
+          <DemoWalkthrough
+            steps={demoSteps}
+            currentStep={search.tour}
+            loading={displayNavigating}
+            onStepChange={changeDemoStep}
+            onClose={() =>
+              void navigate({ search: (current) => ({ ...current, demo: false, tour: undefined }) })
+            }
           />
         ) : null}
+      </main>
+    </DisplayNavigationContext>
+  );
+}
+
+function LatestPurchaseSummary({
+  procurementId,
+  onOpen,
+}: {
+  procurementId?: Id<"procurements"> | null;
+  onOpen: (id: string) => void;
+}) {
+  const procurement = useQuery(
+    api.purchasing.getProcurement,
+    procurementId ? { procurementId } : "skip",
+  );
+  return (
+    <div className="buy-desk-idle buy-desk-latest">
+      <ScanLine aria-hidden="true" />
+      {procurement?.confirmation ? (
+        <>
+          <p className="bh-kicker">Latest confirmation · {procurement.code}</p>
+          <h2>{procurement.itemName}</h2>
+          <PurchaseOutcome procurement={procurement} />
+          <Button variant="outline" onClick={() => onOpen(procurement.procurementId)}>
+            View order <ArrowRight aria-hidden="true" />
+          </Button>
+        </>
+      ) : (
+        <>
+          <p className="bh-kicker">Procurement progress</p>
+          <h2>
+            {procurementId && procurement === undefined
+              ? "Loading latest purchase…"
+              : "Select a buy"}
+          </h2>
+          <p>Inspect progress, compare supplier quotes, and review purchase terms here.</p>
+        </>
+      )}
+    </div>
+  );
+}
+
+function PurchaseOutcome({ procurement }: { procurement: ProcurementDetail }) {
+  const confirmation = procurement.confirmation;
+  if (!confirmation) return null;
+  return (
+    <section
+      className="buy-desk-outcome"
+      data-demo-target="confirmation"
+      aria-label="Supplier confirmation"
+    >
+      <p className="bh-kicker">
+        {confirmation.matchesApprovedTerms
+          ? "Supplier confirmed · terms match"
+          : "Terms changed · review required"}
+      </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Fact
+          label={
+            confirmation.matchesApprovedTerms ? "Confirmed incoming" : "Supplier-stated quantity"
+          }
+          value={
+            confirmation.confirmedQuantity === null
+              ? "Not supplied"
+              : `${confirmation.confirmedQuantity.toLocaleString()} units`
+          }
+        />
+        <Fact
+          label="Expected arrival"
+          value={confirmation.confirmedArrivalDate ?? "Not supplied"}
+        />
       </div>
-    </main>
+      <p className="text-xs text-muted-foreground">
+        Confirmation {confirmation.supplierConfirmationNumber ?? "number not supplied"}
+        {procurement.purchaseOrder ? ` · ${procurement.purchaseOrder.poNumber}` : ""}
+      </p>
+      {confirmation.differences.length > 0 ? (
+        <ul className="list-disc space-y-1 pl-5 text-sm">
+          {confirmation.differences.map((difference) => (
+            <li key={difference.field}>
+              {difference.field}: approved {difference.approved}, confirmed {difference.confirmed}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <div className="buy-desk-provider-line">
+        <SponsorCredit sponsor="agentmail" prefix="Reply via" />
+        <AiWorkCredit procurement={procurement} tasks={["confirmation_extraction"]} />
+      </div>
+    </section>
+  );
+}
+
+function AiWorkCredit({
+  procurement,
+  tasks,
+}: {
+  procurement: ProcurementDetail;
+  tasks: readonly string[];
+}) {
+  const runs = procurement.providerEvidence?.ai.filter((run) => tasks.includes(run.task)) ?? [];
+  if (runs.length === 0) return null;
+  const direct = runs.some((run) => run.transport === "openai");
+  const fallback = runs.some((run) => run.transport === "openrouter");
+  return (
+    <span className="buy-desk-provider-line">
+      {direct ? <SponsorCredit sponsor="openai" prefix="via" /> : null}
+      {fallback ? (
+        <span className="text-xs text-muted-foreground">
+          via OpenRouter{direct ? " fallback" : ""}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+function ActivityReceipt({
+  dashboard,
+  onSelect,
+}: {
+  dashboard: Dashboard;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <section className="buy-desk-activity" aria-labelledby="activity-title">
+      <header className="bh-face-label">
+        <h2 id="activity-title" className="screen-print">
+          <Activity aria-hidden="true" /> Activity feed
+        </h2>
+        <span className="screen-print">Live record</span>
+      </header>
+      <div className="bh-receipt buy-desk-receipt">
+        {dashboard.activity.length === 0 ? (
+          <p>No activity yet. Watching inventory.</p>
+        ) : (
+          <ol>
+            {dashboard.activity.map((event) => (
+              <li key={event.eventId}>
+                <time dateTime={new Date(event.createdAt).toISOString()}>
+                  {shortTime(event.createdAt)}
+                </time>
+                <div>
+                  <p>{event.summary}</p>
+                  <button type="button" onClick={() => onSelect(event.procurementId)}>
+                    {event.code}
+                    <ArrowRight aria-hidden="true" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+        <p className="buy-desk-receipt-end">End of feed</p>
+      </div>
+    </section>
   );
 }
 
@@ -436,11 +720,13 @@ function FocusedProcurement({
   procurementId,
   view,
   demo,
+  guidedStep,
   onBack,
 }: {
   procurementId: Id<"procurements">;
   view: FocusView;
   demo: boolean;
+  guidedStep?: number;
   onBack: () => void;
 }) {
   const { isAuthenticated } = useConvexAuth();
@@ -453,7 +739,7 @@ function FocusedProcurement({
   const quotes = useQuery(api.inbound.listQuotes, { procurementId });
   const followUps = useQuery(api.mail.listFollowUps, { procurementId });
   const comparison = useQuery(api.recommendations.getLatestComparison, { procurementId });
-  const navigate = Route.useNavigate();
+  const navigate = useDisplayNavigate();
   const startSourcing = useAction(api.sourcing.start);
   const ensurePurchasingInbox = useAction(api.mail.ensurePurchasingInbox);
   const prepareRfqs = useMutation(api.rfqs.prepare);
@@ -472,6 +758,9 @@ function FocusedProcurement({
   const [approvalConfirmation, setApprovalConfirmation] = useState("");
   const [mailState, setMailState] = useState<"idle" | "inbox" | "approving" | "sending">("idle");
   const [mailError, setMailError] = useState<string | null>(null);
+  const focusDetailHeading = useCallback((node: HTMLHeadingElement | null) => {
+    node?.focus({ preventScroll: true });
+  }, []);
   const aiRun = useQuery(api.ai.getRun, aiRunId === null ? "skip" : { aiRunId });
   const threadMessages = useQuery(
     api.ai.listThreadMessages,
@@ -578,23 +867,30 @@ function FocusedProcurement({
 
   if (procurement === undefined) {
     return (
-      <main className="min-h-screen bg-stone-100 p-6">
-        <div className="mx-auto max-w-3xl animate-pulse rounded-xl bg-white p-10">
+      <div className="buy-desk-empty" aria-live="polite">
+        <h2 ref={focusDetailHeading} tabIndex={-1} data-display-heading>
           Loading procurement…
-        </div>
-      </main>
+        </h2>
+      </div>
     );
   }
   if (procurement === null) {
     return (
-      <main className="min-h-screen bg-stone-100 p-6">
-        <div className="mx-auto max-w-3xl rounded-xl bg-white p-10">
-          <h1 className="text-xl font-semibold">Procurement not found</h1>
+      <div className="buy-desk-empty" aria-live="polite">
+        <div className="mx-auto max-w-3xl rounded-xl bg-card p-10">
+          <h2
+            ref={focusDetailHeading}
+            className="text-xl font-semibold"
+            tabIndex={-1}
+            data-display-heading
+          >
+            Procurement not found
+          </h2>
           <Button className="mt-5" onClick={onBack}>
-            Dashboard
+            All buys
           </Button>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -622,30 +918,69 @@ function FocusedProcurement({
             : "Purchase order status";
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7f4ed_0%,#eeeadf_100%)] px-4 py-6 sm:px-7">
-      <div className="mx-auto max-w-3xl space-y-5">
-        <header className="flex items-center justify-between border-b border-stone-300 pb-4">
-          <Button variant="ghost" className="-ml-3" onClick={onBack}>
+    <div className="buy-desk-focused">
+      <div className="buy-desk-focused-content">
+        <header className="flex items-center justify-between border-b border-border pb-4">
+          <Button variant="ghost" className="buy-desk-back" onClick={onBack}>
             <ArrowLeft />
-            Dashboard
+            All buys
           </Button>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-sm text-stone-500">{procurement.code}</span>
+            <span className="font-mono text-sm text-muted-foreground">{procurement.code}</span>
             <StatusBadge status={procurement.status} />
           </div>
         </header>
-        <Card className="border-stone-300 bg-white/80 shadow-none">
+        <nav className="buy-desk-view-tabs" aria-label="Purchase steps">
+          {(["procurement", "recommendation", "approval", "order"] as const).map((step) => {
+            const available =
+              step === "procurement" ||
+              (step === "order"
+                ? procurement.purchaseOrder !== null
+                : procurement.recommendation !== null);
+            return (
+              <button
+                key={step}
+                type="button"
+                disabled={!available}
+                aria-current={view === step ? "step" : undefined}
+                title={!available ? "Available when the buy reaches this step" : undefined}
+                onClick={() =>
+                  void navigate({
+                    search: (current) => ({ ...current, view: step, tour: undefined }),
+                  })
+                }
+              >
+                {step === "procurement"
+                  ? "Progress"
+                  : step === "recommendation"
+                    ? "Recommendation"
+                    : step === "approval"
+                      ? "Approval"
+                      : "Order"}
+              </button>
+            );
+          })}
+        </nav>
+        <Card
+          className="buy-desk-primary-card"
+          data-demo-target={view === "approval" ? "approval" : undefined}
+        >
           <CardHeader>
             <div className="flex items-start justify-between gap-3">
               <div>
                 <CardDescription>
                   {procurement.itemName} · {procurement.sku}
                 </CardDescription>
-                <CardTitle className="mt-2 text-2xl">
+                <h2
+                  ref={focusDetailHeading}
+                  className="buy-desk-view-title"
+                  tabIndex={-1}
+                  data-display-heading
+                >
                   {viewAvailable
                     ? viewTitle
                     : `${view[0].toUpperCase()}${view.slice(1)} is not ready`}
-                </CardTitle>
+                </h2>
               </div>
               {thread ? (
                 <Button
@@ -662,16 +997,37 @@ function FocusedProcurement({
             <CardDescription className="text-sm leading-6">
               {viewAvailable
                 ? view === "procurement"
-                  ? procurement.triggerReason
-                  : "One focused step with exact stored terms and collapsed evidence."
+                  ? `Original trigger: ${procurement.triggerReason}`
+                  : "Review the stored purchase terms and supporting evidence."
                 : "This focused view will appear when the procurement reaches that step."}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {viewAvailable ? (
-              <FocusedViewBody procurement={procurement} view={view} />
+              <>
+                <FocusedViewBody procurement={procurement} view={view} />
+                {view === "recommendation" ? (
+                  <>
+                    {comparison ? (
+                      <QuoteComparison comparison={comparison} />
+                    ) : (
+                      <p>Loading quote comparison…</p>
+                    )}
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        void navigate({
+                          search: (current) => ({ ...current, view: "approval", tour: undefined }),
+                        })
+                      }
+                    >
+                      Review buyer decision <ArrowRight aria-hidden="true" />
+                    </Button>
+                  </>
+                ) : null}
+              </>
             ) : (
-              <div className="rounded-lg border border-dashed border-stone-300 p-5 text-sm text-stone-600">
+              <div className="rounded-lg border border-dashed border-border p-5 text-sm text-muted-foreground">
                 There is no buyer action here yet. Return to the dashboard while the agent works.
               </div>
             )}
@@ -683,423 +1039,316 @@ function FocusedProcurement({
         {view === "order" && procurement.purchaseOrder ? (
           <PurchaseOrderDeliveryCard procurement={procurement} />
         ) : null}
-        <Card className="border-stone-300 bg-white/80 shadow-none">
-          <CardHeader>
-            <CardDescription>Live supplier evidence · BC-08</CardDescription>
-            <CardTitle className="text-base">Real supplier discovery</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              onClick={() => void sourceSuppliers()}
-              disabled={
-                !canOperateDemo || sourcingState === "working" || sourcing?.run.status === "pending"
-              }
-            >
-              <Search />
-              {sourcingState === "working" || sourcing?.run.status === "pending"
-                ? "Searching with Firecrawl…"
-                : sourcing?.run.status === "succeeded"
-                  ? "Search again"
-                  : "Start sourcing"}
-            </Button>
-            {!canOperateDemo ? (
-              <p className="text-sm text-stone-600">
-                Enter judge mode to run provider-backed demo steps. Public observation stays open.
-              </p>
-            ) : null}
-            {sourcing?.candidates.map((candidate) => (
-              <div
-                key={candidate.resultId}
-                className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-medium">{candidate.supplierName}</p>
-                  <Badge variant="outline">Website · Firecrawl</Badge>
-                </div>
-                <p className="mt-1 text-stone-600">{candidate.title}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-stone-500">
-                  <a
-                    className="font-medium text-amber-800 underline"
-                    href={candidate.url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open source
-                  </a>
-                  <span>{candidate.matchStatus.replaceAll("_", " ")}</span>
-                  {candidate.matchConfidence > 0 ? (
-                    <span>{Math.round(candidate.matchConfidence * 100)}% confidence</span>
-                  ) : (
-                    <span>OpenAI assessment pending</span>
-                  )}
-                </div>
-              </div>
-            ))}
-            {sourcing?.run.status === "failed" ? (
-              <p className="text-sm text-red-700">{sourcing.run.errorMessage}</p>
-            ) : null}
-            {sourcingError ? <p className="text-sm text-red-700">{sourcingError}</p> : null}
-          </CardContent>
-        </Card>
-        <Card className="border-stone-300 bg-white/80 shadow-none">
-          <CardHeader>
-            <CardDescription>Controlled previews · BC-09</CardDescription>
-            <CardTitle className="text-base">Requests for quote</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {rfqs?.length === 0 ? (
-              <Button
-                variant="outline"
-                onClick={() => void prepareControlledRfqs()}
-                disabled={
-                  !canOperateDemo || rfqState === "working" || sourcing?.run.status !== "succeeded"
-                }
-              >
-                <Sparkles />
-                {rfqState === "working" ? "Writing previews…" : "Prepare three RFQs"}
-              </Button>
-            ) : null}
-            {rfqs?.map((rfq) => (
-              <div
-                key={rfq.rfqId}
-                className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-medium">{rfq.supplierName}</p>
-                  <Badge variant="outline">Controlled demo recipient</Badge>
-                </div>
-                <p className="mt-1 font-mono text-xs text-stone-500">{rfq.recipientEmail}</p>
-                {rfq.recipientApprovedAt === null && canSendExternal ? (
-                  <Input
-                    className="mt-3"
-                    type="email"
-                    aria-label={`${rfq.supplierName} controlled recipient email`}
-                    value={recipientDrafts[rfq.rfqId] ?? rfq.recipientEmail}
-                    onChange={(event) =>
-                      setRecipientDrafts((current) => ({
-                        ...current,
-                        [rfq.rfqId]: event.target.value,
-                      }))
-                    }
-                  />
-                ) : (
-                  <p className="mt-2 text-xs text-stone-600">
-                    {rfq.recipientApprovedAt === null
-                      ? "Exact recipient is visible only to the configured buyer"
-                      : "Exact recipient approved"}
-                  </p>
-                )}
-                <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                  <Fact
-                    label="Quantity"
-                    value={`${rfq.requestedQuantity.toLocaleString()} units`}
-                  />
-                  <Fact label="Required by" value={rfq.requiredBy} />
-                  <Fact label="Ship to" value={rfq.destination} />
-                </div>
-                {rfq.subject && rfq.body ? (
-                  <div className="mt-4 rounded-md bg-stone-50 p-3">
-                    <p className="font-medium">{rfq.subject}</p>
-                    <p className="mt-2 leading-6 whitespace-pre-wrap text-stone-600">{rfq.body}</p>
-                  </div>
-                ) : (
-                  <p className="mt-3 text-stone-500">
-                    OpenAI is writing wording from the fixed fields…
-                  </p>
-                )}
-              </div>
-            ))}
-            {rfqs && rfqs.length > 0 ? (
-              <div className="space-y-3 border-t border-stone-200 pt-4">
-                <p className="text-xs leading-5 text-stone-500">
-                  These identities are controlled test recipients, not claims about the legal
-                  entities found online. No email can be sent until the exact addresses are reviewed
-                  and explicitly approved.
-                </p>
-                {!canSendExternal ? (
-                  <p className="rounded-lg border border-stone-200 bg-stone-50 p-3 text-sm text-stone-600">
-                    External email controls require the configured buyer. Judge mode cannot reveal
-                    recipients, create inboxes, or send messages.
-                  </p>
-                ) : rfqs.every((rfq) => rfq.recipientApprovedAt !== null) ? (
-                  <div className="flex flex-wrap items-center gap-3">
-                    {purchasingInbox ? (
-                      <Badge variant="outline">From {purchasingInbox.email}</Badge>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        onClick={() => void selectPurchasingInbox()}
-                        disabled={mailState !== "idle"}
-                      >
-                        {mailState === "inbox" ? "Selecting inbox…" : "Create or select Acme inbox"}
-                      </Button>
-                    )}
-                    <Button
-                      onClick={() => void sendRfqs()}
-                      disabled={mailState !== "idle" || purchasingInbox === null}
-                    >
-                      {mailState === "sending" ? "Queueing…" : "Send approved RFQs"}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Input
-                      value={approvalConfirmation}
-                      onChange={(event) => setApprovalConfirmation(event.target.value)}
-                      placeholder="Type APPROVE CONTROLLED RFQ RECIPIENTS"
-                      aria-label="Recipient approval confirmation"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => void approveExactRecipients()}
-                      disabled={mailState !== "idle"}
-                    >
-                      {mailState === "approving" ? "Approving…" : "Approve exact recipients"}
-                    </Button>
-                  </div>
-                )}
-                {delivery && delivery.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {delivery.map((item) => (
-                      <Badge key={item.rfqId} variant="outline">
-                        {item.status ?? "queued"}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-            {rfqError ? <p className="text-sm text-red-700">{rfqError}</p> : null}
-            {mailError ? <p className="text-sm text-red-700">{mailError}</p> : null}
-          </CardContent>
-        </Card>
-        {quotes && quotes.length > 0 ? (
-          <Card className="border-stone-300 bg-white/80 shadow-none">
-            <CardHeader>
-              <CardDescription>Live inbound evidence · BC-11</CardDescription>
-              <CardTitle className="text-base">Supplier quotes</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {quotes.map((quote) => (
-                <div
-                  key={quote.quoteId}
-                  className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-medium">
-                      {quote.supplierName} · revision {quote.revision}
-                    </p>
-                    <Badge variant="outline">{quote.qualification.replaceAll("_", " ")}</Badge>
-                  </div>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                    <Fact
-                      label="Available"
-                      value={
-                        quote.quantityAvailable === null
-                          ? "Missing"
-                          : `${quote.quantityAvailable.toLocaleString()} units`
-                      }
-                    />
-                    <Fact
-                      label="Landed cost"
-                      value={
-                        quote.landedCostCents === null ? "Incomplete" : money(quote.landedCostCents)
-                      }
-                    />
-                    <Fact label="Arrival" value={quote.estimatedArrivalDate ?? "Missing"} />
-                  </div>
-                  <p className="mt-3 text-xs text-stone-500">
-                    {Math.round(quote.responseConfidence * 100)}% extraction confidence · raw
-                    {quote.evidenceLabel}
-                  </p>
-                  {quote.missingInformation.length > 0 ? (
-                    <p className="mt-2 text-xs text-amber-800">
-                      Missing: {quote.missingInformation.join(", ").replaceAll("_", " ")}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+        {view === "procurement" ? (
+          <>
+            <div className="buy-desk-provider-line">
+              <AiWorkCredit
+                procurement={procurement}
+                tasks={["quote_extraction", "missing_information", "follow_up_wording"]}
+              />
+            </div>
+            {quotes && followUps ? (
+              <QuoteHistory quotes={quotes} followUps={followUps} />
+            ) : (
+              <p className="text-sm text-muted-foreground">Loading quote history…</p>
+            )}
+          </>
         ) : null}
-        {followUps && followUps.length > 0 ? (
-          <Card className="border-stone-300 bg-white/80 shadow-none">
-            <CardHeader>
-              <CardDescription>Threaded supplier outreach · BC-12</CardDescription>
-              <CardTitle className="text-base">Automatic follow-ups</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {followUps.map((followUp) => (
-                <div
-                  key={followUp.followUpId}
-                  className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-medium">
-                      {followUp.supplierName} · attempt {followUp.attempt} of 2
-                    </p>
-                    <Badge variant="outline">{followUp.status.replaceAll("_", " ")}</Badge>
-                  </div>
-                  <p className="mt-2 text-xs text-stone-500">
-                    Requested: {followUp.requestedFields.join(", ").replaceAll("_", " ")}
-                  </p>
-                  <div className="mt-3 rounded-md bg-stone-50 p-3">
-                    <p className="font-medium">{followUp.subject}</p>
-                    <p className="mt-2 leading-6 whitespace-pre-wrap text-stone-600">
-                      {followUp.body}
-                    </p>
-                  </div>
-                  {followUp.errorMessage ? (
-                    <p className="mt-2 text-xs text-red-700">{followUp.errorMessage}</p>
+        <details
+          className="buy-desk-evidence"
+          key={guidedStep === 1 ? "guided-sources" : "manual-sources"}
+          open={guidedStep === 1 ? true : undefined}
+        >
+          <summary>Supplier sources &amp; requests</summary>
+          <div className="buy-desk-evidence-body">
+            <Card className="border-border bg-card shadow-none" data-demo-target="sources">
+              <CardHeader>
+                <CardDescription>Supplier evidence</CardDescription>
+                <CardTitle className="text-base">Supplier discovery</CardTitle>
+                <div className="buy-desk-provider-line">
+                  {sourcing?.run.status === "succeeded" ? (
+                    <SponsorCredit sponsor="firecrawl" prefix="Sources via" />
                   ) : null}
+                  <AiWorkCredit
+                    procurement={procurement}
+                    tasks={["supplier_search_queries", "product_equivalency"]}
+                  />
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        ) : null}
-        {comparison ? (
-          <Card className="border-stone-300 bg-white/80 shadow-none">
-            <CardHeader>
-              <CardDescription>Deterministic decision · BC-13</CardDescription>
-              <CardTitle className="text-base">Quote comparison</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm leading-6 text-stone-700">{comparison.explanation}</p>
-              <div className="space-y-3">
-                {comparison.entries.map((entry) => (
-                  <div
-                    key={entry.quoteId}
-                    className="rounded-lg border border-stone-200 bg-white p-4 text-sm"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="font-medium">
-                        {entry.rank === null ? "—" : `#${entry.rank}`} {entry.supplierName}
-                      </p>
-                      <Badge variant="outline">
-                        {entry.selected ? "recommended" : entry.qualification.replaceAll("_", " ")}
-                      </Badge>
-                    </div>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                      <Fact
-                        label="Landed cost · supplier"
-                        value={
-                          entry.landedCostCents === null
-                            ? "Incomplete"
-                            : money(entry.landedCostCents)
-                        }
-                      />
-                      <Fact
-                        label="Arrival · supplier"
-                        value={entry.estimatedArrivalDate ?? "Missing"}
-                      />
-                      <Fact
-                        label="Match · calculated"
-                        value={`${Math.round(entry.productMatchConfidence * 100)}%`}
-                      />
-                      <Fact
-                        label="Stockout delay · calculated"
-                        value={`${entry.projectedStockoutDays} days`}
-                      />
-                      <Fact
-                        label="Excess · calculated"
-                        value={`${entry.excessInventory.toLocaleString()} units`}
-                      />
-                      <Fact
-                        label="Reliability · historical"
-                        value={`${Math.round(entry.supplierReliability * 100)}%`}
-                      />
-                    </div>
-                    {entry.reasons.length > 0 ? (
-                      <p className="mt-3 text-xs text-amber-800">
-                        Lost because: {entry.reasons.join(", ").replaceAll("_", " ")}
-                      </p>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button
-                  onClick={() =>
-                    navigate({
-                      search: (current) => ({ ...current, view: "recommendation" }),
-                    })
-                  }
-                >
-                  Review recommendation
-                  <ArrowRight />
-                </Button>
-                {view === "recommendation" ? (
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {procurement.status === "sourcing" ? (
                   <Button
-                    variant="outline"
-                    onClick={() =>
-                      navigate({
-                        search: (current) => ({ ...current, view: "approval" }),
-                      })
+                    onClick={() => void sourceSuppliers()}
+                    disabled={
+                      !canOperateDemo ||
+                      procurement.status !== "sourcing" ||
+                      sourcingState === "working" ||
+                      sourcing?.run.status === "pending"
                     }
                   >
-                    Continue to buyer decision
-                    <ArrowRight />
+                    <Search />
+                    {sourcingState === "working" || sourcing?.run.status === "pending"
+                      ? "Searching with Firecrawl…"
+                      : sourcing?.run.status === "succeeded"
+                        ? "Search again"
+                        : "Start sourcing"}
                   </Button>
                 ) : null}
-                <span className="font-mono text-xs text-stone-500">
-                  {comparison.rankingVersion} · explanation {comparison.explanationStatus}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        ) : null}
-        {demo ? (
-          <Card className="border-dashed border-stone-400 bg-white/60 shadow-none">
-            <CardHeader>
-              <CardDescription>Demo diagnostic · BC-07</CardDescription>
-              <CardTitle className="text-base">Structured supplier-search task</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button
-                variant="outline"
-                onClick={() => void runDiagnostic()}
-                disabled={aiRun?.status === "pending"}
-              >
-                <Sparkles />
-                {aiRun?.status === "pending" ? "OpenAI is working…" : "Run AI diagnostic"}
-              </Button>
-              {aiRun ? (
-                <div className="rounded-lg border border-stone-200 bg-white p-4 text-sm">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <StatusBadge status={aiRun.status} />
-                    <span className="font-mono text-xs text-stone-500">
-                      {aiRun.transport} · {aiRun.model}
-                    </span>
-                  </div>
-                  {aiRun.result ? (
-                    <div className="mt-3 space-y-2">
-                      <p>{aiRun.result.summary}</p>
-                      {aiRun.result.output.task === "supplier_search_queries" ? (
-                        <ul className="list-disc space-y-1 pl-5 text-stone-600">
-                          {aiRun.result.output.queries.map((query) => (
-                            <li key={query}>{query}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      <p className="text-xs text-stone-500">
-                        {aiRun.evidenceRefs.length} stored evidence references · confidence{" "}
-                        {Math.round(aiRun.result.confidence * 100)}%
-                      </p>
+                {!canOperateDemo && procurement.status === "sourcing" ? (
+                  <p className="text-sm text-muted-foreground">
+                    Enter judge mode to run provider-backed demo steps. Public observation stays
+                    open.
+                  </p>
+                ) : null}
+                {sourcing?.candidates.map((candidate) => (
+                  <div
+                    key={candidate.resultId}
+                    className="rounded-lg border border-border bg-card p-4 text-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-medium">{candidate.supplierName}</p>
+                      <Badge variant="outline">Website · Firecrawl</Badge>
                     </div>
-                  ) : aiRun.errorMessage ? (
-                    <p className="mt-3 text-red-700">{aiRun.errorMessage}</p>
+                    <p className="mt-1 text-muted-foreground">{candidate.title}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <a
+                        className="font-medium text-[var(--bh-orange)] underline"
+                        href={candidate.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open source
+                      </a>
+                      <span>{candidate.matchStatus.replaceAll("_", " ")}</span>
+                      {candidate.matchConfidence > 0 ? (
+                        <span>
+                          {Math.round(candidate.matchConfidence * 100)}% assessment certainty
+                        </span>
+                      ) : (
+                        <span>Product match not verified</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {sourcing?.run.status === "failed" ? (
+                  <p className="text-sm text-destructive">{sourcing.run.errorMessage}</p>
+                ) : null}
+                {sourcingError ? <p className="text-sm text-destructive">{sourcingError}</p> : null}
+              </CardContent>
+            </Card>
+            <Card className="border-border bg-card shadow-none">
+              <CardHeader>
+                <CardDescription>Supplier outreach</CardDescription>
+                <CardTitle className="text-base">Requests for quote</CardTitle>
+                <div className="buy-desk-provider-line">
+                  {delivery?.some(
+                    (item) => item.status === "sent" || item.status === "delivered",
+                  ) ? (
+                    <SponsorCredit sponsor="agentmail" prefix="Sent via" />
                   ) : null}
+                  <AiWorkCredit procurement={procurement} tasks={["rfq_wording"]} />
                 </div>
-              ) : null}
-              {diagnosticError ? <p className="text-sm text-red-700">{diagnosticError}</p> : null}
-            </CardContent>
-          </Card>
-        ) : null}
-        <AgentCard
-          state="working"
-          message="I’m checking suppliers against the required date and product specification."
-          unread={procurement.threadLinks.reduce((total, link) => total + link.unreadCount, 0)}
-        />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {rfqs?.length === 0 ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => void prepareControlledRfqs()}
+                    disabled={
+                      !canOperateDemo ||
+                      procurement.status !== "sourcing" ||
+                      rfqState === "working" ||
+                      sourcing?.run.status !== "succeeded"
+                    }
+                  >
+                    <Sparkles />
+                    {rfqState === "working" ? "Writing previews…" : "Prepare three RFQs"}
+                  </Button>
+                ) : null}
+                {rfqs?.map((rfq) => (
+                  <div
+                    key={rfq.rfqId}
+                    className="rounded-lg border border-border bg-card p-4 text-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-medium">{rfq.supplierName}</p>
+                      <Badge variant="outline">
+                        {rfq.isControlledRecipient
+                          ? "Controlled demo recipient"
+                          : "Supplier recipient"}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 font-mono text-xs text-muted-foreground">
+                      {rfq.recipientEmail}
+                    </p>
+                    {rfq.recipientApprovedAt === null && canSendExternal ? (
+                      <Input
+                        className="mt-3"
+                        type="email"
+                        aria-label={`${rfq.supplierName} controlled recipient email`}
+                        value={recipientDrafts[rfq.rfqId] ?? rfq.recipientEmail}
+                        onChange={(event) =>
+                          setRecipientDrafts((current) => ({
+                            ...current,
+                            [rfq.rfqId]: event.target.value,
+                          }))
+                        }
+                      />
+                    ) : (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {rfq.recipientApprovedAt === null
+                          ? "Exact recipient is visible only to the configured buyer"
+                          : "Exact recipient approved"}
+                      </p>
+                    )}
+                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                      <Fact
+                        label="Quantity"
+                        value={`${rfq.requestedQuantity.toLocaleString()} units`}
+                      />
+                      <Fact label="Required by" value={rfq.requiredBy} />
+                      <Fact label="Ship to" value={rfq.destination} />
+                    </div>
+                    {rfq.subject && rfq.body ? (
+                      <div className="mt-4 rounded-md bg-muted/40 p-3">
+                        <p className="font-medium">{rfq.subject}</p>
+                        <p className="mt-2 leading-6 whitespace-pre-wrap text-muted-foreground">
+                          {rfq.body}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-muted-foreground">
+                        OpenAI is writing wording from the fixed fields…
+                      </p>
+                    )}
+                  </div>
+                ))}
+                {rfqs && rfqs.length > 0 ? (
+                  <div className="space-y-3 border-t border-border pt-4">
+                    <p className="text-xs leading-5 text-muted-foreground">
+                      These identities are controlled test recipients, not claims about the legal
+                      entities found online. No email can be sent until the exact addresses are
+                      reviewed and explicitly approved.
+                    </p>
+                    {procurement.status !== "rfq_ready" ? (
+                      <p className="text-xs text-muted-foreground">
+                        RFQ delivery is closed for this purchase stage. Stored requests and delivery
+                        receipts remain available below.
+                      </p>
+                    ) : !canSendExternal ? (
+                      <p className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
+                        External email controls require the configured buyer. Judge mode cannot
+                        reveal recipients, create inboxes, or send messages.
+                      </p>
+                    ) : rfqs.every((rfq) => rfq.recipientApprovedAt !== null) ? (
+                      <div className="flex flex-wrap items-center gap-3">
+                        {purchasingInbox ? (
+                          <Badge variant="outline">From {purchasingInbox.email}</Badge>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            onClick={() => void selectPurchasingInbox()}
+                            disabled={mailState !== "idle"}
+                          >
+                            {mailState === "inbox"
+                              ? "Selecting inbox…"
+                              : "Create or select Acme inbox"}
+                          </Button>
+                        )}
+                        <Button
+                          onClick={() => void sendRfqs()}
+                          disabled={
+                            mailState !== "idle" ||
+                            !purchasingInbox ||
+                            !rfqs.every((rfq) => rfq.status === "ready" || rfq.status === "queued")
+                          }
+                        >
+                          {mailState === "sending" ? "Queueing…" : "Send approved RFQs"}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Input
+                          value={approvalConfirmation}
+                          onChange={(event) => setApprovalConfirmation(event.target.value)}
+                          placeholder="Type APPROVE CONTROLLED RFQ RECIPIENTS"
+                          aria-label="Recipient approval confirmation"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => void approveExactRecipients()}
+                          disabled={mailState !== "idle"}
+                        >
+                          {mailState === "approving" ? "Approving…" : "Approve exact recipients"}
+                        </Button>
+                      </div>
+                    )}
+                    {delivery && delivery.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {delivery.map((item) => (
+                          <Badge key={item.rfqId} variant="outline">
+                            {item.status ?? "queued"}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+                {rfqError ? <p className="text-sm text-destructive">{rfqError}</p> : null}
+                {mailError ? <p className="text-sm text-destructive">{mailError}</p> : null}
+              </CardContent>
+            </Card>
+            {demo && guidedStep === undefined && canOperateDemo ? (
+              <Card className="border-dashed border-input bg-card shadow-none">
+                <CardHeader>
+                  <CardDescription>Demo diagnostic</CardDescription>
+                  <CardTitle className="text-base">Structured supplier-search task</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => void runDiagnostic()}
+                    disabled={aiRun?.status === "pending"}
+                  >
+                    <Sparkles />
+                    {aiRun?.status === "pending" ? "OpenAI is working…" : "Run AI diagnostic"}
+                  </Button>
+                  {aiRun ? (
+                    <div className="rounded-lg border border-border bg-card p-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <StatusBadge status={aiRun.status} />
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {aiRun.transport} · {aiRun.model}
+                        </span>
+                      </div>
+                      {aiRun.result ? (
+                        <div className="mt-3 space-y-2">
+                          <p>{aiRun.result.summary}</p>
+                          {aiRun.result.output.task === "supplier_search_queries" ? (
+                            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+                              {aiRun.result.output.queries.map((query) => (
+                                <li key={query}>{query}</li>
+                              ))}
+                            </ul>
+                          ) : null}
+                          <p className="text-xs text-muted-foreground">
+                            {aiRun.evidenceRefs.length} stored evidence references · confidence{" "}
+                            {Math.round(aiRun.result.confidence * 100)}%
+                          </p>
+                        </div>
+                      ) : aiRun.errorMessage ? (
+                        <p className="mt-3 text-destructive">{aiRun.errorMessage}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {diagnosticError ? (
+                    <p className="text-sm text-destructive">{diagnosticError}</p>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : null}
+          </div>
+        </details>
       </div>
       <Sheet open={openThread !== null} onOpenChange={(open) => !open && setOpenThread(null)}>
         <SheetContent side="right" className="w-full sm:max-w-md">
@@ -1109,7 +1358,7 @@ function FocusedProcurement({
               This conversation stays attached to this procurement detail.
             </SheetDescription>
           </SheetHeader>
-          <div className="p-4 text-sm text-stone-600">
+          <div className="p-4 text-sm text-muted-foreground">
             {threadMessages === undefined ? (
               <p>Loading thread…</p>
             ) : threadMessages.page.length === 0 ? (
@@ -1121,12 +1370,12 @@ function FocusedProcurement({
                     key={message.id}
                     className={
                       message.role === "assistant"
-                        ? "rounded-lg bg-amber-50 p-3 text-stone-800"
-                        : "rounded-lg bg-stone-100 p-3"
+                        ? "rounded-lg bg-[var(--bh-orange)]/10 p-3 text-foreground"
+                        : "rounded-lg bg-muted/40 p-3"
                     }
                   >
-                    <p className="mb-1 text-xs font-semibold text-stone-500 uppercase">
-                      {message.role === "assistant" ? "Autonomous Buyer" : message.role}
+                    <p className="mb-1 text-xs font-semibold text-muted-foreground uppercase">
+                      {message.role === "assistant" ? "BUY HARD" : message.role}
                     </p>
                     <p className="leading-6">{message.text}</p>
                   </div>
@@ -1136,7 +1385,7 @@ function FocusedProcurement({
           </div>
         </SheetContent>
       </Sheet>
-    </main>
+    </div>
   );
 }
 
@@ -1145,7 +1394,7 @@ type ProcurementDetail = NonNullable<
 >;
 
 function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail }) {
-  const navigate = Route.useNavigate();
+  const navigate = useDisplayNavigate();
   const recommendation = procurement.recommendation;
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { signIn, signOut } = useAuthActions();
@@ -1240,19 +1489,19 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
   }
 
   return (
-    <Card className="border-amber-300 bg-amber-50/80 shadow-none">
+    <Card className="buy-desk-approval">
       <CardHeader>
-        <CardDescription>Human approval · stable Convex Auth</CardDescription>
+        <CardDescription>Buyer approval</CardDescription>
         <CardTitle className="flex items-center gap-2 text-lg">
           <ShieldCheck className="size-5" />
-          Judge decision checkpoint
+          Review and decide
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {procurement.approval ? (
-          <div className="rounded-lg border border-emerald-200 bg-white p-4 text-sm">
+          <div className="rounded-lg border border-[var(--bh-green)]/30 bg-card p-4 text-sm">
             <p className="font-medium capitalize">{procurement.approval.status}</p>
-            <p className="mt-1 text-stone-600">
+            <p className="mt-1 text-muted-foreground">
               {procurement.approval.decidedBy}
               {procurement.approval.isJudgeDemo ? " · judge demo identity" : " · configured buyer"}
             </p>
@@ -1260,7 +1509,15 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
               <Button
                 className="mt-3"
                 variant="outline"
-                onClick={() => navigate({ search: (current) => ({ ...current, view: "order" }) })}
+                onClick={() =>
+                  navigate({
+                    search: (current) => ({
+                      ...current,
+                      view: "order",
+                      tour: current.demo && current.tour === 4 ? 5 : undefined,
+                    }),
+                  })
+                }
               >
                 Inspect {procurement.purchaseOrder.poNumber}
                 <ArrowRight />
@@ -1269,7 +1526,7 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
           </div>
         ) : !isAuthenticated ? (
           <>
-            <p className="text-sm leading-6 text-stone-700">
+            <p className="text-sm leading-6 text-foreground">
               The dashboard stays public. This one-click identity unlocks only the demo purchase
               decision and is written into the audit trail.
             </p>
@@ -1281,10 +1538,10 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
               {authState === "judge" ? "Entering judge mode…" : "Enter judge approval mode"}
             </Button>
             <Collapsible>
-              <CollapsibleTrigger className="text-sm font-medium text-stone-600 underline">
+              <CollapsibleTrigger className="text-sm font-medium text-muted-foreground underline">
                 Sign in as the configured buyer
               </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3 space-y-3 rounded-lg border bg-white p-4">
+              <CollapsibleContent className="mt-3 space-y-3 rounded-lg border bg-card p-4">
                 <Input
                   type="email"
                   value={email}
@@ -1325,17 +1582,19 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
             </Collapsible>
           </>
         ) : currentUser === undefined ? (
-          <p className="text-sm text-stone-600">Confirming the signed-in buyer…</p>
+          <p className="text-sm text-muted-foreground">Confirming the signed-in buyer…</p>
         ) : currentUser === null || !currentUser.canApproveDemo ? (
           <div className="space-y-3">
-            <p className="text-sm text-red-700">This identity cannot approve the demo purchase.</p>
+            <p className="text-sm text-destructive">
+              This identity cannot approve the demo purchase.
+            </p>
             <Button variant="outline" onClick={() => void signOut()}>
               Sign out
             </Button>
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-white p-4 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-card p-4 text-sm">
               <span>
                 Signed in as <strong>{currentUser.name}</strong>
               </span>
@@ -1350,10 +1609,10 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
               aria-label="Decision note"
             />
             <Collapsible open={showModified} onOpenChange={setShowModified}>
-              <CollapsibleTrigger className="text-sm font-medium text-stone-600 underline">
+              <CollapsibleTrigger className="text-sm font-medium text-muted-foreground underline">
                 Modify exact terms
               </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3 grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-3">
+              <CollapsibleContent className="mt-3 grid gap-3 rounded-lg border bg-card p-4 sm:grid-cols-3">
                 <Input
                   value={quantity}
                   onChange={(event) => setQuantity(event.target.value)}
@@ -1392,7 +1651,7 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
             </div>
           </>
         )}
-        {error ? <p className="text-sm text-red-700">{error}</p> : null}
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
   );
@@ -1449,26 +1708,30 @@ function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDe
     (currentUser.role === "buyer" || currentUser.role === "admin");
 
   return (
-    <Card className="border-amber-300 bg-amber-50/80 shadow-none">
+    <Card className="buy-desk-approval">
       <CardHeader>
-        <CardDescription>External-send gate · AgentMail</CardDescription>
-        <CardTitle className="text-lg">Approve the exact PO recipient</CardTitle>
+        <CardDescription>Purchase order delivery</CardDescription>
+        <CardTitle className="text-lg">
+          {order.status === "confirmed" || order.status === "sent"
+            ? "Purchase order delivered"
+            : "Approve the exact PO recipient"}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {order.status === "sent" || order.status === "confirmed" ? (
-          <p className="text-sm text-emerald-800">
+          <p className="text-sm text-[var(--bh-green)]">
             {order.status === "confirmed"
               ? `${order.poNumber} was delivered once and the supplier confirmation matches.`
               : `${order.poNumber} was delivered once and is waiting for supplier confirmation.`}
           </p>
         ) : !configuredBuyer ? (
-          <p className="text-sm leading-6 text-stone-700">
+          <p className="text-sm leading-6 text-foreground">
             Judge mode can approve the demo purchase, but it can never send external email. Sign in
             as the configured buyer to approve a real recipient.
           </p>
         ) : order.recipientApprovedAt === null ? (
           <>
-            <p className="text-sm leading-6 text-stone-700">
+            <p className="text-sm leading-6 text-foreground">
               Enter the exact controlled supplier inbox shown in your test setup. It is stored only
               after this explicit confirmation.
             </p>
@@ -1492,7 +1755,7 @@ function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDe
         ) : (
           <div className="space-y-3">
             <Badge variant="outline">Exact recipient approved</Badge>
-            <p className="text-sm text-stone-700">
+            <p className="text-sm text-foreground">
               Sending is idempotent: retries reuse the same delivery record and cannot create a
               second purchase order.
             </p>
@@ -1505,8 +1768,10 @@ function PurchaseOrderDeliveryCard({ procurement }: { procurement: ProcurementDe
             </Button>
           </div>
         )}
-        {order.errorMessage ? <p className="text-sm text-red-700">{order.errorMessage}</p> : null}
-        {error ? <p className="text-sm text-red-700">{error}</p> : null}
+        {order.errorMessage ? (
+          <p className="text-sm text-destructive">{order.errorMessage}</p>
+        ) : null}
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
   );
@@ -1519,12 +1784,32 @@ function FocusedViewBody({
   procurement: ProcurementDetail;
   view: FocusView;
 }) {
+  const progressStep =
+    (
+      {
+        detected: 0,
+        analyzing: 0,
+        sourcing: 1,
+        rfq_ready: 1,
+        rfq_sent: 1,
+        awaiting_quotes: 1,
+        evaluating: 2,
+        approval_required: 3,
+        approved: 4,
+        po_sent: 5,
+        confirmation_pending: 5,
+        confirmed: 5,
+        rejected: 3,
+        no_viable_supplier: 2,
+        exception: 3,
+      } as Record<string, number>
+    )[procurement.status] ?? 0;
   if (view === "recommendation" && procurement.recommendation) {
     const recommendation = procurement.recommendation;
     return (
       <>
-        <div className="rounded-lg border border-stone-200 bg-stone-50 p-5">
-          <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">
+        <div className="rounded-lg border border-border bg-muted/40 p-5">
+          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Recommended
           </p>
           <h2 className="mt-1 text-xl font-semibold">{recommendation.supplierName}</h2>
@@ -1543,35 +1828,19 @@ function FocusedViewBody({
             />
             <Fact label="Arrival" value={recommendation.estimatedArrivalDate ?? "Pending"} />
           </div>
-          <p className="mt-5 text-sm leading-6">{recommendation.explanation}</p>
+          <p className="mt-5 text-sm leading-6">
+            Selected quote for {procurement.quantityRequired.toLocaleString()} units, required by{" "}
+            {procurement.requiredBy}. Compare the current supplier terms below.
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="outline">Confirmed · supplier quote</Badge>
+            <Badge variant="outline">Terms from supplier quote</Badge>
             <Badge variant="outline">
-              Match · {Math.round(recommendation.matchConfidence * 100)}%
+              {recommendation.matchConfidenceSource === "controlled_demo_assumption"
+                ? `Demo product-match assumption · ${Math.round(recommendation.matchConfidence * 100)}%`
+                : "Product match · unverified"}
             </Badge>
           </div>
         </div>
-        {recommendation.alternatives.length > 0 ? (
-          <Collapsible>
-            <CollapsibleTrigger className="inline-flex h-9 items-center rounded-md border border-stone-300 bg-white px-4 text-sm font-medium">
-              See {recommendation.alternatives.length} alternatives
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-3 space-y-2">
-              {recommendation.alternatives.map((alternative) => (
-                <div key={alternative.supplierName} className="rounded-lg border p-4 text-sm">
-                  <p className="font-medium">{alternative.supplierName}</p>
-                  <p className="mt-1 text-stone-500">
-                    {alternative.landedCostCents === null
-                      ? "Price incomplete"
-                      : money(alternative.landedCostCents)}{" "}
-                    · {alternative.estimatedArrivalDate ?? "Arrival unknown"} ·{" "}
-                    {alternative.qualification.replace("_", " ")}
-                  </p>
-                </div>
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
-        ) : null}
       </>
     );
   }
@@ -1580,7 +1849,7 @@ function FocusedViewBody({
     const recommendation = procurement.recommendation;
     return (
       <>
-        <div className="grid gap-5 rounded-lg border border-stone-200 bg-stone-50 p-5 sm:grid-cols-2">
+        <div className="grid gap-5 rounded-lg border border-border bg-muted/40 p-5 sm:grid-cols-2">
           <Fact label="Supplier" value={recommendation.supplierName} />
           <Fact
             label="Purchase total"
@@ -1593,17 +1862,19 @@ function FocusedViewBody({
           <Fact label="Quantity" value={`${procurement.quantityRequired.toLocaleString()} units`} />
           <Fact label="Required by" value={procurement.requiredBy} />
         </div>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6">
-          Product match confidence is {Math.round(recommendation.matchConfidence * 100)}%. Review
-          the evidence before deciding.
+        <div className="rounded-lg border border-[var(--bh-orange)]/30 bg-[var(--bh-orange)]/10 p-4 text-sm leading-6">
+          {recommendation.matchConfidenceSource === "controlled_demo_assumption"
+            ? `The ${Math.round(recommendation.matchConfidence * 100)}% product match is a controlled-demo assumption, not a measured assessment of this quote.`
+            : "Product match has not been verified for this quote."}{" "}
+          Review the source evidence before deciding.
         </div>
         {procurement.approval ? (
           <Badge variant="outline" className="capitalize">
             Decision recorded · {procurement.approval.status}
           </Badge>
         ) : (
-          <p className="text-sm text-stone-500">
-            No decision is recorded. Approval controls activate with buyer identity in BC-09.
+          <p className="text-sm text-muted-foreground">
+            No decision is recorded. Sign in below to review and approve the purchase.
           </p>
         )}
       </>
@@ -1614,7 +1885,8 @@ function FocusedViewBody({
     const order = procurement.purchaseOrder;
     return (
       <>
-        <div className="grid gap-5 rounded-lg border border-stone-200 bg-stone-50 p-5 sm:grid-cols-2">
+        <PurchaseOutcome procurement={procurement} />
+        <div className="grid gap-5 rounded-lg border border-border bg-muted/40 p-5 sm:grid-cols-2">
           <Fact label="Purchase order" value={order.poNumber} />
           <Fact label="Supplier" value={order.supplierName} />
           <Fact label="Quantity" value={`${order.quantity.toLocaleString()} units`} />
@@ -1634,75 +1906,61 @@ function FocusedViewBody({
             <Badge variant="outline">Supplier-confirmed · email reply</Badge>
           ) : null}
         </div>
-        <div className="grid gap-4 rounded-lg border border-stone-200 bg-white p-5 sm:grid-cols-2">
+        <div className="grid gap-4 rounded-lg border border-border bg-card p-5 sm:grid-cols-2">
           <div>
-            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Ship to</p>
+            <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              Ship to
+            </p>
             <p className="mt-2 text-sm whitespace-pre-line">{order.shipTo}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Bill to</p>
+            <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              Bill to
+            </p>
             <p className="mt-2 text-sm whitespace-pre-line">{order.billTo}</p>
           </div>
         </div>
-        <iframe
-          title={`${order.poNumber} accessible HTML preview`}
-          srcDoc={order.htmlBody}
-          sandbox=""
-          className="h-[34rem] w-full rounded-lg border border-stone-300 bg-white"
-        />
-        <p className="text-sm text-stone-600">
+        <details className="buy-desk-evidence">
+          <summary>Open purchase order document</summary>
+          <iframe
+            title={`${order.poNumber} accessible HTML preview`}
+            srcDoc={order.htmlBody}
+            sandbox=""
+            className="buy-desk-document h-[34rem] w-full rounded-lg border border-border"
+          />
+        </details>
+        <p className="text-sm text-muted-foreground">
           {order.sentAt === null
             ? "This order has not been marked sent."
             : `Sent ${new Date(order.sentAt).toLocaleString()}. Confirmation appears only after matching provider evidence.`}
         </p>
-        {procurement.confirmation ? (
-          <div
-            className={`rounded-lg border p-5 ${
-              procurement.confirmation.matchesApprovedTerms
-                ? "border-emerald-200 bg-emerald-50"
-                : "border-red-200 bg-red-50"
-            }`}
-          >
-            <p className="font-medium">
-              {procurement.confirmation.matchesApprovedTerms
-                ? "Supplier terms match · inventory covered"
-                : "Supplier terms changed · buyer review required"}
-            </p>
-            <p className="mt-1 text-sm text-stone-600">
-              Confirmation {procurement.confirmation.supplierConfirmationNumber ?? "number pending"}
-              {procurement.confirmation.confirmedArrivalDate
-                ? ` · arriving ${procurement.confirmation.confirmedArrivalDate}`
-                : ""}
-              {` · ${Math.round(procurement.confirmation.extractionConfidence * 100)}% extraction confidence`}
-            </p>
-            {procurement.confirmation.differences.length > 0 ? (
-              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
-                {procurement.confirmation.differences.map((difference) => (
-                  <li key={difference.field}>
-                    {difference.field}: approved {difference.approved}, confirmed{" "}
-                    {difference.confirmed}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
-        ) : null}
       </>
     );
   }
 
   return (
     <>
-      <ol className="space-y-3" aria-label="Procurement milestones">
-        <Milestone done label="Risk detected" />
-        <Milestone done label="Inventory analyzed" />
-        <Milestone current label="Finding qualified suppliers" />
-        <Milestone label="Compare quotes" />
-        <Milestone label="Buyer review" />
-        <Milestone label="Purchase order" />
+      {procurement.confirmation ? <PurchaseOutcome procurement={procurement} /> : null}
+      <ol className="buy-desk-milestones" aria-label="Procurement milestones">
+        {[
+          "Risk detected",
+          "Supplier search",
+          "Compare quotes",
+          "Buyer review",
+          "Purchase order",
+          "Supplier confirmation",
+        ].map((label, index) => (
+          <Milestone
+            key={label}
+            label={label}
+            number={index + 1}
+            done={index < progressStep || procurement.status === "confirmed"}
+            current={index === progressStep && procurement.status !== "confirmed"}
+          />
+        ))}
       </ol>
       <Separator />
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3" data-demo-target="risk">
         <Fact
           label="Target quantity"
           value={`${procurement.quantityRequired.toLocaleString()} units`}
@@ -1710,14 +1968,23 @@ function FocusedViewBody({
         <Fact label="Required by" value={procurement.requiredBy} />
         <Fact label="Projected stockout" value={procurement.projectedStockoutDate} />
       </div>
+      {procurement.calculationInputs ? (
+        <p className="text-sm text-muted-foreground">
+          Original stock: {procurement.calculationInputs.quantityOnHand.toLocaleString()} units ·
+          average use: {Math.round(procurement.averageDailyUsage).toLocaleString()}/day. Forecast
+          based on a {procurement.calculationInputs.trailingUsageDays}-day usage window.
+        </p>
+      ) : null}
       <Collapsible>
-        <CollapsibleTrigger className="inline-flex h-9 items-center rounded-md border border-stone-300 bg-white px-4 text-sm font-medium">
+        <CollapsibleTrigger className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm font-medium">
           View activity and evidence
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4 space-y-3 rounded-lg border border-stone-200 bg-stone-50 p-4">
+        <CollapsibleContent className="bh-receipt mt-4 space-y-3 p-4">
           {procurement.events.map((event) => (
             <div key={event.eventId} className="grid grid-cols-[4rem_1fr] gap-3 text-sm">
-              <span className="font-mono text-xs text-stone-400">{shortTime(event.createdAt)}</span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {shortTime(event.createdAt)}
+              </span>
               <p>{event.summary}</p>
             </div>
           ))}
@@ -1727,7 +1994,7 @@ function FocusedViewBody({
             <Badge variant="outline">Version · {procurement.calculationVersion}</Badge>
           </div>
           {procurement.calculationInputs ? (
-            <p className="text-xs leading-5 text-stone-500">
+            <p className="text-xs leading-5 text-muted-foreground">
               Calculated from {procurement.calculationInputs.quantityOnHand.toLocaleString()} on
               hand, a {procurement.calculationInputs.trailingUsageDays}-day usage window,{" "}
               {procurement.calculationInputs.safetyStockDays} safety-stock days, and a{" "}
@@ -1740,22 +2007,10 @@ function FocusedViewBody({
   );
 }
 
-function Metric({ label, value, source }: { label: string; value: string; source?: string }) {
-  return (
-    <Card className="border-stone-300 bg-white/70 shadow-none">
-      <CardContent className="p-5">
-        <p className="text-xs font-medium text-stone-500 uppercase">{label}</p>
-        <p className="mt-2 text-3xl font-semibold tabular-nums">{value}</p>
-        {source ? <p className="mt-2 text-xs text-stone-400">{source}</p> : null}
-      </CardContent>
-    </Card>
-  );
-}
-
 function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-xs text-stone-500 uppercase">{label}</p>
+    <div className="buy-desk-fact">
+      <p className="text-xs text-muted-foreground uppercase">{label}</p>
       <p className="mt-1 font-medium tabular-nums">{value}</p>
     </div>
   );
@@ -1771,24 +2026,31 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function Milestone({ label, done, current }: { label: string; done?: boolean; current?: boolean }) {
+function Milestone({
+  label,
+  number,
+  done,
+  current,
+}: {
+  label: string;
+  number: number;
+  done?: boolean;
+  current?: boolean;
+}) {
   return (
-    <li className="flex items-center gap-3 text-sm">
-      {done ? (
-        <span className="flex size-6 items-center justify-center rounded-full bg-emerald-700 text-white">
-          <Check className="size-3.5" />
-        </span>
-      ) : current ? (
-        <span className="flex size-6 items-center justify-center rounded-full bg-amber-500 text-white">
-          <Search className="size-3.5" />
-        </span>
-      ) : (
-        <span className="flex size-6 items-center justify-center rounded-full border border-stone-300">
-          <Circle className="size-2 text-stone-300" />
-        </span>
-      )}
-      <span className={current ? "font-semibold" : done ? "text-stone-700" : "text-stone-400"}>
+    <li
+      className="buy-desk-milestone"
+      data-state={done ? "done" : current ? "current" : "pending"}
+      aria-current={current ? "step" : undefined}
+    >
+      <span aria-hidden="true">
+        {done ? <Check className="size-3.5" /> : String(number).padStart(2, "0")}
+      </span>
+      <span>
         {label}
+        <span className="sr-only">
+          {done ? " — complete" : current ? " — current" : " — pending"}
+        </span>
       </span>
     </li>
   );
@@ -1796,22 +2058,29 @@ function Milestone({ label, done, current }: { label: string; done?: boolean; cu
 
 function AgentCard({ state, message, unread }: { state: string; message: string; unread: number }) {
   return (
-    <Card className="border-amber-300 bg-amber-50 shadow-none">
-      <CardHeader>
-        <CardDescription className="flex items-center gap-2 font-semibold text-amber-900 uppercase">
-          <Sparkles className="size-4" />
-          Agent · {state.replace("_", " ")}
-        </CardDescription>
-        <CardTitle className="text-base leading-6">{message}</CardTitle>
-      </CardHeader>
-      {unread > 0 ? (
-        <CardContent>
-          <p className="text-sm text-amber-900">
-            {unread} unread contextual {unread === 1 ? "thread" : "threads"}
-          </p>
-        </CardContent>
-      ) : null}
-    </Card>
+    <section className="buy-desk-agent-module" aria-labelledby="agent-status-label">
+      <header className="bh-face-label">
+        <h2 id="agent-status-label" className="screen-print">
+          <Sparkles aria-hidden="true" />
+          Agent
+        </h2>
+      </header>
+      <Card className="buy-desk-agent-card">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-2 font-semibold text-[var(--bh-orange)] uppercase">
+            {state.replaceAll("_", " ")}
+          </CardDescription>
+          <CardTitle className="text-base leading-6">{message}</CardTitle>
+        </CardHeader>
+        {unread > 0 ? (
+          <CardContent>
+            <p className="text-sm text-[var(--bh-orange)]">
+              {unread} unread contextual {unread === 1 ? "thread" : "threads"}
+            </p>
+          </CardContent>
+        ) : null}
+      </Card>
+    </section>
   );
 }
 
@@ -1849,7 +2118,7 @@ function JudgeModeButton() {
 
   if (currentUser?.isJudgeDemo && currentUser.canApproveDemo) {
     return (
-      <Button variant="outline" className="bg-white/70" onClick={() => void signOut()}>
+      <Button variant="outline" className="bg-card" onClick={() => void signOut()}>
         <ShieldCheck />
         Judge mode active
       </Button>
@@ -1860,14 +2129,14 @@ function JudgeModeButton() {
     <div className="flex items-center gap-2">
       <Button
         variant="outline"
-        className="bg-white/70"
+        className="bg-card"
         onClick={() => void enter()}
         disabled={isLoading || state === "working"}
       >
         <ShieldCheck />
         {state === "working" ? "Opening judge mode…" : "Enter judge mode"}
       </Button>
-      {error ? <span className="max-w-48 text-xs text-red-700">{error}</span> : null}
+      {error ? <span className="max-w-48 text-xs text-destructive">{error}</span> : null}
     </div>
   );
 }
@@ -1921,14 +2190,18 @@ function ConfiguredBuyerButton() {
   return (
     <>
       {configuredBuyer ? (
-        <Button variant="outline" className="bg-white/70" onClick={() => void signOut()}>
+        <Button
+          variant="outline"
+          className="buy-desk-account-button"
+          onClick={() => void signOut()}
+        >
           <ShieldCheck />
           Buyer active
         </Button>
       ) : (
         <Button
           variant="outline"
-          className="bg-white/70"
+          className="buy-desk-account-button"
           onClick={() => setOpen(true)}
           disabled={currentUser?.isJudgeDemo === true}
           title={currentUser?.isJudgeDemo ? "Leave judge mode first" : undefined}
@@ -1981,7 +2254,7 @@ function ConfiguredBuyerButton() {
                 Create buyer account
               </Button>
             </div>
-            {error ? <p className="text-sm text-red-700">{error}</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
           </div>
         </SheetContent>
       </Sheet>
@@ -1991,9 +2264,9 @@ function ConfiguredBuyerButton() {
 
 function DashboardSkeleton() {
   return (
-    <div className="grid animate-pulse gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {[0, 1, 2, 3].map((number) => (
-        <div key={number} className="h-28 rounded-xl bg-white/70" />
+    <div className="buy-desk-skeleton" aria-busy="true" aria-label="Loading buy desk">
+      {[0, 1, 2].map((number) => (
+        <div key={number} />
       ))}
     </div>
   );
@@ -2009,7 +2282,7 @@ function EmptyDashboard({
   busy: boolean;
 }) {
   return (
-    <Card className="border-dashed bg-white/70">
+    <Card className="border-dashed bg-card">
       <CardHeader>
         <CardTitle>No demo scenario</CardTitle>
         <CardDescription>
@@ -2051,7 +2324,7 @@ function DemoControls({
     !currentUser.isJudgeDemo &&
     (currentUser.role === "buyer" || currentUser.role === "admin");
   return (
-    <Card className="border-dashed border-stone-400 bg-white/55" data-testid="demo-controls">
+    <Card className="border-dashed border-input bg-card" data-testid="demo-controls">
       <CardHeader>
         <CardDescription>Hidden rehearsal controls · local demo data only</CardDescription>
         <CardTitle className="flex items-center justify-between text-lg">
@@ -2079,13 +2352,13 @@ function DemoControls({
             {state === "starting" ? "Starting…" : "Start demo"}
           </Button>
         </div>
-        {error ? <p className="text-sm text-red-700">{error}</p> : null}
-        <p className="text-xs text-stone-500">
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        <p className="text-xs text-muted-foreground">
           Reset creates a fresh run. Start demo performs deterministic inventory analysis; it does
           not fake supplier replies.
         </p>
         {!configuredBuyer ? (
-          <p className="text-xs text-amber-800">
+          <p className="text-xs text-[var(--bh-orange)]">
             Shared reset and start controls require the configured buyer. Judge mode cannot reset
             shared data or send external email.
           </p>

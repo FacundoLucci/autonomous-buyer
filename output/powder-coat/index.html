@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Screen print on powder coat · Material study</title>
+    <link rel="stylesheet" href="../../public/textures/powder-coat.css" />
+    <link rel="stylesheet" href="../../public/textures/screen-print.css" />
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: #080909;
+        color: #d6d6cf;
+        -webkit-font-smoothing: antialiased;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        max-width: 1200px;
+        margin: auto;
+        padding: 44px 32px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+      .eyebrow {
+        color: #999e97;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      h1 {
+        font:
+          500 clamp(28px, 5vw, 44px)/1.1 system-ui,
+          sans-serif;
+        letter-spacing: -0.04em;
+        margin: 10px 0;
+      }
+      p {
+        font-size: 12px;
+        line-height: 1.7;
+        color: #a1a69f;
+      }
+      a {
+        color: inherit;
+        text-underline-offset: 4px;
+      }
+      .download {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 16px;
+        border: 1px solid #3c413c;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .hero {
+        position: relative;
+        min-height: 350px;
+        border-radius: 10px;
+        background: var(--powder-coat-paint);
+        box-shadow:
+          inset 0 1px 1px #ffffff22,
+          inset 0 -2px 3px #000,
+          0 16px 32px #0005;
+      }
+      .hero > .printed-face {
+        position: absolute;
+        bottom: 35px;
+        left: 42px;
+        right: 42px;
+      }
+      .printed-brand {
+        display: block;
+        margin-bottom: 18px;
+        font-size: clamp(34px, 5.5vw, 70px);
+        line-height: 1.1;
+        font-weight: 650;
+        letter-spacing: 0.055em;
+        overflow-wrap: anywhere;
+      }
+      .printed-details {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 13px;
+        border-top: 1px solid currentColor;
+        font-size: 10px;
+        line-height: 1.6;
+        letter-spacing: 0.1em;
+      }
+      .hero > .spec {
+        position: absolute;
+        top: 36px;
+        left: 42px;
+        font-size: 11px;
+        letter-spacing: 0.13em;
+      }
+      .ink-controls {
+        border-top: 1px solid #242824;
+        padding-top: 8px;
+      }
+      .sample-input {
+        width: 160px;
+        min-height: 44px;
+        border: 1px solid #343c34;
+        border-radius: 4px;
+        padding: 0 10px;
+        background: #121612;
+        color: #d3d0be;
+        font: inherit;
+        font-size: 16px;
+      }
+      .sample-print {
+        position: absolute;
+        inset: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .sample-print strong {
+        font-size: clamp(20px, 2.1vw, 27px);
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+      }
+      .sample-print span {
+        font-size: 10px;
+        line-height: 1.6;
+        letter-spacing: 0.12em;
+      }
+      .stone .screen-print {
+        --screen-print-color: #20271f;
+      }
+      .screw {
+        position: absolute;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #434844, #111613);
+        box-shadow:
+          0 1px 1px #ffffff20,
+          inset 0 0 0 1px #000a;
+      }
+      .screw::after {
+        content: "";
+        position: absolute;
+        width: 6px;
+        height: 1px;
+        top: 5px;
+        left: 2.5px;
+        background: #020303;
+        transform: rotate(-35deg);
+      }
+      .screw:nth-of-type(1) {
+        top: 15px;
+        left: 15px;
+      }
+      .screw:nth-of-type(2) {
+        top: 15px;
+        right: 15px;
+      }
+      .screw:nth-of-type(3) {
+        bottom: 15px;
+        left: 15px;
+      }
+      .screw:nth-of-type(4) {
+        bottom: 15px;
+        right: 15px;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px 36px;
+        padding: 22px 0 28px;
+      }
+      label {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        font-size: 12px;
+      }
+      input[type="range"] {
+        width: 150px;
+        min-height: 44px;
+        accent-color: #c5cbbf;
+      }
+      input[type="checkbox"] {
+        accent-color: #c5cbbf;
+        width: 18px;
+        height: 18px;
+      }
+      .toggle {
+        min-height: 44px;
+      }
+      output {
+        min-width: 4ch;
+        color: #d8ddd2;
+        font-variant-numeric: tabular-nums;
+      }
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .swatch {
+        height: 172px;
+        border-radius: 6px;
+        box-shadow:
+          inset 0 1px 0 #ffffff20,
+          inset 0 -1px 2px #0007;
+      }
+      .caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 12px;
+        color: #b7bdb3;
+        font-size: 11px;
+      }
+      .caption span:last-child {
+        color: #858d84;
+      }
+      .carbon {
+        background: linear-gradient(120deg, #1c2220, #0c100f);
+      }
+      .stone {
+        background: linear-gradient(120deg, #aaa99c, #77796e);
+      }
+      .oxide {
+        background: linear-gradient(120deg, #8b5643, #543528);
+      }
+      footer {
+        margin-top: 26px;
+        padding-top: 16px;
+        border-top: 1px solid #242824;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 28px;
+        color: #8f978c;
+        font-size: 10px;
+        letter-spacing: 0.04em;
+      }
+      :focus-visible {
+        outline: 2px solid #e2e6dd;
+        outline-offset: 4px;
+      }
+      @media (max-width: 700px) {
+        main {
+          padding: 24px 18px;
+        }
+        header {
+          display: block;
+        }
+        .download {
+          margin-top: 10px;
+        }
+        .hero {
+          min-height: 300px;
+        }
+        .hero > .printed-face {
+          left: 28px;
+          right: 28px;
+        }
+        .hero > .spec {
+          left: 28px;
+        }
+        .swatches {
+          grid-template-columns: 1fr;
+        }
+        .swatch {
+          height: 150px;
+        }
+        .controls {
+          gap: 4px 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <div class="eyebrow">BUY HARD / Material study 02</div>
+          <h1>Screen print on metal.</h1>
+          <p>Warm ink settles into the fine grain of the powder coat.</p>
+        </div>
+        <a class="download" href="../../public/textures/screen-print-mask.svg" download
+          >Download ink mask ↗</a
+        >
+      </header>
+      <div
+        class="hero powder-coat"
+        role="group"
+        aria-label="Screen-printed lettering on a dark powder-coated metal plate"
+      >
+        <i class="screw" aria-hidden="true"></i><i class="screw" aria-hidden="true"></i
+        ><i class="screw" aria-hidden="true"></i><i class="screw" aria-hidden="true"></i>
+        <span class="spec screen-print">01 / GRAPHITE · MATTE FINISH</span>
+        <div class="printed-face screen-print">
+          <span class="printed-brand" id="printed-brand">BUY HARD</span>
+          <div class="printed-details">
+            <span>AUTONOMOUS BUYING SYSTEM</span><span>BUY DESK / MODEL 01</span>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <label for="strength"
+          >Grain strength <input id="strength" type="range" min="0" max="100" value="19" /><output
+            for="strength"
+            id="strength-value"
+            >19%</output
+          ></label
+        >
+        <label for="scale"
+          >Grain size
+          <input id="scale" type="range" min="256" max="1024" step="64" value="256" /><output
+            for="scale"
+            id="scale-value"
+            >0.5×</output
+          ></label
+        >
+        <label class="toggle" for="enabled"
+          ><input id="enabled" type="checkbox" checked /> Texture on</label
+        >
+      </div>
+      <div class="controls ink-controls">
+        <label for="sample"
+          >Your text
+          <input
+            class="sample-input"
+            id="sample"
+            type="text"
+            value="BUY HARD"
+            maxlength="18"
+            spellcheck="false"
+        /></label>
+        <label for="ink-opacity"
+          >Ink opacity <input id="ink-opacity" type="range" min="50" max="100" value="94" /><output
+            id="ink-opacity-value"
+            for="ink-opacity"
+            >94%</output
+          ></label
+        >
+        <label for="ink-grain"
+          >Ink grain <input id="ink-grain" type="range" min="0" max="100" value="50" /><output
+            id="ink-grain-value"
+            for="ink-grain"
+            >50%</output
+          ></label
+        >
+      </div>
+      <div class="swatches">
+        <div>
+          <div
+            class="swatch carbon powder-coat"
+            role="group"
+            aria-label="Ivory ink on carbon powder coat"
+          >
+            <div class="sample-print screen-print">
+              <strong>BUY HARD</strong><span>IVORY INK<br />ON CARBON</span>
+            </div>
+          </div>
+          <div class="caption"><span>Carbon</span><span>01</span></div>
+        </div>
+        <div>
+          <div
+            class="swatch stone powder-coat"
+            role="group"
+            aria-label="Charcoal ink on stone powder coat"
+          >
+            <div class="sample-print screen-print">
+              <strong>BUY HARD</strong><span>CHARCOAL INK<br />ON STONE</span>
+            </div>
+          </div>
+          <div class="caption"><span>Stone</span><span>02</span></div>
+        </div>
+        <div>
+          <div
+            class="swatch oxide powder-coat"
+            role="group"
+            aria-label="Ivory ink on oxide powder coat"
+          >
+            <div class="sample-print screen-print">
+              <strong>BUY HARD</strong><span>IVORY INK<br />ON OXIDE</span>
+            </div>
+          </div>
+          <div class="caption"><span>Oxide</span><span>03</span></div>
+        </div>
+      </div>
+      <footer>
+        <span id="coating-summary">POWDER COAT / 19% · 0.5×</span><span>SCREEN-PRINTED INK</span
+        ><span>LIVE TEXT · REUSABLE CSS + SVG</span>
+      </footer>
+    </main>
+    <script>
+      const strength = document.querySelector("#strength");
+      const scale = document.querySelector("#scale");
+      const enabled = document.querySelector("#enabled");
+      const surfaces = document.querySelectorAll(".powder-coat");
+      const inkOpacity = document.querySelector("#ink-opacity");
+      const inkGrain = document.querySelector("#ink-grain");
+      const sample = document.querySelector("#sample");
+      function update() {
+        for (const surface of surfaces) {
+          surface.style.setProperty(
+            "--powder-coat-strength",
+            enabled.checked ? String(Number(strength.value) / 100) : "0",
+          );
+          surface.style.setProperty("--powder-coat-size", `${scale.value}px`);
+        }
+        document.querySelector("#strength-value").textContent = `${strength.value}%`;
+        document.querySelector("#scale-value").textContent = `${Number(scale.value) / 512}×`;
+        document.querySelector("#coating-summary").textContent =
+          `POWDER COAT / ${enabled.checked ? strength.value : 0}% · ${Number(scale.value) / 512}×`;
+      }
+      for (const control of [strength, scale, enabled]) control.addEventListener("input", update);
+      function updateInk() {
+        document.documentElement.style.setProperty(
+          "--screen-print-opacity",
+          String(Number(inkOpacity.value) / 100),
+        );
+        document.documentElement.style.setProperty(
+          "--screen-print-grain",
+          String(Number(inkGrain.value) / 100),
+        );
+        document.querySelector("#ink-opacity-value").textContent = `${inkOpacity.value}%`;
+        document.querySelector("#ink-grain-value").textContent = `${inkGrain.value}%`;
+        for (const printed of document.querySelectorAll("#printed-brand, .sample-print strong"))
+          printed.textContent = sample.value;
+      }
+      for (const control of [inkOpacity, inkGrain, sample])
+        control.addEventListener("input", updateInk);
+    </script>
+  </body>
+</html>

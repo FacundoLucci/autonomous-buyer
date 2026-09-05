@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>Screen printing ink coverage</title>
+  <desc>A repeating alpha mask with fine, irregular ink coverage. Use on live text over a painted surface.</desc>
+  <defs>
+    <filter id="ink" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.38" numOctaves="3" seed="23" stitchTiles="stitch" result="grain"/>
+      <!-- Most ink stays solid. Lower areas have a little less coverage. -->
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.61654 2.07408 0.20938 0 -0.6"/>
+    </filter>
+  </defs>
+  <path fill="none" d="M0 0H512V512H0Z" filter="url(#ink)"/>
+</svg>

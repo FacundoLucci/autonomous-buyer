@@ -1,0 +1,186 @@
+.bh-dot-matrix {
+  --bh-dot-off: rgb(145 199 31 / 8%);
+  display: block;
+  width: max-content;
+  height: max-content;
+  min-width: 0;
+  line-height: 0;
+}
+
+.bh-dot-matrix__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--bh-frame-columns), var(--bh-matrix-pitch, 3px));
+  grid-template-rows: repeat(var(--bh-frame-rows), var(--bh-matrix-pitch, 3px));
+  width: max-content;
+  height: max-content;
+}
+
+.bh-dot-matrix__pixel {
+  display: block;
+  place-self: center;
+  width: 63%;
+  height: 63%;
+  border-radius: 50%;
+}
+
+.bh-dot-matrix__pixel--on {
+  background: currentColor;
+  box-shadow: 0 0 calc(var(--bh-matrix-pitch, 3px) * 0.65)
+    color-mix(in srgb, currentColor 36%, transparent);
+}
+
+.bh-dot-matrix__pixel--off {
+  background: var(--bh-dot-off);
+}
+
+.bh-metric-rack {
+  container: metric-rack / inline-size;
+  margin-bottom: 0.75rem;
+}
+
+.bh-metric-grid {
+  /* Odd-width readouts center on whole grille cells, even with one digit. */
+  --bh-metric-columns: 73;
+  --bh-matrix-pitch: calc(100cqw / (var(--bh-metric-columns) * 4 + 4));
+  --bh-metric-note-rows: 6;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  padding: calc(var(--bh-matrix-pitch) * 2);
+  border: 0;
+  border-radius: var(--bh-recess-radius, 3px);
+  background: linear-gradient(
+    180deg,
+    var(--bh-display-bed-top, #111412),
+    var(--bh-display-bed-bottom, #090b0a)
+  );
+  box-shadow: none;
+}
+
+.bh-metric-grid::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 2.4%) 0.5px, transparent 0.5px) 0 0 /
+      var(--bh-matrix-pitch, 3px) var(--bh-matrix-pitch, 3px),
+    linear-gradient(rgb(255 255 255 / 2.1%) 0.5px, transparent 0.5px) 0 0 /
+      var(--bh-matrix-pitch, 3px) var(--bh-matrix-pitch, 3px),
+    radial-gradient(
+        circle at 50% 50%,
+        var(--bh-display-cell, #020303) 0 29%,
+        var(--bh-display-cell-rim, #151817) 34% 43%,
+        transparent 48%
+      )
+      0 0 / var(--bh-matrix-pitch, 3px) var(--bh-matrix-pitch, 3px);
+  content: "";
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 7px, #000 calc(100% - 7px), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 7px, #000 calc(100% - 7px), transparent 100%);
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+.bh-metric-grid::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--bh-recess-seam, #020303 #191b1a #1e201f #020303);
+  border-radius: inherit;
+  box-shadow: var(
+    --bh-recess-shadow,
+    inset 1px 1px 2px rgb(0 0 0 / 50%),
+    inset -1px -1px 2px rgb(255 255 255 / 1.8%)
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.bh-metric {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows:
+    calc(var(--bh-matrix-pitch) * 6) calc(var(--bh-matrix-pitch) * 7)
+    calc(var(--bh-matrix-pitch) * var(--bh-metric-note-rows));
+  place-items: center;
+  min-width: 0;
+}
+
+.bh-metric__label {
+  display: block;
+  background: linear-gradient(135deg, #c5c9c3 0%, #9da39e 48%, #737a76 100%);
+  background-clip: text;
+  color: #9da39e;
+  font-size: clamp(0.5rem, 1.25cqw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+  -webkit-text-fill-color: transparent;
+}
+
+.bh-metric__value {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: max-content;
+  height: max-content;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--bh-display-value, #fbf6ea);
+  line-height: 0;
+  cursor: help;
+}
+
+.bh-metric__value:focus-visible {
+  outline: 1px solid #c5c9c3;
+  outline-offset: 3px;
+}
+
+.bh-metric__value .bh-dot-matrix {
+  /* The grille and glyph cells share one pitch and integer origin. */
+  --bh-dot-off: transparent;
+}
+
+.bh-metric__source {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.15em 0.6em;
+  max-width: 100%;
+  margin: 0;
+  color: #91968f;
+  font-size: clamp(0.5rem, 1cqw, 0.625rem);
+  line-height: 1.1;
+  text-align: center;
+}
+
+.bh-metric__source > span {
+  white-space: nowrap;
+}
+
+@container metric-rack (width < 1100px) {
+  .bh-metric-grid {
+    --bh-metric-columns: 49;
+  }
+}
+
+@container metric-rack (width < 720px) {
+  .bh-metric-grid {
+    --bh-metric-columns: 31;
+  }
+}
+
+@container metric-rack (width < 420px) {
+  .bh-metric-grid {
+    --bh-metric-note-rows: 8;
+  }
+}

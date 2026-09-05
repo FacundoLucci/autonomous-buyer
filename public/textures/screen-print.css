@@ -1,0 +1,20 @@
+/* Apply to text, icons, or a group of printed markings above the metal layer. */
+.screen-print {
+  display: inline-block;
+  color: var(--screen-print-color, #d3d0be);
+  opacity: var(--screen-print-opacity, 0.94);
+  text-shadow: 0 0.3px 0.3px rgb(0 0 0 / 20%);
+  /* The solid layer fills a controllable share of the mask's gaps. */
+  mask-image:
+    linear-gradient(
+      rgb(0 0 0 / calc(1 - var(--screen-print-grain, 0.5))),
+      rgb(0 0 0 / calc(1 - var(--screen-print-grain, 0.5)))
+    ),
+    url("./screen-print-mask.svg");
+  mask-mode: alpha;
+  mask-composite: add;
+  mask-repeat: repeat;
+  mask-size:
+    auto,
+    var(--screen-print-grain-size, 256px) var(--screen-print-grain-size, 256px);
+}

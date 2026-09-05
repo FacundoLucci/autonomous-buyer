@@ -1,0 +1,21 @@
+/* Add this class to an opaque metal surface. The texture stays beneath its content. */
+.powder-coat {
+  --powder-coat-strength: 0.19;
+  --powder-coat-size: 256px;
+  --powder-coat-paint:
+    radial-gradient(ellipse at 15% 0%, #242a29, transparent 75%),
+    linear-gradient(120deg, #121716, #090c0c);
+  position: relative;
+  isolation: isolate;
+}
+
+.powder-coat::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: url("./powder-coat.svg") repeat 0 0 / var(--powder-coat-size) var(--powder-coat-size);
+  content: "";
+  opacity: var(--powder-coat-strength);
+  pointer-events: none;
+}

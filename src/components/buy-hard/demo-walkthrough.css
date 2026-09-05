@@ -1,0 +1,219 @@
+/* The guide annotates existing content without intercepting application input. */
+[data-demo-guide-active] {
+  scroll-margin-bottom: 20rem;
+}
+
+.bh-demo-stage {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bh-demo-spotlight-veil,
+.bh-demo-spotlight-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.bh-demo-spotlight-veil {
+  background: rgb(2 5 4 / 56%);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+.bh-demo-stage[data-spotlight-ready] .bh-demo-spotlight-veil,
+.bh-demo-stage[data-spotlight-ready] .bh-demo-spotlight-art {
+  visibility: visible;
+}
+
+.bh-demo-spotlight-art {
+  overflow: hidden;
+}
+
+.bh-demo-spotlight-haze {
+  fill: none;
+  stroke: #ecf1c4;
+  stroke-width: 10px;
+  stroke-opacity: 0.3;
+  filter: blur(9px);
+}
+
+.bh-demo-spotlight-glow {
+  fill: none;
+  stroke: #f0f3d2;
+  stroke-width: 1px;
+  stroke-opacity: 0.6;
+  filter: drop-shadow(0 0 3px #e9edb6) drop-shadow(0 0 7px rgb(226 235 160 / 60%));
+}
+
+.bh-demo-spotlight-connector {
+  stroke: #d9ddbd;
+  stroke-width: 1px;
+  stroke-opacity: 0.5;
+  stroke-dasharray: 2 4;
+}
+
+body:has([data-testid="demo-walkthrough"]) .bh-app {
+  padding-bottom: 20rem;
+}
+
+.bh-demo-guide {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: min(25rem, calc(100vw - 1.5rem));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  padding: 0.8rem 1rem;
+  color: var(--bh-eink-ink);
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.bh-demo-stage[data-spotlight-ready] .bh-demo-guide {
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
+}
+
+.bh-demo-guide-copy {
+  animation: bh-demo-guide-enter 160ms ease-out;
+}
+
+.bh-demo-guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bh-demo-guide-header > p {
+  font-size: 0.61rem;
+  color: var(--bh-eink-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bh-demo-guide-header > button {
+  min-width: 44px;
+  min-height: 44px;
+  margin: -0.5rem -0.6rem -0.5rem 0;
+}
+
+.bh-demo-guide-copy h2 {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  outline: none;
+}
+
+.bh-demo-guide-copy p {
+  margin: 0;
+  color: var(--bh-eink-muted);
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+
+.bh-demo-guide-progress {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bh-demo-guide-progress li {
+  flex: 1;
+  min-width: 0;
+}
+
+.bh-demo-guide-progress button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.bh-demo-guide-progress button > span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #4b5147;
+}
+
+.bh-demo-guide-progress button[aria-current="step"] > span {
+  background: var(--bh-display-value);
+}
+
+.bh-demo-guide-progress button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.bh-demo-guide-progress button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.bh-demo-guide-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.bh-demo-guide-actions > button {
+  min-height: 44px;
+}
+
+.bh-demo-guide-step-count {
+  font-size: 0.65rem;
+  color: var(--bh-eink-muted);
+  text-align: center;
+}
+
+@keyframes bh-demo-guide-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .bh-demo-guide {
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .bh-demo-guide-copy p {
+    font-size: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-demo-guide-copy {
+    animation: none;
+  }
+  .bh-demo-guide {
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .bh-demo-spotlight-veil {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgb(2 5 4 / 76%);
+  }
+}
