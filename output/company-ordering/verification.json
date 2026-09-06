@@ -1,0 +1,36 @@
+{
+  "verifiedAt": "2026-09-06T16:27:09.024705+00:00",
+  "deployment": "festive-coyote-483",
+  "frontendDeploymentId": "95e94b39-8496-4857-9d2c-2d0fbca2b582",
+  "productionChanged": false,
+  "company": "Cedar Workshop QA",
+  "orderNumber": "BH-205N8DWVMZ",
+  "checks": {
+    "freshPasskeySignup": "passed with browser software authenticator",
+    "realProductLinkExtraction": "passed",
+    "batchPdfCsvXlsxDocxUploadAndExtraction": "passed",
+    "importTwoProductsWithoutChangingStock": "passed",
+    "originalFileReadback": "exact bytes match",
+    "dedicatedInboxProvisionAndReading": "passed",
+    "approvedTestPoDeliveryToAppOwner": "received in Gmail inbox",
+    "verificationAndLowStockAndOrderAlerts": "received in Gmail inbox",
+    "senderAuthentication": "SPF, DKIM, DMARC pass",
+    "partialAndFinalReceiving": "5 + 6 + 12 = 23 rolls; order received and closed",
+    "draftEditing": "1 x USD 2 changed to 3 x USD 2; review total USD 6",
+    "archiveAndRestore": "3 active items to 2, then 3; original item restored",
+    "savedOrderLinkAndDownload": "passed",
+    "qaAlertPreferencesDisabled": "confirmed both categories off",
+    "mobileViewport": "390 px viewport, 375 px client and document width, no horizontal overflow",
+    "demoRegression": "public Acme Foods Open buys view loads; no console errors",
+    "workerEndpoint": "health 200, unauthorized 401, malformed JSON 400",
+    "pnpmCheck": "passed",
+    "backendTests": "12 passed"
+  },
+  "limitations": [
+    "No commercial purchase made. Receipt and supplier confirmation were simulated.",
+    "Human device passkey approval and account recovery were not tested.",
+    "Initial standalone connection test went to spam; subsequent verification and workflow messages reached Inbox.",
+    "Provider bounce and supplier reply matching were verified with backend tests; no third-party supplier was contacted."
+  ],
+  "artifacts": ["qa-order-record.txt", "received-mobile.png", "received-desktop.png"]
+}

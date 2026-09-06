@@ -12,6 +12,7 @@ import {
 import { account } from "./onboarding";
 import { sourceProduct } from "./inventorySourceFields";
 import schema from "./schema";
+import { limits } from "./rateLimits";
 const workflow = new WorkflowManager(components.workflow);
 
 export function productUrl(value: string) {
@@ -40,19 +41,14 @@ async function reserve(ctx: MutationCtx, kind: "link" | "invoice", url?: string)
     const org = await ctx.db.get("organizations", user.organizationId);
     if (org?.isDemo) throw new ConvexError("Use your own account to import inventory.");
   }
-  const recent = await ctx.db
-    .query("inventorySources")
-    .withIndex("by_userId", (q) => q.eq("userId", user._id))
-    .order("desc")
-    .take(10);
-  if (recent.filter((s) => s._creationTime > Date.now() - 3_600_000).length >= 10)
-    throw new ConvexError("You’ve added 10 sources this hour. Try again later.");
+  await limits.limit(ctx, "sourceImport", { key: user._id, throws: true });
   const threadId = await createThread(ctx, components.agent, {
     userId: user._id,
     title: "Inventory source",
   });
   return await ctx.db.insert("inventorySources", {
     userId: user._id,
+    organizationId: user.organizationId,
     kind,
     url,
     status: kind === "link" ? "reading" : "uploading",

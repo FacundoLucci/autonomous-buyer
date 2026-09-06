@@ -144,3 +144,76 @@ export const provision = action({
     }
   },
 });
+
+async function readInbox(path: string): Promise<unknown> {
+  if (!env.AGENTMAIL_API_KEY) throw new ConvexError("Purchasing email is not configured.");
+  const base = (env.AGENTMAIL_BASE_URL ?? "https://api.agentmail.to/v0").replace(/\/$/, "");
+  const response = await fetch(`${base}${path}`, {
+    headers: { Authorization: `Bearer ${env.AGENTMAIL_API_KEY}` },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!response.ok) throw new ConvexError("Could not read the purchasing inbox. Try again.");
+  return await response.json();
+}
+function record(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+}
+function text(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+export const messages = action({
+  args: {},
+  returns: v.array(
+    v.object({
+      id: v.string(),
+      from: v.string(),
+      subject: v.string(),
+      preview: v.string(),
+      timestamp: v.string(),
+    }),
+  ),
+  handler: async (
+    ctx,
+  ): Promise<
+    { id: string; from: string; subject: string; preview: string; timestamp: string }[]
+  > => {
+    const company = await ctx.runQuery(internal.companyMail.context, {});
+    if (!company.email) return [];
+    const result = record(
+      await readInbox(`/inboxes/${encodeURIComponent(company.email)}/messages?limit=30`),
+    );
+    const messages = Array.isArray(result.messages) ? result.messages : [];
+    return messages
+      .slice(0, 30)
+      .map((value) => {
+        const m = record(value);
+        return {
+          id: text(m.message_id),
+          from: text(m.from),
+          subject: text(m.subject),
+          preview: text(m.preview).slice(0, 500),
+          timestamp: text(m.timestamp),
+        };
+      })
+      .filter((m) => m.id);
+  },
+});
+export const readMessage = action({
+  args: { messageId: v.string() },
+  returns: v.object({ from: v.string(), subject: v.string(), text: v.string() }),
+  handler: async (ctx, args): Promise<{ from: string; subject: string; text: string }> => {
+    const company = await ctx.runQuery(internal.companyMail.context, {});
+    if (!company.email || !args.messageId || args.messageId.length > 500)
+      throw new ConvexError("Message not found.");
+    const m = record(
+      await readInbox(
+        `/inboxes/${encodeURIComponent(company.email)}/messages/${encodeURIComponent(args.messageId)}`,
+      ),
+    );
+    return {
+      from: text(m.from),
+      subject: text(m.subject),
+      text: (text(m.extracted_text) || text(m.text) || text(m.preview)).slice(0, 30000),
+    };
+  },
+});

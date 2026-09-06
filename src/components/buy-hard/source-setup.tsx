@@ -6,6 +6,7 @@ import type { Id } from "../../../convex/_generated/dataModel";
 import { useAuthActions } from "@/lib/buyer-auth";
 import { units, setupFieldError, type InventoryUnit } from "@/lib/setup-fields";
 import { SetupFrame, setupError } from "./setup";
+import { fileMime, sourceAccept } from "@/lib/company-files";
 
 type Draft = {
   companyName: string;
@@ -116,11 +117,9 @@ export function SourceSetup({ userId }: { userId: Id<"users"> }) {
   }
   async function upload(file: File | undefined) {
     if (!file) return;
-    if (
-      file.size > 8 * 1024 * 1024 ||
-      !["application/pdf", "image/png", "image/jpeg"].includes(file.type)
-    ) {
-      setError("Choose a PDF, PNG, or JPG under 8 MB.");
+    const mime = fileMime(file.name);
+    if (file.size > 8 * 1024 * 1024 || !mime) {
+      setError("Choose a supported invoice or inventory file under 8 MB.");
       return;
     }
     if (!token) {
@@ -135,7 +134,7 @@ export function SourceSetup({ userId }: { userId: Id<"users"> }) {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": file.type,
+          "Content-Type": mime,
           "X-Filename": encodeURIComponent(file.name),
         },
         body: file,
@@ -370,10 +369,10 @@ export function SourceSetup({ userId }: { userId: Id<"users"> }) {
                   <label className="bh-source-upload">
                     <Upload />
                     <strong>{busy ? "Uploading invoice…" : "Choose an invoice"}</strong>
-                    <span>PDF, PNG, or JPG · up to 8 MB</span>
+                    <span>PDF, PNG, JPG, CSV, TXT, XLSX, DOCX · up to 8 MB</span>
                     <input
                       type="file"
-                      accept="application/pdf,image/png,image/jpeg"
+                      accept={sourceAccept}
                       aria-label="Upload invoice"
                       disabled={busy}
                       onChange={(e) => void upload(e.target.files?.[0])}

@@ -9,6 +9,7 @@ import auth from "@convex-dev/auth2/core/convex.config";
 import passkey from "@convex-dev/auth2/providers/passkey/convex.config";
 import username from "@convex-dev/auth2/username/convex.config";
 import anonymous from "@convex-dev/auth2/providers/anonymous/convex.config";
+import rateLimiter from "@convex-dev/rate-limiter/convex.config";
 
 // Your own HTTP endpoints (convex/http.ts) are served under /api so the
 // static site can own the root.
@@ -29,6 +30,9 @@ const app = defineApp({
     AGENTMAIL_INBOX_ID: v.optional(v.string()),
     AGENTMAIL_INBOX_EMAIL: v.optional(v.string()),
     BUYER_EMAIL: v.optional(v.string()),
+    ALERT_EMAIL_URL: v.optional(v.string()),
+    ALERT_EMAIL_SECRET: v.optional(v.string()),
+    APP_URL: v.optional(v.string()),
   },
 });
 
@@ -45,6 +49,7 @@ app.use(username);
 app.use(anonymous);
 app.use(agent);
 app.use(workflow);
+app.use(rateLimiter);
 app.use(firecrawl, {
   httpPrefix: "/api/firecrawl/",
   env: {

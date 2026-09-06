@@ -1,3 +1,8 @@
+.company-app .buy-desk-brand,
+.company-app .buy-desk-brand .bh-stamped {
+  color: var(--bh-eink-text, #d4d3bf);
+}
+
 .company-sign-out {
   font-size: 11px;
   border: 1px solid var(--bh-line-strong);
@@ -278,4 +283,305 @@
   color: inherit;
   border: 1px solid var(--bh-eink-rule);
   padding: 7px;
+}
+
+.company-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0;
+}
+.company-tabs button {
+  min-height: 44px;
+  padding: 12px 18px;
+  border: 1px solid var(--bh-line-strong);
+  font-size: 12px;
+}
+.company-tabs [aria-current="page"] {
+  background: var(--bh-eink-bg);
+  color: var(--bh-eink-text);
+  box-shadow: inset 0 -2px currentColor;
+}
+.company-tools {
+  margin: 24px 0;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.company-tool-body,
+.company-source-library,
+.company-order-detail {
+  padding: 25px;
+}
+.company-tools h3 {
+  font-size: 16px;
+}
+.company-tools h4 {
+  font-size: 15px;
+}
+.company-tools p,
+.company-buying-links p {
+  margin: 12px 0;
+}
+.company-tools svg,
+.company-buying-links svg {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.company-tools a,
+.company-buying-links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.company-form {
+  display: grid;
+  gap: 15px;
+  margin: 18px 0;
+}
+.company-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.company-form input,
+.company-form select,
+.company-form textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--bh-eink-rule);
+  border-radius: 0;
+  font-size: 16px;
+}
+.company-form textarea {
+  resize: vertical;
+}
+.company-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.company-tools button,
+.company-buying-links button,
+.company-button-row a {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--bh-eink-rule);
+  font-size: 12px;
+}
+.company-tools button:disabled,
+.company-buying-links button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.company-primary {
+  background: var(--bh-eink-text, #263127);
+  color: var(--bh-eink-bg, #e5e9d5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 44px;
+  padding: 12px 16px;
+  text-decoration: none !important;
+}
+.company-tools .company-primary,
+.company-buying-links .company-primary {
+  background: #263127;
+  color: #e5e9d5;
+}
+.company-button-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+.company-tools :is(button, a, input, select, textarea, summary):focus-visible,
+.company-buying-links :is(button, a, input, summary):focus-visible,
+.company-tabs button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.company-tools summary,
+.company-buying-links summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.company-tools details,
+.company-buying-links details {
+  border-top: 1px solid var(--bh-eink-rule);
+  margin-top: 18px;
+}
+.company-file-upload {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px dashed var(--bh-eink-rule);
+}
+.company-file-upload label {
+  display: block;
+  margin-bottom: 12px;
+}
+.company-file-upload input {
+  max-width: 100%;
+  font-size: 14px;
+  min-height: 44px;
+}
+.company-file-upload input::file-selector-button {
+  min-height: 44px;
+  padding: 10px 14px;
+  margin-right: 10px;
+  color: inherit;
+  border: 1px solid;
+  background: transparent;
+}
+.company-error {
+  color: var(--destructive);
+  white-space: pre-wrap;
+}
+.company-source-library {
+  border-top: 1px solid var(--bh-eink-rule);
+}
+.company-source-card summary {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+}
+.company-source-card summary small {
+  white-space: nowrap;
+}
+.company-product-choice {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--bh-eink-rule);
+}
+.company-product-choice input,
+.company-alert-options input {
+  width: 20px;
+  height: 20px;
+  accent-color: #263127;
+  flex-shrink: 0;
+}
+.company-product-choice span {
+  min-width: 0;
+}
+.company-product-choice small {
+  display: block;
+  margin-top: 6px;
+}
+.company-buying-links {
+  font-size: 12px;
+  margin-top: 18px;
+}
+.company-order-list > button {
+  display: flex;
+  width: 100%;
+  border-width: 0 0 1px;
+  gap: 20px;
+  justify-content: space-between;
+  text-align: left;
+  padding: 20px 25px;
+}
+.company-order-list [aria-pressed="true"] {
+  box-shadow: inset 4px 0 currentColor;
+}
+.company-order-list span {
+  display: grid;
+  gap: 5px;
+}
+.company-order-list span:last-child {
+  text-align: right;
+}
+.company-order-terms {
+  display: grid;
+  margin: 25px 0;
+  border-block: 1px dashed var(--bh-eink-rule);
+  padding: 16px 0;
+  gap: 12px;
+}
+.company-order-terms > div {
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr);
+  gap: 20px;
+}
+.company-order-terms dt {
+  opacity: 0.7;
+}
+.company-order-terms dd,
+.company-preserve-lines {
+  white-space: pre-wrap;
+}
+.company-order-next {
+  padding: 18px 0;
+  border-block: 1px solid var(--bh-eink-rule);
+}
+.company-alert-options {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+}
+.company-alert-options label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+}
+.company-activity {
+  padding-left: 20px;
+}
+.company-activity li {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--bh-eink-rule);
+}
+.company-activity p {
+  white-space: pre-wrap;
+}
+.company-activity time {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.company-mail-item {
+  display: grid;
+  text-align: left;
+  gap: 6px;
+  width: 100%;
+  margin: 10px 0;
+}
+.company-mail-body {
+  margin-top: 20px;
+  border-top: 1px solid var(--bh-eink-rule);
+  padding-top: 20px;
+}
+@media (max-width: 600px) {
+  .company-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .company-tabs button {
+    padding: 10px;
+  }
+  .company-tool-body,
+  .company-source-library,
+  .company-order-detail {
+    padding: 20px;
+  }
+  .company-order-terms > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+  .company-form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .company-order-list > button {
+    padding: 18px;
+  }
 }

@@ -1,0 +1,37 @@
+BUY HARD · BH-205N8DWVMZ
+
+Received
+
+Uline Industrial Tape - 2 Mil, 2" x 110 yds, Clear (S-423)
+
+18 rolls × $3.75
+
+Delivery $10.00 · Tax $6.75
+
+Total $84.25
+
+Supplier: uline.com
+
+Deliver to: QA ONLY — no shipments, 100 Test Street, Chicago IL 60601, USA
+
+Required by: 2026-09-10
+
+QA TEST ONLY. No commercial order. Do not ship or charge. Checking purchasing workflow and email delivery to the app owner.
+
+Supplier confirmation: QA-SIMULATED-0906 — NO SHIPMENT
+
+Received: 18 rolls
+
+2026-09-06T16:02:49.580Z Purchase prepared for review.
+
+2026-09-06T16:03:01.112Z Approved 18 rolls for USD 84.25.
+
+2026-09-06T16:03:17.649Z Purchase order queued for facundo@facundo.xyz.
+
+2026-09-06T16:03:18.654Z Purchase order sent; awaiting supplier confirmation.
+
+2026-09-06T16:04:36.880Z Supplier order QA-SIMULATED-0906 — NO SHIPMENT; expected 2026-09-10.
+
+2026-09-06T16:04:54.465Z Received 6 rolls; 6 of 18 received.
+
+2026-09-06T16:05:26.330Z Received 12 rolls; 18 of 18 received.
