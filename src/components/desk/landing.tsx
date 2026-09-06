@@ -13,7 +13,7 @@ export function Landing() {
       <section className="desk-hero">
         <p className="desk-eyebrow">PURCHASING. HANDLED.</p>
         <h1 className="desk-wordmark">
-          <DotMatrixDisplay value="BUY HARD" />
+          <DotMatrixDisplay value="BUY HARD" scrollOnHover />
         </h1>
         <p className="desk-tagline">Keep the line moving.</p>
         <a className="desk-cta" href="/setup">

@@ -11,10 +11,30 @@
   display: block;
   width: 100%;
   height: auto;
+  overflow: hidden;
 }
 .desk-dot-matrix__lit {
   fill: #000;
 }
 .desk-dot-matrix__unlit {
   fill: rgb(160 164 151 / 18%);
+}
+
+@keyframes desk-dot-matrix-scroll {
+  to {
+    transform: translateX(var(--desk-scroll-distance));
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .desk-dot-matrix:hover .desk-dot-matrix__scroll {
+    animation: desk-dot-matrix-scroll var(--desk-scroll-duration) steps(var(--desk-scroll-steps))
+      infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-dot-matrix__scroll {
+    animation: none;
+  }
 }
