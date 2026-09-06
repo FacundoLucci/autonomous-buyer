@@ -18,6 +18,7 @@ import {
 } from "./domain";
 
 import { sourceProduct, sourceState } from "./inventorySourceFields";
+import { companyOrderStatus, alertStatus, alertKind } from "./companyFields";
 
 const dateValidator = v.string();
 const timestampValidator = v.number();
@@ -96,6 +97,7 @@ export default defineSchema({
 
   inventorySources: defineTable({
     userId: v.id("users"),
+    organizationId: v.optional(v.id("organizations")),
     kind: v.union(v.literal("link"), v.literal("invoice")),
     url: v.optional(v.string()),
     fileId: v.optional(v.id("_storage")),
@@ -105,9 +107,16 @@ export default defineSchema({
     message: v.optional(v.string()),
     threadId: v.optional(v.string()),
     inventoryItemId: v.optional(v.id("inventoryItems")),
-  }).index("by_userId", ["userId"]),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_organizationId", ["organizationId"]),
 
   inventoryItems: defineTable({
+    buyUrl: v.optional(v.string()),
+    supplierEmail: v.optional(v.string()),
+    archived: v.optional(v.boolean()),
+    stockCountedAt: v.optional(v.number()),
+    estimatedQuantity: v.optional(v.number()),
     sourceId: v.optional(v.id("inventorySources")),
     sourceProductIndex: v.optional(v.number()),
     supplierName: v.optional(v.string()),
@@ -142,6 +151,8 @@ export default defineSchema({
     isDemo: v.boolean(),
   })
     .index("by_org_sku", ["organizationId", "sku"])
+    .index("by_org_archived", ["organizationId", "archived"])
+    .index("by_sourceId_and_index", ["sourceId", "sourceProductIndex"])
     .index("by_org_status", ["organizationId", "status"])
     .index("by_demo_run", ["demoRunId"]),
 
@@ -677,4 +688,84 @@ export default defineSchema({
     .index("by_procurement_and_task", ["procurementId", "task"])
     .index("by_agent_thread_link_and_created_at", ["agentThreadLinkId", "createdAt"])
     .index("by_status", ["status"]),
+
+  companyOrders: defineTable({
+    organizationId: v.id("organizations"),
+    inventoryItemId: v.id("inventoryItems"),
+    createdBy: v.id("users"),
+    number: v.string(),
+    itemName: v.string(),
+    sku: v.string(),
+    unit: v.string(),
+    quantity: v.number(),
+    receivedQuantity: v.number(),
+    unitPriceCents: v.number(),
+    freightCents: v.number(),
+    taxCents: v.number(),
+    totalCents: v.number(),
+    currency: v.string(),
+    supplier: v.string(),
+    supplierEmail: v.optional(v.string()),
+    buyUrl: v.optional(v.string()),
+    shipTo: v.string(),
+    requiredBy: v.string(),
+    notes: v.string(),
+    status: companyOrderStatus,
+    isOpen: v.boolean(),
+    approvedBy: v.optional(v.id("users")),
+    approvedAt: v.optional(v.number()),
+    placedAt: v.optional(v.number()),
+    confirmation: v.optional(v.string()),
+    expectedOn: v.optional(v.string()),
+    providerOutboundId: v.optional(v.string()),
+    providerThreadId: v.optional(v.string()),
+    error: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_organizationId_and_isOpen", ["organizationId", "isOpen"])
+    .index("by_inventoryItemId_and_isOpen", ["inventoryItemId", "isOpen"])
+    .index("by_providerThreadId", ["providerThreadId"]),
+
+  companyOrderEvents: defineTable({
+    orderId: v.id("companyOrders"),
+    kind: v.string(),
+    summary: v.string(),
+    userId: v.optional(v.id("users")),
+    requestKey: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_orderId", ["orderId"])
+    .index("by_orderId_and_requestKey", ["orderId", "requestKey"]),
+
+  companyAlertSettings: defineTable({
+    organizationId: v.id("organizations"),
+    userId: v.id("users"),
+    email: v.string(),
+    verifiedAt: v.optional(v.number()),
+    lowStock: v.boolean(),
+    orderUpdates: v.boolean(),
+    challengeHash: v.optional(v.string()),
+    challengeExpiresAt: v.optional(v.number()),
+    challengeAttempts: v.optional(v.number()),
+    updatedAt: v.number(),
+  }).index("by_organizationId", ["organizationId"]),
+
+  companyAlerts: defineTable({
+    organizationId: v.id("organizations"),
+    settingsId: v.id("companyAlertSettings"),
+    email: v.string(),
+    kind: alertKind,
+    key: v.string(),
+    subject: v.string(),
+    text: v.string(),
+    status: alertStatus,
+    attempt: v.number(),
+    error: v.optional(v.string()),
+    providerId: v.optional(v.string()),
+    createdAt: v.number(),
+    completedAt: v.optional(v.number()),
+  })
+    .index("by_organizationId", ["organizationId"])
+    .index("by_organizationId_and_key", ["organizationId", "key"]),
 });

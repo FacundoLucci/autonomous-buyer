@@ -7,18 +7,34 @@ import { HardwareMetric, HardwareMetricRack } from "./hardware-metric";
 import { stockOutlook } from "@/lib/setup-fields";
 import { setupError } from "./setup";
 import "./company-workspace.css";
+import { CompanyImports } from "./company-imports";
+import { CompanySettings } from "./company-settings";
+import { CompanyInbox } from "./company-inbox";
+import { BuyingLinks, CompanyOrderDesk, PurchaseForm } from "./company-order-desk";
 
 type Workspace = NonNullable<ReturnType<typeof useQuery<typeof api.onboarding.getWorkspace>>>;
 
-export function CompanyWorkspace({ workspace }: { workspace: Workspace }) {
+export function CompanyWorkspace({
+  workspace,
+  initialOrder,
+}: {
+  workspace: Workspace;
+  initialOrder?: string;
+}) {
   const { signOut } = useAuthActions();
+  const orders = useQuery(api.companyOrders.list);
+  const [tab, setTab] = useState<"inventory" | "imports" | "orders" | "settings">(
+    initialOrder ? "orders" : "inventory",
+  );
+  const [buyingItem, setBuyingItem] = useState<Workspace["items"][number] | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(initialOrder ?? null);
   const needsAction = workspace.items.filter(
     (item) =>
-      stockOutlook(item.quantity, item.dailyUsage, item.leadTimeDays, item.safetyStockDays)
+      stockOutlook(item.estimatedQuantity, item.dailyUsage, item.leadTimeDays, item.safetyStockDays)
         .needsAction,
   ).length;
   return (
-    <main className="bh-app powder-coat">
+    <main className="bh-app company-app powder-coat">
       <header className="bh-app-bar buy-desk-app-bar">
         <a className="buy-desk-brand" href="/" aria-label="BUY HARD home">
           <span className="bh-stamped">BUY HARD</span>
@@ -38,82 +54,138 @@ export function CompanyWorkspace({ workspace }: { workspace: Workspace }) {
         <HardwareMetricRack>
           <HardwareMetric label="Needs action" value={needsAction} />
           <HardwareMetric label="Inventory items" value={workspace.items.length} />
-          <HardwareMetric label="Open buys" value={0} />
+          <HardwareMetric label="Open buys" value={orders?.filter((o) => o.isOpen).length ?? 0} />
           <HardwareMetric label="Purchasing inbox" value={workspace.inbox ? 1 : 0} />
         </HardwareMetricRack>
-        <div className="company-desk-grid">
-          <section>
-            <div className="bh-face-label screen-print">
-              <h2>
-                <Package /> INVENTORY
-              </h2>
-              <span>
-                {workspace.items.length} ITEM{workspace.items.length === 1 ? "" : "S"}
-              </span>
+        <nav className="company-tabs" aria-label="Workspace sections">
+          {(
+            [
+              ["inventory", "Inventory"],
+              ["orders", "Purchases"],
+              ["imports", "Add items & files"],
+              ["settings", "Company settings"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              aria-current={tab === value ? "page" : undefined}
+              onClick={() => {
+                setTab(value);
+                setBuyingItem(null);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+        {tab === "imports" ? (
+          <CompanyImports />
+        ) : tab === "settings" ? (
+          <CompanySettings
+            name={workspace.companyName}
+            shippingAddress={workspace.shippingAddress}
+          />
+        ) : tab === "orders" ? (
+          <>
+            {buyingItem ? (
+              <PurchaseForm
+                key={buyingItem.id}
+                item={buyingItem}
+                onCancel={() => setBuyingItem(null)}
+                onDone={(id) => {
+                  setBuyingItem(null);
+                  setSelectedOrder(id);
+                }}
+              />
+            ) : null}
+            <CompanyOrderDesk
+              orders={orders}
+              selectedId={selectedOrder}
+              onSelect={setSelectedOrder}
+            />
+          </>
+        ) : null}
+        {tab === "inventory" ? (
+          <>
+            <div className="company-desk-grid">
+              <section>
+                <div className="bh-face-label screen-print">
+                  <h2>
+                    <Package /> INVENTORY
+                  </h2>
+                  <span>
+                    {workspace.items.length} ITEM{workspace.items.length === 1 ? "" : "S"}
+                  </span>
+                </div>
+                <div className="bh-eink bh-cutout company-inventory">
+                  <div className="company-inventory-intro">
+                    <h2>Your supplies. Ready for the next order.</h2>
+                    <p>
+                      Keep stock counts current, save your buying details, and prepare purchases
+                      here.
+                    </p>
+                    <button className="company-edit-stock" onClick={() => setTab("imports")}>
+                      Add items or invoices <ArrowRight />
+                    </button>
+                  </div>
+                  {workspace.items.map((item) => (
+                    <InventoryItem
+                      key={item.id}
+                      item={item}
+                      hasOpenOrder={
+                        !!orders?.some((o) => o.inventoryItemId === item.id && o.isOpen)
+                      }
+                      onBuy={() => {
+                        const existing = orders?.find(
+                          (o) => o.inventoryItemId === item.id && o.isOpen,
+                        );
+                        setSelectedOrder(existing?._id ?? null);
+                        setBuyingItem(existing ? null : item);
+                        setTab("orders");
+                      }}
+                    />
+                  ))}
+                </div>
+              </section>
+              <aside className="company-desk-aside">
+                <div className="bh-face-label screen-print">
+                  <h2>
+                    <Mail /> PURCHASING EMAIL
+                  </h2>
+                </div>
+                <CompanyInbox email={workspace.inbox?.email ?? null} />
+                <div className="company-delivery screen-print">
+                  <span className="bh-face-caption">DELIVER TO</span>
+                  <p>{workspace.shippingAddress}</p>
+                </div>
+              </aside>
             </div>
-            <div className="bh-eink bh-cutout company-inventory">
-              <div className="company-inventory-intro">
-                <h2>Your first essential. Taking shape.</h2>
-                <p>Your sources supply the buying details. Your team fills the gaps.</p>
+            <section className="company-agent-support" aria-label="Support your buyer">
+              <div className="bh-face-label screen-print">
+                <h2>NEEDS YOUR INPUT</h2>
+                <span>HELP YOUR BUYER FILL THE GAPS</span>
               </div>
-              {workspace.items.map((item) => (
-                <InventoryItem key={item.id} item={item} />
-              ))}
-            </div>
-          </section>
-          <aside className="company-desk-aside">
-            <div className="bh-face-label screen-print">
-              <h2>
-                <Mail /> PURCHASING EMAIL
-              </h2>
-            </div>
-            <div className="bh-eink bh-cutout company-inbox">
-              <Mail strokeWidth={1} />
-              <h2>{workspace.inbox ? "An address of your own." : "One last connection."}</h2>
-              {workspace.inbox ? (
-                <p className="company-inbox-address">{workspace.inbox.email}</p>
-              ) : (
-                <>
-                  <p>Create your dedicated address for supplier quotes and order confirmations.</p>
-                  <a href="/setup">
-                    Connect purchasing inbox <ArrowRight />
-                  </a>
-                </>
-              )}
-              <p className="company-inbox-note">
-                {workspace.inbox
-                  ? "Your company’s dedicated purchasing address."
-                  : "Your company and inventory are already saved."}
-              </p>
-            </div>
-            <div className="company-delivery screen-print">
-              <span className="bh-face-caption">DELIVER TO</span>
-              <p>{workspace.shippingAddress}</p>
-            </div>
-          </aside>
-        </div>
-        <section className="company-agent-support" aria-label="Support your buyer">
-          <div className="bh-face-label screen-print">
-            <h2>NEEDS YOUR INPUT</h2>
-            <span>HELP YOUR BUYER FILL THE GAPS</span>
-          </div>
-          <div className="bh-eink bh-cutout company-inventory">
-            <div className="company-inventory-intro">
-              <h2>A little help goes a long way.</h2>
-              <p>Only the details your buyer couldn’t confirm. Your answers stay with the item.</p>
-            </div>
-            {workspace.items.map((item) => (
-              <AgentSupport key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
+              <div className="bh-eink bh-cutout company-inventory">
+                <div className="company-inventory-intro">
+                  <h2>A little help goes a long way.</h2>
+                  <p>
+                    Only the details your buyer couldn’t confirm. Your answers stay with the item.
+                  </p>
+                </div>
+                {workspace.items.map((item) => (
+                  <AgentSupport key={item.id} item={item} />
+                ))}
+              </div>
+            </section>
+          </>
+        ) : null}
         <div className="bh-eink bh-cutout company-next-step">
           <ShieldCheck />
           <div>
             <h2>You keep the final say.</h2>
             <p>
-              Your product sources and inventory are saved. Automated supplier outreach and
-              purchasing for company workspaces are not connected yet.
+              Every purchase needs your approval. Order through a supplier link or send an approved
+              purchase order, then record the delivery to update stock.
             </p>
           </div>
         </div>
@@ -126,14 +198,22 @@ function focusEditor(node: HTMLInputElement | null) {
   node?.focus({ preventScroll: true });
 }
 
-function InventoryItem({ item }: { item: Workspace["items"][number] }) {
+function InventoryItem({
+  item,
+  onBuy,
+  hasOpenOrder,
+}: {
+  item: Workspace["items"][number];
+  onBuy: () => void;
+  hasOpenOrder: boolean;
+}) {
   const updateStock = useMutation(api.onboarding.updateStock);
   const [editing, setEditing] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity === null ? "" : String(item.quantity));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const outlook = stockOutlook(
-    item.quantity,
+    item.estimatedQuantity,
     item.dailyUsage,
     item.leadTimeDays,
     item.safetyStockDays,
@@ -172,7 +252,7 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
       </div>
       <div className="company-stock-grid">
         <div>
-          <span>ON HAND</span>
+          <span>RECORDED STOCK</span>
           <strong>
             {item.quantity?.toLocaleString() ?? "—"} <small>{item.unit}</small>
           </strong>
@@ -192,6 +272,9 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
         </div>
       </div>
       <p className="company-reorder-note">
+        {item.stockCountedAt
+          ? `Counted ${new Date(item.stockCountedAt).toLocaleDateString()}. `
+          : ""}
         {item.dailyUsage === 0
           ? "Daily usage is zero. Update the estimate below when this item is in use."
           : outlook.reorderAt === null
@@ -240,6 +323,7 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
           <Pencil /> Update stock count
         </button>
       )}
+      <BuyingLinks item={item} onBuy={onBuy} hasOpenOrder={hasOpenOrder} />
     </article>
   );
 }

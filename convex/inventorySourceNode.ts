@@ -7,6 +7,8 @@ import { confirmedDeliveryDays, sourceUnit } from "../src/lib/source-evidence";
 import { v } from "convex/values";
 import { components, internal } from "./_generated/api";
 import { internalAction, env } from "./_generated/server";
+import ExcelJS from "exceljs";
+import mammoth from "mammoth";
 function base64(bytes: Uint8Array) {
   let binary = "";
   for (let i = 0; i < bytes.length; i += 8192)
@@ -42,7 +44,7 @@ export const extract = internalAction({
     const scope =
       source.kind === "link"
         ? "This is a single product page: return ONLY its main product matching the page title and URL. Ignore recommendations, related products, accessories, advertisements, reviews and cross-sells. Return at most one product, or zero if the page is not a product page."
-        : "This is an invoice: return its distinct inventory line items, up to 20 products.";
+        : "This is an invoice, inventory list, or purchasing document: return its distinct inventory line items, up to 20 products. Preserve every distinct item up to the limit.";
     let markdown = "";
     if (source.kind === "link" && source.url) {
       const page = await firecrawl.scrape(ctx, source.url, {
@@ -58,14 +60,35 @@ export const extract = internalAction({
     } else if (source.fileId) {
       const blob = await ctx.storage.get(source.fileId);
       if (!blob || blob.size > 8 * 1024 * 1024) throw new Error("Invoice unavailable.");
-      content.push({
-        type: blob.type === "application/pdf" ? "document" : "image",
-        source: {
-          type: "data",
-          value: base64(new Uint8Array(await blob.arrayBuffer())),
-          mimeType: blob.type,
-        },
-      });
+      if (blob.type.startsWith("text/") || blob.type.includes("openxmlformats")) {
+        if (blob.type.includes("spreadsheetml")) {
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(await blob.arrayBuffer());
+          const rows: string[] = [];
+          workbook.eachSheet((sheet) => {
+            rows.push(`Sheet: ${sheet.name}`);
+            sheet.eachRow((row) => {
+              rows.push(JSON.stringify(row.values));
+            });
+          });
+          markdown = rows.join("\n");
+        } else if (blob.type.includes("wordprocessingml")) {
+          markdown = (
+            await mammoth.extractRawText({ buffer: Buffer.from(await blob.arrayBuffer()) })
+          ).value;
+        } else markdown = await blob.text();
+        if (!markdown.trim() || markdown.length > 80000)
+          throw new Error("File is empty or too large to read. Split it into smaller files.");
+        content.push({ type: "text", content: `File: ${source.filename}\n${markdown}` });
+      } else
+        content.push({
+          type: blob.type === "application/pdf" ? "document" : "image",
+          source: {
+            type: "data",
+            value: base64(new Uint8Array(await blob.arrayBuffer())),
+            mimeType: blob.type,
+          },
+        });
     } else throw new Error("Source missing.");
     const output = await chat({
       adapter: createOpenaiChat("gpt-5.4-mini", env.OPENAI_API_KEY),
@@ -100,9 +123,14 @@ export const extract = internalAction({
     await ctx.runMutation(internal.inventorySources.finish, {
       ...args,
       products,
-      ...(!products.length
-        ? { message: "No inventory items found. Try a product page or a clearer invoice." }
-        : {}),
+      ...(products.length === 20
+        ? {
+            message:
+              "Read the first 20 products. Split larger files to import the remaining items.",
+          }
+        : !products.length
+          ? { message: "No inventory items found. Try a product page or a clearer invoice." }
+          : {}),
     });
     return null;
   },

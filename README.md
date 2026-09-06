@@ -26,7 +26,7 @@ buyer approval, and external email sends remain protected.
 | `/?demo=1&procurement=…&tour=0` | Guided demo; closing a shared tour returns to Open buys.                                                                                                |
 | `/prototype`                    | Earlier design prototype, kept for reference.                                                                                                           |
 
-New company workspaces support source imports, inventory, and human answers to missing details. Automated supplier outreach and ordering for those workspaces are still unfinished.
+New company workspaces support buy links, bulk invoice/file imports, approved purchase orders, supplier confirmations, partial receiving, downloadable order records, and verified email alerts. Older sources and completed orders remain accessible through pagination. See [company purchasing and email setup](docs/company-ordering.md).
 
 ## Read first
 
@@ -60,6 +60,7 @@ pnpm lint
 pnpm fmt:check
 pnpm typecheck
 pnpm build
+pnpm test:backend
 ```
 
 Compact metric formatting has focused tests: `node --test src/components/buy-hard/metric-format.test.ts`.

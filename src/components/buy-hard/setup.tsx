@@ -148,7 +148,13 @@ export function Setup({ mode }: { mode: "signup" | "login" }) {
     return (
       <Navigate
         to="/"
-        search={{ demo: false, view: "procurement", tour: undefined, procurement: undefined }}
+        search={{
+          demo: false,
+          view: "procurement",
+          tour: undefined,
+          procurement: undefined,
+          companyOrder: undefined,
+        }}
         replace
       />
     );

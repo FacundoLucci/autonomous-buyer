@@ -8,6 +8,7 @@ import { upload, options } from "./inventoryUpload";
 
 const agentmail = new AgentMail(components.agentmail, {
   onMessageReceived: internal.inbound.onMessageReceived,
+  onEvent: internal.companyOrders.onMailEvent,
 });
 const http = httpRouter();
 

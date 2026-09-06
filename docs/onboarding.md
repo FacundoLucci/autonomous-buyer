@@ -7,7 +7,7 @@ passkey users enter the same name. Existing password accounts use
 
 After signup, the flow asks for the company and delivery address, then a product
 page link or invoice. Firecrawl reads the linked product page; the existing
-TanStack AI/OpenAI extraction layer reads the page or uploaded PDF/image. Link
+TanStack AI/OpenAI extraction layer reads the page or uploaded PDF, image, CSV, TXT, XLSX, or DOCX. Link
 imports select only the page's main product. Invoices list up to 20 inventory
 lines so the user can choose the first item. Extracted seller, SKU, pack size and
 explicit delivery evidence are retained with the source. The user confirms the
@@ -27,15 +27,17 @@ to the signed-in user in this browser; passwords and private passkeys are never
 stored in the onboarding draft. Source jobs run in the Convex Workflow component,
 with results also recorded in an Agent component thread. Source records and uploads
 are restricted to their owner; workspace reads and edits use company membership.
-Uploads accept PDF, PNG and JPEG up to 8 MB, with server checks of file signatures.
-Imports are limited to 10 per account per hour and retried once on provider errors.
+Uploads accept PDF, PNG, JPEG, CSV, TXT, XLSX, and DOCX up to 8 MB, with server checks of file signatures.
+Imports are limited to 20 per account per hour and retried once on provider errors.
 Unreadable sources offer another source or a manual item fallback.
 
 The final connection creates a dedicated AgentMail Pod and purchasing inbox with
 stable client IDs. A failed connection preserves the company and item, with a way
 to retry or open the desk. This step creates email infrastructure; it sends no mail.
-Automated supplier outreach and purchasing for private company workspaces remain
-unfinished, as stated in the desk.
+The desk supports buy links and approved purchase orders, followed by supplier
+confirmation and receiving. Supplier discovery and autonomous negotiation remain
+part of the separate demo; private companies choose their own supplier and terms.
+See [company ordering](company-ordering.md) for the live workflow and email configuration.
 
 ## Auth 2 compatibility
 
@@ -74,8 +76,9 @@ Production has not been changed.
 - Hosted browser checks use the real signup screen with a software WebAuthn
   authenticator and verify that the signed-in company setup survives a reload.
   Landing steps are checked at phone, tablet, and desktop widths. Device approval
-  of a human passkey remains a manual check. Live AgentMail inbox creation was
-  not performed.
+  of a human passkey remains a manual check. The September 6 company-ordering
+  rehearsal also created a real AgentMail inbox, sent a clearly marked test PO to
+  the app owner, verified alerts through the owner's inbox, and received the test order.
 
 Results are in `output/onboarding/source-checks.json` and
 `output/onboarding/product-link-check.json`. These scripts create QA records in

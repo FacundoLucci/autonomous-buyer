@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "buy-hard-alerts",
+  "main": "index.ts",
+  "account_id": "78aa716d1c2ddac7dab1162d38998f53",
+  "compatibility_date": "2026-09-05",
+  "workers_dev": true,
+  "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["alerts@buyhard.facundo.xyz"] }],
+  "vars": { "FROM_EMAIL": "alerts@buyhard.facundo.xyz" },
+  "observability": { "enabled": true },
+}

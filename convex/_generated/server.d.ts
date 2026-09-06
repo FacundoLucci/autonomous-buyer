@@ -35,6 +35,9 @@ type Env = {
   readonly AGENTMAIL_INBOX_EMAIL: string | undefined;
   readonly AGENTMAIL_INBOX_ID: string | undefined;
   readonly AGENTMAIL_WEBHOOK_SECRET: string | undefined;
+  readonly ALERT_EMAIL_SECRET: string | undefined;
+  readonly ALERT_EMAIL_URL: string | undefined;
+  readonly APP_URL: string | undefined;
   readonly AUTH_JWKS: string;
   readonly AUTH_ORIGIN: string | undefined;
   readonly AUTH_PRIVATE_KEY: string;

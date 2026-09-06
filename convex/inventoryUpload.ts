@@ -1,5 +1,6 @@
 import { httpAction, env } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { fileMime } from "../src/lib/company-files";
 const LIMIT = 8 * 1024 * 1024;
 function cors(request: Request) {
   const origin = request.headers.get("Origin") ?? "";
@@ -50,19 +51,31 @@ export const upload = httpAction(async (ctx, request) => {
       bytes.set(chunk, offset);
       offset += chunk.length;
     }
-    const type = request.headers.get("Content-Type") ?? "";
+    const filename = decodeURIComponent(request.headers.get("X-Filename") ?? "Invoice.pdf").slice(
+      0,
+      120,
+    );
+    const type = request.headers.get("Content-Type")?.split(";")[0] ?? "";
+    if (type !== fileMime(filename))
+      throw new Error("Use a PDF, PNG, JPG, CSV, TXT, XLSX, or DOCX file.");
     const signature = Array.from(bytes.slice(0, 8)).join(",");
     const valid =
       (type === "application/pdf" && new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-") ||
       (type === "image/png" && signature === "137,80,78,71,13,10,26,10") ||
-      (type === "image/jpeg" && bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255);
-    if (!valid) throw new Error("Use a PDF, PNG, or JPG invoice.");
+      (type === "image/jpeg" && bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) ||
+      ((type === "text/plain" || type === "text/csv") && size > 0 && !bytes.includes(0)) ||
+      (type.startsWith("application/vnd.openxmlformats-officedocument.") &&
+        bytes[0] === 80 &&
+        bytes[1] === 75 &&
+        bytes[2] === 3 &&
+        bytes[3] === 4);
+    if (!valid) throw new Error("Use a valid PDF, PNG, JPG, CSV, TXT, XLSX, or DOCX file.");
     const fileId = await ctx.storage.store(new Blob([bytes], { type }));
     try {
       await ctx.runMutation(internal.inventorySources.attachInvoice, {
         sourceId,
         fileId,
-        filename: decodeURIComponent(request.headers.get("X-Filename") ?? "Invoice").slice(0, 120),
+        filename,
       });
     } catch (cause) {
       await ctx.storage.delete(fileId);

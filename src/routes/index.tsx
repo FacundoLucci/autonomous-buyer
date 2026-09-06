@@ -64,6 +64,10 @@ function isDemoDestination(search: {
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>) => ({
+    companyOrder:
+      typeof search.companyOrder === "string" && search.companyOrder.length < 100
+        ? search.companyOrder
+        : undefined,
     demo:
       search.demo === "1" || search.demo === 1 || search.demo === true || search.demo === "true",
     tour:
@@ -208,7 +212,14 @@ function Home() {
   if (isDemoDestination(search)) return <DemoHome />;
   if (isLoading || (isAuthenticated && (workspace === undefined || user === undefined)))
     return <DashboardSkeleton />;
-  if (workspace) return <CompanyWorkspace workspace={workspace} />;
+  if (workspace)
+    return (
+      <CompanyWorkspace
+        key={`${workspace.organizationId}:${search.companyOrder ?? ""}`}
+        workspace={workspace}
+        initialOrder={search.companyOrder}
+      />
+    );
   if (user && !user.isJudgeDemo && user.role === "viewer") return <Setup mode="signup" />;
   return user ? <DemoHome /> : <AutonomousLanding />;
 }

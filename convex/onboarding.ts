@@ -2,6 +2,8 @@ import { getAuthUserId } from "./identity";
 import { ConvexError, v } from "convex/values";
 import { mutation, query, type QueryCtx, type MutationCtx } from "./_generated/server";
 import { setupFieldError, stockOutlook, type CompanySetup } from "../src/lib/setup-fields";
+import { internal } from "./_generated/api";
+import { activeCompanyItems } from "./companyStock";
 
 const unit = v.union(
   v.literal("units"),
@@ -84,6 +86,7 @@ export const complete = mutation({
       description: args.itemName.trim(),
       specification: { productType: args.itemName.trim() },
       quantityOnHand: quantity,
+      stockCountedAt: Date.now(),
       unit: args.unit,
       estimatedDailyUsage: dailyUsage,
       supplierLeadTimeDays: leadTimeDays,
@@ -116,7 +119,12 @@ const workspaceValidator = v.object({
       evidence: v.union(v.string(), v.null()),
       sourceUrl: v.union(v.string(), v.null()),
       sourceLabel: v.union(v.string(), v.null()),
-
+      sourceId: v.union(v.id("inventorySources"), v.null()),
+      buyUrl: v.union(v.string(), v.null()),
+      supplierEmail: v.union(v.string(), v.null()),
+      coverageDays: v.number(),
+      stockCountedAt: v.union(v.number(), v.null()),
+      estimatedQuantity: v.union(v.number(), v.null()),
       safetyStockDays: v.number(),
     }),
   ),
@@ -133,10 +141,7 @@ export const getWorkspace = query({
     if (!organization || organization.isDemo || (user.role !== "admin" && user.role !== "buyer"))
       return null;
     const [items, inbox] = await Promise.all([
-      ctx.db
-        .query("inventoryItems")
-        .withIndex("by_org_sku", (q) => q.eq("organizationId", organization._id))
-        .take(100),
+      activeCompanyItems(ctx, organization._id),
       ctx.db
         .query("purchasingInboxes")
         .withIndex("by_organization_and_provider", (q) =>
@@ -164,7 +169,15 @@ export const getWorkspace = query({
             evidence: item.leadTimeEvidence ?? null,
             sourceUrl: source?.url ?? null,
             sourceLabel: source?.filename ?? source?.url ?? null,
-
+            sourceId: source?._id ?? null,
+            buyUrl: item.buyUrl ?? source?.url ?? null,
+            supplierEmail: item.supplierEmail ?? null,
+            coverageDays: item.preferredCoverageDays,
+            stockCountedAt: item.stockCountedAt ?? null,
+            estimatedQuantity:
+              item.stockCountKnown === false
+                ? null
+                : (item.estimatedQuantity ?? item.quantityOnHand),
             safetyStockDays: item.safetyStockDays,
           };
         }),
@@ -190,13 +203,16 @@ export const updateStock = mutation({
     );
     await ctx.db.patch("inventoryItems", item._id, {
       quantityOnHand: args.quantity,
+      estimatedQuantity: args.quantity,
       stockCountKnown: true,
+      stockCountedAt: Date.now(),
       status: outlook.needsAction
         ? "action_required"
         : outlook.reorderAt === null
           ? "watch"
           : "healthy",
     });
+    await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
     return null;
   },
 });
@@ -267,6 +283,7 @@ export const completeFromSource = mutation({
           "ITEM-001"),
       specification: { productType: args.itemName.trim() },
       quantityOnHand: quantity ?? 0,
+      stockCountedAt: quantity !== undefined ? Date.now() : undefined,
       stockCountKnown: quantity !== undefined,
       unit: args.unit,
       estimatedDailyUsage: dailyUsage,
@@ -283,9 +300,14 @@ export const completeFromSource = mutation({
       sourceId: source?._id,
       sourceProductIndex: product ? index : undefined,
       supplierName: product?.supplier ?? undefined,
+      buyUrl: source?.url,
       leadTimeEvidence: product?.leadTimeEvidence ?? undefined,
     });
-    if (source) await ctx.db.patch("inventorySources", source._id, { inventoryItemId: itemId });
+    if (source)
+      await ctx.db.patch("inventorySources", source._id, {
+        inventoryItemId: itemId,
+        organizationId,
+      });
     await ctx.db.patch("users", user._id, { organizationId, role: "admin" });
     return organizationId;
   },
@@ -337,6 +359,7 @@ export const fillGap = mutation({
           ? "watch"
           : "healthy",
     });
+    await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
     return null;
   },
 });
