@@ -32,6 +32,7 @@ New company workspaces support buy links, bulk invoice/file imports, approved pu
 
 - [Product spec](docs/product-spec.md)
 - [Dependency-ordered implementation plan](docs/implementation-plan.md)
+- [GTM and social marketing plan](docs/gtm-marketing-strategy.md)
 - [Hackathon evidence log](hackathon.md)
 
 ## Stack
