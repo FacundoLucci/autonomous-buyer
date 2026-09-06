@@ -1,0 +1,57 @@
+[
+  {
+    "name": "enter",
+    "sourceFrames": 15,
+    "duration": 1.566667
+  },
+  {
+    "name": "comparison",
+    "sourceFrames": 12,
+    "duration": 1.566667
+  },
+  {
+    "name": "sources",
+    "sourceFrames": 20,
+    "duration": 1.6
+  },
+  {
+    "name": "rfqs",
+    "sourceFrames": 2,
+    "duration": 1
+  },
+  {
+    "name": "followup1",
+    "sourceFrames": 87,
+    "duration": 2.933333
+  },
+  {
+    "name": "email",
+    "sourceFrames": 125,
+    "duration": 3.266667
+  },
+  {
+    "name": "followup2",
+    "sourceFrames": 3,
+    "duration": 1.033333
+  },
+  {
+    "name": "approval",
+    "sourceFrames": 24,
+    "duration": 1.666667
+  },
+  {
+    "name": "confirmation",
+    "sourceFrames": 19,
+    "duration": 1.733333
+  },
+  {
+    "name": "order",
+    "sourceFrames": 12,
+    "duration": 1.333008
+  },
+  {
+    "name": "order-details",
+    "sourceFrames": 3,
+    "duration": 1.1
+  }
+]

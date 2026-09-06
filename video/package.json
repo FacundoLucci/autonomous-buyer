@@ -1,0 +1,28 @@
+{
+  "name": "buy-hard-demo-film",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "assets": "node scripts/check-assets.mjs",
+    "render:preview": "node scripts/render.mjs preview",
+    "render:silent": "node scripts/render.mjs silent",
+    "render:cues": "node scripts/render.mjs cues",
+    "render:voice": "node scripts/render.mjs voice",
+    "still": "remotion still src/index.ts BuyHardSilent out/frame.png --frame=180"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.521",
+    "@remotion/media": "4.0.521",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.521"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "@types/react": "19.1.6",
+    "typescript": "5.8.3"
+  }
+}

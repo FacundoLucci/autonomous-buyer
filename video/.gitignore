@@ -1,0 +1,8 @@
+node_modules/
+out/
+.remotion/
+public/voice/
+public/deli/
+voice-props.json
+public/captures/frames/
+public/captures/*.mp4
