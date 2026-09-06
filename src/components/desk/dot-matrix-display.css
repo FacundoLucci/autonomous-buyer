@@ -1,0 +1,20 @@
+.desk-hero .desk-wordmark {
+  width: 100%;
+  line-height: 1;
+  margin: 26px 0 28px;
+}
+.desk-dot-matrix {
+  display: block;
+  width: 100%;
+}
+.desk-dot-matrix__grid {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.desk-dot-matrix__lit {
+  fill: #000;
+}
+.desk-dot-matrix__unlit {
+  fill: rgb(160 164 151 / 18%);
+}
