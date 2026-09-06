@@ -5,7 +5,7 @@
     "Auth 2 sign-out and cryptographic sign-in roundtrip",
     "Guests cannot start paid imports",
     "Local product URLs rejected",
-    "Authenticated PDF upload accepts the local origin",
+    "Authenticated PDF upload accepts the configured origin",
     "Real invoice extraction finishes",
     "Invoice offers both products",
     "Dispatch time is not invented as delivery time",
@@ -18,8 +18,8 @@
     "Human gap answers and stock count persist",
     "Invalid answers rejected"
   ],
-  "sourceId": "px77xzfw7wttpaz22b4m3c02698dvnaf",
-  "organizationId": "k9759h8xyhnt2rwz0q3vbcjvn18dv0tx",
+  "sourceId": "px7bdtnnzd670e2qkx2pj9yznh8dxkbr",
+  "organizationId": "k97daz3gxm1r3n793xxxcvr1d18dwk95",
   "products": [
     {
       "evidence": "Item QA-LID-16: 16 oz deli lids | 500 units per case | 2 cases ordered",

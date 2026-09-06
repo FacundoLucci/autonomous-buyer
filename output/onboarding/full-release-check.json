@@ -1,0 +1,32 @@
+{
+  "verifiedAt": "2026-09-06T01:18:40.830687+00:00",
+  "site": "https://festive-coyote-483.convex.site/",
+  "environment": "development",
+  "codeCommit": "4c34c8d1933a12aea39f8e915ce1413e4fa61e00",
+  "frontendDeploymentId": "11a2adc4-f6be-49e4-857d-37dee67739b0",
+  "backendDeployment": "festive-coyote-483",
+  "backendDeploy": "convex dev --once --typecheck enable --tail-logs disable: passed",
+  "publishedHtmlMatchesBuild": true,
+  "authOrigin": "https://festive-coyote-483.convex.site",
+  "authRpId": "festive-coyote-483.convex.site",
+  "checks": {
+    "lintFormattingTypecheckBuild": "passed",
+    "unitTests": 9,
+    "sourceIntegrationChecks": 17,
+    "legacyPasswordLogin": "passed",
+    "realProductLinkImport": "passed",
+    "hostedPasskeySignupViaBrowser": "passed with software authenticator",
+    "signedInAfterReload": true,
+    "landingWidths": [390, 813, 1440],
+    "landingStepProgression": [1, 2, 3, 4, 1],
+    "summaryHiddenBelow971": true,
+    "browserErrors": 0,
+    "recordedPurchaseLoaded": "PC-0180",
+    "recordedWalkthroughStarted": true
+  },
+  "limits": [
+    "Human device approval was not tested.",
+    "No supplier email sends or orders were triggered.",
+    "Live AgentMail inbox creation was not tested."
+  ]
+}

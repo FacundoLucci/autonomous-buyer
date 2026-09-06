@@ -71,10 +71,11 @@ Production has not been changed.
   ranged and mismatched delivery claims, and normalizes counting units.
 - `node scripts/qa/product-link.mjs`: legacy password compatibility plus a real
   Firecrawl product-page import. No email sends occur in either script.
-- Browser checks use the real signup screen and a temporary, clearly labeled
-  visual harness for the wizard. The harness is removed after review; it grants
-  no authenticated access or write permission. Device approval of a human passkey
-  remains a manual check. Live AgentMail inbox creation was not performed.
+- Hosted browser checks use the real signup screen with a software WebAuthn
+  authenticator and verify that the signed-in company setup survives a reload.
+  Landing steps are checked at phone, tablet, and desktop widths. Device approval
+  of a human passkey remains a manual check. Live AgentMail inbox creation was
+  not performed.
 
 Results are in `output/onboarding/source-checks.json` and
 `output/onboarding/product-link-check.json`. These scripts create QA records in
