@@ -1,4 +1,4 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./identity";
 
 import type { Id } from "./_generated/dataModel";
 import { env, internalQuery, type MutationCtx, type QueryCtx } from "./_generated/server";

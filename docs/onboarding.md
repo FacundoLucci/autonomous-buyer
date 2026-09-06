@@ -1,46 +1,81 @@
-# Company onboarding
+# Signup and company onboarding
 
-The local `/setup` flow asks one question at a time: company name, delivery address,
-first item, SKU, counting unit, stock on hand, estimated daily usage, supplier lead
-time, and safety stock. A receipt builds alongside the form and its answers can be
-edited directly. Account creation follows the company questions. Existing users
-can sign in at `/setup?mode=login`.
+`/setup` starts with Convex Auth 2.0 passkeys: an account name, then the device's
+passkey prompt. The account exists before any company questions appear. Returning
+passkey users enter the same name. Existing password accounts use
+`/setup?mode=login&method=password`; their users and company memberships remain intact.
 
-Company answers survive a refresh in the same browser tab. Passwords are kept only
-in component memory, never in draft storage. The company and first item are saved
-in one authenticated Convex mutation; retrying cannot create another workspace.
+After signup, the flow asks for the company and delivery address, then a product
+page link or invoice. Firecrawl reads the linked product page; the existing
+TanStack AI/OpenAI extraction layer reads the page or uploaded PDF/image. Link
+imports select only the page's main product. Invoices list up to 20 inventory
+lines so the user can choose the first item. Extracted seller, SKU, pack size and
+explicit delivery evidence are retained with the source. The user confirms the
+counting unit, then supplies current stock and daily usage or defers either.
+A three-day reserve is disclosed and adjustable in the desk.
 
-The final connection creates an AgentMail Pod and purchasing inbox for that
-company. Both use stable client IDs so a retry can recover an existing resource.
-The app shows the actual provider-returned address after it is saved. If inbox
-setup fails, the company and inventory remain available, with a retry and a way
-to open the desk. This step creates email infrastructure but does not send mail.
+The user does not have to guess a supplier lead time. Unknown terms remain null;
+shipping/dispatch time, business-day estimates and historical invoice quantities
+are not used as delivery time or current stock. The workspace's **Needs your
+input** area requests missing supplier, delivery and usage details. Stock counts
+can be updated separately. Human-confirmed delivery information is attributed to
+the member and time. Coverage and reorder calculations require the necessary
+known inputs.
 
-Each company's workspace and stock updates derive membership from the signed-in
-user. New owners cannot claim or reset Acme's demo. Demo lookups include `isDemo`
-so another company can legitimately have the same name. Inbound supplier replies
-must also arrive at the inbox belonging to the purchase's company.
+Company and selected-item creation is atomic and idempotent. Progress is scoped
+to the signed-in user in this browser; passwords and private passkeys are never
+stored in the onboarding draft. Source jobs run in the Convex Workflow component,
+with results also recorded in an Agent component thread. Source records and uploads
+are restricted to their owner; workspace reads and edits use company membership.
+Uploads accept PDF, PNG and JPEG up to 8 MB, with server checks of file signatures.
+Imports are limited to 10 per account per hour and retried once on provider errors.
+Unreadable sources offer another source or a manual item fallback.
 
-The resulting desk shows the company's own inventory, estimated coverage, reorder
-threshold, delivery address, and inbox. Stock counts can be updated. Supplier
-sourcing and purchasing workflows for these new companies are still a separate
-implementation step; the desk states this explicitly.
+The final connection creates a dedicated AgentMail Pod and purchasing inbox with
+stable client IDs. A failed connection preserves the company and item, with a way
+to retry or open the desk. This step creates email infrastructure; it sends no mail.
+Automated supplier outreach and purchasing for private company workspaces remain
+unfinished, as stated in the desk.
 
-## Validation on 2026-09-05
+## Auth 2 compatibility
 
-Development target: `festive-coyote-483`. Production was unchanged.
+Auth 2 is pinned to `2.0.0-alpha.1` under the `@convex-dev/auth2` alias. Auth 1 remains
+for existing password accounts and configured demo access. The alpha needs a small
+patch allowing its core to use an explicit issuer. New sessions use
+`CONVEX_SITE_URL/auth`, while legacy sessions keep their original issuer and keys.
+This avoids older tokens (which have no key ID) becoming invalid. Browser token
+storage is also separate. Users are resolved by signed user ID, never by matching
+an unverified email or account name.
 
-- Fresh password signup and returning password login passed through the real API.
-- Two accounts received separate company workspaces and inventory.
-- Invalid stock caused no partial company creation. Repeat completion created no
-  duplicate item or company.
-- Guest reads/writes and another company's stock update were denied.
-- New owners could not reset or claim the shared demo.
-- Owner stock updates persisted through sign-out and sign-in.
-- The browser flow was checked through company, item, receipt editing, and account
-  entry on desktop and a phone viewport. Browser password submission and a live
-  AgentMail inbox creation were not performed in this check.
+Development is `festive-coyote-483`. Hosted sign-in uses
+`AUTH_ORIGIN=https://festive-coyote-483.convex.site` and
+`AUTH_RP_ID=festive-coyote-483.convex.site`. The code defaults to the deployment
+site when these overrides are absent. For a separate local-only development
+deployment, set `AUTH_ORIGIN=http://localhost:3000` and `AUTH_RP_ID=localhost`. Auth 2 uses base64 PKCS8
+`AUTH_PRIVATE_KEY` and a matching `AUTH_JWKS` with a key ID. Legacy signing keys were
+preserved. Passkeys are bound to their relying party: a localhost passkey cannot
+be used on the hosted site. Keep the origin and relying-party ID aligned when
+changing domains. Auth 2 does not
+yet expose multi-passkey management or account recovery in this implementation.
+Production has not been changed.
 
-The machine-readable API results are in `output/onboarding/backend-checks.json`.
-The test accounts use `buyer-test.example` addresses. No provider messages were
-sent by these checks.
+## Validation
+
+- `node scripts/qa/source-onboarding.mjs`: development integration checks with
+  disposable accounts and a software WebAuthn authenticator. It defaults to the
+  hosted review origin; set `BUYER_QA_ORIGIN` for a separately configured local
+  deployment. Covers signup before
+  setup, cryptographic login, real two-item PDF extraction, unknown terms,
+  idempotent completion, company isolation, invalid inputs, and human gap answers.
+- `node --test src/lib/source-evidence.test.ts`: rejects dispatch, business-day,
+  ranged and mismatched delivery claims, and normalizes counting units.
+- `node scripts/qa/product-link.mjs`: legacy password compatibility plus a real
+  Firecrawl product-page import. No email sends occur in either script.
+- Browser checks use the real signup screen and a temporary, clearly labeled
+  visual harness for the wizard. The harness is removed after review; it grants
+  no authenticated access or write permission. Device approval of a human passkey
+  remains a manual check. Live AgentMail inbox creation was not performed.
+
+Results are in `output/onboarding/source-checks.json` and
+`output/onboarding/product-link-check.json`. These scripts create QA records in
+**development** and call the real extraction providers; they are not offline tests.

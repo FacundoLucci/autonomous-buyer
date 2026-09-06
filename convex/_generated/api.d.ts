@@ -23,10 +23,16 @@ import type * as domain_money from "../domain/money.js";
 import type * as domain_procurement from "../domain/procurement.js";
 import type * as domain_quotes from "../domain/quotes.js";
 import type * as http from "../http.js";
+import type * as identity from "../identity.js";
 import type * as inbound from "../inbound.js";
 import type * as integrations from "../integrations.js";
+import type * as inventorySourceFields from "../inventorySourceFields.js";
+import type * as inventorySourceNode from "../inventorySourceNode.js";
+import type * as inventorySources from "../inventorySources.js";
+import type * as inventoryUpload from "../inventoryUpload.js";
 import type * as mail from "../mail.js";
 import type * as onboarding from "../onboarding.js";
+import type * as passkeyAuth from "../passkeyAuth.js";
 import type * as procurements from "../procurements.js";
 import type * as purchaseOrders from "../purchaseOrders.js";
 import type * as purchasing from "../purchasing.js";
@@ -56,10 +62,16 @@ declare const fullApi: ApiFromModules<{
   "domain/procurement": typeof domain_procurement;
   "domain/quotes": typeof domain_quotes;
   http: typeof http;
+  identity: typeof identity;
   inbound: typeof inbound;
   integrations: typeof integrations;
+  inventorySourceFields: typeof inventorySourceFields;
+  inventorySourceNode: typeof inventorySourceNode;
+  inventorySources: typeof inventorySources;
+  inventoryUpload: typeof inventoryUpload;
   mail: typeof mail;
   onboarding: typeof onboarding;
+  passkeyAuth: typeof passkeyAuth;
   procurements: typeof procurements;
   purchaseOrders: typeof purchaseOrders;
   purchasing: typeof purchasing;
@@ -96,6 +108,10 @@ export declare const internal: FilterApi<
 
 export declare const components: {
   staticHosting: import("@convex-dev/static-hosting/_generated/component.js").ComponentApi<"staticHosting">;
+  auth: import("@convex-dev/auth2/core/_generated/component.js").ComponentApi<"auth">;
+  authPasskey: import("@convex-dev/auth2/providers/passkey/_generated/component.js").ComponentApi<"authPasskey">;
+  authUsername: import("@convex-dev/auth2/username/_generated/component.js").ComponentApi<"authUsername">;
+  authAnonymous: import("@convex-dev/auth2/providers/anonymous/_generated/component.js").ComponentApi<"authAnonymous">;
   agent: import("@convex-dev/agent/_generated/component.js").ComponentApi<"agent">;
   workflow: import("@convex-dev/workflow/_generated/component.js").ComponentApi<"workflow">;
   firecrawl: import("@firecrawl/firecrawl-convex/_generated/component.js").ComponentApi<"firecrawl">;

@@ -1,8 +1,8 @@
 import { v } from "convex/values";
 
-import { internalQuery, mutation, query } from "./_generated/server";
+import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { env } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./identity";
 
 const currentUserValidator = v.object({
   userId: v.id("users"),
@@ -107,4 +107,29 @@ export const claimConfiguredBuyer = mutation({
       canApproveDemo: true,
     };
   },
+});
+
+export const createPasskeyUser = internalMutation({
+  args: {
+    provider: v.literal("passkey"),
+    providerAccountId: v.string(),
+    profile: v.object({ username: v.union(v.string(), v.null()) }),
+  },
+  returns: v.id("users"),
+  handler: async (ctx, args) => {
+    const name = args.profile.username?.trim();
+    if (!name || name.length > 120) throw new Error("Choose an account name under 121 characters.");
+    return await ctx.db.insert("users", { name, role: "viewer", isActive: true });
+  },
+});
+export const createAnonymousUser = internalMutation({
+  args: { provider: v.literal("anonymous"), providerAccountId: v.string(), profile: v.object({}) },
+  returns: v.id("users"),
+  handler: async (ctx) =>
+    await ctx.db.insert("users", {
+      name: "Judge demo buyer",
+      isAnonymous: true,
+      role: "viewer",
+      isActive: true,
+    }),
 });

@@ -1,74 +1,64 @@
 import { useRef, useState, type ReactNode } from "react";
-import { ArrowDown, ArrowUpRight, ChevronRight, Printer, RotateCcw, X } from "lucide-react";
+import { ArrowDown, ArrowUpRight, ChevronLeft, ChevronRight, RotateCcw, X } from "lucide-react";
 
 import { dotMatrixDriver } from "@/components/buy-hard/dot-matrix-driver";
 import "./autonomous-landing.css";
 
 const steps = [
   {
-    title: "Inventory signal",
-    stamp: "Risk detected",
+    title: "Low stock warning",
+    stamp: "Running low",
     tone: "rust",
-    status: "Watching",
-    output: "DETECTED",
-    detail: "A little heads-up. A lot less downtime.",
-    action:
-      "Review the inventory signal for LID-16-TE. At the current daily use, stock will last 5.3 days.",
+    status: "Checking stock",
+    output: "LOW STOCK",
+    detail: "You have 5.3 days of lids left. Your buyer spots the shortage early.",
     rows: [
-      ["Item", "LID-16-TE"],
-      ["", "16 oz Deli Lid"],
-      ["On hand", "3,240"],
-      ["Daily use", "612"],
+      ["Item", "16 oz deli lids"],
+      ["In stock", "3,240 lids"],
+      ["Used each day", "612 lids"],
       ["Days left", "5.3"],
     ],
   },
   {
-    title: "Risk confirmed",
-    stamp: "Action required",
+    title: "Time to order",
+    stamp: "More lids needed",
     tone: "rust",
-    status: "Triggered",
-    output: "FLAGGED",
-    detail: "The shortage is real. The search is on.",
-    action:
-      "Source a replenishment order. Inventory is below the 7-day reorder point, with a high risk of a stockout.",
+    status: "Finding a supplier",
+    output: "FINDING",
+    detail: "Stock is below your 7-day limit. Your buyer starts looking for more lids.",
     rows: [
-      ["Item", "LID-16-TE"],
-      ["Stock lasts", "5.3 days"],
-      ["Reorder at", "7.0 days"],
-      ["Impact", "High"],
+      ["Item", "16 oz deli lids"],
+      ["Days left", "5.3 days"],
+      ["Order at", "7 days left"],
+      ["Need to buy", "15,000 lids"],
     ],
   },
   {
-    title: "Procurement job",
-    stamp: "Finding a match",
+    title: "Supplier found",
+    stamp: "Ready for review",
     tone: "blue",
-    status: "Sourcing",
-    output: "SOURCING",
-    detail: "The right supplier. The right time.",
-    action:
-      "Review the supplier match and order terms for 15,000 lids from Best Lids Co. before approving the purchase.",
+    status: "Review order",
+    output: "REVIEW",
+    detail: "Best Lids Co. can supply 15,000 lids. You check the price and approve the order.",
     rows: [
-      ["Job", "PC-9258"],
-      ["Item", "LID-16-TE"],
-      ["Qty", "15,000 units"],
-      ["Match", "98%"],
-      ["Policy", "Review passed"],
+      ["Supplier", "Best Lids Co."],
+      ["Quantity", "15,000 lids"],
+      ["Item match", "98%"],
+      ["Your approval", "Needed"],
     ],
   },
   {
     title: "Order confirmed",
-    stamp: "Success",
+    stamp: "More lids ordered",
     tone: "green",
     status: "Confirmed",
-    output: "COVERED",
-    detail: "Inventory risk resolved. Keep the lines moving.",
-    action:
-      "Track the incoming delivery of 15,000 lids, due September 10. Match the packing slip to PO-PC-9258-8DAPKN when it arrives.",
+    output: "ORDERED",
+    detail: "The supplier confirmed your order. All 15,000 lids are due September 10.",
     rows: [
-      ["PO", "PC-9258-8DAPKN"],
+      ["Order", "PC-9258-8DAPKN"],
       ["Supplier", "Best Lids Co."],
-      ["Qty", "15,000 units"],
-      ["ETA", "2026-09-10"],
+      ["Quantity", "15,000 lids"],
+      ["Arrives", "Sep 10, 2026"],
     ],
   },
 ] as const;
@@ -80,7 +70,7 @@ const inventory = [
     onHand: "620",
     days: "10.2",
     daily: "61",
-    status: "Watch",
+    status: "Check",
     tone: "amber",
   },
   {
@@ -89,7 +79,7 @@ const inventory = [
     onHand: "3,240",
     days: "5.3",
     daily: "612",
-    status: "Watch",
+    status: "Low",
     tone: "rust",
   },
   {
@@ -98,20 +88,20 @@ const inventory = [
     onHand: "12,480",
     days: "32.7",
     daily: "382",
-    status: "Healthy",
+    status: "Enough",
     tone: "green",
   },
 ] as const;
 
 const activity = [
-  ["17:54:21", "Inventory signal: LID-16-TE, 5.3 days left", "RISK DETECTED", "rust"],
-  ["17:54:23", "Risk confirmed: reorder recommended", "ACTION REQUIRED", "rust"],
-  ["17:54:25", "Procurement job started", "PC-9258", "blue"],
-  ["17:54:28", "Supplier match found: Best Lids Co.", "98% MATCH", "blue"],
-  ["17:54:31", "Quote received & policy check passed", "REVIEWED", "green"],
-  ["17:54:35", "Buyer approved · purchase order created", "APPROVED", "green"],
-  ["17:54:41", "Order confirmed by supplier", "CONFIRMED", "green"],
-  ["17:54:42", "ETA: Sep 10 · 15,000 units incoming", "COVERED", "green"],
+  ["17:54:21", "Low stock warning: 5.3 days of lids left", "LOW STOCK", "rust"],
+  ["17:54:23", "Time to order: less than 7 days left", "ORDER NEEDED", "rust"],
+  ["17:54:25", "Looking for a supplier", "SEARCHING", "blue"],
+  ["17:54:28", "Best Lids Co. has the right lids", "FOUND", "blue"],
+  ["17:54:31", "Price and delivery terms checked", "READY", "green"],
+  ["17:54:35", "Order approved for 15,000 lids", "APPROVED", "green"],
+  ["17:54:41", "Supplier confirmed the order", "CONFIRMED", "green"],
+  ["17:54:42", "15,000 lids due Sep 10", "ORDERED", "green"],
 ] as const;
 
 function PrintedDisplay({ text, className = "" }: { text: string; className?: string }) {
@@ -199,8 +189,8 @@ function ReceiptRows({ rows }: { rows: readonly (readonly [string, string])[] })
 }
 
 export function AutonomousLanding() {
-  const [selectedStep, setSelectedStep] = useState(3);
-  const [dialogContent, setDialogContent] = useState<"print" | "item" | "settings">("print");
+  const [selectedStep, setSelectedStep] = useState(0);
+  const [dialogContent, setDialogContent] = useState<"item" | "settings">("item");
   const [selectedItem, setSelectedItem] = useState<(typeof inventory)[number]>(inventory[1]);
   const [requireApproval, setRequireApproval] = useState(true);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -208,6 +198,10 @@ export function AutonomousLanding() {
   const step = steps[selectedStep];
   const isCovered = selectedStep === 3;
   const visibleEvents = [1, 2, 5, 8][selectedStep];
+
+  function advanceDemo() {
+    setSelectedStep((current) => (current + 1) % steps.length);
+  }
 
   function showDialog(content: typeof dialogContent) {
     setDialogContent(content);
@@ -220,14 +214,14 @@ export function AutonomousLanding() {
   }
 
   function exploreLoop() {
-    const firstStep = loopRef.current?.querySelector<HTMLButtonElement>("button");
+    const heading = loopRef.current?.querySelector<HTMLElement>("#lp-step-title");
     loopRef.current?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "instant"
         : "smooth",
       block: "center",
     });
-    firstStep?.focus({ preventScroll: true });
+    heading?.focus({ preventScroll: true });
   }
 
   return (
@@ -239,7 +233,7 @@ export function AutonomousLanding() {
         <a className="lp-wordmark" href="/">
           BUY HARD<span>®</span>
         </a>
-        <span className="lp-nav-description">AUTONOMOUS PROCUREMENT SYSTEM</span>
+        <span className="lp-nav-description">AI HELP FOR EVERYDAY BUYING</span>
         <div className="lp-navigation-links">
           <button onClick={exploreLoop}>
             How it works <ArrowDown size={12} />
@@ -262,15 +256,15 @@ export function AutonomousLanding() {
               ACME FOODS <span>EST. 2026 / DEMO NO. 001</span>
             </div>
             <h1>
-              <PrintedDisplay text={"AUTONOMOUS\nBUYER"} />
+              <PrintedDisplay text={"YOUR AI\nBUYER"} />
             </h1>
-            <p>Always watching. Always a step ahead.</p>
+            <p>Spots low stock. Helps you order in time.</p>
           </div>
           <div className="lp-agent-overview">
             <Robot />
             <div className="lp-agent-readout">
-              <h2>AGENT: WORKING</h2>
-              {["Monitor", "Analyze", "Source", "Procure"].map((label, index) => (
+              <h2>BUYER: WORKING</h2>
+              {["Watch stock", "Check need", "Find seller", "Place order"].map((label, index) => (
                 <div className="lp-agent-row" key={label}>
                   <span>{label}</span>
                   <span className="lp-led-bars" aria-hidden="true">
@@ -288,28 +282,37 @@ export function AutonomousLanding() {
           <div className="lp-system-controls">
             <div className="lp-status-panel">
               <div>
-                <span>System status</span>
+                <span>Status</span>
                 <span className="lp-green-light">
                   <i className="lp-status-dot" />
                   Online
                 </span>
               </div>
               <div>
-                <span>Session</span>
-                <span>Interactive demo</span>
+                <span>Mode</span>
+                <span>Try the demo</span>
               </div>
               <div>
-                <span>Run time</span>
-                <span>00:00:{["00", "02", "10", "21"][selectedStep]}</span>
+                <span>Demo step</span>
+                <span>
+                  Step {selectedStep + 1} of {steps.length}
+                </span>
               </div>
             </div>
             <button
               className="lp-blue-button"
-              onClick={() => showDialog("print")}
-              aria-label="Print next action"
+              onClick={advanceDemo}
+              aria-label={isCovered ? "Replay demo" : "Next demo step"}
+              aria-controls="lp-demo-steps"
+              aria-describedby="lp-demo-status"
             >
               <span>
-                Print next action <span aria-hidden="true">▶</span>
+                {isCovered ? "Replay demo" : "Next demo step"}
+                {isCovered ? (
+                  <RotateCcw size={14} aria-hidden="true" />
+                ) : (
+                  <span aria-hidden="true">▶</span>
+                )}
               </span>
             </button>
           </div>
@@ -319,80 +322,97 @@ export function AutonomousLanding() {
           <Paper className="lp-summary">
             <span className="lp-pushpin" aria-hidden="true" />
             <h2 className="lp-receipt-heading">
-              Autonomous buyer summary <span>≪</span>
+              Buying summary <span>≪</span>
             </h2>
             <dl className="lp-summary-data">
               <div>
-                <dt>Open buys</dt>
+                <dt>To buy</dt>
                 <dd>{isCovered ? "0" : "1"}</dd>
               </div>
               <div>
-                <dt>Annual spend</dt>
+                <dt>Yearly spend</dt>
                 <dd>$284,320</dd>
               </div>
               <div>
-                <dt>Savings identified</dt>
+                <dt>Possible savings</dt>
                 <dd>$17,430</dd>
               </div>
               <div>
-                <dt>Agent mode</dt>
+                <dt>Buyer</dt>
                 <dd>Working</dd>
               </div>
             </dl>
             <div className="lp-receipt-footer">
               <Barcode />
-              <span>ACME / SAMPLE WORKSPACE</span>
+              <span>ACME / EXAMPLE COMPANY</span>
             </div>
           </Paper>
 
           <section
             className="lp-workflow"
+            id="lp-demo-steps"
             ref={loopRef}
-            aria-label="Explore the four procurement steps"
+            aria-label="How your buyer helps"
           >
-            {steps.map((item, index) => (
-              <Paper
-                className={`lp-step lp-step-${index + 1} ${selectedStep === index ? "lp-step-selected" : ""}`}
-                key={item.title}
-              >
-                <button
-                  className="lp-step-trigger"
-                  onClick={() => setSelectedStep(index)}
-                  aria-pressed={selectedStep === index}
-                  aria-label={`Show step ${index + 1}: ${item.title}`}
-                >
-                  <span>
-                    {index + 1}. {item.title}
-                  </span>
-                  <i aria-hidden="true" />
-                </button>
-                <div className={`lp-stamp lp-${item.tone}`}>{item.stamp}</div>
-                <ReceiptRows rows={item.rows} />
-                <div className="lp-step-status">
-                  Status: {item.status}
-                  <span aria-hidden="true">{index < 3 ? "›" : "✓"}</span>
+            <Paper className="lp-demo-receipt">
+              <div className="lp-demo-receipt-topline">
+                <span>ACME FOODS / LID-16-TE</span>
+                <span>
+                  Step {selectedStep + 1} of {steps.length}
+                </span>
+              </div>
+              <div className="lp-demo-receipt-body">
+                <div className="lp-demo-story">
+                  <span className={`lp-stamp lp-${step.tone}`}>{step.stamp}</span>
+                  <h2 id="lp-step-title" tabIndex={-1}>
+                    {step.title}
+                  </h2>
+                  <p>{step.detail}</p>
                 </div>
-              </Paper>
-            ))}
+                <ReceiptRows rows={step.rows} />
+              </div>
+              <div className="lp-demo-receipt-footer">
+                <button
+                  onClick={() => setSelectedStep((current) => Math.max(0, current - 1))}
+                  disabled={selectedStep === 0}
+                  aria-controls="lp-demo-steps"
+                >
+                  <ChevronLeft size={15} aria-hidden="true" /> Back
+                </button>
+                <span className="lp-demo-dots" aria-hidden="true">
+                  {steps.map((item, index) => (
+                    <i key={item.title} data-active={index <= selectedStep} />
+                  ))}
+                </span>
+                <button onClick={advanceDemo} aria-controls="lp-demo-steps">
+                  {isCovered ? "Replay demo" : "Next step"}
+                  {isCovered ? (
+                    <RotateCcw size={14} aria-hidden="true" />
+                  ) : (
+                    <ChevronRight size={15} aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+            </Paper>
           </section>
         </div>
 
         <div className="lp-bottom-grid">
           <div className="lp-left-column">
             <Paper className="lp-inventory" punched>
-              <h2 className="lp-receipt-heading">Live inventory</h2>
+              <h2 className="lp-receipt-heading">Your stock</h2>
               <div className="lp-inventory-subhead">
                 <h3>Packaging items</h3>
-                <span>Sample feed</span>
+                <span>Example data</span>
               </div>
               <table>
                 <caption className="sr-only">
-                  Sample packaging inventory. Select an item to see its details.
+                  Example stock counts. Select an item to see more.
                 </caption>
                 <thead>
                   <tr>
                     <th scope="col">Item</th>
-                    <th scope="col">On hand</th>
+                    <th scope="col">In stock</th>
                     <th scope="col">Days left</th>
                     <th scope="col">Status</th>
                   </tr>
@@ -415,7 +435,7 @@ export function AutonomousLanding() {
                             {item.status}
                           </span>
                           {item.code === "LID-16-TE" && isCovered && (
-                            <span className="lp-incoming">+15,000 CONFIRMED</span>
+                            <span className="lp-incoming">+15,000 ORDERED</span>
                           )}
                         </button>
                       </td>
@@ -424,36 +444,34 @@ export function AutonomousLanding() {
                 </tbody>
               </table>
               <p className="lp-inventory-note">
-                On hand · historical usage · days left
+                Days left = stock ÷ daily use.
                 <br />
-                Calculated · incoming · supplier-confirmed
+                New orders appear once confirmed.
               </p>
               <div className="lp-receipt-footer">
                 <Barcode />
-                <span>INV-FEED-STREAM&nbsp; ≫</span>
+                <span>STOCK CHECK&nbsp; ≫</span>
               </div>
             </Paper>
             <section className="lp-ticker" aria-labelledby="lp-ticker-title">
               <h2 id="lp-ticker-title">
-                System ticker{" "}
+                Latest updates{" "}
                 <span>
                   <i className="lp-status-dot" />
                   Demo
                 </span>
               </h2>
               <p>
-                <time>17:54:42</time>
-                <span>
-                  {isCovered ? "All systems nominal." : "Agent processing inventory signal."}
-                </span>
+                <time>{activity[visibleEvents - 1][0]}</time>
+                <span>{step.status}.</span>
               </p>
               <p>
                 <time>17:54:20</time>
-                <span>Agent working on your next move.</span>
+                <span>Your buyer is working.</span>
               </p>
               <p>
                 <time>17:54:19</time>
-                <span>Good things happen ahead of time.</span>
+                <span>Keeping an eye on your stock.</span>
               </p>
               <span className="lp-terminal-cursor" aria-hidden="true">
                 &gt;&gt;&gt; <i />
@@ -462,10 +480,10 @@ export function AutonomousLanding() {
           </div>
 
           <div className="lp-center-column">
-            <section className="lp-resolution" aria-label="Risk to resolution">
+            <section className="lp-resolution" aria-label="More stock, in time">
               <h2 className="lp-panel-label">
                 <Screw />
-                Risk to resolution
+                More stock, in time
                 <span />
               </h2>
               <Paper className="lp-resolution-paper">
@@ -478,11 +496,11 @@ export function AutonomousLanding() {
                 </span>
                 <div className={`lp-resolution-number ${isCovered ? "lp-green" : "lp-muted-ink"}`}>
                   <PrintedDisplay text="15,000" />
-                  <span>{isCovered ? "Incoming" : "To source"}</span>
+                  <span>{isCovered ? "Due Sep 10" : "To buy"}</span>
                 </div>
                 <span className={`lp-covered-word ${isCovered ? "lp-green" : "lp-rust"}`}>
-                  <PrintedDisplay text={isCovered ? "COVERED" : "ON IT"} />
-                  <span>{isCovered ? "✓ RISK RESOLVED" : "AGENT WORKING"}</span>
+                  <PrintedDisplay text={isCovered ? "ORDERED" : "ON IT"} />
+                  <span>{isCovered ? "✓ ORDER CONFIRMED" : "BUYER WORKING"}</span>
                 </span>
               </Paper>
             </section>
@@ -493,7 +511,7 @@ export function AutonomousLanding() {
               <div className="lp-printer-roller" aria-hidden="true" />
               <Paper className="lp-feed-paper" punched>
                 <h2 className="lp-receipt-heading" id="lp-feed-heading">
-                  Live activity feed <span>↓</span>
+                  What your buyer did <span>↓</span>
                 </h2>
                 <ol className="lp-feed-events">
                   {activity.slice(0, visibleEvents).map(([time, message, status, tone]) => (
@@ -506,29 +524,27 @@ export function AutonomousLanding() {
                 </ol>
                 {selectedStep < 3 && (
                   <p className="lp-feed-waiting">
-                    Awaiting next step<span aria-hidden="true"> ▌</span>
+                    Ready for the next step<span aria-hidden="true"> ▌</span>
                   </p>
                 )}
                 <div className="lp-feed-bottom">
-                  END OF TRANSMISSION <span>· · ·</span>
+                  {isCovered ? "ALL DONE" : "MORE TO COME"} <span>· · ·</span>
                 </div>
               </Paper>
             </section>
 
             <div className="lp-output-row">
               <Paper className="lp-output" punched>
-                <h2 className="lp-receipt-heading">Agent output</h2>
+                <h2 className="lp-receipt-heading">Buyer update</h2>
                 <div className="lp-output-content">
                   <div>
                     <strong className={`lp-output-stamp lp-${step.tone}`}>{step.output}</strong>
                     <p>
-                      LID-16-TE {isCovered ? "secured." : "in progress."}
+                      16 oz deli lids.
                       <br />
-                      {isCovered
-                        ? "15,000 units incoming by Sep 10."
-                        : "15,000 units to replenish."}
+                      {isCovered ? "15,000 lids due Sep 10." : "15,000 more lids needed."}
                       <br />
-                      {isCovered ? "Inventory risk resolved." : "Your agent is on the job."}
+                      {isCovered ? "Order confirmed." : "Your buyer is on it."}
                     </p>
                     <p>Keep the lines moving.</p>
                   </div>
@@ -536,10 +552,10 @@ export function AutonomousLanding() {
                 </div>
               </Paper>
               <div className={`lp-seal ${isCovered ? "" : "lp-seal-pending"}`} aria-hidden="true">
-                <span>RISK RESOLVED</span>
+                <span>ORDER CONFIRMED</span>
                 <i>★</i>
-                <strong>COVERED</strong>
-                <span>KEEP IT MOVING</span>
+                <strong>ORDERED</strong>
+                <span>MORE LIDS COMING</span>
               </div>
             </div>
           </div>
@@ -548,20 +564,20 @@ export function AutonomousLanding() {
             <Paper className="lp-job-ticket">
               <div className="lp-hazard" aria-hidden="true" />
               <span className="lp-ticket-hole" aria-hidden="true" />
-              <h2 className="lp-receipt-heading">Procurement progress</h2>
+              <h2 className="lp-receipt-heading">Your order</h2>
               <div className="lp-job-id">
                 PC-9258<span>LID-16-TE</span>
               </div>
               <ReceiptRows
                 rows={[
                   ["Item", "16 oz Deli Lid"],
-                  ["Qty", "15,000 units"],
-                  ["Supplier", selectedStep >= 2 ? "Best Lids Co." : "Finding a match"],
-                  ["ETA", isCovered ? "2026-09-10" : "Pending"],
+                  ["Quantity", "15,000 lids"],
+                  ["Supplier", selectedStep >= 2 ? "Best Lids Co." : "Not chosen yet"],
+                  ["Arrives", isCovered ? "Sep 10, 2026" : "Not confirmed"],
                 ]}
               />
               <div className="lp-job-status">
-                <span>Job status</span>
+                <span>Order status</span>
                 <strong>
                   <i aria-hidden="true">★</i>
                   {step.status}
@@ -570,11 +586,11 @@ export function AutonomousLanding() {
               </div>
               <ReceiptRows
                 rows={[
-                  ["PO", isCovered ? "PC-9258-8DAPKN" : "Not yet issued"],
-                  ["Match", selectedStep >= 2 ? "98%" : "Pending"],
-                  ["Policy", isCovered ? "Approved" : "Buyer review"],
-                  ["Terms", "Net 30"],
-                  ["Ship to", "Acme Foods DC1"],
+                  ["Order no.", isCovered ? "PC-9258-8DAPKN" : "Not placed yet"],
+                  ["Item match", selectedStep >= 2 ? "98%" : "Not checked"],
+                  ["Your approval", isCovered ? "Approved" : "Needed"],
+                  ["Pay within", "30 days"],
+                  ["Deliver to", "Acme warehouse"],
                 ]}
               />
               <Barcode />
@@ -584,11 +600,11 @@ export function AutonomousLanding() {
             </Paper>
             <section className="lp-quick-controls" aria-labelledby="lp-quick-heading">
               <h2 id="lp-quick-heading">
-                Quick controls
+                Try the demo
                 <Screw />
               </h2>
-              <button onClick={() => setSelectedStep(selectedStep < 3 ? selectedStep + 1 : 0)}>
-                {selectedStep < 3 ? "Advance demo" : "Replay demo"}
+              <button onClick={advanceDemo} aria-controls="lp-demo-steps">
+                {selectedStep < 3 ? "Next demo step" : "Replay demo"}
                 {selectedStep < 3 ? <ChevronRight size={13} /> : <RotateCcw size={12} />}
               </button>
               <a href="/?demo=1">
@@ -596,11 +612,11 @@ export function AutonomousLanding() {
                 <ArrowUpRight size={13} />
               </a>
               <button onClick={() => showItem(inventory[1])}>
-                View item details
+                See item details
                 <ChevronRight size={13} />
               </button>
               <button onClick={() => showDialog("settings")}>
-                Agent settings
+                Buyer settings
                 <ChevronRight size={13} />
               </button>
             </section>
@@ -610,12 +626,12 @@ export function AutonomousLanding() {
         <footer className="lp-console-footer">
           <span>
             <i className="lp-status-dot" />
-            ALL SYSTEMS GO
+            READY WHEN YOU ARE
           </span>
           <p>One less thing on your plate.</p>
           <span>AB—001 / BUILT TO KEEP GOING</span>
         </footer>
-        <output className="sr-only" aria-live="polite">
+        <output className="sr-only" id="lp-demo-status" aria-live="polite">
           Step {selectedStep + 1} of 4: {step.title}. {step.detail}
         </output>
       </main>
@@ -623,15 +639,14 @@ export function AutonomousLanding() {
       <footer className="lp-page-footer">
         <div>
           <span>BUILT TO KEEP YOUR BUSINESS MOVING.</span>
-          <h2>Put your purchasing on autopilot.</h2>
-          <p>From the first signal to the final receipt. You stay in control.</p>
+          <h2>Let your buyer handle the busywork.</h2>
+          <p>Spot low stock, find a supplier, and approve the order.</p>
         </div>
-        <a className="lp-start-button" href="/setup">
-          Start your buy desk <ArrowUpRight size={20} />
+        <a className="lp-start-button" href="/setup?method=passkey">
+          Set up my company <ArrowUpRight size={20} />
         </a>
         <p className="lp-demo-disclosure">
-          Interactive sample · Acme Foods is a demo workspace. Figures and activity are
-          illustrative.
+          Try it out. Acme Foods and the numbers shown are examples.
         </p>
         <span className="lp-footer-brand">
           BUY HARD® <span>KEEP THE LINES MOVING.</span>
@@ -645,54 +660,30 @@ export function AutonomousLanding() {
               <X size={20} />
             </button>
           </form>
-          <span className="lp-dialog-eyebrow">ACME FOODS / SAMPLE WORKSPACE</span>
+          <span className="lp-dialog-eyebrow">ACME FOODS / EXAMPLE COMPANY</span>
           <h2 id="lp-dialog-title">
-            {dialogContent === "print"
-              ? "Your next action."
-              : dialogContent === "item"
-                ? selectedItem.name
-                : "Your agent. Your rules."}
+            {dialogContent === "item" ? selectedItem.name : "You decide when to buy."}
           </h2>
-          {dialogContent === "print" ? (
-            <>
-              <span className={`lp-stamp lp-${step.tone}`}>{step.status}</span>
-              <p>{step.action}</p>
-              <ReceiptRows
-                rows={[
-                  ["Job", "PC-9258"],
-                  ["Item", "LID-16-TE"],
-                  ["Quantity", "15,000 units"],
-                  ["Step", `${selectedStep + 1} of 4 · ${step.title}`],
-                ]}
-              />
-              <button className="lp-dialog-action" onClick={() => window.print()}>
-                <Printer size={17} />
-                Print this receipt
-              </button>
-              <p className="lp-dialog-footnote">
-                Prints a sample action receipt using your browser.
-              </p>
-            </>
-          ) : dialogContent === "item" ? (
+          {dialogContent === "item" ? (
             <>
               <p className="lp-dialog-code">{selectedItem.code}</p>
               <ReceiptRows
                 rows={[
-                  ["On hand", `${selectedItem.onHand} units`],
-                  ["Daily use", `${selectedItem.daily} units`],
+                  ["In stock", `${selectedItem.onHand} units`],
+                  ["Used each day", `${selectedItem.daily} units`],
                   ["Days left", `${selectedItem.days} days`],
                   ["Status", selectedItem.status],
                   [
-                    "Incoming",
+                    "Due to arrive",
                     selectedItem.code === "LID-16-TE" && isCovered
                       ? "15,000 · Sep 10"
-                      : "No confirmed orders",
+                      : "Nothing ordered yet",
                   ],
                 ]}
               />
               <p>
-                Days left are calculated from stock on hand and average daily use. Confirmed
-                incoming orders are tracked separately.
+                Days left shows how long your current stock should last at your usual daily use. New
+                orders are listed separately.
               </p>
               <a className="lp-dialog-action" href="/?demo=1">
                 Explore the buy desk
@@ -702,14 +693,13 @@ export function AutonomousLanding() {
           ) : (
             <>
               <p>
-                The agent watches stock and finds suppliers. You decide how purchasing gets
-                approved.
+                Your buyer checks stock and finds suppliers. You decide when it can place an order.
               </p>
               <ReceiptRows
                 rows={[
-                  ["Reorder point", "7 days of stock"],
-                  ["Target coverage", "30 days"],
-                  ["Supplier terms", "Net 30"],
+                  ["Order when under", "7 days of stock"],
+                  ["Keep enough for", "30 days"],
+                  ["Pay within", "30 days"],
                 ]}
               />
               <label className="lp-setting">
@@ -719,45 +709,25 @@ export function AutonomousLanding() {
                   onChange={(event) => setRequireApproval(event.target.checked)}
                 />
                 <span>
-                  Require my approval before ordering
+                  Ask me before placing orders
                   <small>
                     {requireApproval
-                      ? "Every purchase waits for your review."
-                      : "Orders within your policy can proceed automatically."}
+                      ? "Every order waits for your OK."
+                      : "Orders that follow your rules can go ahead."}
                   </small>
                 </span>
               </label>
               <p className="lp-dialog-footnote">
-                Preview setting only. Create your workspace to set up your own purchasing rules.
+                These are example settings. Set up your company to choose your own buying rules.
               </p>
-              <a className="lp-dialog-action" href="/setup">
-                Set up your agent
+              <a className="lp-dialog-action" href="/setup?method=passkey">
+                Set up my company
                 <ArrowUpRight size={16} />
               </a>
             </>
           )}
         </div>
       </dialog>
-
-      <div className="lp-print-document">
-        <h1>AUTONOMOUS BUYER</h1>
-        <p>ACME FOODS / SAMPLE ACTION RECEIPT</p>
-        <hr />
-        <h2>{step.title}</h2>
-        <p>{step.action}</p>
-        <ReceiptRows
-          rows={[
-            ["Job", "PC-9258"],
-            ["Item", "LID-16-TE"],
-            ["Quantity", "15,000 units"],
-            ["Status", step.status],
-          ]}
-        />
-        <hr />
-        <p>Illustrative demo. This receipt is not a purchase order.</p>
-        <Barcode />
-        <p>Keep the lines moving.</p>
-      </div>
     </div>
   );
 }

@@ -1,0 +1,48 @@
+diff --git a/dist/components/core/setup.d.ts b/dist/components/core/setup.d.ts
+index 4a523a8cf199c09f81531bfa82cc8fd37c078e8a..03b1911301aea30bafce782efa697f48817995fa 100644
+--- a/dist/components/core/setup.d.ts
++++ b/dist/components/core/setup.d.ts
+@@ -134,6 +134,8 @@ export type AuthCore<UsersTable extends string = string> = {
+  */
+ export declare function setupCore<UsersTable extends string = "users">(options: {
+     component: ComponentApi;
++    /** Optional issuer for coexistence with another auth system. */
++    issuer?: string;
+     /**
+      * The name of the app's users table. Defaults to `"users"`.
+      *
+diff --git a/dist/components/core/setup.js b/dist/components/core/setup.js
+index fae8e5be1c3ee1222f53988049cfe0995087f923..08e5d2bd2df2657f3e4c7e012a185339e32039b8 100644
+--- a/dist/components/core/setup.js
++++ b/dist/components/core/setup.js
+@@ -40,7 +40,7 @@ export function setupCore(options) {
+     // table), but keep the value in sync with the `= "users"` default above.
+     const usersTable = options.usersTable ?? "users";
+     const issuer = () => {
+-        const url = process.env.CONVEX_SITE_URL;
++        const url = options.issuer ?? process.env.CONVEX_SITE_URL;
+         if (!url)
+             throw new Error("CONVEX_SITE_URL is not available");
+         return url;
+diff --git a/src/components/core/setup.ts b/src/components/core/setup.ts
+index 06867ba725a4f6cd2b30df9eeba1eeef900f0ffe..e630b71e263ca77d98bd6c713aaf59fa2fda1ebc 100644
+--- a/src/components/core/setup.ts
++++ b/src/components/core/setup.ts
+@@ -184,6 +184,8 @@ export type AuthCore<UsersTable extends string = string> = {
+  */
+ export function setupCore<UsersTable extends string = "users">(options: {
+   component: ComponentApi;
++  /** Optional issuer for coexistence with another auth system. */
++  issuer?: string;
+   /**
+    * The name of the app's users table. Defaults to `"users"`.
+    *
+@@ -222,7 +224,7 @@ export function setupCore<UsersTable extends string = "users">(options: {
+   const usersTable = options.usersTable ?? ("users" as UsersTable);
+ 
+   const issuer = (): string => {
+-    const url = process.env.CONVEX_SITE_URL;
++    const url = options.issuer ?? process.env.CONVEX_SITE_URL;
+     if (!url) throw new Error("CONVEX_SITE_URL is not available");
+     return url;
+   };

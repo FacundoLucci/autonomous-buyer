@@ -1,11 +1,11 @@
 export function landingHead() {
   return {
     meta: [
-      { title: "Autonomous Buyer — Keep the lines moving." },
+      { title: "BUY HARD — Your AI buyer" },
       {
         name: "description",
         content:
-          "From inventory risk to confirmed order. Meet the autonomous buy desk that keeps your business moving, and you in control.",
+          "Spot low stock, find a supplier, and order what you need. Your AI buyer does the busywork. You stay in control.",
       },
     ],
     links: [

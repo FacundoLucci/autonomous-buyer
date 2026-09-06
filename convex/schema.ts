@@ -17,6 +17,8 @@ import {
   supplierClaimFieldValidator,
 } from "./domain";
 
+import { sourceProduct, sourceState } from "./inventorySourceFields";
+
 const dateValidator = v.string();
 const timestampValidator = v.number();
 const roleValidator = v.union(v.literal("admin"), v.literal("buyer"), v.literal("viewer"));
@@ -92,7 +94,28 @@ export default defineSchema({
     .index("by_status_created", ["status", "startedAt"])
     .index("by_started_at", ["startedAt"]),
 
+  inventorySources: defineTable({
+    userId: v.id("users"),
+    kind: v.union(v.literal("link"), v.literal("invoice")),
+    url: v.optional(v.string()),
+    fileId: v.optional(v.id("_storage")),
+    filename: v.optional(v.string()),
+    status: sourceState,
+    products: v.optional(v.array(sourceProduct)),
+    message: v.optional(v.string()),
+    threadId: v.optional(v.string()),
+    inventoryItemId: v.optional(v.id("inventoryItems")),
+  }).index("by_userId", ["userId"]),
+
   inventoryItems: defineTable({
+    sourceId: v.optional(v.id("inventorySources")),
+    sourceProductIndex: v.optional(v.number()),
+    supplierName: v.optional(v.string()),
+    leadTimeEvidence: v.optional(v.string()),
+    leadTimeConfirmedBy: v.optional(v.id("users")),
+    leadTimeConfirmedAt: v.optional(v.number()),
+    stockCountKnown: v.optional(v.boolean()),
+
     organizationId: v.id("organizations"),
     demoRunId: v.optional(v.id("demoRuns")),
     sku: v.string(),

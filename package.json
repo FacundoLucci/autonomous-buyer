@@ -25,6 +25,7 @@
     "@base-ui/react": "^1.7.0",
     "@convex-dev/agent": "^0.7.1",
     "@convex-dev/auth": "0.0.95",
+    "@convex-dev/auth2": "npm:@convex-dev/auth@2.0.0-alpha.1",
     "@convex-dev/react-query": "^0.1.0",
     "@convex-dev/static-hosting": "^0.2.1",
     "@convex-dev/workflow": "0.4.2",
@@ -75,7 +76,8 @@
       "@tailwindcss/oxide"
     ],
     "patchedDependencies": {
-      "@agentmail/convex@0.1.0": "patches/@agentmail__convex@0.1.0.patch"
+      "@agentmail/convex@0.1.0": "patches/@agentmail__convex@0.1.0.patch",
+      "@convex-dev/auth@2.0.0-alpha.1": "patches/@convex-dev__auth@2.0.0-alpha.1.patch"
     }
   }
 }

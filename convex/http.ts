@@ -4,6 +4,7 @@ import { httpRouter } from "convex/server";
 import { components, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 import { auth } from "./auth";
+import { upload, options } from "./inventoryUpload";
 
 const agentmail = new AgentMail(components.agentmail, {
   onMessageReceived: internal.inbound.onMessageReceived,
@@ -11,6 +12,8 @@ const agentmail = new AgentMail(components.agentmail, {
 const http = httpRouter();
 
 auth.addHttpRoutes(http);
+http.route({ path: "/api/inventory/invoice", method: "POST", handler: upload });
+http.route({ path: "/api/inventory/invoice", method: "OPTIONS", handler: options });
 
 http.route({
   path: "/api/agentmail/webhook",

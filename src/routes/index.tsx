@@ -1,5 +1,5 @@
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
-import { useAuthActions, useConvexAuth } from "@convex-dev/auth/react";
+import { useAuthActions, useConvexAuth } from "@/lib/buyer-auth";
 import { useAction, useMutation, useQuery } from "convex/react";
 import {
   ArrowLeft,
@@ -429,7 +429,7 @@ function DemoHome() {
                 Sign in
               </a>
             )}
-            <a href="/setup" className="company-sign-out">
+            <a href="/setup?method=passkey" className="company-sign-out">
               Set up my company <ArrowRight className="inline size-3" />
             </a>
           </div>
@@ -700,11 +700,14 @@ function PurchaseOutcome({ procurement }: { procurement: ProcurementDetail }) {
       data-demo-target="confirmation"
       aria-label="Supplier confirmation"
     >
-      <p className="bh-kicker">
-        {confirmation.matchesApprovedTerms
-          ? "Supplier confirmed · terms match"
-          : "Terms changed · review required"}
-      </p>
+      <div className="grid gap-1">
+        <p className="bh-kicker">
+          {confirmation.matchesApprovedTerms
+            ? "Supplier confirmed · terms match"
+            : "Terms changed · review required"}
+        </p>
+        <SponsorCredit sponsor="agentmail" prefix="Replied via" />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Fact
           label={
@@ -721,10 +724,17 @@ function PurchaseOutcome({ procurement }: { procurement: ProcurementDetail }) {
           value={confirmation.confirmedArrivalDate ?? "Not supplied"}
         />
       </div>
-      <p className="text-xs text-muted-foreground">
-        Confirmation {confirmation.supplierConfirmationNumber ?? "number not supplied"}
-        {procurement.purchaseOrder ? ` · ${procurement.purchaseOrder.poNumber}` : ""}
-      </p>
+      <div className="grid gap-1">
+        <p className="text-xs text-muted-foreground">
+          Confirmation {confirmation.supplierConfirmationNumber ?? "number not supplied"}
+          {procurement.purchaseOrder ? ` · ${procurement.purchaseOrder.poNumber}` : ""}
+        </p>
+        <AiWorkCredit
+          procurement={procurement}
+          task="confirmation_extraction"
+          action="Details extracted"
+        />
+      </div>
       {confirmation.differences.length > 0 ? (
         <ul className="list-disc space-y-1 pl-5 text-sm">
           {confirmation.differences.map((difference) => (
@@ -734,31 +744,29 @@ function PurchaseOutcome({ procurement }: { procurement: ProcurementDetail }) {
           ))}
         </ul>
       ) : null}
-      <div className="buy-desk-provider-line">
-        <SponsorCredit sponsor="agentmail" prefix="Reply via" />
-        <AiWorkCredit procurement={procurement} tasks={["confirmation_extraction"]} />
-      </div>
     </section>
   );
 }
 
 function AiWorkCredit({
   procurement,
-  tasks,
+  task,
+  action,
 }: {
   procurement: ProcurementDetail;
-  tasks: readonly string[];
+  task: NonNullable<ProcurementDetail["providerEvidence"]>["ai"][number]["task"];
+  action: string;
 }) {
-  const runs = procurement.providerEvidence?.ai.filter((run) => tasks.includes(run.task)) ?? [];
+  const runs = procurement.providerEvidence?.ai.filter((run) => run.task === task) ?? [];
   if (runs.length === 0) return null;
   const direct = runs.some((run) => run.transport === "openai");
   const fallback = runs.some((run) => run.transport === "openrouter");
   return (
     <span className="buy-desk-provider-line">
-      {direct ? <SponsorCredit sponsor="openai" prefix="via" /> : null}
+      {direct ? <SponsorCredit sponsor="openai" prefix={`${action} by`} /> : null}
       {fallback ? (
         <span className="text-xs text-muted-foreground">
-          via OpenRouter{direct ? " fallback" : ""}
+          {action} via OpenRouter{direct ? " fallback" : ""}
         </span>
       ) : null}
     </span>
@@ -1132,14 +1140,32 @@ function FocusedProcurement({
         ) : null}
         {view === "procurement" ? (
           <>
-            <div className="buy-desk-provider-line">
-              <AiWorkCredit
-                procurement={procurement}
-                tasks={["quote_extraction", "missing_information", "follow_up_wording"]}
-              />
-            </div>
             {quotes && followUps ? (
-              <QuoteHistory quotes={quotes} followUps={followUps} />
+              <QuoteHistory
+                quotes={quotes}
+                followUps={followUps}
+                quoteCredit={
+                  <>
+                    <AiWorkCredit
+                      procurement={procurement}
+                      task="quote_extraction"
+                      action="Quote details extracted"
+                    />
+                    <AiWorkCredit
+                      procurement={procurement}
+                      task="missing_information"
+                      action="Missing terms checked"
+                    />
+                  </>
+                }
+                followUpCredit={
+                  <AiWorkCredit
+                    procurement={procurement}
+                    task="follow_up_wording"
+                    action="Follow-ups drafted"
+                  />
+                }
+              />
             ) : (
               <p className="text-sm text-muted-foreground">Loading quote history…</p>
             )}
@@ -1156,13 +1182,19 @@ function FocusedProcurement({
               <CardHeader>
                 <CardDescription>Supplier evidence</CardDescription>
                 <CardTitle className="text-base">Supplier discovery</CardTitle>
-                <div className="buy-desk-provider-line">
+                <div className="grid gap-1">
                   {sourcing?.run.status === "succeeded" ? (
                     <SponsorCredit sponsor="firecrawl" prefix="Sources via" />
                   ) : null}
                   <AiWorkCredit
                     procurement={procurement}
-                    tasks={["supplier_search_queries", "product_equivalency"]}
+                    task="supplier_search_queries"
+                    action="Search queries generated"
+                  />
+                  <AiWorkCredit
+                    procurement={procurement}
+                    task="product_equivalency"
+                    action="Product matches assessed"
                   />
                 </div>
               </CardHeader>
@@ -1231,13 +1263,17 @@ function FocusedProcurement({
               <CardHeader>
                 <CardDescription>Supplier outreach</CardDescription>
                 <CardTitle className="text-base">Requests for quote</CardTitle>
-                <div className="buy-desk-provider-line">
+                <div className="grid gap-1">
                   {delivery?.some(
                     (item) => item.status === "sent" || item.status === "delivered",
                   ) ? (
                     <SponsorCredit sponsor="agentmail" prefix="Sent via" />
                   ) : null}
-                  <AiWorkCredit procurement={procurement} tasks={["rfq_wording"]} />
+                  <AiWorkCredit
+                    procurement={procurement}
+                    task="rfq_wording"
+                    action="Emails drafted"
+                  />
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1488,7 +1524,7 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
   const navigate = useDisplayNavigate();
   const recommendation = procurement.recommendation;
   const { isAuthenticated, isLoading } = useConvexAuth();
-  const { signIn, signOut } = useAuthActions();
+  const { signIn, signOut, version } = useAuthActions();
   const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
   const claimConfiguredBuyer = useMutation(api.authData.claimConfiguredBuyer);
   const decideRecommendation = useMutation(api.approvals.decideRecommendation);
@@ -1628,49 +1664,58 @@ function ApprovalAccessCard({ procurement }: { procurement: ProcurementDetail })
               <ShieldCheck />
               {authState === "judge" ? "Entering judge mode…" : "Enter judge approval mode"}
             </Button>
-            <Collapsible>
-              <CollapsibleTrigger className="text-sm font-medium text-muted-foreground underline">
+            {version === "passkey" ? (
+              <a
+                className="text-sm underline"
+                href={`/?demo=true&method=password&view=approval&procurement=${procurement.procurementId}`}
+              >
                 Sign in as the configured buyer
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3 space-y-3 rounded-lg border bg-card p-4">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="Buyer email"
-                  aria-label="Buyer email"
-                />
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Password"
-                  aria-label="Buyer password"
-                />
-                <Input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Name for a new account"
-                  aria-label="Buyer name"
-                />
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => void submitPassword("signIn")}
-                    disabled={authState !== "idle"}
-                  >
-                    Sign in
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => void submitPassword("signUp")}
-                    disabled={authState !== "idle"}
-                  >
-                    Create account
-                  </Button>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </a>
+            ) : (
+              <Collapsible>
+                <CollapsibleTrigger className="text-sm font-medium text-muted-foreground underline">
+                  Sign in as the configured buyer
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3 space-y-3 rounded-lg border bg-card p-4">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="Buyer email"
+                    aria-label="Buyer email"
+                  />
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Password"
+                    aria-label="Buyer password"
+                  />
+                  <Input
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="Name for a new account"
+                    aria-label="Buyer name"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => void submitPassword("signIn")}
+                      disabled={authState !== "idle"}
+                    >
+                      Sign in
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => void submitPassword("signUp")}
+                      disabled={authState !== "idle"}
+                    >
+                      Create account
+                    </Button>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            )}
           </>
         ) : currentUser === undefined ? (
           <p className="text-sm text-muted-foreground">Confirming the signed-in buyer…</p>
@@ -2234,7 +2279,7 @@ function JudgeModeButton() {
 
 function ConfiguredBuyerButton() {
   const { isAuthenticated } = useConvexAuth();
-  const { signIn, signOut } = useAuthActions();
+  const { signIn, signOut, version } = useAuthActions();
   const currentUser = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
   const claimConfiguredBuyer = useMutation(api.authData.claimConfiguredBuyer);
   const [open, setOpen] = useState(false);
@@ -2277,6 +2322,13 @@ function ConfiguredBuyerButton() {
     currentUser !== undefined &&
     !currentUser.isJudgeDemo &&
     (currentUser.role === "buyer" || currentUser.role === "admin");
+
+  if (version === "passkey" && !configuredBuyer)
+    return (
+      <a className="company-sign-out" href="/?demo=true&method=password">
+        Buyer sign in
+      </a>
+    );
 
   return (
     <>

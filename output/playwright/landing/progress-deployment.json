@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-05",
+  "site": "https://festive-coyote-483.convex.site",
+  "environment": "development",
+  "deploymentId": "8fce169b-5020-4f61-834a-23c24180c43d",
+  "baseCommit": "ee59776",
+  "scope": "Landing component and styles only, built from the published release",
+  "publishedHtmlMatchesBuild": true,
+  "checks": {
+    "defaultStep": 1,
+    "primaryButton": "Next demo step",
+    "finalButton": "Replay demo",
+    "progression": [1, 2, 3, 4, 1],
+    "activityCounts": [1, 2, 5, 8],
+    "publishedViewportWidths": [813, 390],
+    "rootAndLandingAlias": "passed",
+    "keyboardEnterAndSpace": "passed locally",
+    "itemAndSettingsDialogs": "passed locally",
+    "printButtons": 0,
+    "unexpectedDialogs": 0,
+    "horizontalOverflow": false,
+    "browserErrors": 0,
+    "failedResources": 0,
+    "lint": "passed",
+    "formatting": "passed",
+    "typecheckAndBuild": "passed"
+  }
+}

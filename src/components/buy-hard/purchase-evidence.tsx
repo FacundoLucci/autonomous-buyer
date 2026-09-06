@@ -360,9 +360,13 @@ function FollowUpEvidence({ followUp, quotes }: { followUp: FollowUp; quotes: re
 export function QuoteHistory({
   quotes,
   followUps,
+  quoteCredit,
+  followUpCredit,
 }: {
   quotes: readonly Quote[];
   followUps: readonly FollowUp[];
+  quoteCredit?: ReactNode;
+  followUpCredit?: ReactNode;
 }) {
   const groups = new Map<string, Quote[]>();
   for (const quote of quotes) {
@@ -384,6 +388,7 @@ export function QuoteHistory({
           <CardHeader>
             <CardDescription>Supplier replies</CardDescription>
             <CardTitle>Latest quotes</CardTitle>
+            {quoteCredit}
           </CardHeader>
           <CardContent>
             <div className="bh-evidence-candidates">
@@ -431,6 +436,7 @@ export function QuoteHistory({
         <CardHeader>
           <CardDescription>Missing terms → clarification → reply</CardDescription>
           <CardTitle>Supplier follow-ups</CardTitle>
+          {followUps.length > 0 ? followUpCredit : null}
         </CardHeader>
         <CardContent className="bh-evidence-followups">
           {followUps.length === 0 ? (

@@ -224,3 +224,58 @@
     margin-top: 4px;
   }
 }
+.company-agent-support {
+  margin: 28px 0;
+}
+.company-support-item h3 {
+  font-size: 17px;
+}
+.company-source-note {
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  opacity: 0.8;
+}
+.company-source-note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.company-gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #565d4c;
+  padding: 18px 0;
+}
+.company-gap strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.company-gap p {
+  font-size: 12px;
+  line-height: 1.7;
+  max-width: 550px;
+  margin-top: 8px;
+}
+.company-gap .company-stock-form {
+  width: 100%;
+}
+.company-reserve summary {
+  font-size: 12px;
+  min-height: 44px;
+  display: list-item;
+  align-content: center;
+  cursor: pointer;
+}
+.company-stock-form select {
+  font-size: 16px;
+  min-height: 44px;
+  max-width: 100%;
+  background: var(--bh-eink-bg);
+  color: inherit;
+  border: 1px solid var(--bh-eink-rule);
+  padding: 7px;
+}

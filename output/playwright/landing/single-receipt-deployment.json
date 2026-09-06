@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-05",
+  "site": "https://festive-coyote-483.convex.site/",
+  "environment": "development",
+  "deploymentId": "d399e6ad-df5d-4583-bfd5-987de952787f",
+  "baseCommit": "ee59776",
+  "scope": "Landing page component, styles, and page title/description only; built from the published release.",
+  "publishedHtmlMatchesBuild": true,
+  "localChecks": {
+    "lint": "passed",
+    "formatting": "passed",
+    "typecheckAndBuild": "passed",
+    "responsiveWidths": [320, 370, 390, 550, 700, 813, 970, 971, 1280, 1440]
+  },
+  "browserChecks": {
+    "title": "BUY HARD — Your AI buyer",
+    "results": [
+      {
+        "width": 813,
+        "summaryVisible": false,
+        "titles": ["low stock warning", "time to order", "supplier found", "order confirmed"],
+        "activityCounts": [1, 2, 5, 8],
+        "receiptHeights": [
+          290.1213684082031, 290.1213684082031, 290.1213684082031, 290.1213684082031
+        ],
+        "backAndReplay": true
+      },
+      {
+        "width": 390,
+        "summaryVisible": false,
+        "titles": ["low stock warning", "time to order", "supplier found", "order confirmed"],
+        "activityCounts": [1, 2, 5, 8],
+        "receiptHeights": [
+          409.8705749511719, 409.8705749511719, 409.8705749511719, 409.8705749511719
+        ],
+        "backAndReplay": true
+      },
+      {
+        "width": 1440,
+        "summaryVisible": true,
+        "titles": ["low stock warning", "time to order", "supplier found", "order confirmed"],
+        "activityCounts": [1, 2, 5, 8],
+        "receiptHeights": [
+          291.1757507324219, 291.1757507324219, 291.1757507324219, 291.1757507324219
+        ],
+        "backAndReplay": true
+      }
+    ],
+    "landingAlias": true,
+    "howItWorksFocus": "lp-step-title",
+    "keyboardEnter": true,
+    "oldCopy": [],
+    "errors": [],
+    "failedResources": []
+  }
+}

@@ -1,5 +1,5 @@
 import { ConvexQueryClient } from "@convex-dev/react-query";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { BuyerAuthProvider } from "@/lib/buyer-auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { ConvexReactClient } from "convex/react";
@@ -30,9 +30,9 @@ export function getRouter() {
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
     Wrap: ({ children }) => (
-      <ConvexAuthProvider client={convex}>
+      <BuyerAuthProvider client={convex}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </ConvexAuthProvider>
+      </BuyerAuthProvider>
     ),
   });
 

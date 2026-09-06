@@ -1,4 +1,4 @@
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useAuthActions } from "@/lib/buyer-auth";
 import { useMutation, useQuery } from "convex/react";
 import { useState, type FormEvent } from "react";
 import { ArrowRight, Check, Mail, Package, Pencil, ShieldCheck } from "lucide-react";
@@ -53,8 +53,8 @@ export function CompanyWorkspace({ workspace }: { workspace: Workspace }) {
             </div>
             <div className="bh-eink bh-cutout company-inventory">
               <div className="company-inventory-intro">
-                <h2>Your first essential. Accounted for.</h2>
-                <p>Coverage and reorder points use the estimates you entered.</p>
+                <h2>Your first essential. Taking shape.</h2>
+                <p>Your sources supply the buying details. Your team fills the gaps.</p>
               </div>
               {workspace.items.map((item) => (
                 <InventoryItem key={item.id} item={item} />
@@ -92,13 +92,28 @@ export function CompanyWorkspace({ workspace }: { workspace: Workspace }) {
             </div>
           </aside>
         </div>
+        <section className="company-agent-support" aria-label="Support your buyer">
+          <div className="bh-face-label screen-print">
+            <h2>NEEDS YOUR INPUT</h2>
+            <span>HELP YOUR BUYER FILL THE GAPS</span>
+          </div>
+          <div className="bh-eink bh-cutout company-inventory">
+            <div className="company-inventory-intro">
+              <h2>A little help goes a long way.</h2>
+              <p>Only the details your buyer couldn’t confirm. Your answers stay with the item.</p>
+            </div>
+            {workspace.items.map((item) => (
+              <AgentSupport key={item.id} item={item} />
+            ))}
+          </div>
+        </section>
         <div className="bh-eink bh-cutout company-next-step">
           <ShieldCheck />
           <div>
             <h2>You keep the final say.</h2>
             <p>
-              Your inventory setup is ready. Supplier sourcing and automated purchasing for company
-              workspaces are not connected yet.
+              Your product sources and inventory are saved. Automated supplier outreach and
+              purchasing for company workspaces are not connected yet.
             </p>
           </div>
         </div>
@@ -107,10 +122,14 @@ export function CompanyWorkspace({ workspace }: { workspace: Workspace }) {
   );
 }
 
+function focusEditor(node: HTMLInputElement | null) {
+  node?.focus({ preventScroll: true });
+}
+
 function InventoryItem({ item }: { item: Workspace["items"][number] }) {
   const updateStock = useMutation(api.onboarding.updateStock);
   const [editing, setEditing] = useState(false);
-  const [quantity, setQuantity] = useState(String(item.quantity));
+  const [quantity, setQuantity] = useState(item.quantity === null ? "" : String(item.quantity));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const outlook = stockOutlook(
@@ -144,20 +163,24 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
           <h3>{item.name}</h3>
         </div>
         <span className="company-stock-status" data-action={outlook.needsAction}>
-          {outlook.needsAction ? "Reorder point reached" : "Stock recorded"}
+          {outlook.needsAction
+            ? "Reorder point reached"
+            : item.quantity === null
+              ? "Stock not counted"
+              : "Stock recorded"}
         </span>
       </div>
       <div className="company-stock-grid">
         <div>
           <span>ON HAND</span>
           <strong>
-            {item.quantity.toLocaleString()} <small>{item.unit}</small>
+            {item.quantity?.toLocaleString() ?? "—"} <small>{item.unit}</small>
           </strong>
         </div>
         <div>
           <span>DAILY USE / EST.</span>
           <strong>
-            {item.dailyUsage.toLocaleString()} <small>{item.unit}</small>
+            {item.dailyUsage?.toLocaleString() ?? "—"} <small>{item.unit}</small>
           </strong>
         </div>
         <div>
@@ -169,15 +192,18 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
         </div>
       </div>
       <p className="company-reorder-note">
-        {outlook.daysLeft === null
-          ? "Add a daily usage estimate to calculate a reorder point."
-          : `Reorder at ${Math.ceil(outlook.reorderAt).toLocaleString()} ${item.unit} · ${item.leadTimeDays} days to deliver + ${item.safetyStockDays} days in reserve.`}
+        {item.dailyUsage === 0
+          ? "Daily usage is zero. Update the estimate below when this item is in use."
+          : outlook.reorderAt === null
+            ? "Fill the remaining gaps below to calculate a reorder point."
+            : `Reorder at ${Math.ceil(outlook.reorderAt).toLocaleString()} ${item.unit} · ${item.leadTimeDays} days to deliver + ${item.safetyStockDays} days in reserve.`}
       </p>
       {editing ? (
         <form onSubmit={save} className="company-stock-form">
           <label htmlFor={`stock-${item.id}`}>Current stock</label>
           <input
             id={`stock-${item.id}`}
+            ref={focusEditor}
             type="number"
             min={0}
             max={1_000_000_000}
@@ -207,7 +233,7 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
         <button
           className="company-edit-stock"
           onClick={() => {
-            setQuantity(String(item.quantity));
+            setQuantity(item.quantity === null ? "" : String(item.quantity));
             setEditing(true);
           }}
         >
@@ -215,5 +241,259 @@ function InventoryItem({ item }: { item: Workspace["items"][number] }) {
         </button>
       )}
     </article>
+  );
+}
+
+function AgentSupport({ item }: { item: Workspace["items"][number] }) {
+  const fillGap = useMutation(api.onboarding.fillGap);
+  const gaps = [
+    ...(!item.supplier
+      ? [
+          {
+            field: "supplier" as const,
+            label: "Where do you buy this?",
+            hint: "The seller wasn’t clear in the source.",
+          },
+        ]
+      : []),
+    ...(item.leadTimeDays === null
+      ? [
+          {
+            field: "leadTimeDays" as const,
+            label: "How many days from order to delivery?",
+            hint: "No clear delivery time was found. Confirm with your supplier or use your order history.",
+          },
+        ]
+      : []),
+    ...(item.dailyUsage === null
+      ? [
+          {
+            field: "dailyUsage" as const,
+            label: "How much do you use per day?",
+            hint: `Your current estimate in ${item.unit}. A supplier page can’t tell us this.`,
+          },
+        ]
+      : []),
+  ];
+  const [active, setActive] = useState<string | null>(null);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  async function save(
+    event: FormEvent,
+    field: "supplier" | "leadTimeDays" | "dailyUsage" | "safetyStockDays",
+  ) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      await fillGap({ itemId: item.id, field, value });
+      setActive(null);
+      setValue("");
+    } catch (cause) {
+      setError(setupError(cause));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <article className="company-item company-support-item">
+      <h3>{item.name}</h3>
+      <p className="company-source-note">
+        {item.sourceUrl ? (
+          <a href={item.sourceUrl} target="_blank" rel="noreferrer">
+            View product source ↗
+          </a>
+        ) : item.sourceLabel ? (
+          `From invoice: ${item.sourceLabel}`
+        ) : (
+          "Added by your team"
+        )}
+        {item.supplier ? ` · ${item.supplier}` : ""}
+      </p>
+      {item.evidence ? (
+        <p className="company-source-note">
+          Delivery: {item.leadTimeDays} days · {item.evidence}
+        </p>
+      ) : null}
+      {item.quantity === null ? (
+        <p className="company-source-note">
+          Stock count is still unknown. Use “Update stock count” above when you know it.
+        </p>
+      ) : null}
+      {gaps.length === 0 ? (
+        <p className="company-source-note">
+          Buying details are filled in. You can adjust the reserve below.
+        </p>
+      ) : (
+        gaps.map((gap) => (
+          <div className="company-gap" key={gap.field}>
+            <div>
+              <strong>{gap.label}</strong>
+              <p>{gap.hint}</p>
+            </div>
+            {active === gap.field ? (
+              <form className="company-stock-form" onSubmit={(e) => void save(e, gap.field)}>
+                <label className="sr-only" htmlFor={`gap-${item.id}`}>
+                  {gap.label}
+                </label>
+                <input
+                  id={`gap-${item.id}`}
+                  ref={focusEditor}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  type={gap.field === "supplier" ? "text" : "number"}
+                  min={0}
+                  max={gap.field === "leadTimeDays" ? 365 : 1_000_000_000}
+                  step={gap.field === "leadTimeDays" ? 1 : "any"}
+                  required
+                  maxLength={120}
+                  disabled={busy}
+                />
+                <button disabled={busy}>{busy ? "Saving…" : "Save answer"}</button>
+                <button type="button" disabled={busy} onClick={() => setActive(null)}>
+                  Cancel
+                </button>
+                <p role="alert">{error}</p>
+              </form>
+            ) : (
+              <button
+                className="company-edit-stock"
+                onClick={() => {
+                  setActive(gap.field);
+                  setValue("");
+                  setError(null);
+                }}
+              >
+                Add answer <ArrowRight />
+              </button>
+            )}
+          </div>
+        ))
+      )}
+      <SavedBuyingDetails item={item} />
+      <details className="company-reserve">
+        <summary>Reserve: {item.safetyStockDays} days · adjust</summary>
+        <form className="company-stock-form" onSubmit={(e) => void save(e, "safetyStockDays")}>
+          <label htmlFor={`reserve-${item.id}`}>Extra days of stock</label>
+          <input
+            id={`reserve-${item.id}`}
+            type="number"
+            min={0}
+            max={365}
+            step={1}
+            value={active === "safetyStockDays" ? value : String(item.safetyStockDays)}
+            onChange={(e) => {
+              setActive("safetyStockDays");
+              setValue(e.target.value);
+            }}
+            required
+          />
+          <button disabled={busy || active !== "safetyStockDays"}>Save reserve</button>
+          {active === "safetyStockDays" ? <p role="alert">{error}</p> : null}
+        </form>
+      </details>
+    </article>
+  );
+}
+
+type BuyingField = "supplier" | "leadTimeDays" | "dailyUsage";
+function SavedBuyingDetails({ item }: { item: Workspace["items"][number] }) {
+  const choices: { field: BuyingField; label: string; value: string }[] = [
+    ...(item.supplier
+      ? [{ field: "supplier" as const, label: "Supplier", value: item.supplier }]
+      : []),
+    ...(item.leadTimeDays !== null
+      ? [
+          {
+            field: "leadTimeDays" as const,
+            label: "Order to delivery / days",
+            value: String(item.leadTimeDays),
+          },
+        ]
+      : []),
+    ...(item.dailyUsage !== null
+      ? [
+          {
+            field: "dailyUsage" as const,
+            label: `Daily use / ${item.unit}`,
+            value: String(item.dailyUsage),
+          },
+        ]
+      : []),
+  ];
+  return choices.length ? <BuyingDetailEditor itemId={item.id} choices={choices} /> : null;
+}
+function BuyingDetailEditor({
+  itemId,
+  choices,
+}: {
+  itemId: Workspace["items"][number]["id"];
+  choices: { field: BuyingField; label: string; value: string }[];
+}) {
+  const saveAnswer = useMutation(api.onboarding.fillGap);
+  const [field, setField] = useState(choices[0].field);
+  const [value, setValue] = useState(choices[0].value);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+  async function save(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      await saveAnswer({ itemId, field, value });
+      setSaved(true);
+    } catch (cause) {
+      setError(setupError(cause));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <details className="company-reserve">
+      <summary>Adjust saved buying details</summary>
+      <form className="company-stock-form" onSubmit={save}>
+        <label htmlFor={`buying-field-${itemId}`}>Detail</label>
+        <select
+          id={`buying-field-${itemId}`}
+          value={field}
+          onChange={(e) => {
+            const choice = choices.find((c) => c.field === e.target.value)!;
+            setField(choice.field);
+            setValue(choice.value);
+            setError(null);
+            setSaved(false);
+          }}
+          disabled={busy}
+        >
+          {choices.map((choice) => (
+            <option value={choice.field} key={choice.field}>
+              {choice.label}
+            </option>
+          ))}
+        </select>
+        <label className="sr-only" htmlFor={`buying-value-${itemId}`}>
+          {choices.find((c) => c.field === field)?.label}
+        </label>
+        <input
+          id={`buying-value-${itemId}`}
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setSaved(false);
+          }}
+          type={field === "supplier" ? "text" : "number"}
+          min={0}
+          max={field === "leadTimeDays" ? 365 : 1_000_000_000}
+          step={field === "leadTimeDays" ? 1 : "any"}
+          maxLength={120}
+          required
+          disabled={busy}
+        />
+        <button disabled={busy}>{busy ? "Saving…" : "Save detail"}</button>
+        <output>{saved ? "Saved." : error}</output>
+      </form>
+    </details>
   );
 }

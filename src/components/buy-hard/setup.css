@@ -692,3 +692,126 @@
     transition: none;
   }
 }
+.bh-source-method {
+  display: flex;
+  gap: 10px;
+  margin: 26px 0 20px;
+}
+.bh-source-method button {
+  min-height: 48px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--bh-ink-muted, #77796b);
+  border-radius: 3px;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.bh-source-method button[aria-pressed="true"] {
+  background: #d8d8bf;
+  color: #171c17;
+}
+.bh-source-method svg,
+.bh-source-product svg {
+  width: 18px;
+  flex-shrink: 0;
+}
+.bh-app .bh-source-url {
+  font-size: clamp(16px, 2.2vw, 25px);
+  margin-bottom: 24px;
+}
+.bh-source-upload {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 180px;
+  margin: 20px 0;
+  border: 1px dashed #909281;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.bh-source-upload input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+.bh-source-upload:focus-within {
+  outline: 2px solid #d8d8bf;
+  outline-offset: 4px;
+}
+.bh-source-upload span {
+  font-size: 12px;
+}
+.bh-source-results {
+  margin-top: 28px;
+}
+.bh-source-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  text-align: left;
+  width: 100%;
+  border: 1px solid #656958;
+  padding: 18px;
+  margin: 12px 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.bh-source-product strong,
+.bh-source-product small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.bh-source-product small {
+  margin-top: 9px;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+.bh-source-product:focus-visible {
+  outline: 2px solid #d8d8bf;
+  outline-offset: 2px;
+}
+.bh-source-reading {
+  padding: 20px;
+  border: 1px solid #656958;
+}
+.bh-source-reading svg {
+  display: block;
+  margin-bottom: 12px;
+  animation: bh-source-spin 2s linear infinite;
+}
+.bh-source-reading p {
+  font-size: 13px;
+  margin-top: 14px;
+}
+.bh-source-text-button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  min-height: 44px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+@keyframes bh-source-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bh-source-reading svg {
+    animation: none;
+  }
+}

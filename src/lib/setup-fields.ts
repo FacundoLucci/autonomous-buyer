@@ -21,7 +21,7 @@ export const emptySetup: CompanySetup = {
   unit: "units",
   quantity: "",
   dailyUsage: "",
-  leadTimeDays: "7",
+  leadTimeDays: "",
   safetyStockDays: "3",
 };
 
@@ -45,13 +45,17 @@ export function setupFieldError(field: keyof CompanySetup, value: string): strin
 }
 
 export function stockOutlook(
-  quantity: number,
-  dailyUsage: number,
-  leadTimeDays: number,
+  quantity: number | null,
+  dailyUsage: number | null,
+  leadTimeDays: number | null,
   safetyStockDays: number,
 ) {
-  const daysLeft = dailyUsage > 0 ? quantity / dailyUsage : null;
-  const reorderAt = dailyUsage * (leadTimeDays + safetyStockDays);
-  const needsAction = dailyUsage > 0 && quantity <= reorderAt;
+  const daysLeft =
+    quantity !== null && dailyUsage !== null && dailyUsage > 0 ? quantity / dailyUsage : null;
+  const reorderAt =
+    dailyUsage !== null && dailyUsage > 0 && leadTimeDays !== null
+      ? dailyUsage * (leadTimeDays + safetyStockDays)
+      : null;
+  const needsAction = quantity !== null && reorderAt !== null && quantity <= reorderAt;
   return { daysLeft, reorderAt, needsAction };
 }

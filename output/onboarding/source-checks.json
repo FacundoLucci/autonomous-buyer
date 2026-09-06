@@ -1,0 +1,46 @@
+{
+  "checks": [
+    "Auth 2 passkey registration creates a private viewer",
+    "Signup happens before company creation",
+    "Auth 2 sign-out and cryptographic sign-in roundtrip",
+    "Guests cannot start paid imports",
+    "Local product URLs rejected",
+    "Authenticated PDF upload accepts the local origin",
+    "Real invoice extraction finishes",
+    "Invoice offers both products",
+    "Dispatch time is not invented as delivery time",
+    "Seller is extracted instead of bill-to customer",
+    "Another account cannot read the invoice",
+    "Another account cannot claim the invoice",
+    "First item persists with unknown stock, usage, and delivery",
+    "Repeated completion keeps one item",
+    "Company boundaries protect gap answers",
+    "Human gap answers and stock count persist",
+    "Invalid answers rejected"
+  ],
+  "sourceId": "px77xzfw7wttpaz22b4m3c02698dvnaf",
+  "organizationId": "k9759h8xyhnt2rwz0q3vbcjvn18dv0tx",
+  "products": [
+    {
+      "evidence": "Item QA-LID-16: 16 oz deli lids | 500 units per case | 2 cases ordered",
+      "leadTimeDays": null,
+      "leadTimeEvidence": null,
+      "name": "16 oz deli lids",
+      "packSize": 500,
+      "sku": "QA-LID-16",
+      "supplier": "Northline Packaging",
+      "unit": "cases"
+    },
+    {
+      "evidence": "Item QA-CUP-16: 16 oz deli cups | 250 units per case | 4 cases ordered",
+      "leadTimeDays": null,
+      "leadTimeEvidence": null,
+      "name": "16 oz deli cups",
+      "packSize": 250,
+      "sku": "QA-CUP-16",
+      "supplier": "Northline Packaging",
+      "unit": "cases"
+    }
+  ],
+  "emailsSent": 0
+}

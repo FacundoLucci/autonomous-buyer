@@ -579,67 +579,108 @@
   opacity: 0.85;
 }
 .lp-workflow {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  display: block;
   min-width: 0;
 }
-.lp-step .lp-paper {
-  padding: 8px 12px 14px;
+.lp-demo-receipt {
+  height: 100%;
+  transform: rotate(-0.25deg);
+}
+.lp-demo-receipt .lp-paper {
+  padding: 20px 28px 16px;
+}
+.lp-demo-receipt-topline {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #545749;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
-.lp-step {
-  transform: rotate(-0.55deg);
+.lp-demo-receipt-topline > span:last-child {
+  white-space: nowrap;
 }
-.lp-step:nth-child(2) {
-  transform: rotate(0.55deg);
+.lp-demo-receipt-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 30px;
+  min-height: 175px;
+  padding-block: 14px;
 }
-.lp-step:nth-child(3) {
-  transform: rotate(-0.45deg);
+.lp-demo-story .lp-stamp {
+  margin: 3px 0 12px;
+  font-size: 11px;
 }
-.lp-step:nth-child(4) {
-  transform: rotate(0.5deg);
-}
-.lp-step:not(:last-child)::after {
-  content: "›";
-  position: absolute;
-  top: 46%;
-  right: -19px;
-  color: #d0d0c2;
-  font-family: Arial, sans-serif;
-  font-size: 36px;
+.lp-demo-story h2 {
+  margin: 0;
+  font-size: clamp(22px, 2vw, 28px);
   font-weight: 700;
-  line-height: 1;
-  text-shadow: 0 2px 3px #000;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
-.lp-step-trigger {
+.lp-demo-story p {
+  max-width: 38ch;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #4c5143;
+}
+.lp-demo-receipt-body .lp-receipt-rows {
+  margin: 0;
+  font-size: 12px;
+}
+.lp-demo-receipt-body .lp-receipt-rows > div {
+  padding-block: 6px;
+  border-bottom: 1px dotted #777c6944;
+}
+.lp-demo-receipt-body .lp-receipt-rows > div:last-child {
+  border-bottom: 0;
+}
+.lp-demo-receipt-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
-  width: 100%;
-  min-height: 39px;
-  border-bottom: 1px dashed #545749;
-  text-align: left;
-  text-transform: uppercase;
+  gap: 12px;
+  padding-top: 5px;
+  border-top: 1px dashed #545749;
+}
+.lp-demo-receipt-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  min-width: 70px;
+  padding: 6px 0;
+  color: #175492;
   font-weight: 700;
-  font-size: 11px;
-  letter-spacing: -0.25px;
+  font-size: 12px;
+  text-transform: uppercase;
 }
-.lp-step-trigger i {
-  height: 5px;
-  width: 5px;
+.lp-demo-receipt-footer button:first-child {
+  color: #4c5143;
+}
+.lp-demo-receipt-footer button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.lp-demo-dots {
+  display: flex;
+  gap: 6px;
+}
+.lp-demo-dots i {
+  height: 6px;
+  width: 6px;
   border-radius: 50%;
-  background: #777c692c;
-  flex-shrink: 0;
+  border: 1px solid #6b7459;
 }
-.lp-step-selected .lp-step-trigger i {
+.lp-demo-dots i[data-active="true"] {
   background: #357440;
-  box-shadow: 0 0 0 2px #35744024;
-}
-.lp-step-trigger:focus-visible {
-  outline-offset: 0 !important;
 }
 .lp-stamp {
   align-self: flex-start;
@@ -700,26 +741,6 @@
   margin-left: 0;
   text-align: left;
   text-transform: none;
-}
-.lp-step-status {
-  display: flex;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px dashed #666857;
-  text-transform: uppercase;
-  font-size: 11px;
-  font-weight: 700;
-}
-.lp-step-status span {
-  color: #6d765d;
-}
-.lp-step-1 .lp-receipt-rows > div:last-child dd {
-  color: var(--lp-rust);
-}
-.lp-step-3 .lp-receipt-rows > div:first-child dd {
-  color: var(--lp-blue);
-  font-size: 13px;
 }
 
 .lp-bottom-grid {
@@ -1564,9 +1585,6 @@
   line-height: 1.5;
   color: #626857;
 }
-.lp-print-document {
-  display: none;
-}
 
 @media (hover: hover) and (pointer: fine) {
   .lp-blue-button:hover {
@@ -1575,7 +1593,7 @@
   .lp-navigation-links :is(a, button):hover {
     color: #fff;
   }
-  .lp-step-trigger:hover {
+  .lp-demo-receipt-footer button:not(:disabled):hover {
     color: #1d5fa7;
   }
   .lp-inventory-item:hover {
@@ -1600,15 +1618,6 @@
   }
   .lp-summary-data {
     font-size: 13px;
-  }
-  .lp-step .lp-paper {
-    padding-inline: 16px;
-  }
-  .lp-step-trigger {
-    font-size: 12px;
-  }
-  .lp-step .lp-receipt-rows {
-    font-size: 12px;
   }
   .lp-feed-events li {
     font-size: 10px;
@@ -1675,13 +1684,6 @@
   .lp-top-grid {
     gap: 21px;
   }
-  .lp-workflow {
-    gap: 16px;
-  }
-  .lp-step:not(:last-child)::after {
-    right: -14px;
-    font-size: 27px;
-  }
   .lp-summary .lp-paper {
     padding-inline: 15px;
   }
@@ -1691,21 +1693,8 @@
   .lp-summary .lp-receipt-heading {
     font-size: 10px;
   }
-  .lp-step .lp-paper {
-    padding-inline: 10px;
-  }
-  .lp-step-trigger {
-    font-size: 10px;
-    min-height: 40px;
-  }
-  .lp-step .lp-receipt-rows {
-    font-size: 10px;
-  }
   .lp-stamp {
     font-size: 9px;
-  }
-  .lp-step-status {
-    font-size: 10px;
   }
   .lp-bottom-grid {
     gap: 21px;
@@ -1843,7 +1832,7 @@
     grid-template-columns: 1fr;
   }
   .lp-summary {
-    transform: rotate(-0.3deg);
+    display: none;
   }
   .lp-summary .lp-paper {
     display: grid;
@@ -1887,27 +1876,8 @@
     top: 4px;
     left: 5px;
   }
-  .lp-workflow {
-    gap: 21px;
-  }
-  .lp-step .lp-paper {
-    min-height: 216px;
-    padding-inline: 13px;
-  }
-  .lp-step .lp-receipt-rows {
-    font-size: 11px;
-  }
-  .lp-step-trigger {
-    font-size: 11px;
-  }
   .lp-stamp {
     font-size: 10px;
-  }
-  .lp-step-status {
-    font-size: 11px;
-  }
-  .lp-step:not(:last-child)::after {
-    right: -16px;
   }
   .lp-bottom-grid {
     grid-template-columns: 1fr 1.75fr;
@@ -2042,6 +2012,28 @@
 }
 
 @media (max-width: 700px) {
+  .lp-demo-receipt .lp-paper {
+    padding: 18px 20px 12px;
+  }
+  .lp-demo-receipt-topline {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .lp-demo-receipt-body {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 12px;
+    min-height: 304px;
+  }
+  .lp-demo-story h2 {
+    font-size: 24px;
+  }
+  .lp-demo-story p {
+    margin-top: 8px;
+  }
+  .lp-demo-receipt-body .lp-receipt-rows {
+    font-size: 12px;
+  }
   .lp-page {
     padding: 0 12px;
   }
@@ -2183,35 +2175,9 @@
     left: 22px;
     top: -2px;
   }
-  .lp-workflow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .lp-step .lp-paper {
-    min-height: 222px;
-    padding: 4px 11px 14px;
-  }
-  .lp-step-trigger {
-    font-size: 10px;
-    min-height: 46px;
-  }
-  .lp-step .lp-receipt-rows {
-    font-size: 10px;
-    line-height: 1.85;
-  }
   .lp-stamp {
     font-size: 9px;
     margin-block: 10px 12px;
-  }
-  .lp-step-status {
-    font-size: 10px;
-  }
-  .lp-step:not(:last-child)::after {
-    right: -14px;
-    font-size: 26px;
-  }
-  .lp-step:nth-child(2)::after {
-    content: none;
   }
   .lp-bottom-grid {
     display: flex;
@@ -2492,6 +2458,18 @@
 }
 
 @media (max-width: 370px) {
+  .lp-demo-receipt .lp-paper {
+    padding-inline: 16px;
+  }
+  .lp-demo-receipt-topline {
+    font-size: 8px;
+  }
+  .lp-demo-story h2 {
+    font-size: 22px;
+  }
+  .lp-demo-receipt-footer button {
+    font-size: 11px;
+  }
   .lp-page {
     padding-inline: 8px;
   }
@@ -2503,15 +2481,6 @@
   }
   .lp-navigation-links :is(button, a) {
     font-size: 11px;
-  }
-  .lp-step .lp-paper {
-    padding-inline: 9px;
-  }
-  .lp-step-trigger {
-    font-size: 9px;
-  }
-  .lp-step .lp-receipt-rows {
-    font-size: 9px;
   }
   .lp-stamp {
     font-size: 8.5px;
@@ -2549,7 +2518,6 @@
 }
 
 @media (pointer: coarse) {
-  .lp-step-trigger,
   .lp-quick-controls :is(button, a) {
     min-height: 44px;
   }
@@ -2562,55 +2530,5 @@
     transition: none !important;
     animation: none !important;
     scroll-behavior: auto !important;
-  }
-}
-
-@media print {
-  @page {
-    size: A5;
-    margin: 16mm;
-  }
-  html,
-  body,
-  .lp-page {
-    background: #fff !important;
-    color: #222 !important;
-    padding: 0;
-    min-height: 0;
-  }
-  .lp-page > :not(.lp-print-document) {
-    display: none !important;
-  }
-  .lp-print-document {
-    display: block;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    color: #222;
-  }
-  .lp-print-document h1 {
-    font-size: 25px;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-  .lp-print-document h2 {
-    font-size: 17px;
-    text-transform: uppercase;
-    margin: 20px 0;
-  }
-  .lp-print-document p {
-    margin: 15px 0;
-    line-height: 1.7;
-  }
-  .lp-print-document hr {
-    border: 0;
-    border-top: 1px dashed #444;
-  }
-  .lp-print-document .lp-receipt-rows {
-    font-size: 12px;
-    margin: 24px 0;
-    line-height: 2;
-  }
-  .lp-print-document .lp-barcode {
-    print-color-adjust: exact;
   }
 }

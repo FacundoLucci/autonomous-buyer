@@ -1,4 +1,4 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./identity";
 import { ConvexError, v } from "convex/values";
 import { mutation, query, type QueryCtx, type MutationCtx } from "./_generated/server";
 import { setupFieldError, stockOutlook, type CompanySetup } from "../src/lib/setup-fields";
@@ -109,9 +109,14 @@ const workspaceValidator = v.object({
       name: v.string(),
       sku: v.string(),
       unit: v.string(),
-      quantity: v.number(),
-      dailyUsage: v.number(),
-      leadTimeDays: v.number(),
+      quantity: v.union(v.number(), v.null()),
+      dailyUsage: v.union(v.number(), v.null()),
+      leadTimeDays: v.union(v.number(), v.null()),
+      supplier: v.union(v.string(), v.null()),
+      evidence: v.union(v.string(), v.null()),
+      sourceUrl: v.union(v.string(), v.null()),
+      sourceLabel: v.union(v.string(), v.null()),
+
       safetyStockDays: v.number(),
     }),
   ),
@@ -144,16 +149,26 @@ export const getWorkspace = query({
       companyName: organization.name,
       shippingAddress: organization.shippingAddress ?? "",
       inbox: inbox ? { email: inbox.email } : null,
-      items: items.map((item) => ({
-        id: item._id,
-        name: item.name,
-        sku: item.sku,
-        unit: item.unit ?? "units",
-        quantity: item.quantityOnHand,
-        dailyUsage: item.estimatedDailyUsage ?? 0,
-        leadTimeDays: item.supplierLeadTimeDays ?? 0,
-        safetyStockDays: item.safetyStockDays,
-      })),
+      items: await Promise.all(
+        items.map(async (item) => {
+          const source = item.sourceId ? await ctx.db.get("inventorySources", item.sourceId) : null;
+          return {
+            id: item._id,
+            name: item.name,
+            sku: item.sku,
+            unit: item.unit ?? "units",
+            quantity: item.stockCountKnown === false ? null : item.quantityOnHand,
+            dailyUsage: item.estimatedDailyUsage ?? null,
+            leadTimeDays: item.supplierLeadTimeDays ?? null,
+            supplier: item.supplierName ?? null,
+            evidence: item.leadTimeEvidence ?? null,
+            sourceUrl: source?.url ?? null,
+            sourceLabel: source?.filename ?? source?.url ?? null,
+
+            safetyStockDays: item.safetyStockDays,
+          };
+        }),
+      ),
     };
   },
 });
@@ -169,13 +184,158 @@ export const updateStock = mutation({
       throw new ConvexError("Enter a valid stock count.");
     const outlook = stockOutlook(
       args.quantity,
-      item.estimatedDailyUsage ?? 0,
-      item.supplierLeadTimeDays ?? 0,
+      item.estimatedDailyUsage ?? null,
+      item.supplierLeadTimeDays ?? null,
       item.safetyStockDays,
     );
     await ctx.db.patch("inventoryItems", item._id, {
       quantityOnHand: args.quantity,
-      status: outlook.needsAction ? "action_required" : "healthy",
+      stockCountKnown: true,
+      status: outlook.needsAction
+        ? "action_required"
+        : outlook.reorderAt === null
+          ? "watch"
+          : "healthy",
+    });
+    return null;
+  },
+});
+
+export const completeFromSource = mutation({
+  args: {
+    companyName: v.string(),
+    shippingAddress: v.string(),
+    timezone: v.string(),
+    sourceId: v.optional(v.id("inventorySources")),
+    productIndex: v.optional(v.number()),
+    itemName: v.string(),
+    quantity: v.string(),
+    dailyUsage: v.string(),
+    unit,
+  },
+  returns: v.id("organizations"),
+  handler: async (ctx, args) => {
+    const user = await account(ctx);
+    if (user.organizationId) {
+      const org = await ctx.db.get("organizations", user.organizationId);
+      if (org && !org.isDemo) return org._id;
+      throw new ConvexError("Use your own account for your company.");
+    }
+    for (const field of ["companyName", "shippingAddress", "itemName"] as const) {
+      const message = setupFieldError(field, args[field]);
+      if (message) throw new ConvexError(message);
+    }
+    for (const field of ["quantity", "dailyUsage"] as const) {
+      if (args[field].trim()) {
+        const message = setupFieldError(field, args[field]);
+        if (message) throw new ConvexError(message);
+      }
+    }
+    try {
+      new Intl.DateTimeFormat("en", { timeZone: args.timezone });
+    } catch {
+      throw new ConvexError("Choose a valid timezone.");
+    }
+    const source = args.sourceId ? await ctx.db.get("inventorySources", args.sourceId) : null;
+    if (args.sourceId && (!source || source.userId !== user._id || source.status !== "ready"))
+      throw new ConvexError("Finish reading your source first.");
+    const index = args.productIndex ?? 0;
+    const product = source?.products?.[index];
+    if (source && (!Number.isInteger(index) || !product))
+      throw new ConvexError("Choose an item from your source.");
+    const organizationId = await ctx.db.insert("organizations", {
+      name: args.companyName.trim(),
+      shippingAddress: args.shippingAddress.trim(),
+      timezone: args.timezone,
+      approvalPolicy: { humanApprovalRequired: true, maximumAutomaticFollowUps: 1 },
+      isDemo: false,
+    });
+    const quantity = args.quantity.trim() ? Number(args.quantity) : undefined;
+    const dailyUsage = args.dailyUsage.trim() ? Number(args.dailyUsage) : undefined;
+    const lead = product?.leadTimeDays ?? undefined;
+    const outlook = stockOutlook(quantity ?? null, dailyUsage ?? null, lead ?? null, 3);
+    const itemId = await ctx.db.insert("inventoryItems", {
+      organizationId,
+      name: args.itemName.trim(),
+      description: args.itemName.trim(),
+      sku:
+        product?.sku ??
+        (args.itemName
+          .toUpperCase()
+          .replace(/[^A-Z0-9]+/g, "-")
+          .slice(0, 32) ||
+          "ITEM-001"),
+      specification: { productType: args.itemName.trim() },
+      quantityOnHand: quantity ?? 0,
+      stockCountKnown: quantity !== undefined,
+      unit: args.unit,
+      estimatedDailyUsage: dailyUsage,
+      supplierLeadTimeDays: lead,
+      safetyStockDays: 3,
+      casePack: product?.packSize ?? 1,
+      preferredCoverageDays: 30,
+      status: outlook.needsAction
+        ? "action_required"
+        : quantity === undefined || outlook.reorderAt === null
+          ? "watch"
+          : "healthy",
+      isDemo: false,
+      sourceId: source?._id,
+      sourceProductIndex: product ? index : undefined,
+      supplierName: product?.supplier ?? undefined,
+      leadTimeEvidence: product?.leadTimeEvidence ?? undefined,
+    });
+    if (source) await ctx.db.patch("inventorySources", source._id, { inventoryItemId: itemId });
+    await ctx.db.patch("users", user._id, { organizationId, role: "admin" });
+    return organizationId;
+  },
+});
+
+export const fillGap = mutation({
+  args: {
+    itemId: v.id("inventoryItems"),
+    field: v.union(
+      v.literal("supplier"),
+      v.literal("leadTimeDays"),
+      v.literal("dailyUsage"),
+      v.literal("safetyStockDays"),
+    ),
+    value: v.string(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const { user, organization } = await ownedCompany(ctx);
+    const item = await ctx.db.get("inventoryItems", args.itemId);
+    if (!item || item.organizationId !== organization._id) throw new ConvexError("Item not found.");
+    const error = setupFieldError(args.field === "supplier" ? "itemName" : args.field, args.value);
+    if (error) throw new ConvexError(error);
+    const patch =
+      args.field === "supplier"
+        ? { supplierName: args.value.trim() }
+        : args.field === "leadTimeDays"
+          ? {
+              supplierLeadTimeDays: Number(args.value),
+              leadTimeConfirmedBy: user._id,
+              leadTimeConfirmedAt: Date.now(),
+              leadTimeEvidence: "Confirmed by your team",
+            }
+          : args.field === "dailyUsage"
+            ? { estimatedDailyUsage: Number(args.value) }
+            : { safetyStockDays: Number(args.value) };
+    const next = { ...item, ...patch };
+    const outlook = stockOutlook(
+      next.stockCountKnown === false ? null : next.quantityOnHand,
+      next.estimatedDailyUsage ?? null,
+      next.supplierLeadTimeDays ?? null,
+      next.safetyStockDays,
+    );
+    await ctx.db.patch("inventoryItems", item._id, {
+      ...patch,
+      status: outlook.needsAction
+        ? "action_required"
+        : next.stockCountKnown === false || outlook.reorderAt === null
+          ? "watch"
+          : "healthy",
     });
     return null;
   },
