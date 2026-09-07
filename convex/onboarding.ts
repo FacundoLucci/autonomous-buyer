@@ -1,6 +1,7 @@
 import { getAuthUserId } from "./identity";
 import { ConvexError, v } from "convex/values";
-import { mutation, query, type QueryCtx, type MutationCtx } from "./_generated/server";
+import { query, type QueryCtx, type MutationCtx } from "./_generated/server";
+import { mutation } from "./audited";
 import { setupFieldError, stockOutlook, type CompanySetup } from "../src/lib/setup-fields";
 import { internal } from "./_generated/api";
 import { activeCompanyItems } from "./companyStock";
@@ -126,6 +127,15 @@ const workspaceValidator = v.object({
       stockCountedAt: v.union(v.number(), v.null()),
       estimatedQuantity: v.union(v.number(), v.null()),
       safetyStockDays: v.number(),
+      buyingPriority: v.union(
+        v.literal("cost"),
+        v.literal("availability"),
+        v.literal("flexible"),
+        v.null(),
+      ),
+      dailyLossCents: v.union(v.number(), v.null()),
+      lossCurrency: v.string(),
+      stockoutImpact: v.union(v.string(), v.null()),
     }),
   ),
 });
@@ -179,6 +189,10 @@ export const getWorkspace = query({
                 ? null
                 : (item.estimatedQuantity ?? item.quantityOnHand),
             safetyStockDays: item.safetyStockDays,
+            buyingPriority: item.buyingPriority ?? null,
+            dailyLossCents: item.dailyLossCents ?? null,
+            lossCurrency: item.lossCurrency ?? "USD",
+            stockoutImpact: item.stockoutImpact ?? null,
           };
         }),
       ),

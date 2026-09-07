@@ -6,10 +6,12 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import "@/styles/legacy-theme.css";
 import appCss from "@/styles/app.css?url";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -17,7 +19,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#090b0b" },
+      { name: "theme-color", content: "#dce985" },
       { title: "BUY HARD — Buy Desk" },
       {
         name: "description",
@@ -43,17 +45,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootComponent() {
+  const path = useRouterState({ select: (s) => s.location.pathname });
   return (
     // Keep static hosting's empty shell identical through the first client render.
     <ClientOnly>
-      <Outlet />
+      {path.startsWith("/legacy") || path === "/prototype" ? (
+        <div className="legacy-shell dark">
+          <Outlet />
+        </div>
+      ) : (
+        <Outlet />
+      )}
     </ClientOnly>
   );
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
@@ -67,42 +76,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 function RootError({ reset }: ErrorComponentProps) {
   return (
-    <div className="bh-app powder-coat">
-      <header className="bh-app-bar text-xl tracking-widest">
-        <span className="bh-stamped">BUY HARD</span>
-      </header>
-      <main className="flex min-h-[70svh] items-center justify-center px-5 py-12">
-        <div className="bh-eink bh-cutout w-full max-w-md space-y-5 p-8">
-          <p className="bh-kicker">Display interrupted</p>
-          <h1 className="text-xl font-semibold">The buy desk could not load.</h1>
-          <p className="text-sm leading-6 text-muted-foreground">
-            Try loading it again to pick up where you left off.
-          </p>
-          <Button onClick={reset}>Try again</Button>
-        </div>
-      </main>
-    </div>
+    <main className="desk-public">
+      <section className="desk-account">
+        <h1>Couldn’t open your desk.</h1>
+        <Button onClick={reset}>Try again</Button>
+      </section>
+    </main>
   );
 }
-
 function NotFound() {
   return (
-    <div className="bh-app powder-coat">
-      <header className="bh-app-bar text-xl tracking-widest">
-        <span className="bh-stamped">BUY HARD</span>
-      </header>
-      <main className="flex min-h-[70svh] items-center justify-center px-5 py-12">
-        <div className="bh-eink bh-cutout w-full max-w-md space-y-5 p-8">
-          <p className="bh-kicker">404 / Page not found</p>
-          <h1 className="text-xl font-semibold">Nothing at this address.</h1>
-          <p className="text-sm leading-6 text-muted-foreground">
-            Head home to keep things moving.
-          </p>
-          <a href="/" className={buttonVariants()} data-variant="default">
-            Go home
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="desk-public">
+      <section className="desk-account">
+        <h1>Nothing here.</h1>
+        <a href="/" className={buttonVariants()}>
+          Go home
+        </a>
+      </section>
+    </main>
   );
 }

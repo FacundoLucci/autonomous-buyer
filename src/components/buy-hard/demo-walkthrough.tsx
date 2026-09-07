@@ -2,7 +2,7 @@ import { useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/legacy-ui/button";
 import { placeDemoSpotlight, type SpotlightLayout } from "./demo-spotlight-geometry";
 import "./demo-walkthrough.css";
 

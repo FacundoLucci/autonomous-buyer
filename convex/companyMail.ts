@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
-import { action, env, internalMutation, internalQuery } from "./_generated/server";
+import { action, env, internalQuery } from "./_generated/server";
+import { internalMutation } from "./audited";
 import { ownedCompany } from "./onboarding";
 
 export const context = internalQuery({

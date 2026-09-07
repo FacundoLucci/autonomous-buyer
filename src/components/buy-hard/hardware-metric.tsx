@@ -1,6 +1,6 @@
 import { Children, isValidElement, useId, type ComponentProps, type ReactNode } from "react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/legacy-ui/tooltip";
 
 import { DotMatrixDisplay, DotMatrixPixels } from "./dot-matrix-display";
 import { dotMatrixDriver } from "./dot-matrix-driver";

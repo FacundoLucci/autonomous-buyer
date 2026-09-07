@@ -24,6 +24,7 @@
     ".cursor/**",
     ".output/**",
     "src/components/ui/**",
+    "src/components/legacy-ui/**",
     "src/routeTree.gen.ts",
     "dist/**",
     "convex/_generated/**"

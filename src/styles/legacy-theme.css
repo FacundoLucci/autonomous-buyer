@@ -1,0 +1,50 @@
+:root:has(.legacy-shell),
+.legacy-shell.dark {
+  color-scheme: dark;
+  --background: #090b0b;
+  --foreground: #d4d5cf;
+  --card: #1f211e;
+  --card-foreground: #c7c5b8;
+  --popover: #1f211e;
+  --popover-foreground: #d4d5cf;
+  --primary: #a6c76d;
+  --primary-foreground: #10160a;
+  --secondary: #282e29;
+  --secondary-foreground: #d4d5cf;
+  --muted: #252a25;
+  --muted-foreground: #a1a399;
+  --accent: #303a39;
+  --accent-foreground: #d9e4e1;
+  --destructive: #d39780;
+  --border: #363b34;
+  --input: #444a41;
+  --ring: #c7c5b8;
+  --chart-1: #a6c76d;
+  --chart-2: #83a6b8;
+  --chart-3: #d39780;
+  --chart-4: #c5b36f;
+  --chart-5: #a496b4;
+  --radius: 3px;
+  --sidebar: #101313;
+  --sidebar-foreground: #d4d5cf;
+  --sidebar-primary: #a6c76d;
+  --sidebar-primary-foreground: #10160a;
+  --sidebar-accent: #282e29;
+  --sidebar-accent-foreground: #d4d5cf;
+  --sidebar-border: #242929;
+  --sidebar-ring: #c7c5b8;
+}
+:root:has(.legacy-shell),
+.legacy-shell {
+  color: var(--foreground);
+  background: var(--background);
+  font-family:
+    ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  --font-sans:
+    ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-sans);
+  min-height: 100svh;
+}

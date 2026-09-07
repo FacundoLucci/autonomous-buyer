@@ -4,13 +4,8 @@ import { v } from "convex/values";
 
 import type { Doc, Id } from "./_generated/dataModel";
 import { components, internal } from "./_generated/api";
-import {
-  internalMutation,
-  internalQuery,
-  mutation,
-  query,
-  type MutationCtx,
-} from "./_generated/server";
+import { internalQuery, query, type MutationCtx } from "./_generated/server";
+import { internalMutation, mutation } from "./audited";
 import { aiTaskValidator, structuredAiResultValidator } from "./domain";
 import { landedCostCents, purchaseOrderTotals } from "./domain/money";
 import { qualifyQuote } from "./domain/quotes";

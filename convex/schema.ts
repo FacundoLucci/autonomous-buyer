@@ -1,3 +1,5 @@
+import { questionCode } from "./deskFields";
+import { chatTask, deskDraft } from "./deskFields";
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
@@ -124,6 +126,12 @@ export default defineSchema({
     leadTimeConfirmedBy: v.optional(v.id("users")),
     leadTimeConfirmedAt: v.optional(v.number()),
     stockCountKnown: v.optional(v.boolean()),
+    buyingPriority: v.optional(
+      v.union(v.literal("cost"), v.literal("availability"), v.literal("flexible")),
+    ),
+    dailyLossCents: v.optional(v.number()),
+    lossCurrency: v.optional(v.string()),
+    stockoutImpact: v.optional(v.string()),
 
     organizationId: v.id("organizations"),
     demoRunId: v.optional(v.id("demoRuns")),
@@ -689,7 +697,94 @@ export default defineSchema({
     .index("by_agent_thread_link_and_created_at", ["agentThreadLinkId", "createdAt"])
     .index("by_status", ["status"]),
 
+  taskChats: defineTable({
+    reviewedDraftKey: v.optional(v.string()),
+    researchUrls: v.optional(v.array(v.string())),
+    revisionMode: v.optional(v.union(v.literal("catalog"), v.literal("supplier_quote"))),
+    userId: v.id("users"),
+    organizationId: v.optional(v.id("organizations")),
+    task: chatTask,
+    contextId: v.optional(v.string()),
+    threadId: v.string(),
+    draft: deskDraft,
+    busy: v.boolean(),
+    toolUsed: v.optional(v.boolean()),
+    question: v.optional(questionCode),
+    error: v.optional(v.string()),
+    savedAt: v.optional(v.number()),
+    resultId: v.optional(v.string()),
+    currentMessageId: v.optional(v.string()),
+    lastUserText: v.optional(v.string()),
+    stockUpdatedMessageId: v.optional(v.string()),
+    resultSummary: v.optional(v.string()),
+    comparisonState: v.optional(v.string()),
+    comparison: v.optional(
+      v.object({
+        priority: v.union(v.literal("cost"), v.literal("availability"), v.literal("flexible")),
+        selected: v.number(),
+        options: v.array(
+          v.object({
+            index: v.number(),
+            supplier: v.string(),
+            url: v.string(),
+            quantity: v.number(),
+            unit: v.string(),
+            currency: v.string(),
+            unitPriceCents: v.number(),
+            freightCents: v.number(),
+            taxCents: v.number(),
+            expectedOn: v.string(),
+            totalCents: v.number(),
+            shortageDays: v.union(v.number(), v.null()),
+            lossCents: v.union(v.number(), v.null()),
+            effectiveCents: v.number(),
+          }),
+        ),
+      }),
+    ),
+    updatedAt: v.number(),
+  }).index("by_userId_and_task_and_contextId", ["userId", "task", "contextId"]),
+  companyBuys: defineTable({
+    organizationId: v.id("organizations"),
+    itemId: v.id("inventoryItems"),
+    quantity: v.optional(v.number()),
+    requiredBy: v.optional(v.string()),
+    notes: v.string(),
+    orderId: v.optional(v.id("companyOrders")),
+    closed: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_organizationId", ["organizationId"])
+    .index("by_itemId_and_closed", ["itemId", "closed"]),
+  auditEntries: defineTable({
+    organizationId: v.id("organizations"),
+    entityId: v.string(),
+    entityType: v.string(),
+    name: v.string(),
+    action: v.union(v.literal("created"), v.literal("updated"), v.literal("deleted")),
+    actorId: v.optional(v.id("users")),
+    actor: v.string(),
+    via: v.union(v.literal("manual"), v.literal("chat"), v.literal("system")),
+    changes: v.array(
+      v.object({
+        field: v.string(),
+        before: v.union(v.string(), v.null()),
+        after: v.union(v.string(), v.null()),
+      }),
+    ),
+    createdAt: v.number(),
+  }).index("by_organizationId", ["organizationId"]),
+  deskActivity: defineTable({
+    organizationId: v.id("organizations"),
+    summary: v.string(),
+    itemId: v.optional(v.id("inventoryItems")),
+    buyId: v.optional(v.id("companyBuys")),
+    createdAt: v.number(),
+  }).index("by_organizationId", ["organizationId"]),
   companyOrders: defineTable({
+    reviewRequired: v.optional(v.boolean()),
+    requestedQuantity: v.optional(v.number()),
+    quotedArrival: v.optional(v.string()),
     organizationId: v.id("organizations"),
     inventoryItemId: v.id("inventoryItems"),
     createdBy: v.id("users"),

@@ -2,8 +2,14 @@ import type { FunctionReturnType } from "convex/server";
 import type { ReactNode } from "react";
 
 import type { api } from "../../../convex/_generated/api";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/legacy-ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/legacy-ui/card";
 import { SponsorCredit } from "./sponsor-credit";
 import "./purchase-evidence.css";
 

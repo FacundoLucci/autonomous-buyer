@@ -1,14 +1,104 @@
 import { ConvexError, v } from "convex/values";
 import { paginationOptsValidator, paginationResultValidator } from "convex/server";
-import { mutation, query, type MutationCtx } from "./_generated/server";
+import { query, type MutationCtx } from "./_generated/server";
+import { mutation } from "./audited";
 import { internal } from "./_generated/api";
 import { ownedCompany } from "./onboarding";
 import { productUrl } from "./inventorySources";
-import { amount, boundedText, validEmail } from "./companyRules";
-import { units } from "../src/lib/setup-fields";
+import { amount, boundedText, validEmail, cents } from "./companyRules";
+import { buyingPriority } from "./deskFields";
+import { units, stockOutlook } from "../src/lib/setup-fields";
 import schema from "./schema";
-import type { Id } from "./_generated/dataModel";
+import type { Id, Doc } from "./_generated/dataModel";
 import { activeCompanyItems } from "./companyStock";
+
+export const updateRules = mutation({
+  args: {
+    itemId: v.id("inventoryItems"),
+    buyingPriority: v.optional(v.union(buyingPriority, v.null())),
+    dailyLossCents: v.optional(v.union(v.number(), v.null())),
+    lossCurrency: v.optional(v.string()),
+    stockoutImpact: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, { itemId, ...values }) => {
+    const { organization } = await ownedCompany(ctx);
+    const item = await ctx.db.get("inventoryItems", itemId);
+    if (!item || item.organizationId !== organization._id || item.archived)
+      throw new ConvexError("Item not found.");
+    if (values.dailyLossCents !== undefined && values.dailyLossCents !== null)
+      cents(values.dailyLossCents);
+    if (
+      values.lossCurrency !== undefined &&
+      !["USD", "CAD", "EUR", "GBP", "AUD", "NZD", "MXN", "ARS"].includes(values.lossCurrency)
+    )
+      throw new ConvexError("Choose a supported currency.");
+    if ((values.stockoutImpact?.length ?? 0) > 500)
+      throw new ConvexError("Keep this under 501 characters.");
+    const patch = Object.fromEntries(
+      Object.entries(values)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, value === null ? undefined : value]),
+    );
+    await ctx.db.patch("inventoryItems", itemId, patch);
+    await ctx.db.insert("deskActivity", {
+      organizationId: organization._id,
+      itemId,
+      summary: `Buying rules updated for ${item.name}.`,
+      createdAt: Date.now(),
+    });
+    return null;
+  },
+});
+
+export const recordCount = mutation({
+  args: { itemId: v.id("inventoryItems"), quantity: v.number() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const { organization } = await ownedCompany(ctx);
+    const item = await ctx.db.get("inventoryItems", args.itemId);
+    if (!item || item.organizationId !== organization._id || item.archived)
+      throw new ConvexError("Item not found.");
+    await writeStockCount(ctx, item, args.quantity);
+    return null;
+  },
+});
+
+// Call only after checking company ownership (or the current chat's owner).
+export async function writeStockCount(
+  ctx: MutationCtx,
+  item: Doc<"inventoryItems">,
+  count: number,
+) {
+  amount(count, "stock count");
+  const outlook = stockOutlook(
+    count,
+    item.estimatedDailyUsage ?? null,
+    item.supplierLeadTimeDays ?? null,
+    item.safetyStockDays,
+  );
+  await ctx.db.patch("inventoryItems", item._id, {
+    quantityOnHand: count,
+    estimatedQuantity: count,
+    stockCountKnown: true,
+    stockCountedAt: Date.now(),
+    status:
+      count === 0 || outlook.needsAction
+        ? "action_required"
+        : outlook.reorderAt === null
+          ? "watch"
+          : "healthy",
+  });
+  const summary = `${item.name}: ${count} ${item.unit ?? "units"} on hand.`;
+  await ctx.db.insert("deskActivity", {
+    organizationId: item.organizationId,
+    itemId: item._id,
+    summary,
+    createdAt: Date.now(),
+  });
+  await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
+  return summary;
+}
 
 export const listSources = query({
   args: {},
@@ -254,6 +344,15 @@ export const archiveItem = mutation({
     if (!item || item.organizationId !== organization._id) throw new ConvexError("Item not found.");
     if (!!item.archived === args.archived) return null;
     if (args.archived) {
+      const buys = await ctx.db
+        .query("companyBuys")
+        .withIndex("by_itemId_and_closed", (q) => q.eq("itemId", item._id).eq("closed", false))
+        .take(100);
+      for (const buy of buys) {
+        const order = buy.orderId ? await ctx.db.get("companyOrders", buy.orderId) : null;
+        if (!order || order.isOpen)
+          throw new ConvexError("Finish or cancel the open buy before archiving this item.");
+      }
       const open = await ctx.db
         .query("companyOrders")
         .withIndex("by_inventoryItemId_and_isOpen", (q) =>

@@ -36,7 +36,7 @@ export function CompanyWorkspace({
   return (
     <main className="bh-app company-app powder-coat">
       <header className="bh-app-bar buy-desk-app-bar">
-        <a className="buy-desk-brand" href="/" aria-label="BUY HARD home">
+        <a className="buy-desk-brand" href="/legacy" aria-label="BUY HARD home">
           <span className="bh-stamped">BUY HARD</span>
         </a>
         <div className="buy-desk-account-actions">

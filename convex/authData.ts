@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 
-import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { internalQuery, query } from "./_generated/server";
+import { internalMutation, mutation } from "./audited";
 import { env } from "./_generated/server";
 import { getAuthUserId } from "./identity";
 

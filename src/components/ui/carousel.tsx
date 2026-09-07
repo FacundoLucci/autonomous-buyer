@@ -1,9 +1,7 @@
-"use client";
-
 import * as React from "react";
+import { cn } from "cn";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -56,31 +54,14 @@ function Carousel({
     },
     plugins,
   );
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(false);
 
-  const subscribeToCarousel = React.useCallback(
-    (onStoreChange: () => void) => {
-      if (!api) return () => undefined;
-
-      setApi?.(api);
-      api.on("reInit", onStoreChange);
-      api.on("select", onStoreChange);
-
-      return () => {
-        api.off("reInit", onStoreChange);
-        api.off("select", onStoreChange);
-      };
-    },
-    [api, setApi],
-  );
-
-  const getCarouselState = React.useCallback(() => {
-    if (!api) return 0;
-    return Number(api.canScrollPrev()) | (Number(api.canScrollNext()) << 1);
-  }, [api]);
-
-  const carouselState = React.useSyncExternalStore(subscribeToCarousel, getCarouselState, () => 0);
-  const canScrollPrev = Boolean(carouselState & 1);
-  const canScrollNext = Boolean(carouselState & 2);
+  const onSelect = React.useCallback((api: CarouselApi) => {
+    if (!api) return;
+    setCanScrollPrev(api.canScrollPrev());
+    setCanScrollNext(api.canScrollNext());
+  }, []);
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();
@@ -102,6 +83,22 @@ function Carousel({
     },
     [scrollPrev, scrollNext],
   );
+
+  React.useEffect(() => {
+    if (!api || !setApi) return;
+    setApi(api);
+  }, [api, setApi]);
+
+  React.useEffect(() => {
+    if (!api) return;
+    onSelect(api);
+    api.on("reInit", onSelect);
+    api.on("select", onSelect);
+
+    return () => {
+      api?.off("select", onSelect);
+    };
+  }, [api, onSelect]);
 
   return (
     <CarouselContext.Provider
@@ -175,7 +172,7 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        "absolute touch-manipulation rounded-full",
+        "absolute touch-manipulation",
         orientation === "horizontal"
           ? "inset-y-0 -left-12 my-auto"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -205,7 +202,7 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "absolute touch-manipulation rounded-full",
+        "absolute touch-manipulation",
         orientation === "horizontal"
           ? "inset-y-0 -right-12 my-auto"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",

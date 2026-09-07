@@ -20,6 +20,29 @@
   fill: rgb(160 164 151 / 18%);
 }
 
+.desk-brand.desk-brand--matrix {
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.desk-brand--matrix .desk-dot-matrix {
+  flex: none;
+  width: 135px;
+  margin-top: 0;
+}
+.desk-brand--matrix > svg {
+  flex: none;
+}
+
+@media (max-width: 360px) {
+  .desk-header:has(.desk-brand--matrix) {
+    column-gap: 8px;
+  }
+  .desk-brand--matrix > svg {
+    display: none;
+  }
+}
+
 @keyframes desk-dot-matrix-scroll {
   to {
     transform: translateX(var(--desk-scroll-distance));

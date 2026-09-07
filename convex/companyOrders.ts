@@ -2,9 +2,11 @@ import { ConvexError, v } from "convex/values";
 import { paginationOptsValidator, paginationResultValidator } from "convex/server";
 import { AgentMail, vEvent, type OutboundId } from "@agentmail/convex";
 import { components, internal } from "./_generated/api";
-import { mutation, query, internalMutation, type MutationCtx } from "./_generated/server";
+import { query, type MutationCtx } from "./_generated/server";
+import { mutation, internalMutation } from "./audited";
 import type { Doc, Id } from "./_generated/dataModel";
 import { ownedCompany } from "./onboarding";
+import { approvalKey } from "../src/lib/buy-review";
 import { boundedText, quantity, orderTotal, validDate } from "./companyRules";
 import schema from "./schema";
 import { queueAlert } from "./companyAlerts";
@@ -174,10 +176,20 @@ export const create = mutation({
 });
 
 export const approve = mutation({
-  args: { orderId: v.id("companyOrders") },
+  args: { orderId: v.id("companyOrders"), reviewedKey: v.optional(v.string()) },
   returns: v.null(),
   handler: async (ctx, args) => {
     const { order, user } = await ownOrder(ctx, args.orderId);
+    if (order.quotedArrival && Date.parse(`${order.quotedArrival}T23:59:59.999Z`) < Date.now())
+      throw new ConvexError(
+        "The quoted arrival has passed. Check the terms again before approval.",
+      );
+    if (order.reviewRequired)
+      throw new ConvexError(
+        "Price, shipping, and arrival need to be checked again before approval.",
+      );
+    if (args.reviewedKey !== undefined && args.reviewedKey !== approvalKey(order))
+      throw new ConvexError("This buy changed. Review the updated details before approving.");
     if (order.status === "approved") return null;
     if (order.status !== "draft") throw new ConvexError("This order has already moved forward.");
     await ctx.db.patch("companyOrders", order._id, {

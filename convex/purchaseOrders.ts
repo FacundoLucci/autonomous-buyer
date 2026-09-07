@@ -3,7 +3,8 @@ import { v } from "convex/values";
 
 import type { Doc, Id } from "./_generated/dataModel";
 import { components, internal } from "./_generated/api";
-import { internalMutation, mutation, type MutationCtx } from "./_generated/server";
+import { type MutationCtx } from "./_generated/server";
+import { internalMutation, mutation } from "./audited";
 import { purchaseOrderTotals } from "./domain/money";
 import { requireExternalBuyer } from "./authz";
 

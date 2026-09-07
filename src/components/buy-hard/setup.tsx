@@ -46,11 +46,11 @@ export function SetupFrame({
   return (
     <main className="bh-app powder-coat bh-setup">
       <header className="bh-app-bar bh-setup-bar">
-        <a href="/" className="buy-desk-brand" aria-label="BUY HARD home">
+        <a href="/legacy" className="buy-desk-brand" aria-label="BUY HARD home">
           <span className="bh-stamped">BUY HARD</span>
         </a>
         <span className="bh-face-caption screen-print">A little setup. A lot less chasing.</span>
-        <a className="bh-setup-exit" href="/">
+        <a className="bh-setup-exit" href="/legacy">
           Close <span aria-hidden="true">×</span>
         </a>
       </header>
@@ -147,7 +147,7 @@ export function Setup({ mode }: { mode: "signup" | "login" }) {
   if (workspace && mode === "login")
     return (
       <Navigate
-        to="/"
+        to="/legacy"
         search={{
           demo: false,
           view: "procurement",
@@ -171,7 +171,7 @@ export function Setup({ mode }: { mode: "signup" | "login" }) {
       <SetupFrame chapter="Your account">
         <div className="bh-setup-question">
           <h1>Welcome back.</h1>
-          <a href="/" className="bh-setup-primary">
+          <a href="/legacy" className="bh-setup-primary">
             Open buy desk <ArrowRight />
           </a>
         </div>
@@ -289,7 +289,7 @@ function PasskeyAccount({ judge }: { judge: boolean }) {
           Already have a passkey? Use the same account name.
         </p>
         <p className="bh-setup-account-switch">
-          <a href="/setup?mode=login&method=password">
+          <a href="/legacy/setup?mode=login&method=password">
             Sign in to an existing password account <MoveUpRight />
           </a>
         </p>
@@ -540,7 +540,7 @@ function WorkspaceReady({
         </div>
         <div className="bh-setup-controls">
           {email ? (
-            <a className="bh-setup-primary" href="/">
+            <a className="bh-setup-primary" href="/legacy">
               Open my buy desk <ArrowRight />
             </a>
           ) : (
@@ -555,7 +555,7 @@ function WorkspaceReady({
           )}
         </div>
         {!email ? (
-          <a className="bh-setup-account-switch" href="/">
+          <a className="bh-setup-account-switch" href="/legacy">
             Open my desk and connect later
           </a>
         ) : null}

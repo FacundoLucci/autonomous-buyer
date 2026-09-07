@@ -230,7 +230,7 @@ export function AutonomousLanding() {
         Skip to the demo
       </a>
       <nav className="lp-navigation" aria-label="Main navigation">
-        <a className="lp-wordmark" href="/">
+        <a className="lp-wordmark" href="/legacy">
           BUY HARD<span>®</span>
         </a>
         <span className="lp-nav-description">AI HELP FOR EVERYDAY BUYING</span>
@@ -238,7 +238,7 @@ export function AutonomousLanding() {
           <button onClick={exploreLoop}>
             How it works <ArrowDown size={12} />
           </button>
-          <a href="/setup?mode=login">
+          <a href="/legacy/setup?mode=login">
             Sign in <ArrowUpRight size={13} />
           </a>
         </div>
@@ -607,7 +607,7 @@ export function AutonomousLanding() {
                 {selectedStep < 3 ? "Next demo step" : "Replay demo"}
                 {selectedStep < 3 ? <ChevronRight size={13} /> : <RotateCcw size={12} />}
               </button>
-              <a href="/?demo=1">
+              <a href="/legacy?demo=1">
                 Open buy desk
                 <ArrowUpRight size={13} />
               </a>
@@ -642,7 +642,7 @@ export function AutonomousLanding() {
           <h2>Let your buyer handle the busywork.</h2>
           <p>Spot low stock, find a supplier, and approve the order.</p>
         </div>
-        <a className="lp-start-button" href="/setup?method=passkey">
+        <a className="lp-start-button" href="/legacy/setup?method=passkey">
           Set up my company <ArrowUpRight size={20} />
         </a>
         <p className="lp-demo-disclosure">
@@ -685,7 +685,7 @@ export function AutonomousLanding() {
                 Days left shows how long your current stock should last at your usual daily use. New
                 orders are listed separately.
               </p>
-              <a className="lp-dialog-action" href="/?demo=1">
+              <a className="lp-dialog-action" href="/legacy?demo=1">
                 Explore the buy desk
                 <ArrowUpRight size={16} />
               </a>
@@ -720,7 +720,7 @@ export function AutonomousLanding() {
               <p className="lp-dialog-footnote">
                 These are example settings. Set up your company to choose your own buying rules.
               </p>
-              <a className="lp-dialog-action" href="/setup?method=passkey">
+              <a className="lp-dialog-action" href="/legacy/setup?method=passkey">
                 Set up my company
                 <ArrowUpRight size={16} />
               </a>

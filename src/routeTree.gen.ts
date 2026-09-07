@@ -11,8 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LandingRouteImport } from './routes/landing'
+import { Route as LegacyRouteImport } from './routes/legacy'
 import { Route as PrototypeRouteImport } from './routes/prototype'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as LegacyLandingRouteImport } from './routes/legacy_.landing'
+import { Route as LegacyPrototypeRouteImport } from './routes/legacy_.prototype'
+import { Route as LegacySetupRouteImport } from './routes/legacy_.setup'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegacyRoute = LegacyRouteImport.update({
+  id: '/legacy',
+  path: '/legacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrototypeRoute = PrototypeRouteImport.update({
@@ -34,39 +43,95 @@ const SetupRoute = SetupRouteImport.update({
   path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegacyLandingRoute = LegacyLandingRouteImport.update({
+  id: '/legacy_/landing',
+  path: '/legacy/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegacyPrototypeRoute = LegacyPrototypeRouteImport.update({
+  id: '/legacy_/prototype',
+  path: '/legacy/prototype',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegacySetupRoute = LegacySetupRouteImport.update({
+  id: '/legacy_/setup',
+  path: '/legacy/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/legacy/landing': typeof LegacyLandingRoute
+  '/legacy/prototype': typeof LegacyPrototypeRoute
+  '/legacy/setup': typeof LegacySetupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/legacy/landing': typeof LegacyLandingRoute
+  '/legacy/prototype': typeof LegacyPrototypeRoute
+  '/legacy/setup': typeof LegacySetupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/legacy_/landing': typeof LegacyLandingRoute
+  '/legacy_/prototype': typeof LegacyPrototypeRoute
+  '/legacy_/setup': typeof LegacySetupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/landing' | '/prototype' | '/setup'
+  fullPaths:
+    | '/'
+    | '/landing'
+    | '/legacy'
+    | '/prototype'
+    | '/setup'
+    | '/legacy/landing'
+    | '/legacy/prototype'
+    | '/legacy/setup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/landing' | '/prototype' | '/setup'
-  id: '__root__' | '/' | '/landing' | '/prototype' | '/setup'
+  to:
+    | '/'
+    | '/landing'
+    | '/legacy'
+    | '/prototype'
+    | '/setup'
+    | '/legacy/landing'
+    | '/legacy/prototype'
+    | '/legacy/setup'
+  id:
+    | '__root__'
+    | '/'
+    | '/landing'
+    | '/legacy'
+    | '/prototype'
+    | '/setup'
+    | '/legacy_/landing'
+    | '/legacy_/prototype'
+    | '/legacy_/setup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LandingRoute: typeof LandingRoute
+  LegacyRoute: typeof LegacyRoute
   PrototypeRoute: typeof PrototypeRoute
   SetupRoute: typeof SetupRoute
+  LegacyLandingRoute: typeof LegacyLandingRoute
+  LegacyPrototypeRoute: typeof LegacyPrototypeRoute
+  LegacySetupRoute: typeof LegacySetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -85,6 +150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legacy': {
+      id: '/legacy'
+      path: '/legacy'
+      fullPath: '/legacy'
+      preLoaderRoute: typeof LegacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/prototype': {
       id: '/prototype'
       path: '/prototype'
@@ -99,14 +171,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legacy_/landing': {
+      id: '/legacy_/landing'
+      path: '/legacy/landing'
+      fullPath: '/legacy/landing'
+      preLoaderRoute: typeof LegacyLandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legacy_/prototype': {
+      id: '/legacy_/prototype'
+      path: '/legacy/prototype'
+      fullPath: '/legacy/prototype'
+      preLoaderRoute: typeof LegacyPrototypeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legacy_/setup': {
+      id: '/legacy_/setup'
+      path: '/legacy/setup'
+      fullPath: '/legacy/setup'
+      preLoaderRoute: typeof LegacySetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LandingRoute: LandingRoute,
+  LegacyRoute: LegacyRoute,
   PrototypeRoute: PrototypeRoute,
   SetupRoute: SetupRoute,
+  LegacyLandingRoute: LegacyLandingRoute,
+  LegacyPrototypeRoute: LegacyPrototypeRoute,
+  LegacySetupRoute: LegacySetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
