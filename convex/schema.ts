@@ -1,5 +1,6 @@
 import { questionCode } from "./deskFields";
 import { chatTask, deskDraft } from "./deskFields";
+import { buyerFocus, buyerCredit } from "./buyerFields";
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
@@ -697,7 +698,21 @@ export default defineSchema({
     .index("by_agent_thread_link_and_created_at", ["agentThreadLinkId", "createdAt"])
     .index("by_status", ["status"]),
 
+  buyerSessions: defineTable({
+    userId: v.id("users"),
+    organizationId: v.id("organizations"),
+    threadId: v.string(),
+    activeChatId: v.optional(v.id("taskChats")),
+    focus: v.optional(buyerFocus),
+    busy: v.boolean(),
+    currentMessageId: v.optional(v.string()),
+    latestText: v.optional(v.string()),
+    error: v.optional(v.string()),
+    updatedAt: v.number(),
+  }).index("by_userId_and_organizationId", ["userId", "organizationId"]),
   taskChats: defineTable({
+    buyerSessionId: v.optional(v.id("buyerSessions")),
+    credits: v.optional(v.array(buyerCredit)),
     reviewedDraftKey: v.optional(v.string()),
     researchUrls: v.optional(v.array(v.string())),
     revisionMode: v.optional(v.union(v.literal("catalog"), v.literal("supplier_quote"))),
@@ -779,6 +794,8 @@ export default defineSchema({
     summary: v.string(),
     itemId: v.optional(v.id("inventoryItems")),
     buyId: v.optional(v.id("companyBuys")),
+    orderId: v.optional(v.id("companyOrders")),
+    credit: v.optional(buyerCredit),
     createdAt: v.number(),
   }).index("by_organizationId", ["organizationId"]),
   companyOrders: defineTable({

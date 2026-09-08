@@ -35,7 +35,7 @@ const titles = {
   receive: "Record delivery",
   confirm: "Confirm order",
 };
-const saveLabels = {
+export const saveLabels = {
   stock_update: "Updated",
   onboarding: "Open my workspace",
   add_item: "Add item",
@@ -389,14 +389,16 @@ export function TaskChat({
     </section>
   );
 }
-function SourceResult({
+export function SourceResult({
   sourceId,
   onUse,
 }: {
   sourceId: Id<"inventorySources">;
-  onUse: (text: string) => void;
+  onUse: (text: string) => void | Promise<void>;
 }) {
   const source = useQuery(api.inventorySources.get, { sourceId });
+  const [using, setUsing] = useState(false);
+  const [useError, setUseError] = useState<string>();
   if (!source || source.status === "reading" || source.status === "uploading")
     return <output className="desk-working">Reading your file…</output>;
   if (source.status === "failed")
@@ -411,13 +413,29 @@ function SourceResult({
         <Button
           key={i}
           variant="outline"
-          onClick={() =>
-            onUse(`Add this item from my file: ${JSON.stringify(p)}. Leave current stock unknown.`)
-          }
+          disabled={using}
+          onClick={async () => {
+            setUsing(true);
+            setUseError(undefined);
+            try {
+              await onUse(
+                `Add this item from my file: ${JSON.stringify(p)}. Leave current stock unknown.`,
+              );
+            } catch (e) {
+              setUseError(errorText(e));
+            } finally {
+              setUsing(false);
+            }
+          }}
         >
           {p.name}
         </Button>
       ))}
+      {useError && (
+        <p className="desk-error" role="alert">
+          {useError}
+        </p>
+      )}
     </div>
   );
 }

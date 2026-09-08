@@ -29,6 +29,14 @@ export async function orderEvent(
     requestKey,
     createdAt: Date.now(),
   });
+  await ctx.db.insert("deskActivity", {
+    organizationId: order.organizationId,
+    itemId: order.inventoryItemId,
+    orderId: order._id,
+    summary: `${order.itemName}: ${summary}`,
+    ...(["sent", "supplier_reply"].includes(kind) ? { credit: "agentmail" as const } : {}),
+    createdAt: Date.now(),
+  });
   if (kind !== "draft")
     await queueAlert(
       ctx,

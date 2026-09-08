@@ -5,7 +5,7 @@ import { FirecrawlClient } from "@firecrawl/firecrawl-convex";
 import { z } from "zod";
 import { v } from "convex/values";
 import { components, internal } from "./_generated/api";
-import { env, internalAction } from "./_generated/server";
+import { env, internalAction, type ActionCtx } from "./_generated/server";
 import { questions } from "./deskPolicy";
 import { productUrl } from "./inventorySources";
 import type { Id, Doc } from "./_generated/dataModel";
@@ -39,18 +39,19 @@ const draftSchema = z.object({
   confirmation: text,
   expectedOn: text,
 });
-export const respond = internalAction({
-  args: { chatId: v.id("taskChats"), messageId: v.string() },
-  returns: v.null(),
-  handler: async (ctx, args) => {
-    try {
-      const chat = await ctx.runQuery(internal.desk.readChat, { chatId: args.chatId });
-      if (!env.OPENAI_API_KEY) throw new Error("Assistant is not configured.");
-      const agent = new Agent(components.agent, {
-        name: "BUY HARD",
-        languageModel: createOpenAI({ apiKey: env.OPENAI_API_KEY })("gpt-5.4-mini"),
-        stopWhen: stepCountIs(6),
-        instructions: `You set up and manage a company's inventory and purchasing through short conversations.
+export async function respondToTask(
+  ctx: ActionCtx,
+  args: { chatId: Id<"taskChats">; messageId: string },
+) {
+  try {
+    const chat = await ctx.runQuery(internal.desk.readChat, { chatId: args.chatId });
+    if (!chat.busy || chat.currentMessageId !== args.messageId) return null;
+    if (!env.OPENAI_API_KEY) throw new Error("Assistant is not configured.");
+    const agent = new Agent(components.agent, {
+      name: "BUY HARD",
+      languageModel: createOpenAI({ apiKey: env.OPENAI_API_KEY })("gpt-5.4-mini"),
+      stopWhen: stepCountIs(6),
+      instructions: `You set up and manage a company's inventory and purchasing through short conversations.
 You are a restricted app controller, not a general assistant. Never answer general knowledge, math, life advice or unrelated questions. For an unrelated request, call no tools. All free-form model text is discarded. The UI displays only validated tool results and predefined questions. Use requestDetail with a field key to ask a question. Never try to put an answer in an item name or another draft field.
 Be exceptionally concise: one question at a time, usually one sentence. No greetings, repeated summaries, marketing, headings, or lists of form fields. The live draft is already visible; do not repeat it.
 Short replies, addresses, corrections, and acknowledgments during setup belong to onboarding; they are not unrelated requests. Save user-provided addresses with fillDraft without requiring public verification. If incomplete, keep the supplied details and request shippingAddress. If the user asks to continue, request the next missing field or ready. Never respond with prose alone to an onboarding reply.
@@ -66,165 +67,186 @@ A new_buy is the START of procurement. It requires ONLY an existing inventory it
 For buy, research supplier options and collect verified quantity, price per stock unit, shipping, tax, currency and requiredBy (YYYY-MM-DD) to prepare a purchase. The user separately approves the exact total and sends/places the order through explicit buttons. You cannot approve, order or email suppliers. Outside stock_update, your tools only research and prepare drafts; never claim those drafts have been saved.
 For receive, quantity means amount arriving THIS delivery, not total order quantity. For confirm, collect the supplier order reference and expected date. For settings, update only companyName/shippingAddress; notifications have direct controls.
 Current date: ${new Date().toISOString().slice(0, 10)}. Once the draft is sufficient, say 'Ready to save.' or one short next question about a critical gap.`,
-        tools: {
-          requestDetail: tool({
-            description:
-              "Ask a predefined question about a missing task detail. Only allowed fields for the active task are accepted. Free-form questions and answers cannot be displayed.",
-            inputSchema: z.object({
-              field: z.enum(
-                Object.keys(questions) as [keyof typeof questions, ...(keyof typeof questions)[]],
-              ),
+      tools: {
+        requestDetail: tool({
+          description:
+            "Ask a predefined question about a missing task detail. Only allowed fields for the active task are accepted. Free-form questions and answers cannot be displayed.",
+          inputSchema: z.object({
+            field: z.enum(
+              Object.keys(questions) as [keyof typeof questions, ...(keyof typeof questions)[]],
+            ),
+          }),
+          execute: async ({ field }): Promise<{ question: keyof typeof questions }> =>
+            ctx.runMutation(internal.desk.requestDetail, {
+              chatId: args.chatId,
+              question: field,
+              messageId: args.messageId,
             }),
-            execute: async ({ field }): Promise<{ question: keyof typeof questions }> =>
-              ctx.runMutation(internal.desk.requestDetail, {
-                chatId: args.chatId,
-                question: field,
-              }),
-          }),
-          ...(chat.task !== "stock_update"
-            ? {
-                research: tool({
-                  description:
-                    "Research public company or product facts. Read a supplied URL, or search by specific name. Do this before asking for public details.",
-                  inputSchema: z.object({
-                    query: z.string().max(500).optional(),
-                    url: z.string().max(2000).optional(),
-                  }),
-                  execute: async ({ query, url }): Promise<string> => {
-                    if (url) {
-                      const page = await firecrawl.scrape(ctx, productUrl(url), {
-                        formats: ["markdown"],
-                        onlyMainContent: true,
-                      });
-                      await ctx.runMutation(internal.desk.noteResearch, {
-                        chatId: args.chatId,
-                        messageId: args.messageId,
-                        url,
-                      });
-                      return JSON.stringify({
-                        url,
-                        title: page.metadata?.title,
-                        text: (page.markdown ?? "").slice(0, 22000),
-                      });
-                    }
-                    if (!query) return "Provide a URL or search query.";
-                    const result = await firecrawl.search(ctx, query, { limit: 3 });
-                    return JSON.stringify(result).slice(0, 22000);
-                  },
+        }),
+        ...(chat.task !== "stock_update"
+          ? {
+              research: tool({
+                description:
+                  "Research public company or product facts. Read a supplied URL, or search by specific name. Do this before asking for public details.",
+                inputSchema: z.object({
+                  query: z.string().max(500).optional(),
+                  url: z.string().max(2000).optional(),
                 }),
-              }
-            : {}),
-          fillDraft: tool({
-            description:
-              "Update only discovered or user-provided fields in the visible draft. This does not save the item, approve, place or send a purchase.",
-            inputSchema: draftSchema,
-            execute: async (draft): Promise<Doc<"taskChats">["draft"]> =>
-              ctx.runMutation(internal.desk.updateDraft, {
-                chatId: args.chatId,
-                draft: {
-                  ...draft,
-                  ...(draft.itemId ? { itemId: draft.itemId as Id<"inventoryItems"> } : {}),
-                } as Doc<"taskChats">["draft"],
-              }),
-          }),
-          ...(chat.task === "stock_update"
-            ? {
-                setStock: tool({
-                  description:
-                    "Record the explicit remaining count reported in the current user message. Changes the inventory immediately and returns an application receipt. One item per message; never infer hypothetical or damaged amounts.",
-                  inputSchema: z.object({
-                    itemId: z.string(),
-                    count: z.number().min(0).max(1_000_000_000),
-                  }),
-                  execute: async ({ itemId, count }): Promise<string> =>
-                    ctx.runMutation(internal.desk.setReportedStock, {
+                execute: async ({ query, url }): Promise<string> => {
+                  if (url) {
+                    const page = await firecrawl.scrape(ctx, productUrl(url), {
+                      formats: ["markdown"],
+                      onlyMainContent: true,
+                    });
+                    await ctx.runMutation(internal.desk.noteResearch, {
                       chatId: args.chatId,
                       messageId: args.messageId,
-                      itemId: itemId as Id<"inventoryItems">,
-                      count,
-                    }),
+                      url,
+                    });
+                    await ctx.runMutation(internal.buyer.noteCredit, {
+                      ...args,
+                      credit: "firecrawl",
+                    });
+                    return JSON.stringify({
+                      url,
+                      title: page.metadata?.title,
+                      text: (page.markdown ?? "").slice(0, 22000),
+                    });
+                  }
+                  if (!query) return "Provide a URL or search query.";
+                  const result = await firecrawl.search(ctx, query, { limit: 3 });
+                  await ctx.runMutation(internal.buyer.noteCredit, {
+                    ...args,
+                    credit: "firecrawl",
+                  });
+                  return JSON.stringify(result).slice(0, 22000);
+                },
+              }),
+            }
+          : {}),
+        fillDraft: tool({
+          description:
+            "Update only discovered or user-provided fields in the visible draft. This does not save the item, approve, place or send a purchase.",
+          inputSchema: draftSchema,
+          execute: async (draft): Promise<Doc<"taskChats">["draft"]> =>
+            ctx.runMutation(internal.desk.updateDraft, {
+              chatId: args.chatId,
+              messageId: args.messageId,
+              draft: {
+                ...draft,
+                ...(draft.itemId ? { itemId: draft.itemId as Id<"inventoryItems"> } : {}),
+              } as Doc<"taskChats">["draft"],
+            }),
+        }),
+        ...(chat.task === "stock_update"
+          ? {
+              setStock: tool({
+                description:
+                  "Record the explicit remaining count reported in the current user message. Changes the inventory immediately and returns an application receipt. One item per message; never infer hypothetical or damaged amounts.",
+                inputSchema: z.object({
+                  itemId: z.string(),
+                  count: z.number().min(0).max(1_000_000_000),
                 }),
-              }
-            : {}),
-          ...(chat.task === "buy"
-            ? {
-                reviewChange: tool({
-                  description:
-                    "Explain whether a changed buy can be repriced from current catalog terms or needs a new supplier quote. Never sends a message or approves.",
-                  inputSchema: z.object({ mode: z.enum(["catalog", "supplier_quote"]) }),
-                  execute: ({ mode }) =>
-                    ctx.runMutation(internal.desk.reviewChange, { chatId: args.chatId, mode }),
-                }),
-                verifyTerms: tool({
-                  description:
-                    "Record newly verified terms for the exact requested quantity, including price, shipping, tax and arrival. A public page must have been read this turn; a supplier quote must be newly supplied by the user, with quoteExcerpt copied exactly from their current message. Never infer terms from the old order.",
-                  inputSchema: z.object({
-                    draft: draftSchema,
-                    source: z.enum(["public_page", "supplier_quote"]),
-                    sourceUrl: z.string().url().optional(),
-                    quoteExcerpt: z.string().min(20).max(4000).optional(),
+                execute: async ({ itemId, count }): Promise<string> =>
+                  ctx.runMutation(internal.desk.setReportedStock, {
+                    chatId: args.chatId,
+                    messageId: args.messageId,
+                    itemId: itemId as Id<"inventoryItems">,
+                    count,
                   }),
-                  execute: ({
-                    draft,
+              }),
+            }
+          : {}),
+        ...(chat.task === "buy"
+          ? {
+              reviewChange: tool({
+                description:
+                  "Explain whether a changed buy can be repriced from current catalog terms or needs a new supplier quote. Never sends a message or approves.",
+                inputSchema: z.object({ mode: z.enum(["catalog", "supplier_quote"]) }),
+                execute: ({ mode }) =>
+                  ctx.runMutation(internal.desk.reviewChange, {
+                    chatId: args.chatId,
+                    messageId: args.messageId,
+                    mode,
+                  }),
+              }),
+              verifyTerms: tool({
+                description:
+                  "Record newly verified terms for the exact requested quantity, including price, shipping, tax and arrival. A public page must have been read this turn; a supplier quote must be newly supplied by the user, with quoteExcerpt copied exactly from their current message. Never infer terms from the old order.",
+                inputSchema: z.object({
+                  draft: draftSchema,
+                  source: z.enum(["public_page", "supplier_quote"]),
+                  sourceUrl: z.string().url().optional(),
+                  quoteExcerpt: z.string().min(20).max(4000).optional(),
+                }),
+                execute: ({
+                  draft,
+                  source,
+                  sourceUrl,
+                  quoteExcerpt,
+                }): Promise<Doc<"taskChats">["draft"]> =>
+                  ctx.runMutation(internal.desk.verifyTerms, {
+                    chatId: args.chatId,
+                    messageId: args.messageId,
+                    draft: draft as Doc<"taskChats">["draft"],
                     source,
                     sourceUrl,
                     quoteExcerpt,
-                  }): Promise<Doc<"taskChats">["draft"]> =>
-                    ctx.runMutation(internal.desk.verifyTerms, {
-                      chatId: args.chatId,
-                      messageId: args.messageId,
-                      draft: draft as Doc<"taskChats">["draft"],
-                      source,
-                      sourceUrl,
-                      quoteExcerpt,
-                    }),
-                }),
-                compareOptions: tool({
-                  description:
-                    "Compare verified prices and arrival dates using this item's saved buying priority and daily cost of being out. Fills a recommendation draft; never approves or sends an order.",
-                  inputSchema: z.object({
-                    options: z
-                      .array(
-                        z.object({
-                          supplier: z.string(),
-                          url: z.string().url(),
-                          quantity: z.number().positive(),
-                          unit: z.string(),
-                          currency: z.string(),
-                          unitPriceCents: z.number().int().nonnegative(),
-                          freightCents: z.number().int().nonnegative(),
-                          taxCents: z.number().int().nonnegative(),
-                          expectedOn: z.string(),
-                        }),
-                      )
-                      .min(2)
-                      .max(5),
                   }),
-                  execute: async ({
-                    options,
-                  }): Promise<NonNullable<Doc<"taskChats">["comparison"]>> =>
-                    ctx.runMutation(internal.desk.compareOptions, {
-                      chatId: args.chatId,
-                      messageId: args.messageId,
-                      options,
-                    }),
+              }),
+              compareOptions: tool({
+                description:
+                  "Compare verified prices and arrival dates using this item's saved buying priority and daily cost of being out. Fills a recommendation draft; never approves or sends an order.",
+                inputSchema: z.object({
+                  options: z
+                    .array(
+                      z.object({
+                        supplier: z.string(),
+                        url: z.string().url(),
+                        quantity: z.number().positive(),
+                        unit: z.string(),
+                        currency: z.string(),
+                        unitPriceCents: z.number().int().nonnegative(),
+                        freightCents: z.number().int().nonnegative(),
+                        taxCents: z.number().int().nonnegative(),
+                        expectedOn: z.string(),
+                      }),
+                    )
+                    .min(2)
+                    .max(5),
                 }),
-              }
-            : {}),
-        },
-      });
-      await agent.generateText(
-        ctx,
-        { threadId: chat.threadId, userId: chat.userId },
-        { promptMessageId: args.messageId },
-      );
-      await ctx.runMutation(internal.desk.finish, { chatId: args.chatId });
-    } catch {
-      await ctx.runMutation(internal.desk.finish, {
-        chatId: args.chatId,
-        error: "I couldn’t finish that. Your draft is saved. Try again.",
-      });
-    }
-    return null;
-  },
+                execute: async ({
+                  options,
+                }): Promise<NonNullable<Doc<"taskChats">["comparison"]>> =>
+                  ctx.runMutation(internal.desk.compareOptions, {
+                    chatId: args.chatId,
+                    messageId: args.messageId,
+                    options,
+                  }),
+              }),
+            }
+          : {}),
+      },
+    });
+    await agent.generateText(
+      ctx,
+      { threadId: chat.threadId, userId: chat.userId },
+      { promptMessageId: args.messageId },
+    );
+    await ctx.runMutation(internal.buyer.noteCredit, { ...args, credit: "openai" });
+    await ctx.runMutation(internal.desk.finish, { chatId: args.chatId, messageId: args.messageId });
+  } catch {
+    await ctx.runMutation(internal.desk.finish, {
+      chatId: args.chatId,
+      messageId: args.messageId,
+      error: "I couldn’t finish that. Your draft is saved. Try again.",
+    });
+  }
+  return null;
+}
+
+export const respond = internalAction({
+  args: { chatId: v.id("taskChats"), messageId: v.string() },
+  returns: v.null(),
+  handler: respondToTask,
 });

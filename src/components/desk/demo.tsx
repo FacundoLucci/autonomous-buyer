@@ -6,6 +6,7 @@ import { WorkspaceScreen, type Navigation, type SearchState } from "./app";
 import { CloseButton } from "./primitives";
 import { AuditLog, type AuditEntry } from "./audit";
 import { DraftPreview } from "./chat";
+import { DemoBuyer } from "./agent-demo";
 import { reportedStock, stockItemMatch } from "@/lib/stock-message";
 import type { UpdateCount, UpdateRules } from "./inventory";
 import type { Id, Doc } from "../../../convex/_generated/dataModel";
@@ -474,56 +475,89 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
     }
     return request.contextId ?? "";
   }
+  const revise = (buyId: string, quantity: number) => {
+    const buy = snapshot.buys.find((b) => b.id === buyId);
+    if (buy?.order)
+      audit(
+        buy.name,
+        {
+          reviewRequired: buy.order.reviewRequired ?? false,
+          requestedQuantity: buy.order.requestedQuantity,
+        },
+        { reviewRequired: true, requestedQuantity: quantity },
+        "chat",
+      );
+    setSnapshot((s) => ({
+      ...s,
+      buys: s.buys.map((b) =>
+        b.id === buyId && b.order
+          ? { ...b, order: { ...b.order, reviewRequired: true, requestedQuantity: quantity } }
+          : b,
+      ),
+    }));
+  };
   return (
-    <WorkspaceScreen
+    <DemoBuyer
       workspace={workspace}
       snapshot={snapshot}
       search={search}
-      navigate={navigate}
-      signOut={() => navigate({ demo: false, page: "dashboard" })}
       action={action}
       updateCount={updateCount}
       updateRules={updateRules}
+      save={save}
+      revise={revise}
       audit={<AuditLog entries={auditEntries} />}
-      settings={
-        <p className="desk-muted">Notification delivery is available in your own workspace.</p>
-      }
-      renderChat={(request, onClose, onSaved) => (
-        <DemoChat
-          key={`${request.task}:${request.contextId ?? ""}`}
-          request={request}
-          buy={snapshot.buys.find((b) => b.id === request.contextId)}
-          onRevise={(quantity) => {
-            const buy = snapshot.buys.find((b) => b.id === request.contextId);
-            if (buy?.order)
-              audit(
-                buy.name,
-                {
-                  reviewRequired: buy.order.reviewRequired ?? false,
-                  requestedQuantity: buy.order.requestedQuantity,
-                },
-                { reviewRequired: true, requestedQuantity: quantity },
-                "chat",
-              );
-            setSnapshot((s) => ({
-              ...s,
-              buys: s.buys.map((b) =>
-                b.id === request.contextId && b.order
-                  ? {
-                      ...b,
-                      order: { ...b.order, reviewRequired: true, requestedQuantity: quantity },
-                    }
-                  : b,
-              ),
-            }));
-          }}
-          items={workspace.items}
-          updateCount={updateCount}
-          onClose={onClose}
-          onSave={(draft) => onSaved(save(request, draft))}
-        />
-      )}
-    />
+    >
+      <WorkspaceScreen
+        workspace={workspace}
+        snapshot={snapshot}
+        search={search}
+        navigate={navigate}
+        signOut={() => navigate({ demo: false, page: "dashboard" })}
+        action={action}
+        updateCount={updateCount}
+        updateRules={updateRules}
+        audit={<AuditLog entries={auditEntries} />}
+        settings={
+          <p className="desk-muted">Notification delivery is available in your own workspace.</p>
+        }
+        renderChat={(request, onClose, onSaved) => (
+          <DemoChat
+            key={`${request.task}:${request.contextId ?? ""}`}
+            request={request}
+            buy={snapshot.buys.find((b) => b.id === request.contextId)}
+            onRevise={(quantity) => {
+              const buy = snapshot.buys.find((b) => b.id === request.contextId);
+              if (buy?.order)
+                audit(
+                  buy.name,
+                  {
+                    reviewRequired: buy.order.reviewRequired ?? false,
+                    requestedQuantity: buy.order.requestedQuantity,
+                  },
+                  { reviewRequired: true, requestedQuantity: quantity },
+                  "chat",
+                );
+              setSnapshot((s) => ({
+                ...s,
+                buys: s.buys.map((b) =>
+                  b.id === request.contextId && b.order
+                    ? {
+                        ...b,
+                        order: { ...b.order, reviewRequired: true, requestedQuantity: quantity },
+                      }
+                    : b,
+                ),
+              }));
+            }}
+            items={workspace.items}
+            updateCount={updateCount}
+            onClose={onClose}
+            onSave={(draft) => onSaved(save(request, draft))}
+          />
+        )}
+      />
+    </DemoBuyer>
   );
 }
 function DemoChat({

@@ -32,6 +32,8 @@ import { Brand, Empty, Loading, OutLink, PageHeading } from "./primitives";
 import { Landing } from "./landing";
 import { AccountPage } from "./auth";
 import { TaskChat } from "./chat";
+import { LiveBuyer } from "./agent-live";
+import { useBuyer } from "./agent";
 import { DemoDesk } from "./demo";
 import { PurchasingInbox } from "./mail";
 import { LiveAuditLog } from "./audit";
@@ -116,36 +118,53 @@ function LiveWorkspace({
         requestKey: `full-receipt:${orderId}:${buy.order.receivedQuantity}`,
       });
   }
+  const updateCount: UpdateCount = async (item, quantity) => {
+    await recordCount({ itemId: item.id, quantity });
+  };
+  const saveRules: UpdateRules = async (item, rules) => {
+    await updateRules({ itemId: item.id, ...rules });
+  };
+  const settings = (
+    <>
+      <PurchasingInbox email={workspace.inbox?.email} />
+      <Alerts />
+    </>
+  );
   return (
-    <WorkspaceScreen
+    <LiveBuyer
       workspace={workspace}
       snapshot={snapshot}
       search={search}
-      navigate={navigate}
-      signOut={() => void signOut()}
       action={action}
-      updateCount={async (item, quantity) => {
-        await recordCount({ itemId: item.id, quantity });
-      }}
-      updateRules={async (item, rules) => {
-        await updateRules({ itemId: item.id, ...rules });
-      }}
-      renderChat={(request, onClose, onSaved) => (
-        <TaskChat
-          key={`${request.task}:${request.contextId ?? ""}`}
-          request={request}
-          onClose={onClose}
-          onSaved={onSaved}
-        />
-      )}
-      audit={search.page === "audit" ? <LiveAuditLog /> : null}
-      settings={
-        <>
-          <PurchasingInbox email={workspace.inbox?.email} />
-          <Alerts />
-        </>
-      }
-    />
+      updateCount={updateCount}
+      updateRules={saveRules}
+      settings={settings}
+    >
+      <WorkspaceScreen
+        workspace={workspace}
+        snapshot={snapshot}
+        search={search}
+        navigate={navigate}
+        signOut={() => void signOut()}
+        action={action}
+        updateCount={async (item, quantity) => {
+          await recordCount({ itemId: item.id, quantity });
+        }}
+        updateRules={async (item, rules) => {
+          await updateRules({ itemId: item.id, ...rules });
+        }}
+        renderChat={(request, onClose, onSaved) => (
+          <TaskChat
+            key={`${request.task}:${request.contextId ?? ""}`}
+            request={request}
+            onClose={onClose}
+            onSaved={onSaved}
+          />
+        )}
+        audit={search.page === "audit" ? <LiveAuditLog /> : null}
+        settings={settings}
+      />
+    </LiveBuyer>
   );
 }
 export type WorkspaceScreenProps = {
@@ -179,6 +198,7 @@ export function WorkspaceScreen({
   audit,
 }: WorkspaceScreenProps) {
   const now = useClock();
+  const buyer = useBuyer();
   const [chat, setChat] = useState<ChatRequest | null>(null),
     [filter, setFilter] = useState(""),
     [onlyLow, setOnlyLow] = useState(false),
@@ -228,6 +248,10 @@ export function WorkspaceScreen({
     }
   }
   const openChat = (request: ChatRequest) => {
+    if (buyer) {
+      buyer(request);
+      return;
+    }
     setChat(request);
     setError(null);
   };

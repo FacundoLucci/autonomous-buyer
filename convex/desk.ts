@@ -30,6 +30,7 @@ import { productUrl } from "./inventorySources";
 import { limits } from "./rateLimits";
 import type { Doc, Id } from "./_generated/dataModel";
 import { quoteKey } from "../src/lib/buy-review";
+import { finishBuyerTask } from "./buyerSession";
 
 type Draft = Doc<"taskChats">["draft"];
 async function editableOrder(ctx: MutationCtx, chat: Doc<"taskChats">) {
@@ -86,13 +87,22 @@ async function ownChat(ctx: QueryCtx | MutationCtx, id: Id<"taskChats">) {
     throw new ConvexError("Conversation not found.");
   return { chat, user };
 }
-async function context(ctx: QueryCtx | MutationCtx, task: string, contextId?: string) {
-  const user = await account(ctx);
+export async function taskContext(
+  ctx: QueryCtx | MutationCtx,
+  task: string,
+  contextId: string | undefined,
+  user: Doc<"users">,
+) {
+  if (!user.isActive || user.isAnonymous) throw new ConvexError("Account unavailable.");
   if (task === "onboarding") {
     if (user.organizationId) throw new ConvexError("Your company is already set up.");
     return {};
   }
-  const { organization } = await ownedCompany(ctx);
+  const organization = user.organizationId
+    ? await ctx.db.get("organizations", user.organizationId)
+    : null;
+  if (!organization || organization.isDemo || !["admin", "buyer"].includes(user.role ?? ""))
+    throw new ConvexError("Set up your company first.");
   if (
     task === "settings" ||
     task === "add_item" ||
@@ -123,7 +133,10 @@ async function context(ctx: QueryCtx | MutationCtx, task: string, contextId?: st
     throw new ConvexError("Only an open, unapproved buy can be changed.");
   return { organization, item, buy, order };
 }
-function initialDraft(c: Awaited<ReturnType<typeof context>>): Draft {
+async function context(ctx: QueryCtx | MutationCtx, task: string, contextId?: string) {
+  return taskContext(ctx, task, contextId, await account(ctx));
+}
+export function initialDraft(c: Awaited<ReturnType<typeof context>>): Draft {
   return {
     ...(c.organization
       ? { companyName: c.organization.name, shippingAddress: c.organization.shippingAddress }
@@ -213,7 +226,7 @@ export const send = mutation({
       .order("desc")
       .first();
     if (chat?.busy) throw new ConvexError("One moment, I’m still working on that.");
-    if (!chat || chat.savedAt) {
+    if (!chat || chat.savedAt || chat.buyerSessionId) {
       const threadId = await createThread(ctx, components.agent, {
         userId: user._id,
         title: args.task,
@@ -298,10 +311,12 @@ export const readChat = internalQuery({
   },
 });
 export const updateDraft = internalMutation({
-  args: { chatId: v.id("taskChats"), draft: deskDraft },
+  args: { chatId: v.id("taskChats"), messageId: v.optional(v.string()), draft: deskDraft },
   handler: async (ctx, args) => {
     const chat = await ctx.db.get("taskChats", args.chatId);
     if (!chat || !chat.busy || chat.savedAt) throw new Error("Conversation is no longer editable.");
+    if (args.messageId && chat.currentMessageId !== args.messageId)
+      throw new Error("This request has changed.");
     allowedDraft(chat.task, args.draft);
     const patch = Object.fromEntries(
       Object.entries(args.draft).filter(([, value]) => value !== undefined),
@@ -370,22 +385,29 @@ export const updateDraft = internalMutation({
   },
 });
 export const finish = internalMutation({
-  args: { chatId: v.id("taskChats"), error: v.optional(v.string()) },
+  args: {
+    chatId: v.id("taskChats"),
+    messageId: v.optional(v.string()),
+    error: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
     const chat = await ctx.db.get("taskChats", args.chatId);
     if (!chat) return;
+    if (!chat.busy || (args.messageId && chat.currentMessageId !== args.messageId)) return;
+    let summary: string | undefined;
     if (!args.error || (chat.task === "stock_update" && chat.resultSummary)) {
       const code =
         chat.question ??
         (chat.toolUsed || chat.task === "onboarding"
           ? requiredQuestion(chat.task, chat.draft)
           : "unsupported");
+      summary = chat.resultSummary ?? questionMessage(code, chat.draft);
       await saveMessage(ctx, components.agent, {
         threadId: chat.threadId,
         agentName: "BUY HARD UI",
         message: {
           role: "assistant",
-          content: chat.resultSummary ?? questionMessage(code, chat.draft),
+          content: summary,
         },
       });
     }
@@ -394,6 +416,7 @@ export const finish = internalMutation({
       error: chat.task === "stock_update" && chat.resultSummary ? undefined : args.error,
       updatedAt: Date.now(),
     });
+    await finishBuyerTask(ctx, chat, summary, summary ? undefined : args.error);
   },
 });
 export const setOnboardingDetails = mutation({
@@ -426,6 +449,11 @@ export const commit = mutation({
   handler: async (ctx, args): Promise<string> => {
     const { chat, user } = await ownChat(ctx, args.chatId);
     if (chat.savedAt) return chat.resultId ?? "";
+    if (chat.buyerSessionId) {
+      const session = await ctx.db.get("buyerSessions", chat.buyerSessionId);
+      if (!session || session.activeChatId !== chat._id || session.busy)
+        throw new ConvexError("Return to this task and wait for the current reply before saving.");
+    }
     if (chat.task === "stock_update")
       throw new ConvexError("Report the remaining count in the chat, or edit the count directly.");
     if (chat.busy) throw new ConvexError("Wait for the current reply.");
@@ -677,6 +705,14 @@ export const commit = mutation({
       itemId,
       createdAt: Date.now(),
     });
+    if (chat.buyerSessionId) {
+      await saveMessage(ctx, components.agent, {
+        threadId: chat.threadId,
+        agentName: "BUY HARD UI",
+        message: { role: "assistant", content: summary },
+      });
+      await finishBuyerTask(ctx, { ...chat, savedAt: Date.now(), resultId }, summary);
+    }
     return resultId;
   },
 });
@@ -794,10 +830,12 @@ export const cancelBuy = mutation({
 });
 
 export const requestDetail = internalMutation({
-  args: { chatId: v.id("taskChats"), question: questionCode },
+  args: { chatId: v.id("taskChats"), messageId: v.optional(v.string()), question: questionCode },
   handler: async (ctx, args) => {
     const chat = await ctx.db.get("taskChats", args.chatId);
     if (!chat || !chat.busy || chat.savedAt) throw new Error("Conversation is not editable.");
+    if (args.messageId && chat.currentMessageId !== args.messageId)
+      throw new Error("This request has changed.");
     allowedQuestion(chat.task, args.question);
     await ctx.db.patch("taskChats", args.chatId, {
       question: args.question,
@@ -823,10 +861,13 @@ export const reviewChange = internalMutation({
   args: {
     chatId: v.id("taskChats"),
     mode: v.union(v.literal("catalog"), v.literal("supplier_quote")),
+    messageId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const chat = await ctx.db.get("taskChats", args.chatId);
     if (!chat?.busy || chat.task !== "buy") throw new Error("Choose a buy.");
+    if (args.messageId && chat.currentMessageId !== args.messageId)
+      throw new Error("This request has changed.");
     await editableOrder(ctx, chat);
     const summary =
       args.mode === "catalog"
