@@ -8,6 +8,7 @@ import {
   allowedDraft,
   allowedQuestion,
   questions,
+  questionMessage,
   requiredQuestion,
   visibleMessage,
 } from "./deskPolicy";
@@ -375,11 +376,17 @@ export const finish = internalMutation({
     if (!chat) return;
     if (!args.error || (chat.task === "stock_update" && chat.resultSummary)) {
       const code =
-        chat.question ?? (chat.toolUsed ? requiredQuestion(chat.task, chat.draft) : "unsupported");
+        chat.question ??
+        (chat.toolUsed || chat.task === "onboarding"
+          ? requiredQuestion(chat.task, chat.draft)
+          : "unsupported");
       await saveMessage(ctx, components.agent, {
         threadId: chat.threadId,
         agentName: "BUY HARD UI",
-        message: { role: "assistant", content: chat.resultSummary ?? questions[code] },
+        message: {
+          role: "assistant",
+          content: chat.resultSummary ?? questionMessage(code, chat.draft),
+        },
       });
     }
     await ctx.db.patch("taskChats", args.chatId, {
@@ -387,6 +394,30 @@ export const finish = internalMutation({
       error: chat.task === "stock_update" && chat.resultSummary ? undefined : args.error,
       updatedAt: Date.now(),
     });
+  },
+});
+export const setOnboardingDetails = mutation({
+  args: {
+    chatId: v.id("taskChats"),
+    companyName: v.string(),
+    shippingAddress: v.string(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const { chat } = await ownChat(ctx, args.chatId);
+    if (chat.task !== "onboarding" || chat.savedAt)
+      throw new ConvexError("This setup is no longer editable.");
+    if (chat.busy) throw new ConvexError("Wait for the current reply.");
+    const companyName = boundedText(args.companyName, "your company name");
+    const shippingAddress = boundedText(args.shippingAddress, "your delivery address", 500);
+    if (shippingAddress.length < 12) throw new ConvexError("Enter your full delivery address.");
+    await ctx.db.patch("taskChats", chat._id, {
+      draft: { ...chat.draft, companyName, shippingAddress },
+      question: "ready",
+      error: undefined,
+      updatedAt: Date.now(),
+    });
+    return null;
   },
 });
 export const commit = mutation({

@@ -95,7 +95,7 @@
   }
 
   body {
-    @apply min-h-screen bg-background font-sans text-foreground antialiased;
+    @apply min-h-svh bg-background font-sans text-foreground antialiased;
     font-variant-numeric: tabular-nums slashed-zero;
   }
 

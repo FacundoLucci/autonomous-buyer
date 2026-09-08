@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FloatingInput } from "./floating-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { buyingPriorities, type BuyingPriority } from "@/lib/inventory-planning";
 import { errorText, money, type Item } from "./model";
@@ -203,16 +204,13 @@ export function BuyingRules({
               />
             </div>
           </label>
-          <label htmlFor={`impact-${item.id}`}>
-            What stops? <span className="desk-muted">Optional</span>
-            <Input
-              id={`impact-${item.id}`}
-              value={impact}
-              onChange={(e) => setImpact(e.target.value)}
-              placeholder="We can’t sell soup"
-              maxLength={500}
-            />
-          </label>
+          <FloatingInput
+            id={`impact-${item.id}`}
+            label="What stops? (optional)"
+            value={impact}
+            onChange={(e) => setImpact(e.target.value)}
+            maxLength={500}
+          />
           <div className="desk-rule-actions">
             <Button type="submit" disabled={busy}>
               Save rules

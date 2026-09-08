@@ -3,7 +3,13 @@ import { test, expect } from "vitest";
 import { convexTest } from "convex-test";
 import schema from "./schema";
 import { api, internal } from "./_generated/api";
-import { allowedDraft, allowedQuestion, requiredQuestion, visibleMessage } from "./deskPolicy";
+import {
+  allowedDraft,
+  allowedQuestion,
+  questionMessage,
+  requiredQuestion,
+  visibleMessage,
+} from "./deskPolicy";
 import type { Doc } from "./_generated/dataModel";
 import { approvalKey } from "../src/lib/buy-review";
 const modules = import.meta.glob("./**/*.ts");
@@ -144,7 +150,7 @@ test("onboarding can create a workspace without invented inventory", async () =>
   expect(workspace?.companyName).toBe("New company");
 });
 
-test("the public chat returns only tool-derived replies, even if the model wrote an off-topic answer", async () => {
+test("onboarding redirects to the next setup question without exposing off-topic model prose", async () => {
   const t = convexTest(schema, modules);
   const agentPath: string = "@convex-dev/agent/test";
   const harness: { default: { register: (instance: typeof t) => void } } = await import(agentPath);
@@ -180,7 +186,7 @@ test("the public chat returns only tool-derived replies, even if the model wrote
   const conversation = await a.query(api.desk.conversation, { task: "onboarding" });
   expect(conversation?.messages.map((m) => m.text)).toEqual([
     "Give me life advice",
-    "I can help with your company, inventory, and buys.",
+    "What’s your company called?",
   ]);
 });
 
@@ -583,4 +589,72 @@ test("a quantity revision invalidates old terms and approval until a current quo
   await expect(
     t.mutation(internal.desk.updateDraft, { chatId: another, draft: { quantity: 28 } }),
   ).rejects.toThrow(/unapproved/);
+});
+
+test("address confirmation shows the address or asks for manual entry", () => {
+  for (const shippingAddress of [undefined, "", "   "]) {
+    const message = questionMessage("confirmAddress", { shippingAddress });
+    expect(message).toContain("I don’t have a delivery address yet.");
+    expect(message).toContain("postal code and country");
+    expect(message).not.toContain("Is this the right");
+  }
+  expect(
+    questionMessage("confirmAddress", {
+      shippingAddress: "  123 Main St, Chicago, IL 60601, USA  ",
+    }),
+  ).toBe(
+    "123 Main St, Chicago, IL 60601, USA\n\nIs this the right delivery address? If not, enter the correct one.",
+  );
+});
+
+test("manual setup recovers an empty draft and opens a workspace without an agent reply", async () => {
+  const { t, b } = await fixture();
+  const userId = await t.run((ctx) =>
+    ctx.db.insert("users", { name: "New user", isActive: true, role: "viewer" }),
+  );
+  const user = t.withIdentity({ subject: userId });
+  const chatId = await t.run((ctx) =>
+    ctx.db.insert("taskChats", {
+      userId,
+      task: "onboarding",
+      threadId: "manual-setup",
+      draft: {},
+      busy: false,
+      updatedAt: Date.now(),
+    }),
+  );
+  const details = {
+    chatId,
+    companyName: "My company",
+    shippingAddress: "123 Baker St, Chicago, IL 60601, USA",
+  };
+  await expect(b.mutation(api.desk.setOnboardingDetails, details)).rejects.toThrow(
+    "Conversation not found",
+  );
+  await expect(
+    user.mutation(api.desk.setOnboardingDetails, { ...details, shippingAddress: " " }),
+  ).rejects.toThrow();
+  await user.mutation(api.desk.setOnboardingDetails, details);
+  const id = await user.mutation(api.desk.commit, { chatId, timezone: "America/Chicago" });
+  const workspace = await user.query(api.onboarding.getWorkspace, {});
+  expect(workspace?.organizationId).toBe(id);
+  expect(await user.mutation(api.desk.commit, { chatId, timezone: "America/Chicago" })).toBe(id);
+});
+
+test("manual setup cannot change another task or a busy conversation", async () => {
+  const { t, a, draft } = await fixture();
+  const chatId = await draft("onboarding", {});
+  const details = {
+    chatId,
+    companyName: "Company",
+    shippingAddress: "100 Main St, Chicago IL 60601",
+  };
+  await t.run((ctx) => ctx.db.patch("taskChats", chatId, { busy: true }));
+  await expect(a.mutation(api.desk.setOnboardingDetails, details)).rejects.toThrow(
+    "Wait for the current reply",
+  );
+  const otherId = await draft("settings", {});
+  await expect(
+    a.mutation(api.desk.setOnboardingDetails, { ...details, chatId: otherId }),
+  ).rejects.toThrow("no longer editable");
 });

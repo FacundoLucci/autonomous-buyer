@@ -368,6 +368,10 @@ body {
 .desk-buy-line.desk-buy-alert {
   gap: 18px;
 }
+.desk-buy-alert > .desk-alert-icon {
+  align-self: flex-start;
+  margin-top: 3px;
+}
 .desk-activity {
   max-width: 860px;
 }
@@ -518,7 +522,7 @@ body {
   gap: 8px;
   font-size: 13px;
 }
-.desk-rules-form label:nth-child(3) {
+.desk-rules-form > :nth-child(3) {
   grid-column: 1/-1;
 }
 .desk-rules-form select {
@@ -940,6 +944,47 @@ body {
 }
 .desk-auth-form label {
   font-size: 12px;
+}
+.desk-floating-field {
+  position: relative;
+}
+.desk-floating-field [data-slot="input"] {
+  height: 64px;
+  padding: 26px 0 10px;
+  border: 0;
+  border-bottom: 2px solid var(--input);
+  border-radius: 0;
+  line-height: 24px;
+}
+.desk-floating-field [data-slot="input"]:focus {
+  border-bottom-color: var(--foreground);
+}
+.desk-floating-field [data-slot="input"]:focus-visible {
+  outline: none;
+}
+.desk-floating-field > label {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  line-height: 24px;
+  transform-origin: left top;
+  transition: transform 160ms ease-out;
+  pointer-events: none;
+}
+.desk-floating-field
+  input:is(:focus, :not(:placeholder-shown), :autofill, :-webkit-autofill)
+  + label {
+  transform: translateY(-20px) scale(0.75);
+}
+.desk-floating-field input:focus + label {
+  color: var(--foreground);
+}
+@media (prefers-reduced-motion: reduce) {
+  .desk-floating-field > label {
+    transition: none;
+  }
 }
 .desk-auth-form > button {
   margin-top: 8px;
@@ -1392,4 +1437,15 @@ body {
   font-size: 15px;
   margin-bottom: 10px;
   overflow-wrap: anywhere;
+}
+
+.desk-manual-setup {
+  margin-top: 20px;
+}
+.desk-manual-setup summary {
+  cursor: pointer;
+  padding: 12px 0;
+}
+.desk-manual-setup form {
+  margin-top: 12px;
 }

@@ -264,6 +264,8 @@ export function WorkspaceScreen({
     </div>
   );
   const rowBuy = (b: Buy) => {
+    const approvalAlert =
+      search.page === "dashboard" && b.order?.status === "draft" && !b.order.reviewRequired;
     const AlertIcon = b.order?.reviewRequired
       ? RefreshCw
       : b.order?.status === "send_failed"
@@ -280,6 +282,7 @@ export function WorkspaceScreen({
         )}
         <span>
           <span className="desk-sentence">
+            {approvalAlert && "Approve "}
             <Fact>
               {b.order?.requestedQuantity ?? b.quantity ?? "More"} {b.unit}
             </Fact>{" "}
@@ -290,17 +293,25 @@ export function WorkspaceScreen({
                 from <Fact>{b.order.supplier}</Fact>
               </>
             )}
+            {approvalAlert && b.order && (
+              <>
+                {" "}
+                for <Fact>{money(b.order.totalCents, b.order.currency)}</Fact>
+              </>
+            )}
             .
           </span>
-          <small>
-            {b.order?.reviewRequired
-              ? "Price and delivery are being checked."
-              : b.order?.status === "draft"
-                ? `Ready for you to approve ${money(b.order.totalCents, b.order.currency)}.`
-                : b.order?.expectedOn && isOpen(b)
-                  ? `Expected by ${dateLabel(b.order.expectedOn)}.`
-                  : buyStatus(b) + "."}
-          </small>
+          {!approvalAlert && (
+            <small>
+              {b.order?.reviewRequired
+                ? "Price and delivery are being checked."
+                : b.order?.status === "draft"
+                  ? `Ready for you to approve ${money(b.order.totalCents, b.order.currency)}.`
+                  : b.order?.expectedOn && isOpen(b)
+                    ? `Expected by ${dateLabel(b.order.expectedOn)}.`
+                    : buyStatus(b) + "."}
+            </small>
+          )}
         </span>
         <ArrowUpRight size={17} />
       </button>
@@ -660,10 +671,7 @@ export function WorkspaceScreen({
                 {snapshot?.truncated ? "on recent buys" : "this month"}.
               </Sentence>
             </div>
-            <section className="desk-section">
-              <div className="desk-section-heading">
-                <h2>Needs you</h2>
-              </div>
+            <section className="desk-section" aria-label="Actions to take">
               {attentionItems.map((i) => {
                 const plan = plans.get(i.id)!;
                 const b = openBuys.find((b) => b.itemId === i.id);
@@ -688,10 +696,26 @@ export function WorkspaceScreen({
                       : label === "Check supplier"
                         ? MessageCircle
                         : TriangleAlert;
+                const [before, after] = (
+                  {
+                    "Order more": ["Order more", ""],
+                    "Out of stock": ["Restock", ""],
+                    "May be out": ["Check whether", "is out of stock"],
+                    "Count stock": ["Count", "on hand"],
+                    "Count today": ["Count", "today"],
+                    "Add usage / delivery time": ["Add usage and delivery times for", ""],
+                    "Check delivery": ["Check the delivery of", ""],
+                    "Confirm arrival": ["Confirm when", "will arrive"],
+                    "Get it sooner": ["Get", "sooner"],
+                    "Place order": ["Place the order for", ""],
+                    "Check supplier": ["Check with the supplier about", ""],
+                    "Finish buy": ["Finish buying", ""],
+                  } as Record<string, [string, string]>
+                )[label] ?? ["Check stock for", ""];
                 return (
                   <button
                     key={i.id}
-                    className="desk-attention-row"
+                    className="desk-buy-line desk-buy-alert"
                     onClick={() =>
                       b && !countNeeded
                         ? view("buys", { buy: b.id })
@@ -699,8 +723,12 @@ export function WorkspaceScreen({
                     }
                   >
                     <AlertIcon className="desk-alert-icon" aria-hidden="true" />
-                    <span>{i.name}</span>
-                    <span className="desk-attention-label">{label}</span>
+                    <span>
+                      <span className="desk-sentence">
+                        {before} <Fact>{i.name}</Fact>
+                        {after && ` ${after}`}.
+                      </span>
+                    </span>
                     <ArrowUpRight size={17} />
                   </button>
                 );

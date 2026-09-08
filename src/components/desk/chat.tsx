@@ -2,6 +2,7 @@ import { useState, useRef, type FormEvent } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { ArrowUp, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingInput } from "./floating-input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
@@ -335,6 +336,14 @@ export function TaskChat({
               </Button>
             </div>
           </form>
+          {request.task === "onboarding" && conversation && (
+            <OnboardingDetails
+              chatId={conversation._id}
+              draft={conversation.draft}
+              busy={busy}
+              onSaved={onSaved}
+            />
+          )}
           {(error || conversation?.error) && (
             <p className="desk-error" role="alert">
               {error ?? conversation?.error}
@@ -410,5 +419,83 @@ function SourceResult({
         </Button>
       ))}
     </div>
+  );
+}
+
+function OnboardingDetails({
+  chatId,
+  draft,
+  busy,
+  onSaved,
+}: {
+  chatId: Id<"taskChats">;
+  draft: Draft;
+  busy: boolean;
+  onSaved: (id: string) => void;
+}) {
+  const update = useMutation(api.desk.setOnboardingDetails);
+  const commit = useMutation(api.desk.commit);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy || pending) return;
+    const data = new FormData(event.currentTarget);
+    setPending(true);
+    setError(null);
+    try {
+      await update({
+        chatId,
+        companyName: String(data.get("companyName")),
+        shippingAddress: String(data.get("shippingAddress")),
+      });
+      const id = await commit({
+        chatId,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+      onSaved(id);
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setPending(false);
+    }
+  }
+  return (
+    <details className="desk-manual-setup">
+      <summary>Enter company details yourself</summary>
+      <form className="desk-auth-form" onSubmit={submit}>
+        <FloatingInput
+          id={`company-name-${chatId}`}
+          label="Company name"
+          name="companyName"
+          defaultValue={draft.companyName ?? ""}
+          required
+          maxLength={200}
+          disabled={busy || pending}
+        />
+        <label htmlFor={`shipping-address-${chatId}`}>
+          Delivery address
+          <Textarea
+            id={`shipping-address-${chatId}`}
+            name="shippingAddress"
+            defaultValue={draft.shippingAddress ?? ""}
+            placeholder="Street, city, state, postal code, country"
+            required
+            minLength={12}
+            maxLength={500}
+            rows={3}
+            disabled={busy || pending}
+          />
+        </label>
+        <Button type="submit" disabled={busy || pending}>
+          {pending ? "Saving…" : "Open my workspace"}
+        </Button>
+        {error && (
+          <p className="desk-error" role="alert">
+            {error}
+          </p>
+        )}
+      </form>
+    </details>
   );
 }

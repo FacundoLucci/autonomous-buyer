@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import { useAuthActions, useConvexAuth } from "@/lib/buyer-auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "./floating-input";
 import { Brand, Loading } from "./primitives";
 import { TaskChat } from "./chat";
 import { errorText } from "./model";
@@ -88,15 +88,14 @@ function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
   }
   return (
     <form onSubmit={submit} className="desk-auth-form">
-      <label htmlFor="username">Account name</label>
-      <Input
+      <FloatingInput
         id="username"
+        label="Account name"
         autoComplete="username webauthn"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
         maxLength={120}
-        placeholder="your-name"
       />
       <Button type="submit" disabled={pending || !username.trim()}>
         {pending ? "Connecting…" : mode === "login" ? "Sign in with passkey" : "Create account"}
@@ -138,18 +137,18 @@ function PasswordForm({ mode }: { mode: "signup" | "login" }) {
   }
   return (
     <form onSubmit={submit} className="desk-auth-form">
-      <label htmlFor="email">Email</label>
-      <Input
+      <FloatingInput
         id="email"
+        label="Email"
         type="email"
         autoComplete="email"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <label htmlFor="password">Password</label>
-      <Input
+      <FloatingInput
         id="password"
+        label="Password"
         type="password"
         autoComplete={mode === "login" ? "current-password" : "new-password"}
         required

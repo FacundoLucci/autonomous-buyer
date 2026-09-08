@@ -2,7 +2,8 @@ import type { Doc } from "./_generated/dataModel";
 export const questions = {
   companyName: "What’s your company called?",
   companyWebsite: "What’s your company’s website?",
-  shippingAddress: "Where should deliveries go?",
+  shippingAddress:
+    "Where should deliveries go? Enter the full address, including postal code and country.",
   confirmAddress: "Is this the right delivery address?",
   name: "What’s the item called?",
   itemId: "Which inventory item do you need?",
@@ -29,6 +30,15 @@ export const questions = {
   noResults: "I couldn’t verify that. Do you have a link or another detail?",
 } as const;
 export type Question = keyof typeof questions;
+export function questionMessage(question: Question, draft: Doc<"taskChats">["draft"]) {
+  if (question === "confirmAddress") {
+    const address = draft.shippingAddress?.trim();
+    return address
+      ? `${address}\n\nIs this the right delivery address? If not, enter the correct one.`
+      : `I don’t have a delivery address yet. ${questions.shippingAddress}`;
+  }
+  return questions[question];
+}
 export type Task = Doc<"taskChats">["task"];
 const fields: Record<Task, readonly string[]> = {
   stock_update: ["itemId", "name", "stock"],
