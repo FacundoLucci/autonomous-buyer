@@ -13,9 +13,14 @@ import { errorText } from "./model";
 export function AccountPage({ mode }: { mode: "signup" | "login" }) {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { version, signOut } = useAuthActions();
+  const [accountError, setAccountError] = useState<string | null>(null);
+  const [authenticating, setAuthenticating] = useState(false);
   const user = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
   const workspace = useQuery(api.onboarding.getWorkspace, isAuthenticated ? {} : "skip");
-  if (isLoading || (isAuthenticated && (user === undefined || workspace === undefined)))
+  if (
+    !authenticating &&
+    (isLoading || (isAuthenticated && (user === undefined || workspace === undefined)))
+  )
     return <Loading />;
   if (workspace)
     return (
@@ -36,6 +41,27 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
       {isAuthenticated && user && !user.isJudgeDemo && !user.canApproveDemo ? (
         <section className="desk-onboarding">
           <h1>Let’s set up your desk.</h1>
+          <p>{user.email ?? user.name}</p>
+          <a className="desk-secondary-link" href="/">
+            Finish later
+          </a>
+          <Button
+            variant="ghost"
+            onClick={async () => {
+              try {
+                await signOut();
+              } catch (e) {
+                setAccountError(errorText(e));
+              }
+            }}
+          >
+            Use another account
+          </Button>
+          {accountError && (
+            <p className="desk-error" role="alert">
+              {accountError}
+            </p>
+          )}
           <TaskChat
             request={{ task: "onboarding" }}
             onSaved={() => {
@@ -46,20 +72,33 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
       ) : (
         <section className="desk-account">
           <p className="desk-eyebrow">YOUR BUY DESK</p>
-          <h1>{mode === "login" ? "Welcome back." : "Let’s get moving."}</h1>
-          {isAuthenticated ? (
-            <Button onClick={() => void signOut()}>Sign out of the demo</Button>
-          ) : version === "passkey" ? (
-            <PasskeyForm mode={mode} />
+          <h1>{mode === "login" ? "Sign in." : "Create your account."}</h1>
+          {isAuthenticated && <p>Demo access is separate from your own account.</p>}
+          {version === "passkey" ? (
+            <PasskeyForm mode={mode} onBusyChange={setAuthenticating} />
           ) : (
-            <PasswordForm mode={mode} />
+            <PasswordForm mode={mode} onBusyChange={setAuthenticating} />
           )}
+          <a
+            className="desk-secondary-link"
+            href={`/setup?mode=${mode === "login" ? "signup" : "login"}&method=${version}`}
+          >
+            {mode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}
+          </a>
         </section>
       )}
     </main>
   );
 }
-function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
+function PasskeyForm({
+  mode,
+  onBusyChange,
+}: {
+  mode: "signup" | "login";
+  onBusyChange: (busy: boolean) => void;
+}) {
+  const { isAuthenticated } = useConvexAuth();
+  const { signOut } = useAuthActions();
   const { signIn, pending } = usePasskey(
     {
       startSignIn: api.passkeyAuth.startSignIn,
@@ -67,14 +106,18 @@ function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
       finishSignIn: api.passkeyAuth.finishSignIn,
       finishSignUp: api.passkeyAuth.finishSignUp,
     },
-    { autofill: true },
+    { autofill: !isAuthenticated && mode === "login" },
   );
   const [username, setUsername] = useState(""),
     [error, setError] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setSwitching(true);
+    onBusyChange(true);
     try {
+      if (isAuthenticated) await signOut();
       const result = await signIn({ username: username.trim().toLowerCase() });
       if (!result.success)
         setError(
@@ -84,6 +127,9 @@ function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
         );
     } catch (e) {
       setError(errorText(e));
+    } finally {
+      setSwitching(false);
+      onBusyChange(false);
     }
   }
   return (
@@ -97,8 +143,12 @@ function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
         required
         maxLength={120}
       />
-      <Button type="submit" disabled={pending || !username.trim()}>
-        {pending ? "Connecting…" : mode === "login" ? "Sign in with passkey" : "Create account"}
+      <Button type="submit" disabled={switching || pending || !username.trim()}>
+        {switching || pending
+          ? "Connecting…"
+          : mode === "login"
+            ? "Sign in with passkey"
+            : "Create account"}
         <ArrowRight size={17} />
       </Button>
       {error && (
@@ -112,8 +162,15 @@ function PasskeyForm({ mode }: { mode: "signup" | "login" }) {
     </form>
   );
 }
-function PasswordForm({ mode }: { mode: "signup" | "login" }) {
-  const { signIn } = useAuthActions();
+function PasswordForm({
+  mode,
+  onBusyChange,
+}: {
+  mode: "signup" | "login";
+  onBusyChange: (busy: boolean) => void;
+}) {
+  const { signIn, signOut } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [busy, setBusy] = useState(false),
@@ -121,8 +178,10 @@ function PasswordForm({ mode }: { mode: "signup" | "login" }) {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
+    onBusyChange(true);
     setError(null);
     try {
+      if (isAuthenticated) await signOut();
       await signIn("password", {
         email: email.trim().toLowerCase(),
         password,
@@ -133,6 +192,7 @@ function PasswordForm({ mode }: { mode: "signup" | "login" }) {
       setError(errorText(e));
     } finally {
       setBusy(false);
+      onBusyChange(false);
     }
   }
   return (

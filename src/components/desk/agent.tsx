@@ -299,7 +299,7 @@ export function AgentSurface({
                   if (open) close();
                   else {
                     setOpen(true);
-                    if (state.latest.focus) setFocus(state.latest.focus);
+                    setFocus(state.latest.focus);
                   }
                 }}
               >

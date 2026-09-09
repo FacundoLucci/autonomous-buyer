@@ -30,7 +30,6 @@ import { useClock } from "@/lib/use-clock";
 import { StockCount, BuyingRules, type UpdateCount, type UpdateRules } from "./inventory";
 import { Brand, Empty, Loading, OutLink, PageHeading } from "./primitives";
 import { Landing } from "./landing";
-import { AccountPage } from "./auth";
 import { TaskChat } from "./chat";
 import { LiveBuyer } from "./agent-live";
 import { useBuyer } from "./agent";
@@ -68,9 +67,12 @@ export function DeskHome({ search, navigate }: { search: SearchState; navigate: 
 function RealDesk({ search, navigate }: { search: SearchState; navigate: Navigation }) {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const workspace = useQuery(api.onboarding.getWorkspace, isAuthenticated ? {} : "skip");
-  if (isLoading || (isAuthenticated && workspace === undefined)) return <Loading />;
+  const user = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
+  if (isLoading || (isAuthenticated && (workspace === undefined || user === undefined)))
+    return <Loading />;
   if (!isAuthenticated) return <Landing />;
-  if (!workspace) return <AccountPage mode="signup" />;
+  if (!workspace)
+    return <Landing resumeSetup={!!user && !user.isJudgeDemo && !user.canApproveDemo} />;
   return <LiveWorkspace workspace={workspace} search={search} navigate={navigate} />;
 }
 function LiveWorkspace({

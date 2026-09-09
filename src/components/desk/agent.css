@@ -16,7 +16,7 @@
 .desk-agent button:disabled {
   cursor: default;
 }
-.desk-agent :focus-visible {
+.desk-agent :focus-visible:not(input):not(textarea) {
   outline: 2px solid var(--foreground);
   outline-offset: 4px;
 }
@@ -99,8 +99,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--foreground);
+  border-bottom: 1px solid var(--input);
   min-width: 0;
+}
+.desk-agent-composer:has(textarea:focus-visible) {
+  border-bottom-color: var(--ring);
 }
 .desk-agent-composer textarea {
   font:
@@ -118,6 +121,7 @@
   max-height: 132px;
   min-height: 48px;
   box-shadow: none;
+  outline: none;
   color: var(--foreground);
 }
 .desk-agent-composer textarea::placeholder {

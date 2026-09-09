@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-09-08T17:30:19.173Z",
+  "deployment": "https://festive-coyote-483.convex.cloud",
+  "authenticatedPasswordLogin": true,
+  "liveModel": true,
+  "sessionId": "r177zknebnrk8z7vj6vevx7ced8e0ebx",
+  "itemId": "k171swe1dn5tx1vc5p6tdcebfx8e1659",
+  "before": 10,
+  "after": 2,
+  "receipt": "QA packing tape: 2 rolls on hand.",
+  "providerCredits": ["openai"],
+  "conversationSurvivesTaskChange": true,
+  "emailsSent": 0,
+  "ordersCreated": 0
+}

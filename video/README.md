@@ -47,9 +47,14 @@ composition props. Example props file:
 ```json
 {
   "motion": {
-    "email": {"src": "captures/email.mp4", "durationInFrames": 98, "trimBefore": 0, "playbackRate": 1}
+    "email": {
+      "src": "captures/email.mp4",
+      "durationInFrames": 98,
+      "trimBefore": 0,
+      "playbackRate": 1
+    }
   },
-  "deliClip": {"src": "deli/counter.mp4", "trimBefore": 0},
+  "deliClip": { "src": "deli/counter.mp4", "trimBefore": 0 },
   "judgeUrl": "festive-coyote-483.convex.site/?demo=true"
 }
 ```
@@ -73,8 +78,8 @@ Put recordings in ignored `public/voice/`. Create ignored `voice-props.json`:
 ```json
 {
   "voiceClips": [
-    {"sceneId": "question", "src": "voice/01-question.wav", "trimBefore": 0},
-    {"sceneId": "owner", "src": "voice/02-owner.wav", "trimBefore": 0}
+    { "sceneId": "question", "src": "voice/01-question.wav", "trimBefore": 0 },
+    { "sceneId": "owner", "src": "voice/02-owner.wav", "trimBefore": 0 }
   ]
 }
 ```

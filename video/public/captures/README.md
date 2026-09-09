@@ -14,23 +14,23 @@ publishing the finished film. No release was deployed to create these captures.
 
 ## What the files show
 
-| File | Actual observed screen |
-| --- | --- |
-| overview | Buy Desk entry, demo workspace notice, signed-out walkthrough |
-| risk | Recorded guide's original shortage step |
-| risk-detail | Unobscured stock 3,240; use 612/day; 15,000 required by September 2 |
-| sources | Firecrawl supplier-page evidence and OpenAI provider credits |
-| rfqs | Stored SupplyCo request; recipient explicitly marked controlled demo |
-| followup1 | SupplyCo first clarification and still-incomplete next reply |
-| email | Expanded exact sent clarification asking freight and arrival |
-| followup2 | Second clarification and completed revision 3 fields |
-| comparison | SupplyCo $3,000 vs RestaurantSupply $2,600, with arrival/stockout rules |
-| approval | Recorded guide's exact terms and demo-assumption warning |
-| approval-detail | Unobscured Facundo approval, terms, and inspect-PO control |
-| confirmation | Supplier terms match; 15,000 confirmed incoming units |
-| order | Exact PO totals and approved quote revision 3 |
-| delivery | Stored delivered-once receipt and matching confirmation |
-| recent | Recent buys with confirmed PC-0180 |
+| File            | Actual observed screen                                                  |
+| --------------- | ----------------------------------------------------------------------- |
+| overview        | Buy Desk entry, demo workspace notice, signed-out walkthrough           |
+| risk            | Recorded guide's original shortage step                                 |
+| risk-detail     | Unobscured stock 3,240; use 612/day; 15,000 required by September 2     |
+| sources         | Firecrawl supplier-page evidence and OpenAI provider credits            |
+| rfqs            | Stored SupplyCo request; recipient explicitly marked controlled demo    |
+| followup1       | SupplyCo first clarification and still-incomplete next reply            |
+| email           | Expanded exact sent clarification asking freight and arrival            |
+| followup2       | Second clarification and completed revision 3 fields                    |
+| comparison      | SupplyCo $3,000 vs RestaurantSupply $2,600, with arrival/stockout rules |
+| approval        | Recorded guide's exact terms and demo-assumption warning                |
+| approval-detail | Unobscured Facundo approval, terms, and inspect-PO control              |
+| confirmation    | Supplier terms match; 15,000 confirmed incoming units                   |
+| order           | Exact PO totals and approved quote revision 3                           |
+| delivery        | Stored delivered-once receipt and matching confirmation                 |
+| recent          | Recent buys with confirmed PC-0180                                      |
 
 The stills are 1920×1080 browser screenshots. The app's own guide adds its own
 spotlight/dimming; supplemental `*-detail` images were captured through normal

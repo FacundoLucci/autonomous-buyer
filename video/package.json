@@ -1,7 +1,7 @@
 {
   "name": "buy-hard-demo-film",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "studio": "remotion studio src/index.ts",

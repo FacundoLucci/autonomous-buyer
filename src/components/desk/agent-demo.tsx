@@ -76,11 +76,11 @@ export function DemoBuyer({
     };
     record(next.prompt ?? prompts[next.task]);
   }
-  async function send(text: string) {
+  async function send(text: string, selected: AgentFocus) {
     record(text, "user");
     const item =
       stockItemMatch(text, workspace.items) ??
-      workspace.items.find((i) => i.id === search.item || i.id === request?.contextId);
+      workspace.items.find((i) => i.id === selected.item || i.id === request?.contextId);
     const count = item ? reportedStock(text, item.unit) : null;
     if (item && count !== null) {
       await updateCount(item, count, "chat");
@@ -93,7 +93,7 @@ export function DemoBuyer({
     if (/where|track|status|approve|place.*order|show.*buy/i.test(text)) {
       const buy = item
         ? snapshot.buys.find((b) => b.itemId === item.id)
-        : snapshot.buys.find((b) => b.id === search.buy);
+        : snapshot.buys.find((b) => b.id === selected.buy || b.order?._id === selected.buy);
       setTask(undefined);
       setRequest(undefined);
       setFocus({ page: "buys", buy: buy?.id });
@@ -114,7 +114,23 @@ export function DemoBuyer({
       return;
     }
     let current = request;
-    if (/\badd\b.*\b(item|product)|^add /i.test(text)) current = { task: "add_item" };
+    const selectedBuy = snapshot.buys.find(
+      (b) => b.id === selected.buy || b.order?._id === selected.buy,
+    );
+    const quantityChange =
+      /^(?:(?:make|change|update|set)\s+(?:it|that|the quantity|the order)(?:\s+to)?\s+)?\d+\s*(?:cases?|rolls?|units?)[.!]?$/i.test(
+        text.trim(),
+      );
+    if (selectedBuy && quantityChange) {
+      if (selectedBuy.order?.status !== "draft") {
+        record(
+          "This purchase has already moved past review. Choose a draft purchase to change its quantity.",
+        );
+        setFocus({ page: "buys", buy: selectedBuy.id });
+        return;
+      }
+      current = { task: "buy", contextId: selectedBuy.id, revision: true };
+    } else if (/\badd\b.*\b(item|product)|^add /i.test(text)) current = { task: "add_item" };
     else if (/\b(buy|order|restock)\b/i.test(text) && item && request?.task !== "buy")
       current = { task: "new_buy", contextId: item.id };
     if (!current) {
@@ -173,6 +189,7 @@ export function DemoBuyer({
         return;
       }
       revise(buy.id, quantity);
+      setFocus({ page: "buys", buy: buy.id });
       if (buy.order.supplierEmail && !buy.order.buyUrl) {
         record("This needs a fresh supplier quote. Share it when it’s ready.");
         setTask(undefined);

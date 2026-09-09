@@ -1,16 +1,35 @@
-import {existsSync, statSync} from 'node:fs';
-import {fileURLToPath} from 'node:url';
-import path from 'node:path';
+import { existsSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
-export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const requiredCaptures = ['overview', 'risk', 'risk-detail', 'sources', 'rfqs', 'followup1', 'email', 'followup2', 'comparison', 'approval', 'approval-detail', 'delivery', 'confirmation', 'order', 'recent'];
+export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const requiredCaptures = [
+  "overview",
+  "risk",
+  "risk-detail",
+  "sources",
+  "rfqs",
+  "followup1",
+  "email",
+  "followup2",
+  "comparison",
+  "approval",
+  "approval-detail",
+  "delivery",
+  "confirmation",
+  "order",
+  "recent",
+];
 
 export function checkAssets(names = requiredCaptures) {
   const missing = names.filter((name) => {
-    const file = path.join(projectRoot, 'public', 'captures', `${name}.png`);
+    const file = path.join(projectRoot, "public", "captures", `${name}.png`);
     return !existsSync(file) || statSync(file).size < 100;
   });
-  if (missing.length > 0) throw new Error(`Missing genuine app captures: ${missing.join(', ')}. Supply video/public/captures/<name>.png; the renderer never invents UI.`);
+  if (missing.length > 0)
+    throw new Error(
+      `Missing genuine app captures: ${missing.join(", ")}. Supply video/public/captures/<name>.png; the renderer never invents UI.`,
+    );
   return names;
 }
 
