@@ -171,7 +171,7 @@ export function AgentSurface({
   return (
     <BuyerContext.Provider value={(request) => void begin(request)}>
       <div className="desk-with-agent">
-        {children}
+        <div className="desk-agent-page">{children}</div>
         <div className="desk-agent" ref={keyboard}>
           {open && (
             <section className="desk-agent-panel" aria-label="Your buyer conversation">
