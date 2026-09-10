@@ -66,6 +66,9 @@ function comparisonState(item: Doc<"inventoryItems">, orders: Doc<"companyOrders
   return JSON.stringify({
     quantity: item.quantityOnHand,
     counted: item.stockCountedAt,
+    forecastQuantity: item.forecastQuantity,
+    forecastAt: item.forecastAt,
+    revision: item.planningRevision,
     known: item.stockCountKnown,
     usage: item.estimatedDailyUsage,
     priority: item.buyingPriority,
@@ -574,6 +577,19 @@ export const commit = mutation({
           createdAt: Date.now(),
         });
       }
+      const pendingBuyId = ctx.db.normalizeId("companyBuys", resultId);
+      const pendingBuy = pendingBuyId ? await ctx.db.get("companyBuys", pendingBuyId) : null;
+      if (pendingBuy && !pendingBuy.orderId && !pendingBuy.purchasingState) {
+        await ctx.db.patch("companyBuys", pendingBuy._id, {
+          planVersion: pendingBuy.planVersion ?? 0,
+          purchasingState: "researching",
+          purchasingNote: "Finding options for this purchase.",
+        });
+        await ctx.scheduler.runAfter(0, internal.companyPurchasing.start, {
+          buyId: pendingBuy._id,
+          planVersion: pendingBuy.planVersion ?? 0,
+        });
+      }
       summary = `Buy started for ${item.name}.`;
     } else if (chat.task === "buy" && c.item) {
       if (d.expectedOn && Date.parse(`${d.expectedOn}T23:59:59.999Z`) < Date.now())
@@ -759,6 +775,10 @@ export const snapshot = query({
           unit: item?.unit ?? "units",
           quantity: buy.quantity ?? null,
           requiredBy: buy.requiredBy ?? null,
+          automatic: buy.automatic,
+          planVersion: buy.planVersion,
+          purchasingState: buy.purchasingState,
+          purchasingNote: buy.purchasingNote,
           closed: buy.closed,
           createdAt: buy.createdAt,
           order,
@@ -795,6 +815,10 @@ export const snapshot = query({
             unit: order.unit,
             quantity: order.quantity,
             requiredBy: order.requiredBy,
+            automatic: undefined,
+            planVersion: undefined,
+            purchasingState: undefined,
+            purchasingNote: undefined,
             closed: !order.isOpen,
             createdAt: order.createdAt,
             order,
@@ -824,7 +848,17 @@ export const cancelBuy = mutation({
     const buy = id ? await ctx.db.get("companyBuys", id) : null;
     if (!buy || buy.organizationId !== organization._id) throw new ConvexError("Buy not found.");
     if (buy.orderId) throw new ConvexError("This buy already has a purchase order.");
-    await ctx.db.patch("companyBuys", buy._id, { closed: true });
+    await ctx.db.patch("companyBuys", buy._id, {
+      closed: true,
+      planVersion: (buy.planVersion ?? 0) + 1,
+    });
+    if (buy.automatic) {
+      await ctx.db.patch("inventoryItems", buy.itemId, {
+        replenishmentEnabled: false,
+        automationState: "paused",
+        automationNote: "Automatic replenishment paused after cancelling this buy.",
+      });
+    }
     return null;
   },
 });
@@ -1058,6 +1092,8 @@ export const compareOptions = internalMutation({
       quantity: item.stockCountKnown === false ? null : item.quantityOnHand,
       dailyUsage: item.estimatedDailyUsage ?? null,
       stockCountedAt: item.stockCountedAt ?? null,
+      forecastQuantity: item.forecastQuantity,
+      forecastAt: item.forecastAt,
       leadTimeDays: item.supplierLeadTimeDays ?? null,
       safetyStockDays: item.safetyStockDays,
       buyingPriority: item.buyingPriority ?? null,

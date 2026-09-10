@@ -133,6 +133,7 @@ export function ApprovalPrompt({
       }
       onYes={onYes}
       onNo={onNo}
+      yes="Approve and order"
       confirm={{
         question: (
           <>
@@ -147,7 +148,7 @@ export function ApprovalPrompt({
             ?
           </>
         ),
-        label: `Confirm ${money(order.totalCents, order.currency)}`,
+        label: `Approve and order for ${money(order.totalCents, order.currency)}`,
       }}
     />
   );

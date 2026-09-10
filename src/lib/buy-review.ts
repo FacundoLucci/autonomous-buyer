@@ -31,6 +31,12 @@ export function approvalKey(
     reviewRequired?: boolean;
     requestedQuantity?: number;
     quotedArrival?: string;
+    orderingMethod?: "purchase_order" | "website";
+    supplierPoVerified?: boolean;
+    sku?: string;
+    unit?: string;
+    itemName?: string;
+    supplierSku?: string;
   },
 ) {
   return JSON.stringify([
@@ -40,5 +46,11 @@ export function approvalKey(
     !!order.reviewRequired,
     order.requestedQuantity,
     order.quotedArrival,
+    order.orderingMethod,
+    order.supplierPoVerified,
+    order.sku,
+    order.unit,
+    order.itemName,
+    order.supplierSku,
   ]);
 }

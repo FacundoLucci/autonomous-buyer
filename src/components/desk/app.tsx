@@ -17,6 +17,7 @@ import {
 import { useAuthActions, useConvexAuth } from "@/lib/buyer-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +36,11 @@ import { LiveBuyer } from "./agent-live";
 import { useBuyer } from "./agent";
 import { DemoDesk } from "./demo";
 import { PurchasingInbox } from "./mail";
+import { SupplierDirectory } from "./suppliers";
 import { LiveAuditLog } from "./audit";
 import { Fact, Sentence, BuySentence, Decision, ApprovalPrompt, units } from "./sentences";
 import { approvalKey } from "@/lib/buy-review";
+import { ReplenishmentControl, PurchasingProgress, OrderProgress } from "./automation";
 import {
   buyStatus,
   dateLabel,
@@ -85,28 +88,81 @@ function LiveWorkspace({
   navigate: Navigation;
 }) {
   const snapshot = useQuery(api.desk.snapshot, {});
+  const [supplierSession, setSupplierSession] = useState<{
+    url: string;
+    orderId: Id<"companyOrders">;
+  } | null>(null);
+  const [sessionBusy, setSessionBusy] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
   const { signOut } = useAuthActions();
+  const helpSession = useAction(api.browserCheckout.helpSession);
+  const retryBrowser = useAction(api.browserCheckout.retry);
+  const retryExecution = useMutation(api.companyOrders.retryExecution);
+  const retryResearch = useMutation(api.companyPurchasing.retry);
+  const begin = useMutation(api.buyer.begin);
   const provisionInbox = useAction(api.companyMail.provision);
   const recordCount = useMutation(api.companyInventory.recordCount),
-    updateRules = useMutation(api.companyInventory.updateRules);
+    updateRules = useMutation(api.companyInventory.updateRules),
+    setAutomation = useMutation(api.companyInventory.setAutomation);
   const approve = useMutation(api.companyOrders.approve),
     send = useMutation(api.companyOrders.send),
     checkDelivery = useMutation(api.companyOrders.checkDelivery),
     receive = useMutation(api.companyOrders.receive),
     archive = useMutation(api.companyInventory.archiveItem),
     cancel = useMutation(api.desk.cancelBuy);
+  const cancelOrder = useMutation(api.companyOrders.cancel);
+  const requestCancellation = useMutation(api.companyOrders.requestCancellation);
   async function action(kind: string, buy?: Buy, item?: Item, reviewedKey?: string) {
+    if ((kind === "enable_replenishment" || kind === "pause_replenishment") && item) {
+      await setAutomation({ itemId: item.id, enabled: kind === "enable_replenishment" });
+      return;
+    }
     if (kind === "archive" && item) {
       await archive({ itemId: item.id, archived: true });
       navigate({ ...search, item: undefined });
       return;
     }
     if (kind === "cancel" && buy) {
-      await cancel({ id: buy.id });
+      if (buy.order)
+        await cancelOrder({ orderId: buy.order._id, note: "Cancelled before submission." });
+      else await cancel({ id: buy.id });
+      return;
+    }
+    if (kind === "retry_research" && buy) {
+      await retryResearch({ buyId: buy.id as Id<"companyBuys"> });
       return;
     }
     if (!buy?.order) return;
     const orderId = buy.order._id;
+    if (kind === "request_cancellation") {
+      await requestCancellation({ orderId });
+      return;
+    }
+    if (kind === "record_cancellation") {
+      await cancelOrder({
+        orderId,
+        supplierConfirmed: true,
+        note: "Buyer reports the supplier confirmed cancellation of the remaining delivery.",
+      });
+      return;
+    }
+    if (kind === "check_order") {
+      if (buy.order.orderingMethod === "website") await retryBrowser({ orderId });
+      else if (buy.order.providerOutboundId) await checkDelivery({ orderId });
+      else await retryExecution({ orderId });
+      return;
+    }
+    if (kind === "resolve_order") {
+      if (buy.order.orderingMethod === "website" && buy.order.browserJobId) {
+        const url = await helpSession({ orderId });
+        if (new URL(url).protocol !== "https:") throw new Error("Invalid supplier session.");
+        setSessionError(null);
+        setSupplierSession({ url, orderId });
+      } else {
+        await begin({ task: "buy", contextId: buy.id });
+      }
+      return;
+    }
     if (kind === "approve") await approve({ orderId, reviewedKey });
     if (kind === "send") {
       if (!workspace.inbox) await provisionInbox({});
@@ -128,6 +184,7 @@ function LiveWorkspace({
   };
   const settings = (
     <>
+      <SupplierDirectory />
       <PurchasingInbox email={workspace.inbox?.email} />
       <Alerts />
     </>
@@ -166,6 +223,44 @@ function LiveWorkspace({
         audit={search.page === "audit" ? <LiveAuditLog /> : null}
         settings={settings}
       />
+      <Dialog
+        open={!!supplierSession}
+        onOpenChange={(open) => {
+          if (!open) setSupplierSession(null);
+        }}
+      >
+        <DialogContent>
+          <DialogTitle>Help with supplier checkout</DialogTitle>
+          <DialogDescription>
+            Open the supplier session to complete the requested login or account step. The agent
+            will check the purchase terms again before ordering.
+          </DialogDescription>
+          {supplierSession && <OutLink href={supplierSession.url}>Open supplier session</OutLink>}
+          <Button
+            disabled={sessionBusy}
+            onClick={async () => {
+              if (!supplierSession) return;
+              setSessionBusy(true);
+              setSessionError(null);
+              try {
+                await retryBrowser({ orderId: supplierSession.orderId });
+                setSupplierSession(null);
+              } catch (error) {
+                setSessionError(errorText(error));
+              } finally {
+                setSessionBusy(false);
+              }
+            }}
+          >
+            I’ve finished — continue
+          </Button>
+          {sessionError && (
+            <p role="alert" className="desk-error">
+              {sessionError}
+            </p>
+          )}
+        </DialogContent>
+      </Dialog>
     </LiveBuyer>
   );
 }
@@ -335,7 +430,7 @@ export function WorkspaceScreen({
                   ? `Ready for you to approve ${money(b.order.totalCents, b.order.currency)}.`
                   : b.order?.expectedOn && isOpen(b)
                     ? `Expected by ${dateLabel(b.order.expectedOn)}.`
-                    : buyStatus(b) + "."}
+                    : (b.purchasingNote ?? buyStatus(b) + ".")}
             </small>
           )}
         </span>
@@ -395,11 +490,18 @@ export function WorkspaceScreen({
                   </>
                 ) : (
                   <>
-                    You have <StockCount item={item} onSave={updateCount} inline /> of{" "}
-                    <Fact>{item.name}</Fact> on hand.
+                    About <StockCount item={item} onSave={updateCount} inline /> of{" "}
+                    <Fact>{item.name}</Fact> remain at your current usage.
                   </>
                 )}
               </Sentence>
+              {item.quantity !== null && item.stockCountedAt && (
+                <p className="desk-muted">
+                  Last counted {units(item.quantity, item.unit)} on{" "}
+                  {new Date(item.stockCountedAt).toLocaleDateString()}. Receipts and usage update
+                  the estimate.
+                </p>
+              )}
               <Sentence>
                 {item.dailyUsage !== null && (
                   <>
@@ -431,6 +533,13 @@ export function WorkspaceScreen({
                 </Sentence>
               )}
               <StockLabel item={item} buys={openBuys} detail />
+              <ReplenishmentControl
+                item={item}
+                busy={busy}
+                onChange={(enabled) =>
+                  run(enabled ? "enable_replenishment" : "pause_replenishment")
+                }
+              />
               <div className="desk-answer-actions">
                 <Button
                   variant="outline"
@@ -446,6 +555,7 @@ export function WorkspaceScreen({
                   Something changed…
                 </Button>
                 <Button
+                  variant="ghost"
                   onClick={() =>
                     openChat({
                       task: "new_buy",
@@ -455,7 +565,7 @@ export function WorkspaceScreen({
                     })
                   }
                 >
-                  Buy more
+                  Start a one-off buy
                 </Button>
               </div>
               {chatView}
@@ -519,13 +629,23 @@ export function WorkspaceScreen({
                   Deliver to <Fact>{buy.order.shipTo}</Fact>.
                 </Sentence>
               )}
-              {!buy.order && isOpen(buy) && (
+              {!buy.order && isOpen(buy) && !buy.automatic && !buy.purchasingState && (
                 <Decision
                   question="Shall I find buying options?"
                   yes="Find options"
                   onYes={() => openChat({ task: "buy", contextId: buy.id, name: buy.name })}
                 />
               )}
+              {(!buy.order ||
+                (buy.order.reviewRequired && buy.order.orderingMethod !== "website")) &&
+                isOpen(buy) && (
+                  <PurchasingProgress
+                    buy={buy}
+                    busy={busy}
+                    onRetry={() => run("retry_research")}
+                    onHelp={() => openChat({ task: "buy", contextId: buy.id, name: buy.name })}
+                  />
+                )}
               {buy.order?.status === "draft" &&
                 !buy.order.reviewRequired &&
                 chat?.task !== "buy" && (
@@ -546,54 +666,45 @@ export function WorkspaceScreen({
                     }
                   />
                 )}
-              {buy.order?.reviewRequired && !chat && (
-                <Decision
-                  question="The change needs a fresh price, shipping cost, and arrival date. Shall we continue?"
-                  yes="Continue"
-                  onYes={() =>
-                    openChat({
-                      task: "buy",
-                      contextId: buy.id,
-                      name: buy.name,
-                      prompt: "What do you have from the supplier?",
-                    })
-                  }
-                />
-              )}
-              {buy.order?.status === "approved" && (
-                <>
-                  <Sentence>
-                    You approved <Fact>{money(buy.order.totalCents, buy.order.currency)}</Fact>.
-                    It’s ready to order.
-                  </Sentence>
-                  <div className="desk-answer-actions">
-                    {buy.order.buyUrl && (
-                      <OutLink href={buy.order.buyUrl}>Order from supplier</OutLink>
-                    )}
-                    {buy.order.supplierEmail && (
-                      <Button disabled={busy} onClick={() => void run("send")}>
-                        Send purchase order
-                      </Button>
-                    )}
-                  </div>
-                </>
+              {buy.order?.reviewRequired &&
+                !buy.automatic &&
+                !buy.purchasingState &&
+                buy.order.orderingMethod !== "website" &&
+                !chat && (
+                  <Decision
+                    question="The change needs a fresh price, shipping cost, and arrival date. Shall we continue?"
+                    yes="Continue"
+                    onYes={() =>
+                      openChat({
+                        task: "buy",
+                        contextId: buy.id,
+                        name: buy.name,
+                        prompt: "What do you have from the supplier?",
+                      })
+                    }
+                  />
+                )}
+              <OrderProgress
+                buy={buy}
+                busy={busy}
+                onCheck={() => run("check_order")}
+                onHelp={() => run("resolve_order")}
+              />
+              {buy.order?.cancellationRequestedAt && (
+                <Sentence>
+                  I’ve requested cancellation. The order remains open until the supplier confirms.
+                </Sentence>
               )}
               {(buy.order?.status === "approved" || buy.order?.status === "sent") && (
-                <Decision
-                  question="Has the supplier confirmed the order?"
-                  yes="Add confirmation"
-                  onYes={() => openChat({ task: "confirm", contextId: buy.id })}
-                />
-              )}
-              {buy.order?.status === "sending" && (
-                <Sentence>Your purchase order is being sent.</Sentence>
-              )}
-              {buy.order?.status === "send_failed" && (
-                <Decision
-                  question="The email hasn’t been confirmed. Shall I check its delivery?"
-                  onYes={() => run("check_delivery")}
-                  busy={busy}
-                />
+                <details className="desk-disclosure">
+                  <summary>Have a confirmation from elsewhere?</summary>
+                  <Button
+                    variant="outline"
+                    onClick={() => openChat({ task: "confirm", contextId: buy.id })}
+                  >
+                    Add confirmation
+                  </Button>
+                </details>
               )}
               {(buy.order?.status === "placed" || buy.order?.status === "part_received") && (
                 <Decision
@@ -641,12 +752,33 @@ export function WorkspaceScreen({
                     </Sentence>
                   )}
                   {buy.order.notes && <Sentence>{buy.order.notes}</Sentence>}
+                  {buy.order.supplierSku && (
+                    <Sentence>
+                      Supplier product code: <Fact>{buy.order.supplierSku}</Fact>.
+                    </Sentence>
+                  )}
+                  {buy.order.sourceUrl && (
+                    <OutLink href={buy.order.sourceUrl}>Supplier source</OutLink>
+                  )}
+                  {["sent", "placed", "part_received"].includes(buy.order.status) && (
+                    <Decision
+                      question="Has the supplier already cancelled the remaining delivery?"
+                      yes="Record supplier cancellation"
+                      busy={busy}
+                      confirm={{
+                        question:
+                          "Confirm the supplier has cancelled the remaining delivery. This updates your records; it does not ask the supplier to cancel.",
+                        label: "Record confirmed cancellation",
+                      }}
+                      onYes={() => run("record_cancellation")}
+                    />
+                  )}
                 </details>
               )}
               {buy.order && !search.demo && <BuyHistory orderId={buy.order._id} />}
               <div className="desk-secondary-actions">
                 {isOpen(buy) &&
-                  !buy.order &&
+                  (!buy.order || buy.order.status === "draft") &&
                   (confirm === "cancel" ? (
                     <>
                       <span>Cancel this buy?</span>
@@ -662,6 +794,21 @@ export function WorkspaceScreen({
                       Cancel buy
                     </Button>
                   ))}
+                {buy.order &&
+                  ["sent", "placed", "part_received"].includes(buy.order.status) &&
+                  !buy.order.cancellationRequestedAt && (
+                    <Decision
+                      question="Need to stop this order?"
+                      yes="Request cancellation"
+                      busy={busy}
+                      confirm={{
+                        question:
+                          "Ask the supplier to cancel the remaining delivery? It may already be on its way.",
+                        label: "Send cancellation request",
+                      }}
+                      onYes={() => run("request_cancellation")}
+                    />
+                  )}
               </div>
             </>
           ) : (
@@ -705,6 +852,25 @@ export function WorkspaceScreen({
                   return rowBuy(b);
                 const countNeeded =
                   plan.label.startsWith("Count") || plan.label.startsWith("Add usage");
+                if (i.replenishmentEnabled && !countNeeded) {
+                  if (b) return rowBuy(b);
+                  return (
+                    <button
+                      key={i.id}
+                      className="desk-buy-line desk-buy-alert"
+                      onClick={() => view("inventory", { item: i.id })}
+                    >
+                      <RefreshCw className="desk-alert-icon" aria-hidden="true" />
+                      <span>
+                        <span className="desk-sentence">
+                          <Fact>{i.name}</Fact>.
+                        </span>
+                        <small>{i.automationNote ?? "I’m checking the next replenishment."}</small>
+                      </span>
+                      <ArrowUpRight size={17} />
+                    </button>
+                  );
+                }
                 const label =
                   plan.low && b && !plan.arriving
                     ? b.order?.status === "approved"
@@ -847,9 +1013,9 @@ export function WorkspaceScreen({
                   onChange={(e) => setFilter(e.target.value)}
                 />
               </div>
-              <Button onClick={() => openChat({ task: "new_buy" })}>
+              <Button variant="outline" onClick={() => openChat({ task: "new_buy" })}>
                 <Plus size={17} />
-                Start buy
+                One-off buy
               </Button>
             </div>
             {chatView}
@@ -913,7 +1079,9 @@ export function WorkspaceScreen({
         )}
       </main>
       <footer className="desk-footer">
-        <span>Keep the line moving.</span>
+        <span>
+          {search.demo ? "Sample data. No supplier is contacted." : "Keep the line moving."}
+        </span>
         {search.demo && (
           <a href="/setup">
             Make it yours <ArrowUpRight size={14} />
@@ -938,6 +1106,13 @@ function confirmedDeliveries(itemId: string, buys: Buy[]) {
 function StockLabel({ item, buys, detail = false }: { item: Item; buys: Buy[]; detail?: boolean }) {
   const now = useClock();
   const plan = inventoryPlan(item, confirmedDeliveries(item.id, buys), now);
+  const activeBuy = buys.find((b) => b.itemId === item.id && isOpen(b));
+  const label =
+    item.replenishmentEnabled && plan.label === "Order more"
+      ? activeBuy
+        ? buyStatus(activeBuy)
+        : "Preparing replenishment"
+      : plan.label;
   const due = new Date(plan.nextCheck).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -948,7 +1123,7 @@ function StockLabel({ item, buys, detail = false }: { item: Item; buys: Buy[]; d
         <i data-attention={plan.attention} />
         {detail && !plan.attention && plan.daysLeft !== null && plan.daysLeft > 0
           ? `About ${Math.ceil(plan.daysLeft)} days left`
-          : plan.label}
+          : label}
       </span>
       {plan.arriving && !detail ? (
         <small className="desk-stock-arrival">

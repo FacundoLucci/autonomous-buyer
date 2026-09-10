@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DeskHome } from "@/components/desk/app";
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>) => ({
-    demo: s.demo === true || s.demo === "true" || s.demo === "1",
+    demo: s.demo === true || s.demo === "true" || s.demo === "1" || s.demo === 1,
     page:
       s.page === "inventory" || s.page === "buys" || s.page === "settings" || s.page === "audit"
         ? s.page

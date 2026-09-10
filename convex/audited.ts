@@ -9,6 +9,15 @@ import { getAuthUserId } from "./identity";
 
 // Business changes only: never copy credentials, auth records, or chat contents.
 const fields = {
+  companySuppliers: [
+    "name",
+    "url",
+    "approved",
+    "channels",
+    "notes",
+    "assessmentState",
+    "readiness",
+  ],
   inventoryItems: [
     "name",
     "sku",
@@ -27,6 +36,7 @@ const fields = {
     "supplierLeadTimeDays",
     "safetyStockDays",
     "supplierName",
+    "supplierSku",
     "supplierEmail",
     "buyUrl",
     "buyingPriority",
@@ -34,8 +44,23 @@ const fields = {
     "lossCurrency",
     "stockoutImpact",
     "archived",
+    "replenishmentEnabled",
+    "preparationDays",
+    "orderMultiple",
+    "forecastQuantity",
+    "forecastAt",
   ],
-  companyBuys: ["itemId", "quantity", "requiredBy", "notes", "orderId", "closed"],
+  companyBuys: [
+    "itemId",
+    "quantity",
+    "requiredBy",
+    "notes",
+    "orderId",
+    "closed",
+    "automatic",
+    "planVersion",
+    "purchasingState",
+  ],
   companyOrders: [
     "reviewRequired",
     "requestedQuantity",
@@ -52,6 +77,7 @@ const fields = {
     "totalCents",
     "currency",
     "supplier",
+    "supplierSku",
     "supplierEmail",
     "buyUrl",
     "shipTo",

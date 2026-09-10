@@ -30,8 +30,10 @@ New company workspaces support buy links, bulk invoice/file imports, approved pu
 
 ## Read first
 
+- [Agent-led purchasing: implementation and verification](docs/agent-led-purchasing-verification.md)
+- [Replenishment, purchase orders and website checkout plan](docs/agent-led-purchasing-plan.md)
 - [Product spec](docs/product-spec.md)
-- [Dependency-ordered implementation plan](docs/implementation-plan.md)
+- [Original demo implementation plan](docs/implementation-plan.md)
 - [GTM and social marketing plan](docs/gtm-marketing-strategy.md)
 - [Hackathon evidence log](hackathon.md)
 

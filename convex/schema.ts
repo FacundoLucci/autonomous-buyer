@@ -23,6 +23,8 @@ import {
 import { sourceProduct, sourceState } from "./inventorySourceFields";
 import { companyOrderStatus, alertStatus, alertKind } from "./companyFields";
 
+import { supplierChannels, supplierEvidence } from "./supplierDirectoryFields";
+
 const dateValidator = v.string();
 const timestampValidator = v.number();
 const roleValidator = v.union(v.literal("admin"), v.literal("buyer"), v.literal("viewer"));
@@ -115,10 +117,26 @@ export default defineSchema({
     .index("by_organizationId", ["organizationId"]),
 
   inventoryItems: defineTable({
+    supplierSku: v.optional(v.string()),
+    leadResearchKey: v.optional(v.string()),
+    leadResearchState: v.optional(
+      v.union(v.literal("researching"), v.literal("complete"), v.literal("needs_details")),
+    ),
+    leadResearchThreadId: v.optional(v.string()),
+    leadResearchStartedAt: v.optional(v.number()),
     buyUrl: v.optional(v.string()),
     supplierEmail: v.optional(v.string()),
     archived: v.optional(v.boolean()),
     stockCountedAt: v.optional(v.number()),
+    forecastQuantity: v.optional(v.number()),
+    forecastAt: v.optional(v.number()),
+    replenishmentEnabled: v.optional(v.boolean()),
+    preparationDays: v.optional(v.number()),
+    orderMultiple: v.optional(v.number()),
+    replenishmentScheduledId: v.optional(v.id("_scheduled_functions")),
+    automationState: v.optional(v.string()),
+    automationNote: v.optional(v.string()),
+    planningRevision: v.optional(v.number()),
     estimatedQuantity: v.optional(v.number()),
     sourceId: v.optional(v.id("inventorySources")),
     sourceProductIndex: v.optional(v.number()),
@@ -164,6 +182,15 @@ export default defineSchema({
     .index("by_sourceId_and_index", ["sourceId", "sourceProductIndex"])
     .index("by_org_status", ["organizationId", "status"])
     .index("by_demo_run", ["demoRunId"]),
+
+  stockEvents: defineTable({
+    organizationId: v.id("organizations"),
+    itemId: v.id("inventoryItems"),
+    kind: v.union(v.literal("count"), v.literal("receipt"), v.literal("usage_change")),
+    quantity: v.number(),
+    orderId: v.optional(v.id("companyOrders")),
+    createdAt: v.number(),
+  }).index("by_itemId", ["itemId"]),
 
   inventoryUsage: defineTable({
     inventoryItemId: v.id("inventoryItems"),
@@ -759,7 +786,73 @@ export default defineSchema({
     ),
     updatedAt: v.number(),
   }).index("by_userId_and_task_and_contextId", ["userId", "task", "contextId"]),
+  companySuppliers: defineTable({
+    organizationId: v.id("organizations"),
+    name: v.string(),
+    url: v.string(),
+    domain: v.string(),
+    approved: v.boolean(),
+    channels: supplierChannels,
+    assessmentState: v.union(
+      v.literal("pending"),
+      v.literal("analyzing"),
+      v.literal("complete"),
+      v.literal("needs_help"),
+    ),
+    readiness: v.union(v.literal("unverified"), v.literal("needs_setup"), v.literal("ready")),
+    notes: v.string(),
+    assessmentNotes: v.optional(v.string()),
+    email: v.optional(v.string()),
+    checkedAt: v.optional(v.number()),
+    evidence: v.optional(v.array(supplierEvidence)),
+    assessmentVersion: v.number(),
+    threadId: v.optional(v.string()),
+    updatedAt: v.number(),
+  })
+    .index("by_organizationId", ["organizationId"])
+    .index("by_organizationId_and_domain", ["organizationId", "domain"]),
+  companyQuoteRequests: defineTable({
+    buyId: v.id("companyBuys"),
+    organizationId: v.id("organizations"),
+    itemId: v.id("inventoryItems"),
+    planVersion: v.number(),
+    supplier: v.string(),
+    email: v.string(),
+    url: v.string(),
+    providerOutboundId: v.optional(v.string()),
+    providerThreadId: v.optional(v.string()),
+    followups: v.number(),
+    state: v.union(
+      v.literal("sending"),
+      v.literal("waiting"),
+      v.literal("replied"),
+      v.literal("failed"),
+    ),
+    reply: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_buyId", ["buyId"])
+    .index("by_buyId_and_planVersion", ["buyId", "planVersion"])
+    .index("by_providerThreadId", ["providerThreadId"]),
   companyBuys: defineTable({
+    automatic: v.optional(v.boolean()),
+    planVersion: v.optional(v.number()),
+    planningKey: v.optional(v.string()),
+    purchasingState: v.optional(
+      v.union(
+        v.literal("researching"),
+        v.literal("waiting_supplier"),
+        v.literal("needs_details"),
+        v.literal("ready"),
+        v.literal("failed"),
+      ),
+    ),
+    purchasingNote: v.optional(v.string()),
+    researchThreadId: v.optional(v.string()),
+    researchAttempt: v.optional(v.number()),
+    researchPlanVersion: v.optional(v.number()),
+    workflowId: v.optional(v.string()),
     organizationId: v.id("organizations"),
     itemId: v.id("inventoryItems"),
     quantity: v.optional(v.number()),
@@ -798,7 +891,46 @@ export default defineSchema({
     credit: v.optional(buyerCredit),
     createdAt: v.number(),
   }).index("by_organizationId", ["organizationId"]),
+  merchantOrderCounts: defineTable({
+    key: v.string(),
+    domain: v.string(),
+    name: v.string(),
+    orders: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_orders", ["orders"]),
+  merchantOrderTotals: defineTable({
+    key: v.literal("all"),
+    totalOrders: v.number(),
+    merchantCount: v.number(),
+  }).index("by_key", ["key"]),
   companyOrders: defineTable({
+    merchantMetricKey: v.optional(v.string()),
+    purchaseOrderSentAt: v.optional(v.number()),
+    sourceUrl: v.optional(v.string()),
+    termsEvidence: v.optional(v.string()),
+    supplierSku: v.optional(v.string()),
+    cancellationRequestedAt: v.optional(v.number()),
+    cancellationOutboundId: v.optional(v.string()),
+    browserPreparedKey: v.optional(v.string()),
+    browserCommitAuthorizedAt: v.optional(v.number()),
+    browserJobId: v.optional(v.string()),
+    browserJobIntent: v.optional(v.string()),
+    browserPhase: v.optional(v.union(v.literal("prepare"), v.literal("submit"))),
+    browserPollCount: v.optional(v.number()),
+    orderingMethod: v.optional(v.union(v.literal("purchase_order"), v.literal("website"))),
+    supplierPoVerified: v.optional(v.boolean()),
+    approvedTermsKey: v.optional(v.string()),
+    executionState: v.optional(
+      v.union(
+        v.literal("queued"),
+        v.literal("submitting"),
+        v.literal("awaiting_confirmation"),
+        v.literal("outcome_unknown"),
+        v.literal("needs_attention"),
+        v.literal("confirmed"),
+      ),
+    ),
     reviewRequired: v.optional(v.boolean()),
     requestedQuantity: v.optional(v.number()),
     quotedArrival: v.optional(v.string()),

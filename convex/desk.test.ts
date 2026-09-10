@@ -480,7 +480,10 @@ test("buy recommendations use saved loss and stock, stay unapproved, and require
       (e) =>
         e.entityId === item.id &&
         e.changes.some(
-          (c) => c.field === "quantityOnHand" && c.before === "100" && c.after === "110",
+          (c) =>
+            c.field === "forecastQuantity" &&
+            c.before === "100" &&
+            Math.abs(Number(c.after) - 110) < 0.01,
         ),
     ),
   ).toBe(true);

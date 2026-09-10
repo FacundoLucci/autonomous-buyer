@@ -1,3 +1,4 @@
+import { DemoSupplierDirectory } from "./suppliers";
 import { useState, type FormEvent } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,15 @@ const items: Item[] = [
   buyUrl: null,
   supplierEmail: null,
   coverageDays: 30,
+  forecastQuantity: undefined,
+  forecastAt: undefined,
+  replenishmentEnabled: true,
+  automationState: "watching",
+  automationNote: "Sample: I’m watching stock and preparing replenishment when needed.",
+  preparationDays: 1,
+  orderMultiple: 1,
+  preferredCoverageDays: 30,
+  casePack: 1,
   stockCountedAt: now,
   safetyStockDays: 3,
   buyingPriority:
@@ -118,6 +128,8 @@ function order(
     shipTo: "100 Market Street, Chicago, IL 60601",
     requiredBy: day(3),
     notes: "",
+    orderingMethod: "purchase_order",
+    supplierPoVerified: true,
     status,
     isOpen: status !== "received",
     createdAt: now - 3600000,
@@ -129,6 +141,10 @@ function order(
 const initialBuys: Buy[] = [
   {
     id: "demo-buy-cups",
+    automatic: true,
+    planVersion: 1,
+    purchasingState: "ready",
+    purchasingNote: "Sample: your usage triggered this purchase. It’s ready for approval.",
     itemId: items[0].id,
     name: items[0].name,
     unit: "cases",
@@ -140,6 +156,10 @@ const initialBuys: Buy[] = [
   },
   {
     id: "demo-buy-lids",
+    automatic: true,
+    planVersion: 1,
+    purchasingState: "ready",
+    purchasingNote: undefined,
     itemId: items[1].id,
     name: items[1].name,
     unit: "cases",
@@ -151,6 +171,10 @@ const initialBuys: Buy[] = [
   },
   {
     id: "demo-buy-towels",
+    automatic: true,
+    planVersion: 1,
+    purchasingState: "ready",
+    purchasingNote: undefined,
     itemId: items[2].id,
     name: items[2].name,
     unit: "cases",
@@ -243,7 +267,11 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
   const updateRules: UpdateRules = async (item, rules) => {
     setWorkspace((w) => ({
       ...w,
-      items: w.items.map((i) => (i.id === item.id ? { ...i, ...rules } : i)),
+      items: w.items.map((i) =>
+        i.id === item.id
+          ? { ...i, ...rules, coverageDays: rules.preferredCoverageDays ?? i.coverageDays }
+          : i,
+      ),
     }));
     audit(
       item.name,
@@ -253,26 +281,65 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
     event(`Buying rules updated for ${item.name}.`);
   };
   async function action(kind: string, buy?: Buy, item?: Item) {
+    if ((kind === "enable_replenishment" || kind === "pause_replenishment") && item) {
+      const enabled = kind === "enable_replenishment";
+      setWorkspace((w) => ({
+        ...w,
+        items: w.items.map((i) =>
+          i.id === item.id
+            ? {
+                ...i,
+                replenishmentEnabled: enabled,
+                automationNote: enabled
+                  ? "Sample: I’m watching your stock."
+                  : "Replenishment is paused.",
+              }
+            : i,
+        ),
+      }));
+      event(`${item.name}: sample replenishment ${enabled ? "enabled" : "paused"}.`);
+      return;
+    }
     if (kind === "archive" && item) {
       audit(item.name, { archived: false }, { archived: true });
       setWorkspace((w) => ({ ...w, items: w.items.filter((i) => i.id !== item.id) }));
       return;
     }
     if (!buy) return;
-    if (kind === "cancel") {
+    if (kind === "request_cancellation" && buy.order) {
+      setSnapshot((s) => ({
+        ...s,
+        buys: s.buys.map((b) =>
+          b.id === buy.id && b.order
+            ? { ...b, order: { ...b.order, cancellationRequestedAt: Date.now() } }
+            : b,
+        ),
+      }));
+      event("Sample: cancellation requested. Awaiting supplier confirmation.");
+      return;
+    }
+    if (kind === "cancel" || kind === "record_cancellation") {
       audit(buy.name, { closed: buy.closed }, { closed: true });
       setSnapshot((s) => ({
         ...s,
-        buys: s.buys.map((b) => (b.id === buy.id ? { ...b, closed: true } : b)),
+        buys: s.buys.map((b) =>
+          b.id === buy.id
+            ? {
+                ...b,
+                closed: true,
+                order: b.order ? { ...b.order, status: "cancelled", isOpen: false } : null,
+              }
+            : b,
+        ),
       }));
       return;
     }
     audit(
       buy.name,
       { status: buy.order?.status },
-      { status: kind === "approve" ? "approved" : kind === "receive" ? "received" : "sent" },
+      { status: kind === "approve" ? "placed" : kind === "receive" ? "received" : "sent" },
     );
-    const status = kind === "approve" ? "approved" : kind === "receive" ? "received" : "sent";
+    const status = kind === "approve" ? "placed" : kind === "receive" ? "received" : "sent";
     setSnapshot((s) => ({
       ...s,
       buys: s.buys.map((b) =>
@@ -282,6 +349,14 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
               order: {
                 ...b.order,
                 status,
+                ...(kind === "approve"
+                  ? {
+                      executionState: "confirmed" as const,
+                      confirmation: "SAMPLE-CONFIRMATION",
+                      expectedOn: day(2),
+                      placedAt: Date.now(),
+                    }
+                  : {}),
                 isOpen: status !== "received",
                 receivedQuantity:
                   status === "received" ? b.order.quantity : b.order.receivedQuantity,
@@ -313,7 +388,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
       }));
     }
     event(
-      `${buy.name}: ${kind === "approve" ? "purchase approved" : kind === "receive" ? "delivery received" : "purchase order sent"}.`,
+      `${buy.name}: ${kind === "approve" ? "sample purchase approved and supplier confirmation received" : kind === "receive" ? "delivery received" : "sample purchase order sent"}.`,
     );
   }
   function save(request: ChatRequest, draft: Draft): string {
@@ -353,6 +428,10 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
         buys: [
           {
             id: buyId,
+            automatic: false,
+            planVersion: undefined,
+            purchasingState: undefined,
+            purchasingNote: undefined,
             itemId: item.id,
             name: item.name,
             unit: item.unit,
@@ -519,7 +598,10 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
         updateRules={updateRules}
         audit={<AuditLog entries={auditEntries} />}
         settings={
-          <p className="desk-muted">Notification delivery is available in your own workspace.</p>
+          <>
+            <DemoSupplierDirectory />
+            <p className="desk-muted">Notification delivery is available in your own workspace.</p>
+          </>
         }
         renderChat={(request, onClose, onSaved) => (
           <DemoChat

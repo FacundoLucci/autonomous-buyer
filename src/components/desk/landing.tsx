@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { MerchantMetrics } from "./merchant-metrics";
 import { DotMatrixDisplay } from "./dot-matrix-display";
 
 export function Landing({ resumeSetup = false }: { resumeSetup?: boolean }) {
@@ -20,6 +21,7 @@ export function Landing({ resumeSetup = false }: { resumeSetup?: boolean }) {
           {resumeSetup ? "Continue setup" : "Get started"} <ArrowUpRight size={21} />
         </a>
       </section>
+      <MerchantMetrics />
       <footer className="desk-landing-footer">
         <span>From low stock to your loading dock.</span>
         <a className="desk-text-link" href="/?demo=true">

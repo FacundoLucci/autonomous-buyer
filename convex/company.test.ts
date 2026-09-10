@@ -5,6 +5,7 @@ import schema from "./schema";
 import { api, internal } from "./_generated/api";
 import { queueAlert } from "./companyAlerts";
 import { productUrl } from "./inventorySources";
+import { receiveQuoteReply } from "./companyPurchasing";
 import { receiveSupplierReply } from "./companyOrders";
 const modules = import.meta.glob("./**/*.ts");
 beforeEach(() => {
@@ -129,7 +130,7 @@ test("partial receipts update inventory once and reject excess delivery", async 
   await expect(b.mutation(api.companyOrders.receive, receipt)).rejects.toThrow();
   await a.mutation(api.companyOrders.receive, receipt);
   await a.mutation(api.companyOrders.receive, receipt);
-  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].quantity).toBe(14);
+  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].forecastQuantity).toBe(14);
   expect((await a.query(api.companyOrders.list, {}))[0].status).toBe("part_received");
   await expect(
     a.mutation(api.companyOrders.receive, { ...receipt, quantity: 7, requestKey: "too-many" }),
@@ -139,7 +140,7 @@ test("partial receipts update inventory once and reject excess delivery", async 
     quantity: 6,
     requestKey: "delivery-two",
   });
-  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].quantity).toBe(20);
+  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].forecastQuantity).toBe(20);
   expect((await a.query(api.companyOrders.list, {}))[0]).toMatchObject({
     status: "received",
     isOpen: false,
@@ -150,7 +151,7 @@ test("partial receipts update inventory once and reject excess delivery", async 
     quantity: 6,
     requestKey: "delivery-two",
   });
-  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].quantity).toBe(20);
+  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].forecastQuantity).toBe(20);
 });
 test("invalid quantities, prices, dates, and private buy links are rejected", async () => {
   const { a, item } = await fixture();
@@ -395,4 +396,336 @@ test("draft corrections change the total and approval freezes the final terms", 
     a.mutation(api.companyOrders.updateDraft, { ...revised, quantity: 1 }),
   ).rejects.toThrow(/unapproved/);
   expect((await a.query(api.companyOrders.get, { orderId }))?.quantity).toBe(20);
+});
+
+test("approval queues ordering once and uncertain orders cannot retry", async () => {
+  const { t, a, item } = await fixture();
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, {
+      orderingMethod: "purchase_order",
+      supplierPoVerified: true,
+      supplierEmail: "supplier@example.com",
+    });
+  });
+  await a.mutation(api.companyOrders.approve, { orderId });
+  await a.mutation(api.companyOrders.approve, { orderId });
+  const order = await a.query(api.companyOrders.get, { orderId });
+  expect(order?.executionState).toBe("queued");
+  expect(order?.approvedTermsKey).toBeTruthy();
+  expect(
+    (await a.query(api.companyOrders.events, { orderId })).filter((e) => e.kind === "approved"),
+  ).toHaveLength(1);
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, { executionState: "outcome_unknown" });
+  });
+  await expect(a.mutation(api.companyOrders.retryExecution, { orderId })).rejects.toThrow(
+    /checking/,
+  );
+  await expect(a.mutation(api.companyOrders.cancel, { orderId, note: "cancel" })).rejects.toThrow(
+    /cannot/,
+  );
+});
+
+test("matching supplier confirmation advances incoming stock, changed terms do not", async () => {
+  const { t, a, item } = await fixture();
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await a.mutation(api.companyOrders.approve, { orderId });
+  await t.run(async (ctx) => {
+    const order = (await ctx.db.get("companyOrders", orderId))!;
+    await ctx.db.patch("companyOrders", orderId, {
+      status: "sent",
+      providerThreadId: "confirmation-thread",
+      supplierEmail: "supplier@example.com",
+    });
+    await ctx.db.insert("purchasingInboxes", {
+      organizationId: order.organizationId,
+      provider: "agentmail",
+      inboxId: "orders@agentmail.to",
+      email: "orders@agentmail.to",
+      selectedAt: Date.now(),
+    });
+  });
+  const order = (await a.query(api.companyOrders.get, { orderId }))!;
+  const text = `Confirmed: yes\nPurchase order: ${order.number}\nConfirmation: C100\nSKU: ${order.sku}\nQuantity: ${order.quantity} ${order.unit}\nTotal: USD ${(order.totalCents / 100).toFixed(2)}\nArrival: ${order.requiredBy}`;
+  const message = {
+    thread_id: "confirmation-thread",
+    inbox_id: "orders@agentmail.to",
+    from: "supplier@example.com",
+    text,
+  };
+  await t.run((ctx) =>
+    receiveSupplierReply(
+      ctx,
+      { ...message, message_id: "changed", text: text.replace("Quantity: 10", "Quantity: 20") },
+      "changed",
+    ),
+  );
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("sent");
+  await t.run((ctx) =>
+    receiveSupplierReply(ctx, { ...message, message_id: "matching" }, "matching"),
+  );
+  expect(await a.query(api.companyOrders.get, { orderId })).toMatchObject({
+    status: "placed",
+    confirmation: "C100",
+    expectedOn: order.requiredBy,
+  });
+});
+
+test("background offers reject stale plans and prepare exact current purchase for approval", async () => {
+  const { t, a, item, workspace } = await fixture();
+  const buyId = await t.run(async (ctx) => {
+    await ctx.db.patch("inventoryItems", item.id, { buyingPriority: "availability" });
+    return ctx.db.insert("companyBuys", {
+      organizationId: workspace.organizationId,
+      itemId: item.id,
+      quantity: 10,
+      requiredBy: "2026-10-10",
+      notes: "",
+      closed: false,
+      planVersion: 2,
+      purchasingState: "researching",
+      createdAt: Date.now(),
+    });
+  });
+  const offers = [
+    {
+      supplier: "Supply Shop",
+      url: "https://supplier.example.com/tape",
+      email: "supplier@example.com",
+      poVerified: true,
+      quantity: 10,
+      unit: "rolls",
+      currency: "USD",
+      unitPriceCents: 499,
+      freightCents: 850,
+      taxCents: 395,
+      expectedOn: "2026-10-10",
+      evidence: "Supplier verified full terms",
+    },
+  ];
+  expect(
+    await t.mutation(internal.companyPurchasing.saveOffers, { buyId, planVersion: 1, offers }),
+  ).toBeNull();
+  const orderId = await t.mutation(internal.companyPurchasing.saveOffers, {
+    buyId,
+    planVersion: 2,
+    offers,
+  });
+  expect(orderId).toBeTruthy();
+  expect(await a.query(api.companyOrders.get, { orderId: orderId! })).toMatchObject({
+    quantity: 10,
+    totalCents: 6235,
+    status: "draft",
+    orderingMethod: "purchase_order",
+    supplierPoVerified: true,
+  });
+  expect(
+    await t.mutation(internal.companyPurchasing.saveOffers, { buyId, planVersion: 2, offers }),
+  ).toBeNull();
+});
+
+test("local replenishment purchase loop with a supplier-provider stand-in", async () => {
+  const { t, a, item, workspace } = await fixture();
+  const buyId = await t.run((ctx) =>
+    ctx.db.insert("companyBuys", {
+      organizationId: workspace.organizationId,
+      itemId: item.id,
+      quantity: 10,
+      requiredBy: "2026-10-10",
+      notes: "",
+      closed: false,
+      planVersion: 1,
+      purchasingState: "researching",
+      createdAt: Date.now(),
+    }),
+  );
+  const orderId = (await t.mutation(internal.companyPurchasing.saveOffers, {
+    buyId,
+    planVersion: 1,
+    offers: [
+      {
+        supplier: "Supply Shop",
+        supplierSku: "VENDOR-TAPE",
+        url: "https://supplier.example.com/tape",
+        email: "supplier@example.com",
+        poVerified: true,
+        quantity: 10,
+        unit: "rolls",
+        currency: "USD",
+        unitPriceCents: 499,
+        freightCents: 850,
+        taxCents: 395,
+        expectedOn: "2026-10-10",
+        evidence: "Verified quote fixture; provider is a stand-in",
+      },
+    ],
+  }))!;
+  await a.mutation(api.companyOrders.approve, { orderId });
+  // This substitutes provider acceptance only, not the approval/confirmation/receipt rules.
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, {
+      status: "sent",
+      executionState: "awaiting_confirmation",
+      providerThreadId: "stand-in-thread",
+      providerOutboundId: "stand-in-outbound",
+    });
+    await ctx.db.insert("purchasingInboxes", {
+      organizationId: workspace.organizationId,
+      provider: "agentmail",
+      inboxId: "fixture@agentmail.to",
+      email: "fixture@agentmail.to",
+      selectedAt: Date.now(),
+    });
+  });
+  const order = (await a.query(api.companyOrders.get, { orderId }))!;
+  const message = {
+    thread_id: "stand-in-thread",
+    inbox_id: "fixture@agentmail.to",
+    from: "supplier@example.com",
+    message_id: "stand-in-confirmation",
+    text: `Confirmed: yes\nPurchase order: ${order.number}\nConfirmation: FIXTURE-100\nSKU: VENDOR-TAPE\nQuantity: 10 rolls\nTotal: USD 62.35\nArrival: 2026-10-10`,
+  };
+  await t.run((ctx) => receiveSupplierReply(ctx, message, "fixture"));
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("placed");
+  await a.mutation(api.companyOrders.receive, {
+    orderId,
+    quantity: 10,
+    requestKey: "fixture-receipt",
+  });
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("received");
+  expect((await a.query(api.onboarding.getWorkspace, {}))?.items[0].forecastQuantity).toBe(20);
+});
+
+test("quote replies require the supplier and company inbox; stale plans cannot send", async () => {
+  const { t, item, workspace } = await fixture();
+  const buyId = await t.run((ctx) =>
+    ctx.db.insert("companyBuys", {
+      organizationId: workspace.organizationId,
+      itemId: item.id,
+      quantity: 10,
+      requiredBy: "2026-10-10",
+      notes: "",
+      closed: false,
+      planVersion: 2,
+      createdAt: Date.now(),
+    }),
+  );
+  expect(
+    await t.mutation(internal.companyPurchasing.requestQuote, {
+      buyId,
+      planVersion: 1,
+      supplier: "Supplier",
+      email: "supplier@example.com",
+      url: "https://supplier.example.com",
+    }),
+  ).toBe("stale");
+  const requestId = await t.run(async (ctx) => {
+    await ctx.db.insert("purchasingInboxes", {
+      organizationId: workspace.organizationId,
+      provider: "agentmail",
+      inboxId: "quote@agentmail.to",
+      email: "quote@agentmail.to",
+      selectedAt: Date.now(),
+    });
+    return ctx.db.insert("companyQuoteRequests", {
+      buyId,
+      organizationId: workspace.organizationId,
+      itemId: item.id,
+      planVersion: 2,
+      supplier: "Supplier",
+      email: "supplier@example.com",
+      url: "https://supplier.example.com",
+      providerThreadId: "quote-thread",
+      followups: 0,
+      state: "waiting",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+  });
+  const message = {
+    thread_id: "quote-thread",
+    inbox_id: "quote@agentmail.to",
+    from: "supplier@example.com",
+    text: "Our quotation",
+  };
+  await t.run((ctx) =>
+    receiveQuoteReply(ctx, { ...message, from: "stranger@example.com" }, "wrong-sender"),
+  );
+  await t.run((ctx) =>
+    receiveQuoteReply(ctx, { ...message, inbox_id: "other@agentmail.to" }, "wrong-inbox"),
+  );
+  expect(await t.run((ctx) => ctx.db.get("companyQuoteRequests", requestId))).toMatchObject({
+    state: "waiting",
+  });
+  await t.run((ctx) => receiveQuoteReply(ctx, message, "right-reply"));
+  expect(await t.run((ctx) => ctx.db.get("companyQuoteRequests", requestId))).toMatchObject({
+    state: "replied",
+    reply: "Our quotation",
+  });
+});
+
+test("a refused cancellation quoting our request leaves confirmed incoming stock intact", async () => {
+  const { t, a, item, workspace } = await fixture();
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await a.mutation(api.companyOrders.approve, { orderId });
+  await a.mutation(api.companyOrders.place, {
+    orderId,
+    confirmation: "SUP-100",
+    expectedOn: "2026-10-10",
+  });
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, {
+      supplierEmail: "supplier@example.com",
+      providerThreadId: "cancel-thread",
+      cancellationRequestedAt: Date.now(),
+    });
+    await ctx.db.insert("purchasingInboxes", {
+      organizationId: workspace.organizationId,
+      provider: "agentmail",
+      inboxId: "cancel@agentmail.to",
+      email: "cancel@agentmail.to",
+      selectedAt: Date.now(),
+    });
+  });
+  const order = (await a.query(api.companyOrders.get, { orderId }))!;
+  await t.run((ctx) =>
+    receiveSupplierReply(
+      ctx,
+      {
+        message_id: "refused-cancellation",
+        thread_id: "cancel-thread",
+        inbox_id: "cancel@agentmail.to",
+        from: "supplier@example.com",
+        text: `No, we cannot cancel this order.\nFrom: Buyer <cancel@agentmail.to>\nCancelled: yes\nPurchase order: ${order.number}\nRemaining quantity: 10 rolls`,
+      },
+      "refused-cancellation",
+    ),
+  );
+  expect(await a.query(api.companyOrders.get, { orderId })).toMatchObject({
+    status: "placed",
+    isOpen: true,
+    expectedOn: "2026-10-10",
+  });
+});
+
+test("pausing a supplier blocks order approval and previously queued execution", async () => {
+  const { t, a, item } = await fixture();
+  const supplierId = await a.mutation(api.companySuppliers.add, {
+    url: "https://supplier.example.com",
+  });
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await a.mutation(api.companySuppliers.update, { supplierId, approved: false });
+  await expect(a.mutation(api.companyOrders.approve, { orderId })).rejects.toThrow(
+    /supplier is paused/,
+  );
+  await a.mutation(api.companySuppliers.update, { supplierId, approved: true });
+  await a.mutation(api.companyOrders.approve, { orderId });
+  await t.run((ctx) => ctx.db.patch("companyOrders", orderId, { executionState: "queued" }));
+  await a.mutation(api.companySuppliers.update, { supplierId, approved: false });
+  await t.mutation(internal.companyOrders.executeApproved, { orderId });
+  expect(await t.run((ctx) => ctx.db.get("companyOrders", orderId))).toMatchObject({
+    executionState: "needs_attention",
+    error: "This supplier is paused in your supplier directory.",
+  });
 });

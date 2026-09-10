@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { internalMutation, query } from "./_generated/server";
 import { receiveSupplierReply } from "./companyOrders";
+import { receiveQuoteReply } from "./companyPurchasing";
 
 function record(value: unknown): Record<string, unknown> {
   if (value === null || typeof value !== "object")
@@ -31,6 +32,7 @@ export const onMessageReceived = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const message = record(args.message);
+    if (await receiveQuoteReply(ctx, message, args.eventId)) return null;
     if (await receiveSupplierReply(ctx, message, args.eventId)) return null;
     const providerMessageId = requiredString(message.message_id, "message_id");
     const providerThreadId = requiredString(message.thread_id, "thread_id");

@@ -10,7 +10,7 @@ import { buyingPriority } from "./deskFields";
 import { units, stockOutlook } from "../src/lib/setup-fields";
 import schema from "./schema";
 import type { Id, Doc } from "./_generated/dataModel";
-import { activeCompanyItems } from "./companyStock";
+import { activeCompanyItems, planningChanged } from "./companyStock";
 
 export const updateRules = mutation({
   args: {
@@ -19,6 +19,10 @@ export const updateRules = mutation({
     dailyLossCents: v.optional(v.union(v.number(), v.null())),
     lossCurrency: v.optional(v.string()),
     stockoutImpact: v.optional(v.string()),
+    safetyStockDays: v.optional(v.number()),
+    preferredCoverageDays: v.optional(v.number()),
+    preparationDays: v.optional(v.number()),
+    orderMultiple: v.optional(v.number()),
   },
   returns: v.null(),
   handler: async (ctx, { itemId, ...values }) => {
@@ -35,12 +39,29 @@ export const updateRules = mutation({
       throw new ConvexError("Choose a supported currency.");
     if ((values.stockoutImpact?.length ?? 0) > 500)
       throw new ConvexError("Keep this under 501 characters.");
+    for (const field of [
+      "safetyStockDays",
+      "preferredCoverageDays",
+      "preparationDays",
+      "orderMultiple",
+    ] as const) {
+      const value = values[field];
+      if (
+        value !== undefined &&
+        (!Number.isFinite(value) ||
+          !Number.isInteger(value) ||
+          value < (field === "orderMultiple" || field === "preferredCoverageDays" ? 1 : 0) ||
+          value > (field === "orderMultiple" ? 1000000 : 365))
+      )
+        throw new ConvexError("Choose valid whole days and a positive pack size.");
+    }
     const patch = Object.fromEntries(
       Object.entries(values)
         .filter(([, value]) => value !== undefined)
         .map(([key, value]) => [key, value === null ? undefined : value]),
     );
     await ctx.db.patch("inventoryItems", itemId, patch);
+    await planningChanged(ctx, item);
     await ctx.db.insert("deskActivity", {
       organizationId: organization._id,
       itemId,
@@ -82,6 +103,8 @@ export async function writeStockCount(
     estimatedQuantity: count,
     stockCountKnown: true,
     stockCountedAt: Date.now(),
+    forecastQuantity: count,
+    forecastAt: Date.now(),
     status:
       count === 0 || outlook.needsAction
         ? "action_required"
@@ -89,6 +112,14 @@ export async function writeStockCount(
           ? "watch"
           : "healthy",
   });
+  await ctx.db.insert("stockEvents", {
+    organizationId: item.organizationId,
+    itemId: item._id,
+    kind: "count",
+    quantity: count,
+    createdAt: Date.now(),
+  });
+  await planningChanged(ctx, item);
   const summary = `${item.name}: ${count} ${item.unit ?? "units"} on hand.`;
   await ctx.db.insert("deskActivity", {
     organizationId: item.organizationId,
@@ -299,8 +330,17 @@ export const updateBuying = mutation({
       buyUrl: args.buyUrl.trim() ? productUrl(args.buyUrl) : undefined,
       supplierEmail: args.supplierEmail.trim() ? validEmail(args.supplierEmail) : undefined,
       preferredCoverageDays: args.coverageDays,
+      ...(item.leadResearchState === "complete" && (args.buyUrl.trim() || undefined) !== item.buyUrl
+        ? {
+            supplierLeadTimeDays: undefined,
+            leadTimeEvidence: undefined,
+            leadTimeConfirmedAt: undefined,
+            leadResearchState: undefined,
+            leadResearchKey: undefined,
+          }
+        : {}),
     });
-    await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
+    await planningChanged(ctx, item);
     return null;
   },
 });
@@ -316,6 +356,19 @@ export const updateCompany = mutation({
       name: boundedText(args.name, "a company name"),
       shippingAddress: boundedText(args.shippingAddress, "a delivery address", 500),
     });
+    if (args.shippingAddress.trim() !== organization.shippingAddress) {
+      for (const item of await activeCompanyItems(ctx, organization._id)) {
+        if (item.leadResearchState === "complete")
+          await ctx.db.patch("inventoryItems", item._id, {
+            supplierLeadTimeDays: undefined,
+            leadTimeEvidence: undefined,
+            leadTimeConfirmedAt: undefined,
+            leadResearchState: undefined,
+            leadResearchKey: undefined,
+          });
+        await planningChanged(ctx, item);
+      }
+    }
     return null;
   },
 });
@@ -365,6 +418,33 @@ export const archiveItem = mutation({
     await ctx.db.patch("inventoryItems", item._id, { archived: args.archived ? true : undefined });
     if (!args.archived)
       await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
+    return null;
+  },
+});
+
+export const setAutomation = mutation({
+  args: { itemId: v.id("inventoryItems"), enabled: v.boolean() },
+  returns: v.null(),
+  handler: async (ctx, { itemId, enabled }) => {
+    const { organization } = await ownedCompany(ctx);
+    const item = await ctx.db.get("inventoryItems", itemId);
+    if (!item || item.organizationId !== organization._id || item.archived)
+      throw new ConvexError("Item not found.");
+    if (!!item.replenishmentEnabled === enabled) return null;
+    await ctx.db.patch("inventoryItems", itemId, {
+      replenishmentEnabled: enabled,
+      automationState: enabled ? "watching" : "paused",
+      automationNote: enabled
+        ? "Checking when you need to buy."
+        : "Automatic purchasing is paused.",
+    });
+    await planningChanged(ctx, item);
+    await ctx.db.insert("deskActivity", {
+      organizationId: organization._id,
+      itemId,
+      summary: `${item.name}: automatic replenishment ${enabled ? "enabled" : "paused"}.`,
+      createdAt: Date.now(),
+    });
     return null;
   },
 });

@@ -1,5 +1,7 @@
 # Autonomous Buyer
 
+The [agent-led purchasing plan](./agent-led-purchasing-plan.md) extends this original demo specification for company workspaces, including automatic replenishment and website checkout when a supplier does not accept purchase orders.
+
 ## 1. Product Summary
 
 Autonomous Buyer is an AI purchasing agent that monitors inventory risk, researches suppliers, requests quotes, compares commercial terms, recommends the best purchase, obtains human approval when required, and sends the purchase order.

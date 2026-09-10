@@ -1,6 +1,7 @@
+import schema from "./schema";
 import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
-import { action, env, internalQuery } from "./_generated/server";
+import { action, env, internalQuery, internalAction } from "./_generated/server";
 import { internalMutation } from "./audited";
 import { ownedCompany } from "./onboarding";
 
@@ -216,5 +217,125 @@ export const readMessage = action({
       subject: text(m.subject),
       text: (text(m.extracted_text) || text(m.text) || text(m.preview)).slice(0, 30000),
     };
+  },
+});
+
+// Company-scoped background provisioning uses stable provider client IDs. Only
+// internal jobs can select a company; the public action still derives identity.
+export const backgroundContext = internalQuery({
+  args: { organizationId: v.id("organizations") },
+  returns: v.object({
+    name: v.string(),
+    podId: v.optional(v.string()),
+    email: v.optional(v.string()),
+  }),
+  handler: async (ctx, { organizationId }) => {
+    const organization = await ctx.db.get("organizations", organizationId);
+    if (!organization) throw new Error("Company not found.");
+    const inbox = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_organization_and_provider", (q) =>
+        q.eq("organizationId", organizationId).eq("provider", "agentmail"),
+      )
+      .unique();
+    return { name: organization.name, podId: organization.mailPodId, email: inbox?.email };
+  },
+});
+export const saveBackgroundInbox = internalMutation({
+  args: { organizationId: v.id("organizations"), podId: v.string(), inboxId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const organization = await ctx.db.get("organizations", args.organizationId);
+    if (!organization || (organization.mailPodId && organization.mailPodId !== args.podId))
+      throw new Error("Company inbox changed.");
+    const existing = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_organization_and_provider", (q) =>
+        q.eq("organizationId", args.organizationId).eq("provider", "agentmail"),
+      )
+      .unique();
+    const other = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_inbox_id", (q) => q.eq("inboxId", args.inboxId))
+      .unique();
+    if (
+      (existing && existing.inboxId !== args.inboxId) ||
+      (other && other.organizationId !== args.organizationId)
+    )
+      throw new Error("Inbox ownership changed.");
+    await ctx.db.patch("organizations", args.organizationId, { mailPodId: args.podId });
+    if (!existing)
+      await ctx.db.insert("purchasingInboxes", {
+        ...args,
+        email: args.inboxId,
+        provider: "agentmail",
+        selectedAt: Date.now(),
+      });
+    return null;
+  },
+});
+export const provisionForCompany = internalAction({
+  args: { organizationId: v.id("organizations") },
+  returns: v.object({ email: v.string() }),
+  handler: async (ctx, { organizationId }): Promise<{ email: string }> => {
+    const company = await ctx.runQuery(internal.companyMail.backgroundContext, { organizationId });
+    if (company.email) return { email: company.email };
+    const clientId = `buyer-${organizationId}`;
+    const podId =
+      company.podId ??
+      field(await createResource("/pods", { client_id: clientId, name: company.name }), "pod_id");
+    const inbox = await createResource(`/pods/${encodeURIComponent(podId)}/inboxes`, {
+      client_id: `${clientId}-purchasing-v1`,
+      display_name: `${company.name} Purchasing`,
+    });
+    if (field(inbox, "pod_id") !== podId) throw new Error("Inbox is in the wrong Pod.");
+    const inboxId = field(inbox, "inbox_id");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inboxId)) throw new Error("Invalid inbox address.");
+    await ctx.runMutation(internal.companyMail.saveBackgroundInbox, {
+      organizationId,
+      podId,
+      inboxId,
+    });
+    return { email: inboxId };
+  },
+});
+export const prepareOrderInbox = internalAction({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.null(),
+  handler: async (ctx, { orderId }) => {
+    const order = await ctx.runQuery(internal.companyMail.orderContext, { orderId });
+    if (!order || order.status !== "approved" || order.executionState !== "queued") return null;
+    try {
+      await ctx.runAction(internal.companyMail.provisionForCompany, {
+        organizationId: order.organizationId,
+      });
+      await ctx.runMutation(internal.companyOrders.executeApproved, { orderId });
+    } catch {
+      await ctx.runMutation(internal.companyMail.inboxNeedsHelp, { orderId });
+    }
+    return null;
+  },
+});
+export const orderContext = internalQuery({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.union(v.null(), schema.doc("companyOrders")),
+  handler: async (ctx, { orderId }) => await ctx.db.get("companyOrders", orderId),
+});
+export const inboxNeedsHelp = internalMutation({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.null(),
+  handler: async (ctx, { orderId }) => {
+    const order = await ctx.db.get("companyOrders", orderId);
+    if (
+      order?.status === "approved" &&
+      order.executionState === "queued" &&
+      !order.providerOutboundId
+    )
+      await ctx.db.patch("companyOrders", orderId, {
+        executionState: "needs_attention",
+        error: "Purchasing inbox setup failed. Retry when email is configured.",
+        updatedAt: Date.now(),
+      });
+    return null;
   },
 });

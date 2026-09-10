@@ -4,6 +4,7 @@ import { httpRouter } from "convex/server";
 import { components, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 import { auth } from "./auth";
+import { authorizeCommitHttp } from "./browserCheckout";
 import { upload, options } from "./inventoryUpload";
 
 const agentmail = new AgentMail(components.agentmail, {
@@ -13,6 +14,7 @@ const agentmail = new AgentMail(components.agentmail, {
 const http = httpRouter();
 
 auth.addHttpRoutes(http);
+http.route({ path: "/api/browser/authorize", method: "POST", handler: authorizeCommitHttp });
 http.route({ path: "/api/inventory/invoice", method: "POST", handler: upload });
 http.route({ path: "/api/inventory/invoice", method: "OPTIONS", handler: options });
 

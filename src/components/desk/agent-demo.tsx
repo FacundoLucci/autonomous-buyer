@@ -1,3 +1,4 @@
+import { DemoSupplierDirectory } from "./suppliers";
 import { useState, type ReactNode } from "react";
 import { reportedStock, stockItemMatch } from "@/lib/stock-message";
 import { AgentSurface, type AgentDraft, type AgentFocus, type AgentMessage } from "./agent";
@@ -238,7 +239,8 @@ export function DemoBuyer({
     : {
         text: ready?.order
           ? `${ready.name}: ${money(ready.order.totalCents, ready.order.currency)} purchase ready for approval.`
-          : "Tell me what you need. I’m here to help.",
+          : (snapshot.activity[0]?.summary ??
+            "I’m watching your stock. Tell me if anything changes."),
         focus: ready ? { page: "buys" as const, buy: ready.id } : undefined,
       };
   return (
@@ -295,7 +297,12 @@ export function DemoBuyer({
           updateCount={updateCount}
           updateRules={updateRules}
           settings={
-            <p className="desk-muted">Notification delivery is available in your own workspace.</p>
+            <>
+              <DemoSupplierDirectory />
+              <p className="desk-muted">
+                Notification delivery is available in your own workspace.
+              </p>
+            </>
           }
           audit={audit}
         />

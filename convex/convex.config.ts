@@ -33,6 +33,8 @@ const app = defineApp({
     ALERT_EMAIL_URL: v.optional(v.string()),
     ALERT_EMAIL_SECRET: v.optional(v.string()),
     APP_URL: v.optional(v.string()),
+    BROWSER_WORKER_URL: v.optional(v.string()),
+    BROWSER_WORKER_SECRET: v.optional(v.string()),
   },
 });
 

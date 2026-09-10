@@ -20,6 +20,7 @@ import {
   type Workspace,
 } from "./model";
 import type { AgentDraft, AgentFocus } from "./agent";
+import { ReplenishmentControl, PurchasingProgress, OrderProgress } from "./automation";
 
 export function AgentWork({
   focus,
@@ -139,6 +140,15 @@ export function AgentWork({
           <Fact>{item.name}</Fact>
         </Sentence>
         <StockCount item={item} onSave={updateCount} />
+        <ReplenishmentControl
+          item={item}
+          busy={disabled}
+          onChange={(enabled) =>
+            run(() =>
+              action(enabled ? "enable_replenishment" : "pause_replenishment", undefined, item),
+            )
+          }
+        />
         <div className="desk-answer-actions">
           <Button
             disabled={disabled}
@@ -151,7 +161,7 @@ export function AgentWork({
             disabled={disabled}
             onClick={() => beginTask({ task: "new_buy", contextId: item.id })}
           >
-            Buy more
+            Start a one-off buy
           </Button>
         </div>
         <BuyingRules
@@ -191,11 +201,20 @@ export function AgentWork({
             Deliver to <Fact>{buy.order.shipTo}</Fact>.
           </Sentence>
         )}
-        {!buy.order && isOpen(buy) && (
+        {!buy.order && isOpen(buy) && !buy.automatic && !buy.purchasingState && (
           <Button disabled={disabled} onClick={() => beginTask({ task: "buy", contextId: buy.id })}>
             Find buying options
           </Button>
         )}
+        {(!buy.order || (buy.order.reviewRequired && buy.order.orderingMethod !== "website")) &&
+          isOpen(buy) && (
+            <PurchasingProgress
+              buy={buy}
+              busy={disabled}
+              onRetry={() => run(() => action("retry_research", buy))}
+              onHelp={() => beginTask({ task: "buy", contextId: buy.id })}
+            />
+          )}
         {buy.order?.status === "draft" && !buy.order.reviewRequired && (
           <ApprovalPrompt
             key={approvalKey(buy.order)}
@@ -205,46 +224,37 @@ export function AgentWork({
             onNo={() => beginTask({ task: "buy", contextId: buy.id, revision: true })}
           />
         )}
-        {buy.order?.reviewRequired && (
-          <>
-            <Sentence>Price and delivery need to be checked again.</Sentence>
-            <Button
-              disabled={disabled}
-              onClick={() => beginTask({ task: "buy", contextId: buy.id })}
-            >
-              Continue checking
-            </Button>
-          </>
-        )}
-        {buy.order?.status === "approved" && (
-          <>
-            <Sentence>
-              You approved <Fact>{money(buy.order.totalCents, buy.order.currency)}</Fact>.
-            </Sentence>
-            <div className="desk-answer-actions">
-              {buy.order.buyUrl && <OutLink href={buy.order.buyUrl}>Order from supplier</OutLink>}
-              {buy.order.supplierEmail && (
-                <Button disabled={disabled} onClick={() => void run(() => action("send", buy))}>
-                  Send purchase order
-                </Button>
-              )}
-            </div>
-          </>
-        )}
+        {buy.order?.reviewRequired &&
+          !buy.automatic &&
+          !buy.purchasingState &&
+          buy.order.orderingMethod !== "website" && (
+            <>
+              <Sentence>Price and delivery need to be checked again.</Sentence>
+              <Button
+                disabled={disabled}
+                onClick={() => beginTask({ task: "buy", contextId: buy.id })}
+              >
+                Continue checking
+              </Button>
+            </>
+          )}
+        <OrderProgress
+          buy={buy}
+          busy={disabled}
+          onCheck={() => run(() => action("check_order", buy))}
+          onHelp={() => run(() => action("resolve_order", buy))}
+        />
         {(buy.order?.status === "approved" || buy.order?.status === "sent") && (
-          <Button
-            variant="outline"
-            disabled={disabled}
-            onClick={() => beginTask({ task: "confirm", contextId: buy.id })}
-          >
-            Add supplier confirmation
-          </Button>
-        )}
-        {buy.order?.status === "sending" && <Sentence>Your purchase order is being sent.</Sentence>}
-        {buy.order?.status === "send_failed" && (
-          <Button disabled={disabled} onClick={() => void run(() => action("check_delivery", buy))}>
-            Check email delivery
-          </Button>
+          <details className="desk-disclosure">
+            <summary>Have a confirmation from elsewhere?</summary>
+            <Button
+              variant="outline"
+              disabled={disabled}
+              onClick={() => beginTask({ task: "confirm", contextId: buy.id })}
+            >
+              Add supplier confirmation
+            </Button>
+          </details>
         )}
         {(buy.order?.status === "placed" || buy.order?.status === "part_received") && (
           <Decision
@@ -261,7 +271,7 @@ export function AgentWork({
             onNo={() => beginTask({ task: "receive", contextId: buy.id })}
           />
         )}
-        {isOpen(buy) && !buy.order && (
+        {isOpen(buy) && (!buy.order || buy.order.status === "draft") && (
           <Decision
             question="Cancel this buy?"
             yes="Cancel buy"
@@ -277,15 +287,55 @@ export function AgentWork({
             onYes={() => run(() => action("cancel", buy))}
           />
         )}
+        {buy.order &&
+          ["sent", "placed", "part_received"].includes(buy.order.status) &&
+          !buy.order.cancellationRequestedAt && (
+            <Decision
+              question="Need to stop this order?"
+              yes="Request cancellation"
+              busy={disabled}
+              confirm={{
+                question: "Ask the supplier to cancel the remaining delivery?",
+                label: "Send cancellation request",
+              }}
+              onYes={() => run(() => action("request_cancellation", buy))}
+            />
+          )}
+        {buy.order?.cancellationRequestedAt && (
+          <Sentence>Cancellation requested. Waiting for the supplier’s confirmation.</Sentence>
+        )}
         {buy.order && (
           <details className="desk-disclosure">
             <summary>Purchase details</summary>
-            <Sentence>
-              {buy.order.number}: <Fact>{money(buy.order.totalCents, buy.order.currency)}</Fact>,
-              including <Fact>{money(buy.order.freightCents, buy.order.currency)}</Fact> shipping
-              and <Fact>{money(buy.order.taxCents, buy.order.currency)}</Fact> tax.
-            </Sentence>
+            {buy.order.reviewRequired ? (
+              <Sentence>Final price and delivery are being checked.</Sentence>
+            ) : (
+              <Sentence>
+                {buy.order.number}: <Fact>{money(buy.order.totalCents, buy.order.currency)}</Fact>,
+                including <Fact>{money(buy.order.freightCents, buy.order.currency)}</Fact> shipping
+                and <Fact>{money(buy.order.taxCents, buy.order.currency)}</Fact> tax.
+              </Sentence>
+            )}
             {buy.order.notes && <Sentence>{buy.order.notes}</Sentence>}
+            {buy.order.supplierSku && (
+              <Sentence>
+                Supplier product code: <Fact>{buy.order.supplierSku}</Fact>.
+              </Sentence>
+            )}
+            {buy.order.sourceUrl && <OutLink href={buy.order.sourceUrl}>Supplier source</OutLink>}
+            {["sent", "placed", "part_received"].includes(buy.order.status) && (
+              <Decision
+                question="Has the supplier already cancelled the remaining delivery?"
+                yes="Record supplier cancellation"
+                busy={disabled}
+                confirm={{
+                  question:
+                    "Confirm the supplier has cancelled the remaining delivery. This updates your records; it does not ask the supplier to cancel.",
+                  label: "Record confirmed cancellation",
+                }}
+                onYes={() => run(() => action("record_cancellation", buy))}
+              />
+            )}
           </details>
         )}
         {errorView}

@@ -42,6 +42,8 @@ type Env = {
   readonly AUTH_ORIGIN: string | undefined;
   readonly AUTH_PRIVATE_KEY: string;
   readonly AUTH_RP_ID: string | undefined;
+  readonly BROWSER_WORKER_SECRET: string | undefined;
+  readonly BROWSER_WORKER_URL: string | undefined;
   readonly BUYER_EMAIL: string | undefined;
   readonly FIRECRAWL_API_KEY: string;
   readonly FIRECRAWL_WEBHOOK_SECRET: string | undefined;

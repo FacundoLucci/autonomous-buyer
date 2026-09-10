@@ -9,9 +9,9 @@ import { ownedCompany } from "./onboarding";
 import { validEmail } from "./companyRules";
 import { limits } from "./rateLimits";
 import { alertKind, alertStatus } from "./companyFields";
-import { stockOutlook } from "../src/lib/setup-fields";
+import { availableStock, inventoryPlan } from "../src/lib/inventory-planning";
 import schema from "./schema";
-import { activeCompanyItems } from "./companyStock";
+import { activeCompanyItems, stockFacts } from "./companyStock";
 
 const workflow = new WorkflowManager(components.workflow);
 export async function queueAlert(
@@ -205,28 +205,35 @@ export const evaluateItem = internalMutation({
   handler: async (ctx, args) => {
     const item = await ctx.db.get("inventoryItems", args.itemId);
     if (!item || item.isDemo || item.archived) return null;
-    const elapsedDays = item.stockCountedAt
-      ? Math.max(0, (Date.now() - item.stockCountedAt) / 86_400_000)
-      : 0;
-    const projected =
-      item.stockCountKnown === false
-        ? null
-        : Math.max(0, item.quantityOnHand - (item.estimatedDailyUsage ?? 0) * elapsedDays);
-    const outlook = stockOutlook(
-      projected,
-      item.estimatedDailyUsage ?? null,
-      item.supplierLeadTimeDays ?? null,
-      item.safetyStockDays,
+    const projected = availableStock(stockFacts(item));
+    const orders = await ctx.db
+      .query("companyOrders")
+      .withIndex("by_inventoryItemId_and_isOpen", (q) =>
+        q.eq("inventoryItemId", item._id).eq("isOpen", true),
+      )
+      .take(101);
+    const plan = inventoryPlan(
+      stockFacts(item),
+      orders
+        .filter((o) => ["placed", "part_received"].includes(o.status))
+        .map((o) => ({
+          quantity: Math.max(0, o.quantity - o.receivedQuantity),
+          expectedOn: o.expectedOn ?? null,
+        })),
     );
+    const needsAction = plan.attention && plan.low;
     await ctx.db.patch("inventoryItems", item._id, {
       estimatedQuantity: projected ?? undefined,
-      status: outlook.needsAction
+      status: needsAction
         ? "action_required"
-        : outlook.reorderAt === null || projected === null
+        : projected === null ||
+            item.estimatedDailyUsage === undefined ||
+            item.supplierLeadTimeDays === undefined
           ? "watch"
           : "healthy",
     });
-    if (outlook.needsAction) {
+    await ctx.scheduler.runAfter(0, internal.replenishment.evaluate, { itemId: item._id });
+    if (needsAction) {
       const settings = await ctx.db
         .query("companyAlertSettings")
         .withIndex("by_organizationId", (q) => q.eq("organizationId", item.organizationId))
@@ -238,7 +245,7 @@ export const evaluateItem = internalMutation({
         "low_stock",
         `stock:${item._id}:${settings?.verifiedAt ?? 0}:${day}`,
         `Low stock: ${item.name}`,
-        `${item.name} (${item.sku}) is at its reorder point.\nEstimated stock: ${Math.floor(projected!)} ${item.unit ?? "units"}. Last recorded count: ${item.quantityOnHand}.\nEstimates use your daily usage; count your shelf before buying.\n${item.buyUrl ? `Buy link: ${item.buyUrl}` : "Add a buy link or supplier email in your buy desk."}`,
+        `${item.name} (${item.sku}) is at its reorder point.\nEstimated stock: ${Math.floor(projected!)} ${item.unit ?? "units"}. Last recorded count: ${item.quantityOnHand}.\n${item.replenishmentEnabled ? "Your purchasing agent is checking replenishment using your saved usage. Update the count if it has changed unexpectedly." : "Estimates use your daily usage; update the shelf count if it has changed unexpectedly."}\n${item.buyUrl ? `Buy link: ${item.buyUrl}` : "Add a buy link or supplier email in your buy desk."}`,
       );
     }
     return null;

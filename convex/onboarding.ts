@@ -1,9 +1,10 @@
+import { baselineUsageChange, planningChanged } from "./companyStock";
+import { writeStockCount } from "./companyInventory";
 import { getAuthUserId } from "./identity";
 import { ConvexError, v } from "convex/values";
 import { query, type QueryCtx, type MutationCtx } from "./_generated/server";
 import { mutation } from "./audited";
 import { setupFieldError, stockOutlook, type CompanySetup } from "../src/lib/setup-fields";
-import { internal } from "./_generated/api";
 import { activeCompanyItems } from "./companyStock";
 
 const unit = v.union(
@@ -124,6 +125,15 @@ const workspaceValidator = v.object({
       buyUrl: v.union(v.string(), v.null()),
       supplierEmail: v.union(v.string(), v.null()),
       coverageDays: v.number(),
+      forecastQuantity: v.optional(v.number()),
+      forecastAt: v.optional(v.number()),
+      replenishmentEnabled: v.optional(v.boolean()),
+      automationState: v.optional(v.string()),
+      automationNote: v.optional(v.string()),
+      preparationDays: v.optional(v.number()),
+      orderMultiple: v.optional(v.number()),
+      preferredCoverageDays: v.optional(v.number()),
+      casePack: v.optional(v.number()),
       stockCountedAt: v.union(v.number(), v.null()),
       estimatedQuantity: v.union(v.number(), v.null()),
       safetyStockDays: v.number(),
@@ -183,6 +193,15 @@ export const getWorkspace = query({
             buyUrl: item.buyUrl ?? source?.url ?? null,
             supplierEmail: item.supplierEmail ?? null,
             coverageDays: item.preferredCoverageDays,
+            forecastQuantity: item.forecastQuantity,
+            forecastAt: item.forecastAt,
+            replenishmentEnabled: item.replenishmentEnabled,
+            automationState: item.automationState,
+            automationNote: item.automationNote,
+            preparationDays: item.preparationDays,
+            orderMultiple: item.orderMultiple,
+            preferredCoverageDays: item.preferredCoverageDays,
+            casePack: item.casePack,
             stockCountedAt: item.stockCountedAt ?? null,
             estimatedQuantity:
               item.stockCountKnown === false
@@ -209,24 +228,7 @@ export const updateStock = mutation({
     if (!item || item.organizationId !== organization._id) throw new ConvexError("Item not found.");
     if (!Number.isFinite(args.quantity) || args.quantity < 0 || args.quantity > 1_000_000_000)
       throw new ConvexError("Enter a valid stock count.");
-    const outlook = stockOutlook(
-      args.quantity,
-      item.estimatedDailyUsage ?? null,
-      item.supplierLeadTimeDays ?? null,
-      item.safetyStockDays,
-    );
-    await ctx.db.patch("inventoryItems", item._id, {
-      quantityOnHand: args.quantity,
-      estimatedQuantity: args.quantity,
-      stockCountKnown: true,
-      stockCountedAt: Date.now(),
-      status: outlook.needsAction
-        ? "action_required"
-        : outlook.reorderAt === null
-          ? "watch"
-          : "healthy",
-    });
-    await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
+    await writeStockCount(ctx, item, args.quantity);
     return null;
   },
 });
@@ -351,6 +353,7 @@ export const fillGap = mutation({
         : args.field === "leadTimeDays"
           ? {
               supplierLeadTimeDays: Number(args.value),
+              leadResearchState: undefined,
               leadTimeConfirmedBy: user._id,
               leadTimeConfirmedAt: Date.now(),
               leadTimeEvidence: "Confirmed by your team",
@@ -358,6 +361,7 @@ export const fillGap = mutation({
           : args.field === "dailyUsage"
             ? { estimatedDailyUsage: Number(args.value) }
             : { safetyStockDays: Number(args.value) };
+    if (args.field === "dailyUsage") await baselineUsageChange(ctx, item, Number(args.value));
     const next = { ...item, ...patch };
     const outlook = stockOutlook(
       next.stockCountKnown === false ? null : next.quantityOnHand,
@@ -373,7 +377,7 @@ export const fillGap = mutation({
           ? "watch"
           : "healthy",
     });
-    await ctx.scheduler.runAfter(0, internal.companyAlerts.evaluateItem, { itemId: item._id });
+    await planningChanged(ctx, item);
     return null;
   },
 });

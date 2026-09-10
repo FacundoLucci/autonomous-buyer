@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FloatingInput } from "./floating-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { buyingPriorities, type BuyingPriority } from "@/lib/inventory-planning";
+import { availableStock, buyingPriorities, type BuyingPriority } from "@/lib/inventory-planning";
+import { useClock } from "@/lib/use-clock";
 import { errorText, money, type Item } from "./model";
 import { Sentence, Fact, units } from "./sentences";
 export type ItemRules = {
@@ -12,6 +13,10 @@ export type ItemRules = {
   dailyLossCents: number | null;
   lossCurrency: string;
   stockoutImpact: string;
+  safetyStockDays?: number;
+  preferredCoverageDays?: number;
+  preparationDays?: number;
+  orderMultiple?: number;
 };
 export type UpdateCount = (item: Item, count: number, via?: "manual" | "chat") => Promise<void>;
 export type UpdateRules = (item: Item, rules: ItemRules) => Promise<void>;
@@ -26,6 +31,8 @@ export function StockCount({
   large?: boolean;
   inline?: boolean;
 }) {
+  const estimated = availableStock(item, useClock());
+  const displayed = estimated === null ? null : Math.round(estimated * 10) / 10;
   const [open, setOpen] = useState(false),
     [value, setValue] = useState(""),
     [busy, setBusy] = useState(false),
@@ -45,15 +52,15 @@ export function StockCount({
         render={
           <button
             className={`desk-count-button ${large ? "desk-count-large" : ""} ${inline ? "desk-count-inline" : ""}`}
-            aria-label={`Update ${item.name} count: ${item.quantity ?? "unknown"} ${item.unit}`}
+            aria-label={`Update ${item.name} count: estimated ${displayed ?? "unknown"} ${item.unit}`}
           />
         }
       >
         {inline ? (
-          <span>{item.quantity === null ? "count now" : units(item.quantity, item.unit)}</span>
+          <span>{displayed === null ? "count now" : units(displayed, item.unit)}</span>
         ) : (
           <span className="desk-number">
-            {item.quantity ?? "Count"}
+            {displayed ?? "Count"}
             <small>{item.unit}</small>
           </span>
         )}
@@ -119,6 +126,10 @@ export function BuyingRules({
     ),
     [currency, setCurrency] = useState(item.lossCurrency ?? "USD"),
     [impact, setImpact] = useState(item.stockoutImpact ?? ""),
+    [reserve, setReserve] = useState(item.safetyStockDays ?? 3),
+    [coverage, setCoverage] = useState(item.coverageDays ?? 30),
+    [preparation, setPreparation] = useState(item.preparationDays ?? 1),
+    [pack, setPack] = useState(item.orderMultiple ?? 1),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
   function edit() {
@@ -126,6 +137,10 @@ export function BuyingRules({
     setLoss(item.dailyLossCents == null ? "" : String(item.dailyLossCents / 100));
     setCurrency(item.lossCurrency ?? "USD");
     setImpact(item.stockoutImpact ?? "");
+    setReserve(item.safetyStockDays ?? 3);
+    setCoverage(item.coverageDays ?? 30);
+    setPreparation(item.preparationDays ?? 1);
+    setPack(item.orderMultiple ?? 1);
     setEditing(true);
     setError(null);
   }
@@ -157,6 +172,10 @@ export function BuyingRules({
                 dailyLossCents: loss.trim() ? Math.round(Number(loss) * 100) : null,
                 lossCurrency: currency,
                 stockoutImpact: impact.trim(),
+                safetyStockDays: reserve,
+                preferredCoverageDays: coverage,
+                preparationDays: preparation,
+                orderMultiple: pack,
               });
               setEditing(false);
             } catch (e) {
@@ -211,6 +230,58 @@ export function BuyingRules({
             onChange={(e) => setImpact(e.target.value)}
             maxLength={500}
           />
+          <label htmlFor={`reserve-${item.id}`}>
+            Keep this many days in reserve
+            <Input
+              id={`reserve-${item.id}`}
+              type="number"
+              min="0"
+              max="365"
+              step="any"
+              required
+              value={reserve}
+              onChange={(e) => setReserve(Number(e.target.value))}
+            />
+          </label>
+          <label htmlFor={`coverage-${item.id}`}>
+            Refill to this many days of supply, including reserve
+            <Input
+              id={`coverage-${item.id}`}
+              type="number"
+              min="1"
+              max="365"
+              step="any"
+              required
+              value={coverage}
+              onChange={(e) => setCoverage(Number(e.target.value))}
+            />
+          </label>
+          <label htmlFor={`preparation-${item.id}`}>
+            Days allowed for research and approval
+            <Input
+              id={`preparation-${item.id}`}
+              type="number"
+              min="0"
+              max="30"
+              step="any"
+              required
+              value={preparation}
+              onChange={(e) => setPreparation(Number(e.target.value))}
+            />
+          </label>
+          <label htmlFor={`multiple-${item.id}`}>
+            Order in multiples of ({item.unit})
+            <Input
+              id={`multiple-${item.id}`}
+              type="number"
+              min="1"
+              max="1000000"
+              step="1"
+              required
+              value={pack}
+              onChange={(e) => setPack(Number(e.target.value))}
+            />
+          </label>
           <div className="desk-rule-actions">
             <Button type="submit" disabled={busy}>
               Save rules
@@ -227,6 +298,10 @@ export function BuyingRules({
         </form>
       ) : (
         <>
+          <Sentence>
+            Keep <Fact>{item.safetyStockDays ?? 3} days</Fact> in reserve and refill to{" "}
+            <Fact>{item.coverageDays ?? 30} days</Fact> of supply.
+          </Sentence>
           <Sentence>
             {item.buyingPriority ? (
               <>

@@ -10,7 +10,15 @@ export type AuditEntry = Pick<
   "name" | "action" | "actor" | "via" | "changes" | "createdAt"
 > & { _id: string };
 const labels: Record<string, string> = {
-  quantityOnHand: "On hand",
+  quantityOnHand: "Last physical count",
+  forecastQuantity: "Estimated stock",
+  forecastAt: "Estimate updated at",
+  replenishmentEnabled: "Agent replenishment",
+  orderMultiple: "Order multiple",
+  preparationDays: "Research and approval allowance",
+  preferredCoverageDays: "Target days of supply",
+  orderingMethod: "Ordering method",
+  executionState: "Order progress",
   stockCountKnown: "Count known",
   stockCountedAt: "Counted at",
   estimatedDailyUsage: "Daily usage",

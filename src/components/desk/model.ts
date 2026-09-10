@@ -23,10 +23,18 @@ export function money(cents: number, currency = "USD") {
 }
 export function buyStatus(buy: Buy) {
   if (buy.order?.reviewRequired) return "Checking changes";
-  if (!buy.order) return buy.closed ? "Cancelled" : "Started";
+  if (!buy.order) {
+    if (buy.closed) return "Cancelled";
+    if (buy.purchasingState === "waiting_supplier") return "Waiting for supplier terms";
+    if (buy.purchasingState === "needs_details" || buy.purchasingState === "failed")
+      return "Needs attention";
+    return buy.automatic || buy.purchasingState === "researching" ? "Finding supply" : "Started";
+  }
+  if (buy.order.executionState === "outcome_unknown") return "Checking order outcome";
+  if (buy.order.executionState === "needs_attention") return "Needs attention";
   return {
     draft: "Needs approval",
-    approved: "Ready to order",
+    approved: "Completing order",
     sending: "Sending order",
     sent: "Awaiting confirmation",
     placed: "On the way",

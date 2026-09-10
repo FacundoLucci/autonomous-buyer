@@ -1,9 +1,8 @@
 # Company purchasing
 
-New companies can sign up, import supplies, prepare and approve purchases, send
-purchase orders from a dedicated inbox, record supplier confirmations, and receive
-deliveries. Buy links open the supplier's website; checkout and payment happen
-there. Opening a link or receiving an email never records a purchase as placed.
+The local implementation now supports agent-led replenishment: stock and usage trigger supplier research, one purchase approval queues ordering, and matching supplier confirmations update delivery plans. See [verification and remaining live setup](./agent-led-purchasing-verification.md). These changes have not yet been deployed.
+
+Purchase orders are preferred when the supplier accepts them. Website ordering uses the hosted browser worker and requires a verified supplier adapter. Opening a link or receiving an unrelated email never records a purchase as placed.
 
 ## Daily use
 
@@ -15,20 +14,15 @@ there. Opening a link or receiving an email never records a purchase as placed.
 2. Count stock and fill in daily usage, delivery time, supplier, and a buy link or
    supplier order email. Each workspace supports 100 active items. Archive unused
    items and restore them later; open purchases must be closed first.
-3. Prepare the quantity, current unit price, freight, tax, currency, date, and notes.
-   Edit the draft as needed, then approve its exact terms. An approved snapshot is
-   immutable. There is one open purchase per item to prevent duplicate submissions.
-4. Complete supplier checkout, or explicitly send the approved PO from the company's
-   purchasing inbox. Record the supplier's confirmation and expected delivery.
-   If terms changed, arrange cancellation with the supplier and prepare a corrected
-   purchase. Closing a record in BUY HARD does not cancel an external purchase.
+3. Set buying priorities, reserve days, target cover and order multiples, then choose **Let the agent replenish**. Existing items stay off until enabled. The agent forecasts stock, accounts for confirmed incoming deliveries and prepares a buy when needed. Missing supplier delivery time is researched before asking for help. Use **One-off buy** for exceptions.
+4. Review **Approve and order**. The agent sends the verified PO or completes a prepared website checkout. Matching confirmations update the order automatically; changed or incomplete terms require attention. An uncertain result is reconciled before another attempt. A justified supplemental buy can cover a shortage despite an existing delivery; repeated checks cannot duplicate the same buying work.
 5. Receive all or part of a delivery. Stock updates once for each receipt reference,
    with over-receiving rejected. The original stock count must be known first.
    Download the order record or use its saved link to reopen it later. Completed
    purchases and saved sources have paginated history.
 
 The purchasing inbox displays messages as text. Matching supplier replies appear
-in order activity; neither a reply nor its contents can approve or receive goods.
+in order activity and may confirm an already approved purchase; neither a reply nor its contents can approve spending or receive goods. Cancellation requests leave incoming stock in place until the supplier confirms cancellation.
 Later provider bounces are recorded and generate an alert if enabled. A send with
 uncertain delivery is checked again without blindly resending the order.
 
@@ -38,9 +32,7 @@ In **Company settings**, enter an address and verify the six-digit code delivere
 there. Codes expire after 15 minutes. Requests and verification attempts are rate
 limited. Alerts start only after verification, and both categories can be disabled.
 
-- Low stock: hourly evaluation of last recorded stock, elapsed daily usage, delivery
-  time, and reserve. At most one warning per item per UTC day. Estimates are labeled;
-  staff should count the shelf before purchasing.
+- Low stock: hourly evaluation plus scheduled reorder checks using physical counts, receipt/rate changes, delivery time and reserve. At most one warning per item per UTC day. Estimates remain separate from the last physical count; a routine count reminder does not block an enabled replenishment plan.
 - Order updates: approval, sending, supplier replies, receiving, cancellation,
   delivery failures, and daily overdue reminders. Order alerts contain a private
   saved link that checks company membership when opened.

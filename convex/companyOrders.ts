@@ -1,3 +1,5 @@
+import { recordMerchantOrder } from "./merchantMetrics";
+import { supplierAllowed } from "./companySuppliers";
 import { ConvexError, v } from "convex/values";
 import { paginationOptsValidator, paginationResultValidator } from "convex/server";
 import { AgentMail, vEvent, type OutboundId } from "@agentmail/convex";
@@ -11,6 +13,8 @@ import { boundedText, quantity, orderTotal, validDate } from "./companyRules";
 import schema from "./schema";
 import { queueAlert } from "./companyAlerts";
 import { orderTerms } from "./companyFields";
+import { applyStockReceipt, planningChanged } from "./companyStock";
+import { matchSupplierConfirmation, matchSupplierCancellation } from "./supplierConfirmation";
 
 const agentmail = new AgentMail(components.agentmail);
 export async function orderEvent(
@@ -33,7 +37,7 @@ export async function orderEvent(
     organizationId: order.organizationId,
     itemId: order.inventoryItemId,
     orderId: order._id,
-    summary: `${order.itemName}: ${summary}`,
+    summary: `${order.itemName}: ${kind === "supplier_reply" ? "Supplier reply received. Checking the order details." : summary}`,
     ...(["sent", "supplier_reply"].includes(kind) ? { credit: "agentmail" as const } : {}),
     createdAt: Date.now(),
   });
@@ -188,6 +192,8 @@ export const approve = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const { order, user } = await ownOrder(ctx, args.orderId);
+    if (!(await supplierAllowed(ctx, order.organizationId, order.buyUrl ?? order.sourceUrl)))
+      throw new ConvexError("This supplier is paused in your supplier directory.");
     if (order.quotedArrival && Date.parse(`${order.quotedArrival}T23:59:59.999Z`) < Date.now())
       throw new ConvexError(
         "The quoted arrival has passed. Check the terms again before approval.",
@@ -199,10 +205,19 @@ export const approve = mutation({
     if (args.reviewedKey !== undefined && args.reviewedKey !== approvalKey(order))
       throw new ConvexError("This buy changed. Review the updated details before approving.");
     if (order.status === "approved") return null;
+    if (
+      order.orderingMethod === "purchase_order" &&
+      (!order.supplierPoVerified || !order.supplierEmail)
+    )
+      throw new ConvexError("Verify that this supplier accepts purchase orders first.");
+    if (order.orderingMethod === "website" && order.browserPreparedKey !== approvalKey(order))
+      throw new ConvexError("Check the supplier checkout total before approving.");
     if (order.status !== "draft") throw new ConvexError("This order has already moved forward.");
     await ctx.db.patch("companyOrders", order._id, {
       status: "approved",
       approvedAt: Date.now(),
+      approvedTermsKey: approvalKey(order),
+      executionState: order.orderingMethod ? "queued" : "needs_attention",
       approvedBy: user._id,
       updatedAt: Date.now(),
     });
@@ -213,6 +228,10 @@ export const approve = mutation({
       `Approved ${order.quantity} ${order.unit} for ${order.currency} ${(order.totalCents / 100).toFixed(2)}.`,
       user._id,
     );
+    if (order.orderingMethod)
+      await ctx.scheduler.runAfter(0, internal.companyOrders.executeApproved, {
+        orderId: order._id,
+      });
     return null;
   },
 });
@@ -257,6 +276,7 @@ export const place = mutation({
     validDate(args.expectedOn);
     await ctx.db.patch("companyOrders", order._id, {
       status: "placed",
+      executionState: "confirmed",
       placedAt: Date.now(),
       confirmation,
       expectedOn: args.expectedOn,
@@ -269,6 +289,8 @@ export const place = mutation({
       `Supplier order ${confirmation}; expected ${args.expectedOn}.`,
       user._id,
     );
+    const inventory = await ctx.db.get("inventoryItems", order.inventoryItemId);
+    if (inventory) await planningChanged(ctx, inventory);
     return null;
   },
 });
@@ -299,12 +321,7 @@ export const receive = mutation({
       throw new ConvexError(
         "Count the stock already on your shelf before receiving this delivery.",
       );
-    const nextQuantity = item.quantityOnHand + args.quantity;
-    if (nextQuantity > 1_000_000_000) throw new ConvexError("Stock count is too large.");
-    await ctx.db.patch("inventoryItems", item._id, {
-      quantityOnHand: nextQuantity,
-      stockCountKnown: true,
-    });
+    await applyStockReceipt(ctx, item, args.quantity, order._id);
     await ctx.db.patch("companyOrders", order._id, {
       receivedQuantity,
       status: receivedQuantity === order.quantity ? "received" : "part_received",
@@ -325,13 +342,29 @@ export const receive = mutation({
 });
 
 export const cancel = mutation({
-  args: { orderId: v.id("companyOrders"), note: v.string() },
+  args: {
+    orderId: v.id("companyOrders"),
+    note: v.string(),
+    supplierConfirmed: v.optional(v.boolean()),
+  },
   returns: v.null(),
   handler: async (ctx, args) => {
     const { order, user } = await ownOrder(ctx, args.orderId);
     if (order.status === "cancelled") return null;
-    if (order.status === "received" || order.status === "sending")
+    if (
+      order.status === "received" ||
+      order.status === "sending" ||
+      order.executionState === "submitting" ||
+      order.executionState === "outcome_unknown"
+    )
       throw new ConvexError("This order cannot be cancelled now.");
+    if (
+      ["sent", "placed", "part_received", "send_failed"].includes(order.status) &&
+      !args.supplierConfirmed
+    )
+      throw new ConvexError(
+        "Confirm the supplier cancelled the remaining order before removing incoming stock.",
+      );
     const note = boundedText(args.note, "the cancellation reason or supplier confirmation", 500);
     await ctx.db.patch("companyOrders", order._id, {
       status: "cancelled",
@@ -339,6 +372,26 @@ export const cancel = mutation({
       updatedAt: Date.now(),
     });
     await orderEvent(ctx, order, "cancelled", `Remaining quantity cancelled: ${note}`, user._id);
+    const buys = await ctx.db
+      .query("companyBuys")
+      .withIndex("by_itemId_and_closed", (q) =>
+        q.eq("itemId", order.inventoryItemId).eq("closed", false),
+      )
+      .take(100);
+    for (const buy of buys.filter((buy) => buy.orderId === order._id)) {
+      await ctx.db.patch("companyBuys", buy._id, {
+        closed: true,
+        planVersion: (buy.planVersion ?? 0) + 1,
+      });
+      if (buy.automatic)
+        await ctx.db.patch("inventoryItems", order.inventoryItemId, {
+          replenishmentEnabled: false,
+          automationState: "paused",
+          automationNote: "Automatic buying paused after cancellation. Resume when ready.",
+        });
+    }
+    const inventory = await ctx.db.get("inventoryItems", order.inventoryItemId);
+    if (inventory) await planningChanged(ctx, inventory);
     return null;
   },
 });
@@ -347,58 +400,133 @@ export const send = mutation({
   args: { orderId: v.id("companyOrders") },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const { order, user, organization } = await ownOrder(ctx, args.orderId);
+    const { order, organization } = await ownOrder(ctx, args.orderId);
     if (order.providerOutboundId) return null;
     if (order.status !== "approved" || !order.approvedAt)
       throw new ConvexError("Approve the exact order before sending it.");
+    if (!order.supplierPoVerified || order.orderingMethod !== "purchase_order")
+      throw new ConvexError("Verify that this supplier accepts purchase orders first.");
+    if (order.approvedTermsKey !== approvalKey(order))
+      throw new ConvexError("Purchase details changed. Review them again.");
     if (!order.supplierEmail)
       throw new ConvexError("This order uses a buy link. Complete checkout with the supplier.");
+    await queuePurchaseOrder(ctx, order, organization.name);
+    return null;
+  },
+});
+
+async function queuePurchaseOrder(
+  ctx: MutationCtx,
+  order: Doc<"companyOrders">,
+  companyName: string,
+) {
+  if (!order.supplierEmail) throw new ConvexError("Supplier email missing.");
+  if (!(await supplierAllowed(ctx, order.organizationId, order.buyUrl ?? order.sourceUrl)))
+    throw new ConvexError("This supplier is paused in your supplier directory.");
+  const inbox = await ctx.db
+    .query("purchasingInboxes")
+    .withIndex("by_organization_and_provider", (q) =>
+      q.eq("organizationId", order.organizationId).eq("provider", "agentmail"),
+    )
+    .unique();
+  if (!inbox) throw new ConvexError("Connect your purchasing inbox first.");
+  const body = [
+    `Purchase order ${order.number}`,
+    `Buyer: ${companyName}`,
+    `Supplier: ${order.supplier}`,
+    `${order.itemName} (supplier SKU: ${order.supplierSku ?? order.sku}; internal item: ${order.sku})`,
+    `Quantity: ${order.quantity} ${order.unit}`,
+    `Price per ${order.unit}: ${order.currency} ${(order.unitPriceCents / 100).toFixed(2)}`,
+    `Freight: ${(order.freightCents / 100).toFixed(2)}`,
+    `Tax: ${(order.taxCents / 100).toFixed(2)}`,
+    `Total approved: ${order.currency} ${(order.totalCents / 100).toFixed(2)}`,
+    `Deliver to: ${order.shipTo}`,
+    `Required by: ${order.requiredBy}`,
+    order.notes,
+    "Do not substitute products or change the approved terms without our agreement. Reply using these fields, completing the reference and arrival date:",
+    "Confirmed: [yes only after accepting this order]",
+    `Purchase order: ${order.number}`,
+    "Confirmation: [your order reference]",
+    `SKU: ${order.supplierSku ?? order.sku}`,
+    `Quantity: ${order.quantity} ${order.unit}`,
+    `Total: ${order.currency} ${(order.totalCents / 100).toFixed(2)}`,
+    "Arrival: YYYY-MM-DD",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+  const outboundId = await agentmail.sendMessage(ctx, inbox.inboxId, {
+    to: order.supplierEmail,
+    subject: `Purchase order ${order.number} — ${companyName}`,
+    text: body,
+    headers: { "X-Buy-Hard-Order": order._id },
+  });
+  await ctx.db.patch("companyOrders", order._id, {
+    status: "sending",
+    executionState: "submitting",
+    providerOutboundId: outboundId,
+    updatedAt: Date.now(),
+  });
+  await orderEvent(
+    ctx,
+    order,
+    "sending",
+    `Purchase order queued for ${order.supplierEmail}.`,
+    undefined,
+  );
+  await ctx.scheduler.runAfter(1000, internal.companyOrders.reconcile, {
+    orderId: order._id,
+    attempt: 0,
+  });
+}
+
+export const executeApproved = internalMutation({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.null(),
+  handler: async (ctx, { orderId }) => {
+    const order = await ctx.db.get("companyOrders", orderId);
+    if (
+      !order ||
+      order.status !== "approved" ||
+      order.executionState !== "queued" ||
+      order.providerOutboundId
+    )
+      return null;
+    if (!(await supplierAllowed(ctx, order.organizationId, order.buyUrl ?? order.sourceUrl))) {
+      await ctx.db.patch("companyOrders", orderId, {
+        executionState: "needs_attention",
+        error: "This supplier is paused in your supplier directory.",
+      });
+      return null;
+    }
+    if (!order.approvedTermsKey || order.approvedTermsKey !== approvalKey(order)) {
+      await ctx.db.patch("companyOrders", orderId, {
+        executionState: "needs_attention",
+        error: "Purchase details changed. Review them again.",
+      });
+      return null;
+    }
+    if (order.orderingMethod === "website") {
+      await ctx.scheduler.runAfter(0, internal.browserCheckout.submit, { orderId });
+      return null;
+    }
+    if (
+      order.orderingMethod !== "purchase_order" ||
+      !order.supplierPoVerified ||
+      !order.supplierEmail
+    )
+      return null;
     const inbox = await ctx.db
       .query("purchasingInboxes")
       .withIndex("by_organization_and_provider", (q) =>
-        q.eq("organizationId", organization._id).eq("provider", "agentmail"),
+        q.eq("organizationId", order.organizationId).eq("provider", "agentmail"),
       )
       .unique();
-    if (!inbox) throw new ConvexError("Connect your purchasing inbox first.");
-    const body = [
-      `Purchase order ${order.number}`,
-      `Buyer: ${organization.name}`,
-      `Supplier: ${order.supplier}`,
-      `${order.itemName} (${order.sku})`,
-      `Quantity: ${order.quantity} ${order.unit}`,
-      `Price per ${order.unit}: ${order.currency} ${(order.unitPriceCents / 100).toFixed(2)}`,
-      `Freight: ${(order.freightCents / 100).toFixed(2)}`,
-      `Tax: ${(order.taxCents / 100).toFixed(2)}`,
-      `Total approved: ${order.currency} ${(order.totalCents / 100).toFixed(2)}`,
-      `Deliver to: ${order.shipTo}`,
-      `Required by: ${order.requiredBy}`,
-      order.notes,
-      "Please reply to confirm the order number, final total, and delivery date. Do not substitute products or change the approved terms without our agreement.",
-    ]
-      .filter(Boolean)
-      .join("\n\n");
-    const outboundId = await agentmail.sendMessage(ctx, inbox.inboxId, {
-      to: order.supplierEmail,
-      subject: `Purchase order ${order.number} — ${organization.name}`,
-      text: body,
-      headers: { "X-Buy-Hard-Order": order._id },
-    });
-    await ctx.db.patch("companyOrders", order._id, {
-      status: "sending",
-      providerOutboundId: outboundId,
-      updatedAt: Date.now(),
-    });
-    await orderEvent(
-      ctx,
-      order,
-      "sending",
-      `Purchase order queued for ${order.supplierEmail}.`,
-      user._id,
-    );
-    await ctx.scheduler.runAfter(1000, internal.companyOrders.reconcile, {
-      orderId: order._id,
-      attempt: 0,
-    });
+    if (!inbox) {
+      await ctx.scheduler.runAfter(0, internal.companyMail.prepareOrderInbox, { orderId });
+      return null;
+    }
+    const organization = await ctx.db.get("organizations", order.organizationId);
+    if (organization) await queuePurchaseOrder(ctx, order, organization.name);
     return null;
   },
 });
@@ -419,6 +547,7 @@ export const reconcile = internalMutation({
       else {
         await ctx.db.patch("companyOrders", order._id, {
           status: "send_failed",
+          executionState: "outcome_unknown",
           error: "Delivery is still unconfirmed. Check your purchasing inbox before retrying.",
           updatedAt: Date.now(),
         });
@@ -429,7 +558,11 @@ export const reconcile = internalMutation({
     const success = result.status === "sent" || result.status === "delivered";
     await ctx.db.patch("companyOrders", order._id, {
       status: success ? "sent" : "send_failed",
+      executionState: success ? "awaiting_confirmation" : "needs_attention",
       providerThreadId: result.threadId ?? undefined,
+      purchaseOrderSentAt: success
+        ? (order.purchaseOrderSentAt ?? Date.now())
+        : order.purchaseOrderSentAt,
       error: success
         ? undefined
         : "Email delivery failed. Check the supplier address and purchasing inbox.",
@@ -532,7 +665,12 @@ export async function receiveSupplierReply(
     typeof message.from === "string"
       ? (message.from.match(/<([^<>]+)>/)?.[1] ?? message.from).trim().toLowerCase()
       : "";
-  if (!inbox || message.inbox_id !== inbox.inboxId || from !== order.supplierEmail) return true;
+  if (
+    !inbox ||
+    message.inbox_id !== inbox.inboxId ||
+    from !== order.supplierEmail?.trim().toLowerCase()
+  )
+    return true;
   const key = `reply:${typeof message.message_id === "string" ? message.message_id : eventId}`;
   const prior = await ctx.db
     .query("companyOrderEvents")
@@ -550,5 +688,134 @@ export async function receiveSupplierReply(
     undefined,
     key,
   );
+  if (order.cancellationRequestedAt && order.isOpen && body) {
+    if (matchSupplierCancellation(body, order)) {
+      await ctx.db.patch("companyOrders", order._id, {
+        status: "cancelled",
+        isOpen: false,
+        updatedAt: Date.now(),
+        error: undefined,
+      });
+      const buys = await ctx.db
+        .query("companyBuys")
+        .withIndex("by_itemId_and_closed", (q) =>
+          q.eq("itemId", order.inventoryItemId).eq("closed", false),
+        )
+        .take(100);
+      for (const buy of buys.filter((b) => b.orderId === order._id)) {
+        await ctx.db.patch("companyBuys", buy._id, {
+          closed: true,
+          planVersion: (buy.planVersion ?? 0) + 1,
+        });
+        if (buy.automatic)
+          await ctx.db.patch("inventoryItems", order.inventoryItemId, {
+            replenishmentEnabled: false,
+            automationState: "paused",
+            automationNote: "Automatic buying paused after cancellation. Resume when ready.",
+          });
+      }
+      const inventory = await ctx.db.get("inventoryItems", order.inventoryItemId);
+      if (inventory) await planningChanged(ctx, inventory);
+      return true;
+    }
+  }
+  if (["sent", "sending", "send_failed"].includes(order.status) && order.approvedAt) {
+    const result = matchSupplierConfirmation(body ?? "", order);
+    if (result.confirmed) {
+      await ctx.db.patch("companyOrders", order._id, {
+        status: "placed",
+        executionState: "confirmed",
+        confirmation: result.reference,
+        expectedOn: result.arrival,
+        placedAt: Date.now(),
+        updatedAt: Date.now(),
+        error: undefined,
+      });
+      await recordMerchantOrder(ctx, order._id, "email");
+      const inventory = await ctx.db.get("inventoryItems", order.inventoryItemId);
+      if (inventory) await planningChanged(ctx, inventory);
+    } else {
+      await ctx.db.patch("companyOrders", order._id, {
+        executionState: "needs_attention",
+        error: "Supplier reply needs review: " + result.reason,
+        updatedAt: Date.now(),
+      });
+      await ctx.scheduler.runAfter(0, internal.companyConfirmation.extract, {
+        orderId: order._id,
+        replyKey: key,
+      });
+    }
+  }
   return true;
 }
+
+export const retryExecution = mutation({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.null(),
+  handler: async (ctx, { orderId }) => {
+    const { order } = await ownOrder(ctx, orderId);
+    if (
+      order.status !== "approved" ||
+      order.executionState !== "needs_attention" ||
+      order.providerOutboundId ||
+      order.orderingMethod !== "purchase_order" ||
+      !order.supplierPoVerified ||
+      order.approvedTermsKey !== approvalKey(order)
+    )
+      throw new ConvexError(
+        "This order needs checking before another attempt. No new order was sent.",
+      );
+    await ctx.db.patch("companyOrders", orderId, { executionState: "queued", error: undefined });
+    await ctx.scheduler.runAfter(0, internal.companyOrders.executeApproved, { orderId });
+    return null;
+  },
+});
+
+export const requestCancellation = mutation({
+  args: { orderId: v.id("companyOrders") },
+  returns: v.null(),
+  handler: async (ctx, { orderId }) => {
+    const { order, user } = await ownOrder(ctx, orderId);
+    if (order.cancellationOutboundId) return null;
+    if (
+      !["sent", "placed", "part_received"].includes(order.status) ||
+      !order.providerOutboundId ||
+      !order.supplierEmail
+    )
+      throw new ConvexError(
+        "Contact the supplier to cancel this order, then record their confirmation.",
+      );
+    const delivery = await agentmail.status(ctx, order.providerOutboundId as OutboundId);
+    if (!delivery?.agentmailMessageId)
+      throw new ConvexError("Check purchase order delivery before requesting cancellation.");
+    const inbox = await ctx.db
+      .query("purchasingInboxes")
+      .withIndex("by_organization_and_provider", (q) =>
+        q.eq("organizationId", order.organizationId).eq("provider", "agentmail"),
+      )
+      .unique();
+    if (!inbox) throw new ConvexError("Purchasing inbox not found.");
+    const outboundId = await agentmail.replyToMessage(
+      ctx,
+      inbox.inboxId,
+      delivery.agentmailMessageId,
+      {
+        to: order.supplierEmail,
+        text: `Please cancel the remaining ${order.quantity - order.receivedQuantity} ${order.unit} on purchase order ${order.number}. This is a cancellation request, not a new purchase. Please confirm using these fields:\nCancelled: [yes only after cancellation is completed]\nPurchase order: ${order.number}\nRemaining quantity: ${order.quantity - order.receivedQuantity} ${order.unit}`,
+      },
+    );
+    await ctx.db.patch("companyOrders", orderId, {
+      cancellationRequestedAt: Date.now(),
+      cancellationOutboundId: outboundId,
+      updatedAt: Date.now(),
+    });
+    await orderEvent(
+      ctx,
+      order,
+      "cancellation_requested",
+      "Cancellation requested. Incoming stock remains until the supplier confirms.",
+      user._id,
+    );
+    return null;
+  },
+});

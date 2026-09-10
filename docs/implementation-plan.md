@@ -1,5 +1,7 @@
 # Autonomous Buyer implementation plan
 
+For the next company-workspace work, follow the [agent-led purchasing plan](./agent-led-purchasing-plan.md): automatic replenishment, purchase orders by default and website checkout when required. This document retains the original demo scope and completion history.
+
 Status: BC-00 through BC-19 complete. BC-20 awaits public publication and submission approval.
 
 This document turns the [product spec](./product-spec.md) into ordered build
