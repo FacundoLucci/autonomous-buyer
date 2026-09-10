@@ -2,7 +2,9 @@ import http from "node:http";
 import { mkdir, readFile, writeFile, rename, open } from "node:fs/promises";
 import { randomBytes, createCipheriv, createDecipheriv, timingSafeEqual } from "node:crypto";
 import { chromium } from "playwright";
-import { fingerprint, runCheckout, computerStep, sameSnapshot } from "./runner.mjs";
+import { fingerprint, computerStep } from "./runner.mjs";
+import { runGenericCheckout, observe, performAction } from "./generic.mjs";
+import { startEgressProxy } from "./egress.mjs";
 const secret = process.env.BROWSER_WORKER_SECRET;
 const encryptionKey = Buffer.from(process.env.SESSION_ENCRYPTION_KEY || "", "hex");
 if (!secret || secret.length < 32 || encryptionKey.length !== 32)
@@ -11,10 +13,16 @@ if (!secret || secret.length < 32 || encryptionKey.length !== 32)
   );
 const dir = process.env.DATA_DIR || "./data";
 await mkdir(dir, { recursive: true, mode: 0o700 });
-const adapters = JSON.parse(
-  await readFile(process.env.SUPPLIER_ADAPTERS || "./suppliers.json", "utf8"),
-);
-const browser = await chromium.launch({ headless: true });
+if (!process.env.OPENAI_API_KEY) throw Error("OPENAI_API_KEY is required");
+const proxy = await startEgressProxy();
+const browser = await chromium.launch({
+  headless: true,
+  proxy: { server: proxy.url },
+  args: [
+    "--proxy-bypass-list=<-loopback>",
+    "--force-webrtc-ip-handling-policy=disable_non_proxied_udp",
+  ],
+});
 const active = new Map(),
   sessions = new Set(),
   takeovers = new Map(),
@@ -61,7 +69,7 @@ async function saveSession(id, context) {
   const iv = randomBytes(12),
     c = createCipheriv("aes-256-gcm", encryptionKey, iv);
   const encrypted = Buffer.concat([
-    c.update(JSON.stringify(await context.storageState())),
+    c.update(JSON.stringify(await context.storageState({ indexedDB: true }))),
     c.final(),
   ]);
   await writeFile(
@@ -73,23 +81,15 @@ async function saveSession(id, context) {
 async function execute(job) {
   running.add(job.id);
   const sessionId = fingerprint([job.order.organizationId, new URL(job.order.buyUrl).origin]);
-  if (sessions.has(sessionId)) {
+  if (sessions.has(sessionId) || sessions.size >= 3) {
     job.state = "needs_help";
     job.error =
       "Another checkout is using this supplier session. Retry preparation after it finishes.";
     await save(job);
+    running.delete(job.id);
     return;
   }
   sessions.add(sessionId);
-  const adapter = adapters[new URL(job.order.buyUrl).origin];
-  if (!adapter) {
-    job.state = "needs_help";
-    job.error =
-      "This supplier website needs a verified checkout adapter before automatic ordering.";
-    sessions.delete(sessionId);
-    await save(job);
-    return;
-  }
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
     storageState: await readSession(sessionId),
@@ -101,10 +101,9 @@ async function execute(job) {
   try {
     Object.assign(
       job,
-      await runCheckout({
+      await runGenericCheckout({
         page,
         job,
-        adapter,
         persist: save,
         authorize: async () => {
           const origin = new URL(process.env.CONVEX_SITE_URL);
@@ -130,16 +129,25 @@ async function execute(job) {
   await save(job);
   running.delete(job.id);
   if (job.state === "needs_help") {
-    setTimeout(() => close(job.id), 15 * 60 * 1000).unref();
+    setTimeout(
+      () => {
+        if (active.get(job.id)?.job === job) void close(job.id).catch(() => {});
+      },
+      15 * 60 * 1000,
+    ).unref();
   } else await close(job.id);
 }
 async function close(id) {
   const a = active.get(id);
   if (a) {
-    await saveSession(a.sessionId, a.context);
-    await a.context.close();
-    sessions.delete(a.sessionId);
-    active.delete(id);
+    try {
+      await saveSession(a.sessionId, a.context);
+    } finally {
+      await a.context.close();
+      sessions.delete(a.sessionId);
+      active.delete(id);
+      for (const [token, grant] of takeovers) if (grant.id === id) takeovers.delete(token);
+    }
   }
 }
 function authorized(req) {
@@ -164,7 +172,12 @@ const service = http
   .createServer(async (req, res) => {
     try {
       const url = new URL(req.url, "http://worker");
-      if (url.pathname === "/health") return reply(res, 200, { ok: true });
+      if (url.pathname === "/health")
+        return reply(res, browser.isConnected() ? 200 : 503, {
+          ok: browser.isConnected(),
+          mode: "generic",
+          active: active.size,
+        });
       // Capabilities are short lived and scoped to exactly one isolated browser.
       if (url.pathname.startsWith("/takeover/")) {
         const token = url.pathname.split("/")[2],
@@ -185,7 +198,28 @@ const service = http
             takeovers.delete(token);
             return reply(res, 200, { done: true });
           }
-          await computerStep(a.page, input);
+          // Human setup cannot activate a purchase button or submit a form via Enter.
+          if (input.type === "key" && input.key !== "Tab")
+            throw Error("Use the visible supplier controls");
+          if (input.type === "click") {
+            const state = await observe(a.page);
+            let selected;
+            for (const [id, target] of state.targets) {
+              const box = await target.locator.boundingBox();
+              if (
+                box &&
+                input.x >= box.x &&
+                input.x <= box.x + box.width &&
+                input.y >= box.y &&
+                input.y <= box.y + box.height
+              )
+                selected = id;
+            }
+            if (!selected) throw Error("Select a visible form control");
+            await performAction(a.page, { type: "click", target: selected }, state, {
+              human: true,
+            });
+          } else await computerStep(a.page, input);
           return reply(res, 200, { ok: true });
         }
         res.writeHead(200, {
@@ -196,7 +230,7 @@ const service = http
             "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; frame-ancestors 'none'",
         });
         return res.end(
-          `<!doctype html><title>Supplier sign-in</title><p>Complete supplier sign-in. Ordering remains blocked. Close when finished, then retry in BUY HARD.</p><button onclick="send({type:'done'})">Finish session</button><input id="entry" type="password" autocomplete="off" placeholder="Type into supplier field"><button onclick="send({type:'type',text:entry.value});entry.value=''">Type</button><button onclick="send({type:'key',key:'Tab'})">Tab</button><button onclick="send({type:'key',key:'Enter'})">Enter</button><img id="screen" style="width:100%;max-width:1280px" src="${url.pathname}/screen"><script>const base=location.pathname;async function send(a){await fetch(base,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)});document.getElementById('screen').src=base+'/screen?t='+Date.now()}document.getElementById('screen').onclick=e=>{const r=document.getElementById('screen').getBoundingClientRect();send({type:'click',x:(e.clientX-r.left)*1280/r.width,y:(e.clientY-r.top)*900/r.height})};</script>`,
+          `<!doctype html><title>Supplier sign-in</title><p>Complete supplier sign-in. Ordering remains blocked. Close when finished, then retry in BUY HARD.</p><button onclick="send({type:'done'})">Finish session</button><input id="entry" type="password" autocomplete="off" placeholder="Type into supplier field"><button onclick="send({type:'type',text:entry.value});entry.value=''">Type</button><button onclick="send({type:'key',key:'Tab'})">Tab</button><button onclick="send({type:'scroll',y:600})">Scroll down</button><button onclick="send({type:'scroll',y:-600})">Scroll up</button><img id="screen" style="width:100%;max-width:1280px" src="${url.pathname}/screen"><script>const base=location.pathname;async function send(a){await fetch(base,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)});document.getElementById('screen').src=base+'/screen?t='+Date.now()}document.getElementById('screen').onclick=e=>{const r=document.getElementById('screen').getBoundingClientRect();send({type:'click',x:(e.clientX-r.left)*1280/r.width,y:(e.clientY-r.top)*900/r.height})};</script>`,
         );
       }
       if (!authorized(req)) return reply(res, 401, { error: "Unauthorized" });
@@ -209,10 +243,20 @@ const service = http
           typeof input.intent !== "string"
         )
           return reply(res, 400, { error: "Invalid job" });
-        const origin = new URL(input.order.buyUrl).origin;
-        if (!adapters[origin])
-          return reply(res, 422, {
-            error: "Supplier website is not configured for automatic checkout.",
+        const destination = new URL(input.order.buyUrl);
+        if (
+          destination.protocol !== "https:" ||
+          destination.username ||
+          destination.password ||
+          typeof input.order._id !== "string" ||
+          typeof input.order.sku !== "string" ||
+          typeof input.order.unit !== "string" ||
+          typeof input.order.shipTo !== "string" ||
+          !Number.isFinite(input.order.quantity) ||
+          input.order.quantity <= 0
+        )
+          return reply(res, 400, {
+            error: "A public HTTPS buying URL and complete order are required",
           });
         const id = fingerprint([
           input.order.organizationId,
@@ -227,7 +271,17 @@ const service = http
             if (!job) {
               job = { ...input, id, state: "running", createdAt: Date.now() };
               await save(job);
-              void execute(job);
+              void execute(job).catch(async () => {
+                running.delete(job.id);
+                if (!active.has(job.id))
+                  sessions.delete(
+                    fingerprint([job.order.organizationId, new URL(job.order.buyUrl).origin]),
+                  );
+                job.state = job.submitStarted ? "outcome_unknown" : "needs_help";
+                job.error = "Browser unavailable. Review before retrying.";
+                await save(job);
+                await close(job.id);
+              });
             } else if (job.state === "running" && !active.has(id) && !running.has(id)) {
               job.state = job.submitStarted ? "outcome_unknown" : "needs_help";
               job.error = "Worker restarted. Verify the supplier session before continuing.";
@@ -248,55 +302,29 @@ const service = http
         if (match[2] === "/retry" && req.method === "POST") {
           if (job.submitStarted || running.has(job.id))
             return reply(res, 409, { error: "This job cannot be replayed." });
+          running.add(job.id);
           await close(job.id);
           job.state = "running";
           job.error = undefined;
           await save(job);
-          void execute(job);
+          void execute(job).catch(async () => {
+            running.delete(job.id);
+            if (!active.has(job.id))
+              sessions.delete(
+                fingerprint([job.order.organizationId, new URL(job.order.buyUrl).origin]),
+              );
+            job.state = job.submitStarted ? "outcome_unknown" : "needs_help";
+            job.error = "Browser unavailable. Review before retrying.";
+            await save(job);
+            await close(job.id);
+          });
           return reply(res, 200, { id: job.id, state: job.state });
         }
         if (match[2] === "/reconcile" && req.method === "POST") {
-          const adapter = adapters[new URL(job.order.buyUrl).origin];
-          if (!job.submitStarted || !adapter?.historyUrl || !adapter.referenceSelector)
-            return reply(res, 409, { error: "Supplier order history needs manual verification." });
-          const sessionId = fingerprint([
-            job.order.organizationId,
-            new URL(job.order.buyUrl).origin,
-          ]);
-          if (sessions.has(sessionId))
-            return reply(res, 409, { error: "Supplier session is busy." });
-          sessions.add(sessionId);
-          const context = await browser.newContext({
-            storageState: await readSession(sessionId),
-            serviceWorkers: "block",
+          return reply(res, 409, {
+            error:
+              "Check supplier order history and record the result in BUY HARD. An uncertain purchase is never retried automatically.",
           });
-          try {
-            await context.route("**/*", (r) =>
-              adapter.origins.includes(new URL(r.request().url()).origin) &&
-              ["GET", "HEAD"].includes(r.request().method()) &&
-              !adapter.commitPaths.includes(new URL(r.request().url()).pathname)
-                ? r.continue()
-                : r.abort(),
-            );
-            await context.routeWebSocket("**/*", (ws) => ws.close());
-            const page = await context.newPage();
-            await page.goto(adapter.historyUrl);
-            const receipts = await page.locator(adapter.receiptSelector).allTextContents();
-            const matched = receipts
-              .map((x) => JSON.parse(x))
-              .filter((x) => x.buyerReference === job.order._id && sameSnapshot(x, job.snapshot));
-            if (matched.length === 1 && typeof matched[0].confirmation === "string") {
-              job.state = "confirmed";
-              job.confirmation = matched[0].confirmation;
-              job.snapshot = matched[0];
-              job.error = undefined;
-              await save(job);
-            }
-          } finally {
-            await context.close();
-            sessions.delete(sessionId);
-          }
-          return reply(res, 200, { id: job.id, state: job.state });
         }
         if (match[2] === "/takeover" && req.method === "POST") {
           if (!publicUrl || !active.has(job.id) || job.state !== "needs_help")
@@ -325,5 +353,6 @@ const service = http
 for (const signal of ["SIGINT", "SIGTERM"])
   process.on(signal, async () => {
     await browser.close();
+    proxy.close();
     service.close(() => process.exit(0));
   });

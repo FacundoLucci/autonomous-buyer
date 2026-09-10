@@ -56,7 +56,7 @@ async function worker(path: string, body?: unknown): Promise<unknown> {
   if (!response.ok)
     throw new Error(
       response.status === 422
-        ? "This supplier website needs checkout setup before the agent can order."
+        ? "The browser agent could not start this checkout. Review the website address and try again."
         : "The browser worker could not complete this request.",
     );
   return await response.json();
@@ -79,6 +79,7 @@ export const reserve = internalMutation({
       order.browserCommitAuthorizedAt
     )
       return null;
+    if (!(await supplierAllowed(ctx, order.organizationId, order.buyUrl))) return null;
     if (args.phase === "prepare" && order.status !== "draft") return null;
     if (
       args.phase === "submit" &&
@@ -123,11 +124,22 @@ export const recordJob = internalMutation({
   },
 });
 export const fail = internalMutation({
-  args: { ...orderArgs, message: v.string(), uncertain: v.boolean() },
+  args: {
+    ...orderArgs,
+    message: v.string(),
+    uncertain: v.boolean(),
+    jobId: v.optional(v.string()),
+  },
   returns: v.null(),
   handler: async (ctx, args) => {
     const order = await ctx.db.get("companyOrders", args.orderId);
-    if (!order || !order.isOpen || order.executionState === "confirmed") return null;
+    if (
+      !order ||
+      !order.isOpen ||
+      order.executionState === "confirmed" ||
+      (args.jobId && order.browserJobId !== args.jobId)
+    )
+      return null;
     await ctx.db.patch("companyOrders", order._id, {
       error: args.message,
       executionState:
@@ -219,6 +231,8 @@ export const apply = internalMutation({
   handler: async (ctx, args) => {
     const order = await ctx.db.get("companyOrders", args.orderId);
     if (!order || !order.isOpen || order.browserJobId !== args.jobId) return null;
+    if (order.executionState === "confirmed") return null;
+    if (args.result.id !== args.jobId) throw new ConvexError("Unexpected browser job result.");
     if (
       approvalKey(order) !== args.intent &&
       !(order.browserCommitAuthorizedAt && order.approvedTermsKey === args.intent)
@@ -230,7 +244,6 @@ export const apply = internalMutation({
       });
       return null;
     }
-    if (order.executionState === "confirmed" && order.status === "placed") return null;
     const output = args.result;
     if (output.state === "running") {
       const count = (order.browserPollCount || 0) + 1;
@@ -295,7 +308,8 @@ export const apply = internalMutation({
       output.snapshot &&
       output.confirmation &&
       order.status === "approved" &&
-      order.browserPhase === "submit"
+      order.browserPhase === "submit" &&
+      order.browserCommitAuthorizedAt
     ) {
       const s = output.snapshot;
       validDate(s.expectedOn);
@@ -336,7 +350,9 @@ export const apply = internalMutation({
     }
     await ctx.db.patch("companyOrders", order._id, {
       executionState:
-        output.state === "outcome_unknown" || output.state === "running"
+        order.browserCommitAuthorizedAt ||
+        output.state === "outcome_unknown" ||
+        output.state === "running"
           ? "outcome_unknown"
           : "needs_attention",
       error: output.error || "Website checkout needs your help.",
@@ -364,6 +380,7 @@ export const poll = internalAction({
     } catch {
       await ctx.runMutation(internal.browserCheckout.fail, {
         orderId: args.orderId,
+        jobId: args.jobId,
         message:
           "Cannot verify website checkout. Check the supplier order history before retrying.",
         uncertain: true,

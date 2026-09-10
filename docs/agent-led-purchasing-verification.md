@@ -1,6 +1,6 @@
 # Agent-led purchasing: implementation verification
 
-Status: application backend and frontend deployed to development (`festive-coyote-483`) on 2026-09-10 from implementation commit `b820cef`. Production remains unchanged. The separate browser worker is committed but not hosted; a hosting destination is still required. No real supplier messages, purchases, account credentials or hosted browser sessions were used in verification.
+Status (2026-09-10): the development app (`festive-coyote-483`) is connected to a hosted generic browser worker on Railway. Merchant adapters and supplier-specific configuration have been removed. The production app (`reliable-albatross-463`) remains unchanged; its separate Railway worker is prepared for release. No real merchant purchases were made by these launch checks.
 
 ## Implemented
 
@@ -13,27 +13,43 @@ Status: application backend and frontend deployed to development (`festive-coyot
 - Supplier research and exact evidence checks, supplier product-code mapping, deterministic offer comparison, quote requests and bounded followups.
 - Purchase-order preference when acceptance and contact are verified. Approval queues execution; uncertain attempts cannot silently switch channels or submit again.
 - Matching supplier confirmation processing, partial receiving, cancellation requests and reconciliation. An external cancellation must be confirmed before incoming stock is removed.
-- Hosted browser worker with isolated encrypted supplier sessions, cart preparation, approval recheck immediately before submission, one permitted commit, and receipt reconciliation after uncertain outcomes.
+- Hosted browser worker with isolated encrypted supplier sessions, cart preparation, approval recheck immediately before submission, a single final click, and explicit manual reconciliation after uncertain outcomes.
 - Existing frontend retained with agent progress, **Approve and order**, replenishment controls, secondary one-off buying, supplier help, and explicit sample labels.
 
 ## Local evidence
 
 The repository's existing `pnpm test:backend` suite covers stock timing, duplicate checks, approval invalidation, private company access, exact evidence matching, confirmation/cancellation parsing and receipt replay. A complete local purchase-cycle test uses an explicitly identified provider stand-in: automatic buy, verified offer, approval, matching supplier confirmation and receipt. It does not establish live email delivery or live model research.
 
-The browser worker's `npm test` launches real Chromium against a controlled local store. It checks preparation without purchasing, exact approved submission, changed-price rejection, premature-submit blocking and revoked approval. Computer actions in this test are scripted; live model behavior and a real supplier checkout remain unverified.
+The browser worker's tests launch real Chromium against ordinary checkout HTML with no merchant adapter. They cover preparation, exact approved submission, changed prices, revoked approval, premature purchase, unsupported evidence, lost receipts, replay refusal and private-network exclusion. An additional test used the actual OpenAI `gpt-5.4` model to prepare and confirm one controlled local order. This establishes live model operation on the controlled store, not a real merchant purchase.
 
 Local Playwright review exercised the sample purchase approval through receiving readiness without a second order/send action, replenishment pause, editable coverage/priorities, and the mobile layout. At 390 px, measured page content width was 390 px. The supplier directory sample was also checked at 390 px with no horizontal overflow or browser console errors. The public `?demo=1` link was also corrected to handle the router's numeric parsing.
 
-Final local checks passed: **96 tests in the main suite; the earlier 4 real Chromium worker tests also passed**, plus TypeScript, lint, formatter, build and `git diff --check`. Convex code generation refreshed bindings; its analysis upload is not a deployment activation.
+Final local checks passed: **99 backend tests, eight worker checks, and one separately enabled live-model checkout test**, plus TypeScript, lint, formatter, build and `git diff --check`. Convex code generation refreshed bindings; its analysis upload is not a deployment activation.
 
 The merchant metric layout was checked with explicitly labeled local sample counts on desktop and 390 px mobile, including zero and unavailable states. Temporary fixture files were removed. The deployed development landing page now reads the public metric successfully: zero orders and zero tested merchants, with no browser console errors. The hosted index and checked assets match the local build. The unavailable state was checked before deployment. Email-only merchants are identified by supplier domain or a private mailbox key; if an email-only supplier later gains a website, it can currently appear as a second merchant identity.
 
-## Required before live use
+## Hosted worker evidence
 
-1. The development application is deployed at `festive-coyote-483`; production is outside this change's deployment authority. Complete live supplier validation before a production release. Existing inventory remains opted out until someone enables replenishment.
-2. Verify the existing OpenAI, Firecrawl and AgentMail connections with a controlled company and approved email recipients. Prove an actual quote request, PO delivery, supplier reply and receipt cycle.
-3. Validate live supplier assessment with the configured OpenAI/Firecrawl services; the local tests cover assessment state and evidence checks, not live model research. Adding a website does not create a working checkout integration. Choose a real website supplier and product. Configure and verify its cart/receipt extraction and permitted checkout endpoints; an arbitrary supplier website is not automatically supported.
-4. Host the worker with HTTPS, protected persistent storage, model access and session encryption. Configure its Convex callback and the optional `BROWSER_WORKER_URL` / `BROWSER_WORKER_SECRET`. See the [worker setup](../workers/browser-checkout/README.md).
-5. Prove the selected supplier's login, final terms, approval pause, actual order receipt and recovery against an explicitly approved test purchase. A prepared cart alone is not a completed-order proof.
+Railway project: `buyer` (`278523d4-09e9-43a3-9f24-8df0fb6f2bec`). Each service has its own `/data` volume, session encryption key, shared secret and Convex callback. One replica per service.
 
-Missing worker configuration or an unsupported supplier produces a visible help state. It never reports a successful purchase. Until the live checks are complete, this work should be described as a locally verified implementation, not a launched autonomous purchasing service.
+- Development worker: https://browser-worker-production-90df.up.railway.app; callback `festive-coyote-483`.
+- Production worker: https://browser-worker-prod-production.up.railway.app; callback `reliable-albatross-463`. Production Convex has not been connected yet.
+- Development `/health` returned healthy Chromium. Unauthenticated jobs returned HTTP 401. Two identical dispatches returned the same job ID. A read-only public-page job reached a truthful help state through the live model. Help HTML and screenshot returned HTTP 200, and closing the help session succeeded. The same execution journal remained readable after a Railway restart. A fake order sent to the development approval callback returned `authorized: false`.
+- No smoke check increments the public merchant metric. Only a confirmed real app-placed merchant order qualifies.
+
+## Production release remaining
+
+The application target is `reliable-albatross-463`. Before publishing the new application:
+
+1. Add a separate matching Auth 2 key pair (`AUTH_PRIVATE_KEY`, base64 PKCS8, and `AUTH_JWKS` with key ID). Preserve legacy `JWT_PRIVATE_KEY` and `JWKS` so existing accounts remain compatible.
+2. Configure `BROWSER_WORKER_URL` to the production worker and copy that worker's own shared secret into `BROWSER_WORKER_SECRET`. Never copy development's worker secret/callback configuration.
+3. Deploy backend with `pnpm exec convex deploy`, then frontend with `pnpm exec static-hosting upload --prod --dist dist/client --build-command "pnpm build"`. Schema validation must pass; verify hosted frontend targets the production backend and hosted signup/login works afterward.
+4. Use the production `.convex.site` hostname initially. A custom hostname needs its final passkey origin and relying-party ID before onboarding users.
+
+The deployment guard requires explicit approval naming the production target before these production Convex writes. The production worker itself can be provisioned and checked in advance.
+
+## Real supplier validation
+
+Verify a chosen supplier's sign-in, exact product and cart, approval pause, actual merchant confirmation and recovery using an explicitly approved purchase. Adding a public HTTPS website no longer requires an integration, but it does not guarantee the agent can complete that merchant's checkout. CAPTCHA, missing delivery dates and unusual payment flows can still require human help. Navigation guards recognize common purchase controls and network patterns; they do not classify every possible merchant action.
+
+Production already has OpenAI, Firecrawl and AgentMail credentials. Real supplier email delivery/reply and an actual website purchase remain separate evidence from the launch checks here. Optional off-site alert email still needs `ALERT_EMAIL_URL`, `ALERT_EMAIL_SECRET` and `APP_URL`. Passkey recovery/multiple-passkey management is not yet exposed, as documented in onboarding. Existing inventory remains opted out until replenishment is enabled.

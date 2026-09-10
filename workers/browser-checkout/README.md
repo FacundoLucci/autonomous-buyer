@@ -1,48 +1,40 @@
 # Supplier website worker
 
-This is a runnable hosted Playwright worker. Convex owns approvals and order status; the worker owns isolated supplier browser sessions and durable execution receipts. It does not require the buyer's computer to remain open.
+BUY HARD runs its own Chromium browsers on Railway. No merchant-specific adapter, selector configuration or managed browser vendor is required. Users may add any public HTTPS buying website. The agent reads its visible page and screenshot, prepares the requested cart, and asks for help if it cannot establish the terms.
 
-The agent uses the OpenAI Responses API to read screenshots and choose browser clicks, typing, keys, and scrolling. Checkout is bounded to 40 actions / three minutes. The final order is submitted only by the verified adapter after comparing the cart to the approved snapshot. This follows the [OpenAI computer-use integration pattern](https://developers.openai.com/api/docs/guides/tools-computer-use): the application executes model-proposed actions in its own environment. The current default model is configurable; validate account/model access before enabling a supplier.
+Convex owns purchase approval. The worker compares product, quantity, unit, address, delivery date, price, shipping, tax and total with the approved snapshot. It checks approval again immediately before the final click and journals submission first. Changed terms require a new approval. A lost receipt produces an uncertain outcome; it never automatically repeats the purchase.
 
-## Local checks
+## Runtime
+
+The agent uses the OpenAI Responses API with screenshot and visible-page input (`gpt-5.4`, configurable). Each job is bounded to 60 actions and eight minutes, with individual network and browser timeouts. Final terms need visible evidence and a second model review. This is general browser operation, not a guarantee that every merchant works. CAPTCHAs, unavailable products, unsupported payment flows and ambiguous delivery dates require help. Merchant-specific automation defenses can still prevent ordering.
+
+Navigation rejects recognizable final-purchase controls and request patterns. These checks supplement model review; they cannot classify every possible merchant action. Browser traffic passes through a local HTTPS proxy which resolves and pins public IP addresses, rejecting private networks and cloud metadata. Service workers and WebSockets are disabled. Popup flows require help.
+
+## Railway deployment
+
+Deploy this folder as the build root using its Dockerfile and railway.json. Mount a persistent volume at `/data`, use one replica, and expose port 8080 through Railway HTTPS. `/health` checks that Chromium is connected. The job journal and company/supplier locks require one process per volume.
+
+Required variables:
+
+- `BROWSER_WORKER_SECRET`: random 32+ character shared secret, also configured in Convex.
+- `SESSION_ENCRYPTION_KEY`: 32 random bytes encoded as 64 hexadecimal characters.
+- `OPENAI_API_KEY`; optional `COMPUTER_USE_MODEL` defaults to `gpt-5.4`.
+- `CONVEX_SITE_URL`: the matching Convex deployment's HTTPS site URL.
+- `PUBLIC_URL`: Railway's HTTPS worker URL for temporary supplier help sessions.
+- `DATA_DIR=/data`, `PORT=8080`.
+
+Configure `BROWSER_WORKER_URL` and the matching secret in that same Convex deployment. Do not point multiple deployments at a worker with a different approval callback.
+
+Supplier browser storage is isolated by company and supplier origin and encrypted using AES-256-GCM. Job journals contain commercial terms; protect the volume accordingly. Screenshots are not saved. Human sign-in and payment setup use an expiring help link while the agent is stopped. The help view blocks recognizable purchase buttons and Enter submissions; users should complete setup and return to BUY HARD for purchase approval. Help links expire after ten minutes and idle sessions close after fifteen minutes.
+
+## Verification
 
 ```
-cd workers/browser-checkout
 npm ci
 npx playwright install chromium
 npm test
 ```
 
-The tests run a real Chromium checkout against an isolated local store: preparation does not purchase, approved exact terms purchase once, changed terms stop, and premature submission is blocked at the network boundary. Computer clicks in this controlled test are scripted; it does not claim a live model or supplier purchase was tested.
+Tests use real Chromium and ordinary checkout HTML, with no supplier adapter. They cover preparation, approved submission, changed terms, revoked approval, premature purchase, missing evidence, uncertain receipts and public-network filtering. Set `BUYER_LIVE_MODEL_TEST=1` with `OPENAI_API_KEY` to run the additional live-model checkout against the controlled local store. This creates only a local test order, not a real merchant purchase.
 
-## Hosting
-
-Build the included Dockerfile and mount an encrypted persistent volume at `/data`. Run **one replica per volume**; the on-disk job journal and company/supplier session locks deliberately require one process. Use HTTPS behind a reverse proxy. Do not expose the container port directly. Deploying or making a real purchase requires a separately authorized target.
-
-Set:
-
-- `BROWSER_WORKER_SECRET`: random secret of at least 32 characters; same value in Convex.
-- `SESSION_ENCRYPTION_KEY`: 32 random bytes encoded as 64 hex characters. Keep in host secret storage; losing it loses existing sign-ins.
-- `OPENAI_API_KEY` and `COMPUTER_USE_MODEL`: a screenshot-capable Responses model (default `gpt-5.4`).
-- `SUPPLIER_ADAPTERS`: mounted path to reviewed supplier configuration.
-- `CONVEX_SITE_URL`: Convex HTTPS site origin; the worker requests a fresh once-only approval immediately before submitting.
-- `PUBLIC_URL`: HTTPS worker origin for temporary supplier sign-in links.
-- `DATA_DIR=/data`, `PORT=8080`.
-
-Set optional Convex `BROWSER_WORKER_URL` and `BROWSER_WORKER_SECRET`. If absent, BUY HARD records a clear help state. It does not claim that an order was placed.
-
-Supplier adapters are required. `suppliers.example.json` documents the contract; the example domain is not a working integration. Each real adapter must identify exact allowed origins, non-purchase writes, **all** order/payment commit endpoints, cart fields, and the submit and receipt elements. Never allow a commit endpoint in `writePaths`. Review GET endpoints too: only use suppliers where reads do not place orders. Reject unverified suppliers. Prefer narrow origin lists; use infrastructure egress restrictions to exclude private networks in the hosted deployment.
-
-The initial adapter reads a JSON DOM element with `sku`, `unit`, `quantity`, `currency`, `unitPriceCents`, `freightCents`, `taxCents`, `totalCents`, `shipTo`, and `expectedOn` (YYYY-MM-DD). A supplier with different markup needs a reviewed extraction adapter before activation. The receipt includes the same fields plus `confirmation`. Do not paste model-generated selectors into production without testing the complete supplier flow.
-
-Optional `referenceSelector` fills the BUY HARD order ID into the supplier's PO/reference field. Together with `historyUrl`, this enables read-only reconciliation of a lost response. Order history receipt elements must include `buyerReference` equal to that ID. Without this exact reference match, uncertain outcomes require manual supplier confirmation. A timeout never triggers another submission.
-
-## Recovery and privacy
-
-Submission is journaled and synced to disk before the commit click. Concurrent job admission is serialized, unreadable journals fail closed, and a once-only Convex commit authorization checks that the approval still matches immediately before submission. Repeated dispatch uses the same organization/order/phase/approval key and returns the same job. A worker restart cannot replay a submitted job. Changed terms return a new draft for approval. The worker admits at most one commit request per execution.
-
-Browser state is isolated by organization and supplier origin and encrypted with AES-256-GCM on disk. Job journals contain commercial terms, so protect and retain the whole volume according to company policy. Screenshots are not persisted. They are sent to the model only during agent operation. Supplier passwords and payment details are entered through the short-lived human help view, not through the model. Help links expire after ten minutes and reveal only one isolated browser. The agent is stopped during takeover; purchase endpoints remain blocked. Session windows close after fifteen minutes. Do not log capability URLs or request bodies at the proxy.
-
-Use `browserCheckout.helpSession` from the signed-in owning company to open the supplier session. After sign-in, `browserCheckout.retry` resumes preparation. For a submission it performs read-only reconciliation instead. Existing receipt entry remains available when the supplier requires a person to verify order history.
-
-Before launch: configure and prove one real supplier with an explicitly approved product and spending limit, probe model access, review login/payment requirements, and verify the host's volume persistence and egress rules. No live supplier adapter, remote host, model invocation, credentials, or real purchase is provisioned by these source changes.
+A real merchant is counted as tested only after a confirmed app-placed order. Hosting, a prepared cart and controlled test purchases do not increment that public metric.

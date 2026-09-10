@@ -176,3 +176,71 @@ test("final checkout authorization is once-only and rejects an invalidated appro
     }),
   ).toBe(false);
 });
+
+test("a late browser result cannot disturb partial receiving", async () => {
+  const { t, order, orderId } = await fixture();
+  await t.run(async (ctx) =>
+    ctx.db.patch("companyOrders", orderId, {
+      status: "part_received",
+      executionState: "confirmed",
+      receivedQuantity: 1,
+      browserJobId: "job",
+      browserPhase: "submit",
+    }),
+  );
+  await t.mutation(internal.browserCheckout.apply, {
+    orderId,
+    jobId: "job",
+    intent: approvalKey(order),
+    result: { id: "job", state: "outcome_unknown", error: "Late poll" },
+  });
+  expect(await t.query(internal.browserCheckout.read, { orderId })).toMatchObject({
+    status: "part_received",
+    executionState: "confirmed",
+    receivedQuantity: 1,
+  });
+});
+
+test("an old poll failure cannot overwrite a replacement browser job", async () => {
+  const { t, orderId } = await fixture();
+  await t.run(async (ctx) =>
+    ctx.db.patch("companyOrders", orderId, {
+      browserJobId: "new-job",
+      browserPhase: "prepare",
+    }),
+  );
+  await t.mutation(internal.browserCheckout.fail, {
+    orderId,
+    jobId: "old-job",
+    message: "Old worker stopped",
+    uncertain: true,
+  });
+  expect(
+    (await t.query(internal.browserCheckout.read, { orderId }))?.executionState,
+  ).toBeUndefined();
+});
+
+test("failure after the purchase click remains uncertain and cannot be resent", async () => {
+  const { t, order, orderId } = await fixture();
+  await t.run(async (ctx) =>
+    ctx.db.patch("companyOrders", orderId, {
+      status: "approved",
+      browserJobId: "job",
+      browserPhase: "submit",
+      browserCommitAuthorizedAt: Date.now(),
+      approvedTermsKey: approvalKey(order),
+    }),
+  );
+  await t.mutation(internal.browserCheckout.apply, {
+    orderId,
+    jobId: "job",
+    intent: approvalKey(order),
+    result: { id: "job", state: "needs_help", error: "Receipt unavailable" },
+  });
+  expect((await t.query(internal.browserCheckout.read, { orderId }))?.executionState).toBe(
+    "outcome_unknown",
+  );
+  expect(
+    await t.mutation(internal.browserCheckout.reserve, { orderId, phase: "submit" }),
+  ).toBeNull();
+});
