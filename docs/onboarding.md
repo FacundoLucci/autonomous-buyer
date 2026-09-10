@@ -59,7 +59,7 @@ preserved. Passkeys are bound to their relying party: a localhost passkey cannot
 be used on the hosted site. Keep the origin and relying-party ID aligned when
 changing domains. Auth 2 does not
 yet expose multi-passkey management or account recovery in this implementation.
-Production has not been changed.
+Production (`reliable-albatross-463`) was released on 2026-09-10 with separate Auth 2 signing keys and the default production site origin/relying-party ID. Hosted passkey signup, reload persistence, sign-out and sign-in passed using a software authenticator.
 
 ## Validation
 

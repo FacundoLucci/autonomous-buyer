@@ -1,6 +1,6 @@
 # Agent-led purchasing: implementation verification
 
-Status (2026-09-10): the development app (`festive-coyote-483`) is connected to a hosted generic browser worker on Railway. Merchant adapters and supplier-specific configuration have been removed. The production app (`reliable-albatross-463`) remains unchanged; its separate Railway worker is deployed and healthy, ready for the application release. No real merchant purchases were made by these launch checks.
+Status (2026-09-10): the development app (`festive-coyote-483`) is connected to a hosted generic browser worker on Railway. Merchant adapters and supplier-specific configuration have been removed. The production backend and website (`reliable-albatross-463`) are deployed and connected to their separate, healthy Railway worker after explicit release approval. No real merchant purchases were made by these launch checks.
 
 ## Implemented
 
@@ -33,21 +33,20 @@ The merchant metric layout was checked with explicitly labeled local sample coun
 Railway project: `buyer` (`278523d4-09e9-43a3-9f24-8df0fb6f2bec`). Each service has its own `/data` volume, session encryption key, shared secret and Convex callback. One replica per service.
 
 - Development worker: https://browser-worker-production-90df.up.railway.app; callback `festive-coyote-483`.
-- Production worker: https://browser-worker-prod-production.up.railway.app; callback `reliable-albatross-463`. Production Convex has not been connected yet.
+- Production worker: https://browser-worker-prod-production.up.railway.app; callback `reliable-albatross-463`. Production Convex is connected with its own matching shared secret.
 - Development `/health` returned healthy Chromium. Unauthenticated jobs returned HTTP 401. Two identical dispatches returned the same job ID. A read-only public-page job reached a truthful help state through the live model. Help HTML and screenshot returned HTTP 200, and closing the help session succeeded. The same execution journal remained readable after a Railway restart. A fake order sent to the development approval callback returned `authorized: false`.
 - Final Railway deployments reached `SUCCESS`: development `cec78239-d5da-4fe2-bd89-c62a080f9d03`, production worker `2fafd254-8757-46f7-9f0d-786e196bf5e2`. Both use implementation commit `3d49932`. Both health endpoints returned healthy Chromium; the production worker also completed a live-model public-page smoke check and correctly requested a real product page. No purchase was submitted.
 - No smoke check increments the public merchant metric. Only a confirmed real app-placed merchant order qualifies.
 
-## Production release remaining
+## Production release evidence — 2026-09-10
 
-The application target is `reliable-albatross-463`. Before publishing the new application:
+Released https://reliable-albatross-463.convex.site after explicit approval. Configured a separate Auth 2 key pair and the production worker URL/shared secret; legacy authentication keys were preserved. Backend deployment completed with schema validation and no deleted indexes. Production static hosting built with `VITE_CONVEX_URL=https://reliable-albatross-463.convex.cloud` and published all 67 files.
 
-1. Add a separate matching Auth 2 key pair (`AUTH_PRIVATE_KEY`, base64 PKCS8, and `AUTH_JWKS` with key ID). Preserve legacy `JWT_PRIVATE_KEY` and `JWKS` so existing accounts remain compatible.
-2. Configure `BROWSER_WORKER_URL` to the production worker and copy that worker's own shared secret into `BROWSER_WORKER_SECRET`. Never copy development's worker secret/callback configuration.
-3. Deploy backend with `pnpm exec convex deploy`, then frontend with `pnpm exec static-hosting upload --prod --dist dist/client --build-command "pnpm build"`. Schema validation must pass; verify hosted frontend targets the production backend and hosted signup/login works afterward.
-4. Use the production `.convex.site` hostname initially. A custom hostname needs its final passkey origin and relying-party ID before onboarding users.
+The hosted index and main JavaScript asset match the local production build. The public merchant query returns zero merchants and zero orders without errors. The production worker health endpoint reports connected Chromium. The authenticated production approval callback rejects a nonexistent order with `authorized: false`.
 
-The deployment guard requires explicit approval naming the production target before these production Convex writes. The production worker itself can be provisioned and checked in advance.
+A headed Chromium session with a software WebAuthn authenticator verified passkey account creation, private setup access, session persistence after reload, sign-out to the account form, and sign-in back to the same account. No browser errors or warnings appeared. The clearly named QA account `qa-prod-launch-20260910` has no company, inventory or purchases. This checks hosted browser authentication; a person's device approval is not simulated as a real hardware interaction.
+
+Use the production `.convex.site` hostname initially. A custom hostname needs its final passkey origin and relying-party ID before onboarding users.
 
 ## Real supplier validation
 
