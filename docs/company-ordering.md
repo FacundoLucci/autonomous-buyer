@@ -43,7 +43,7 @@ network outcomes remain unconfirmed and are not automatically sent again.
 ## Deployment configuration
 
 Development: `festive-coyote-483`. Production: `reliable-albatross-463`.
-The production app has not been updated by this task.
+The production app was released on 2026-09-10. Alert settings and working purchasing-email credentials are configured in production, with a separate signed callback and production app links.
 
 The dedicated sender is `alerts@buyhard.facundo.xyz`, on the Cloudflare account
 `facundo@facundo.xyz`. Worker source and configuration are in `workers/alerts/`.
