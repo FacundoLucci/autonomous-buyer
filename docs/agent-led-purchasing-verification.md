@@ -1,6 +1,6 @@
 # Agent-led purchasing: implementation verification
 
-Status (2026-09-10): the development app (`festive-coyote-483`) is connected to a hosted generic browser worker on Railway. Merchant adapters and supplier-specific configuration have been removed. The production app (`reliable-albatross-463`) remains unchanged; its separate Railway worker is prepared for release. No real merchant purchases were made by these launch checks.
+Status (2026-09-10): the development app (`festive-coyote-483`) is connected to a hosted generic browser worker on Railway. Merchant adapters and supplier-specific configuration have been removed. The production app (`reliable-albatross-463`) remains unchanged; its separate Railway worker is deployed and healthy, ready for the application release. No real merchant purchases were made by these launch checks.
 
 ## Implemented
 
@@ -35,6 +35,7 @@ Railway project: `buyer` (`278523d4-09e9-43a3-9f24-8df0fb6f2bec`). Each service 
 - Development worker: https://browser-worker-production-90df.up.railway.app; callback `festive-coyote-483`.
 - Production worker: https://browser-worker-prod-production.up.railway.app; callback `reliable-albatross-463`. Production Convex has not been connected yet.
 - Development `/health` returned healthy Chromium. Unauthenticated jobs returned HTTP 401. Two identical dispatches returned the same job ID. A read-only public-page job reached a truthful help state through the live model. Help HTML and screenshot returned HTTP 200, and closing the help session succeeded. The same execution journal remained readable after a Railway restart. A fake order sent to the development approval callback returned `authorized: false`.
+- Final Railway deployments reached `SUCCESS`: development `cec78239-d5da-4fe2-bd89-c62a080f9d03`, production worker `2fafd254-8757-46f7-9f0d-786e196bf5e2`. Both use implementation commit `3d49932`. Both health endpoints returned healthy Chromium; the production worker also completed a live-model public-page smoke check and correctly requested a real product page. No purchase was submitted.
 - No smoke check increments the public merchant metric. Only a confirmed real app-placed merchant order qualifies.
 
 ## Production release remaining
