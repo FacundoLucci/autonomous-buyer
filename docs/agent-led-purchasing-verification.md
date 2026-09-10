@@ -1,6 +1,6 @@
 # Agent-led purchasing: implementation verification
 
-Status: implemented and checked locally. Not deployed. No real supplier messages, purchases, account credentials or hosted browser sessions were used in verification.
+Status: application backend and frontend deployed to development (`festive-coyote-483`) on 2026-09-10 from implementation commit `b820cef`. Production remains unchanged. The separate browser worker is committed but not hosted; a hosting destination is still required. No real supplier messages, purchases, account credentials or hosted browser sessions were used in verification.
 
 ## Implemented
 
@@ -26,11 +26,11 @@ Local Playwright review exercised the sample purchase approval through receiving
 
 Final local checks passed: **96 tests in the main suite; the earlier 4 real Chromium worker tests also passed**, plus TypeScript, lint, formatter, build and `git diff --check`. Convex code generation refreshed bindings; its analysis upload is not a deployment activation.
 
-The merchant metric layout was checked with explicitly labeled local sample counts on desktop and 390 px mobile, including zero and unavailable states. Temporary fixture files were removed. The current undeployed backend produces the graceful unavailable state on the real landing route. Email-only merchants are identified by supplier domain or a private mailbox key; if an email-only supplier later gains a website, it can currently appear as a second merchant identity.
+The merchant metric layout was checked with explicitly labeled local sample counts on desktop and 390 px mobile, including zero and unavailable states. Temporary fixture files were removed. The deployed development landing page now reads the public metric successfully: zero orders and zero tested merchants, with no browser console errors. The hosted index and checked assets match the local build. The unavailable state was checked before deployment. Email-only merchants are identified by supplier domain or a private mailbox key; if an email-only supplier later gains a website, it can currently appear as a second merchant identity.
 
 ## Required before live use
 
-1. Review and deploy the application to the selected environment. The configured development target is `festive-coyote-483`; production is outside this change's deployment authority. Existing inventory remains opted out until someone enables replenishment.
+1. The development application is deployed at `festive-coyote-483`; production is outside this change's deployment authority. Complete live supplier validation before a production release. Existing inventory remains opted out until someone enables replenishment.
 2. Verify the existing OpenAI, Firecrawl and AgentMail connections with a controlled company and approved email recipients. Prove an actual quote request, PO delivery, supplier reply and receipt cycle.
 3. Validate live supplier assessment with the configured OpenAI/Firecrawl services; the local tests cover assessment state and evidence checks, not live model research. Adding a website does not create a working checkout integration. Choose a real website supplier and product. Configure and verify its cart/receipt extraction and permitted checkout endpoints; an arbitrary supplier website is not automatically supported.
 4. Host the worker with HTTPS, protected persistent storage, model access and session encryption. Configure its Convex callback and the optional `BROWSER_WORKER_URL` / `BROWSER_WORKER_SECRET`. See the [worker setup](../workers/browser-checkout/README.md).

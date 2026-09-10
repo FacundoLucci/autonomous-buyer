@@ -1,6 +1,6 @@
 # Agent-led purchasing plan
 
-Status: implemented locally, with deployment and live supplier validation still pending. See [implementation verification](./agent-led-purchasing-verification.md) for the tested scope and remaining setup. This plan does not authorize a supplier transaction.
+Status: application backend and frontend deployed to development on 2026-09-10. Browser-worker hosting and live supplier validation remain pending. See [implementation verification](./agent-led-purchasing-verification.md) for the tested scope and remaining setup. This plan does not authorize a supplier transaction.
 
 This is the next implementation plan for the current company workspace. It extends the original [product spec](./product-spec.md) and supersedes the original demo plan's manual buying steps and exclusion of website checkout. Use the verification requirements below for this work; the earlier demo-only test restrictions remain historical. Preserve the current frontend and persistent agent.
 

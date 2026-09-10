@@ -1,6 +1,6 @@
 # Company purchasing
 
-The local implementation now supports agent-led replenishment: stock and usage trigger supplier research, one purchase approval queues ordering, and matching supplier confirmations update delivery plans. See [verification and remaining live setup](./agent-led-purchasing-verification.md). These changes have not yet been deployed.
+The local implementation now supports agent-led replenishment: stock and usage trigger supplier research, one purchase approval queues ordering, and matching supplier confirmations update delivery plans. See [verification and remaining live setup](./agent-led-purchasing-verification.md). The application backend and frontend are deployed to development (`festive-coyote-483`). The separate browser worker is not hosted yet, and live supplier ordering remains unverified.
 
 Purchase orders are preferred when the supplier accepts them. Website ordering uses the hosted browser worker and requires a verified supplier adapter. Opening a link or receiving an unrelated email never records a purchase as placed.
 
