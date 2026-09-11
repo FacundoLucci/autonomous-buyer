@@ -1,4 +1,5 @@
-import { socialMeta } from "@/components/landing/social-meta";
+import { Landing } from "@/components/desk/landing";
+import { seoHead } from "@/components/landing/social-meta";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import {
@@ -16,25 +17,30 @@ import "@/styles/legacy-theme.css";
 import appCss from "@/styles/app.css?url";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#dce985" },
-      { title: "BUY HARD — Your AI buyer" },
-      ...socialMeta,
-    ],
-    links: [
-      { rel: "stylesheet", href: `${import.meta.env.BASE_URL}textures/powder-coat.css` },
-      { rel: "stylesheet", href: `${import.meta.env.BASE_URL}textures/screen-print.css` },
-      { rel: "stylesheet", href: appCss },
-      {
-        rel: "icon",
-        href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23090b0b'/%3E%3Cpath fill='%23fbf6ea' d='M5 7h7v2H7v6h5v2H7v6h5v2H5zm7 2h2v6h-2zm0 8h2v6h-2zm6-10h2v8h5V7h2v18h-2v-8h-5v8h-2z'/%3E%3C/svg%3E",
-        type: "image/svg+xml",
-      },
-    ],
-  }),
+  head: ({ matches }) => {
+    const current = matches.at(-1);
+    const seo = seoHead(current?.pathname ?? "/", current?.search ?? {});
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+        { name: "theme-color", content: "#dce985" },
+        ...seo.meta,
+      ],
+      scripts: seo.scripts,
+      links: [
+        ...seo.links,
+        { rel: "stylesheet", href: `${import.meta.env.BASE_URL}textures/powder-coat.css` },
+        { rel: "stylesheet", href: `${import.meta.env.BASE_URL}textures/screen-print.css` },
+        { rel: "stylesheet", href: appCss },
+        {
+          rel: "icon",
+          href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23090b0b'/%3E%3Cpath fill='%23fbf6ea' d='M5 7h7v2H7v6h5v2H7v6h5v2H5zm7 2h2v6h-2zm0 8h2v6h-2zm6-10h2v8h5V7h2v18h-2v-8h-5v8h-2z'/%3E%3C/svg%3E",
+          type: "image/svg+xml",
+        },
+      ],
+    };
+  },
   shellComponent: RootDocument,
   component: RootComponent,
   errorComponent: RootError,
@@ -44,8 +50,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootComponent() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
-    // Keep static hosting's empty shell identical through the first client render.
-    <ClientOnly>
+    // The shared public preview is identical during the first client render.
+    <ClientOnly fallback={<Landing staticPreview />}>
       {path.startsWith("/legacy") || path === "/prototype" ? (
         <div className="legacy-shell dark">
           <Outlet />

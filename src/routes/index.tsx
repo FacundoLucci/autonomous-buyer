@@ -19,7 +19,6 @@ export const Route = createFileRoute("/")({
           ? s.companyOrder
           : undefined,
   }),
-  head: () => ({ meta: [{ title: "BUY HARD — Keep the line moving." }] }),
   component: Home,
 });
 function Home() {

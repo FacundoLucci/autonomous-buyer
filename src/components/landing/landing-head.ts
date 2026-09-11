@@ -1,7 +1,7 @@
-import { socialMeta } from "./social-meta";
+import { seoHead } from "./social-meta";
 export function landingHead() {
   return {
-    meta: [{ title: "BUY HARD — Your AI buyer" }, ...socialMeta],
+    meta: seoHead("/legacy/landing").meta,
     links: [
       {
         rel: "preload",

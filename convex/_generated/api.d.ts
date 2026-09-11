@@ -73,6 +73,7 @@ import type * as rateLimits from "../rateLimits.js";
 import type * as recommendations from "../recommendations.js";
 import type * as replenishment from "../replenishment.js";
 import type * as rfqs from "../rfqs.js";
+import type * as seo from "../seo.js";
 import type * as sourcing from "../sourcing.js";
 import type * as supplierConfirmation from "../supplierConfirmation.js";
 import type * as supplierDirectoryFields from "../supplierDirectoryFields.js";
@@ -149,6 +150,7 @@ declare const fullApi: ApiFromModules<{
   recommendations: typeof recommendations;
   replenishment: typeof replenishment;
   rfqs: typeof rfqs;
+  seo: typeof seo;
   sourcing: typeof sourcing;
   supplierConfirmation: typeof supplierConfirmation;
   supplierDirectoryFields: typeof supplierDirectoryFields;

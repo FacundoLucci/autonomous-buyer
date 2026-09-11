@@ -74,3 +74,15 @@ Production verification used the in-app browser at 390 × 844:
 - The public static HTML contains Open Graph and Twitter metadata with absolute production URLs. The 1200 × 630 social image returns HTTP 200.
 
 Validation: the final full suite passed 121 tests with one skipped, including 11 marketing tests. Typecheck, lint, production build, schema validation, and both backend pushes passed. The isolated checkout required its own dependency installation for the edge-runtime tests.
+
+## SEO release
+
+The public origin remains `https://reliable-albatross-463.convex.site`. The homepage and `/walkthrough` have distinct titles, descriptions, canonical URLs, Open Graph/Twitter tags, image alt text/type/dimensions, and Organization/WebSite/WebPage JSON-LD. Canonicals omit campaign and workspace parameters while navigation continues preserving campaign attribution.
+
+App-owned HTTP routes serve the current static-hosting HTML with page-specific metadata and matching `X-Robots-Tag` headers. Assets remain in the existing static-hosting component, using its supported app-router integration. Demo URLs, workspace views, setup, leads, prototypes, and legacy pages are `noindex, follow`; authentication still controls private data. `/robots.txt` allows crawling those pages so crawlers can see `noindex`, while excluding API/auth endpoints. `/sitemap.xml` lists only the two public canonical pages. `/landing`, `/index.html`, and trailing-slash page variants redirect with campaign parameters preserved. Unknown routes return 404 rather than an indexable application shell.
+
+The initial shared HTML contains the public offer and product example before JavaScript loads. The interactive page takes over after hydration. The preview contains no account data or functioning inquiry submission, so it cannot send inquiries before the app is ready. Existing merchant visibility and walkthrough behavior remain unchanged.
+
+Verified on production: public and campaign-bearing homepage HTML, walkthrough metadata, both demo query forms, private/setup/legacy/prototype noindex headers, sitemap/robots content types, social image, and unknown-route 404. In-app browser checks confirmed metadata after hydration, the sample demo, and the live Cal calendar. Full suite: 126 passing tests, one skipped; typecheck, lint, build, and backend schema checks passed. Search Console submission and search-engine indexing/ranking are not claimed.
+
+References: [Google canonical guidance](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls), [Google robots metadata](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag).

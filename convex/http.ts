@@ -1,3 +1,6 @@
+import { registerStaticRoutes } from "@convex-dev/static-hosting";
+import { page, robots, sitemap } from "./seo";
+import { appPaths, publicPaths } from "../shared/seo";
 import { webhook as marketingWebhook } from "./marketingWebhook";
 import { AgentMail } from "@agentmail/convex";
 import { httpRouter } from "convex/server";
@@ -31,4 +34,11 @@ http.route({
   ),
 });
 
+http.route({ path: "/robots.txt", method: "GET", handler: robots });
+http.route({ path: "/sitemap.xml", method: "GET", handler: sitemap });
+for (const path of [...publicPaths, ...appPaths, "/landing", "/index.html"]) {
+  http.route({ path, method: "GET", handler: page });
+  if (path !== "/") http.route({ path: `${path}/`, method: "GET", handler: page });
+}
+registerStaticRoutes(http, components.staticHosting, { spaFallback: false });
 export default http;
