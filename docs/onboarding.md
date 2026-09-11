@@ -83,3 +83,35 @@ Production (`reliable-albatross-463`) was released on 2026-09-10 with separate A
 Results are in `output/onboarding/source-checks.json` and
 `output/onboarding/product-link-check.json`. These scripts create QA records in
 **development** and call the real extraction providers; they are not offline tests.
+
+## Guarded company form agent (local fix, September 10)
+
+Company setup now has a dedicated agent with two argument-free tools,
+`processCompanyReply` and `clarifyCompanyField`. The processor reads the current authenticated message itself,
+then sends it to a separate structured extractor. Its entire output contract is
+`companyName` and `shippingAddress`, with explicit nulls for unknown values, plus
+a constrained help category and field when the user requests clarification.
+It cannot supply inventory IDs, quantities, purchase terms, or arbitrary UI text.
+The server validates and saves the patch, then chooses the next predefined question
+from the remaining required fields. The workspace still requires the user's save
+button. A failed tool call shows an error instead of silently repeating a question.
+
+A supplied bare website can be read for a public company name. The delivery address
+must come from the user, not a public address. Website failures allow manual replies.
+The desktop setup keeps the conversation and company preview side by side, including
+when the draft is empty; mobile stacks them. Manual entry is in the company column.
+
+Validation: 28 focused offline checks; an opt-in real-model test covers the reported
+`luhvfood.com` / `LUHV FOOD` conversation, off-topic input, incomplete address, and
+completed address. Website results in that test are fixtures. Run it with
+`BUYER_LIVE_ONBOARDING_CHECK=1` and a supplied `OPENAI_API_KEY`; the ordinary test
+suite skips external model calls. Browser layout fixtures passed at 1440px and
+390px with no horizontal overflow. These checks are not production deployment or
+a real account's end-to-end signup proof.
+
+When the user needs help, the second tool selects approved explanations, examples,
+rephrased questions, website alternatives, delivery-address guidance, or reasons a
+field is needed. It ends with the next missing question. It cannot write form
+values or publish arbitrary model prose. A mixed reply can supply a real company
+detail and request help; the detail is saved before clarification. Stale or non-setup
+help calls are rejected. Visible help uses the same word-by-word reveal as questions.

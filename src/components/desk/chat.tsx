@@ -13,6 +13,7 @@ import { draftReady, errorText, money, type ChatRequest, type Draft } from "./mo
 import { buyingPriorities } from "@/lib/inventory-planning";
 import { Fact, Sentence, units } from "./sentences";
 import { dateLabel } from "./model";
+import { ChatMessages } from "./chat-messages";
 const prompts = {
   stock_update: "What changed? For example, ‘We only have two cases of lids left.’",
   onboarding: "What’s your company’s website? A name works too.",
@@ -265,18 +266,13 @@ export function TaskChat({
       </div>
       <div className="desk-chat-layout">
         <div className="desk-chat-conversation">
-          <div className="desk-messages" role="log" aria-label="Conversation">
-            {!conversation?.messages.length && (
-              <p className="desk-assistant">{request.prompt ?? prompts[request.task]}</p>
-            )}
-            {conversation?.messages.map((m) => (
-              <p key={m.id} className={m.role === "user" ? "desk-user" : "desk-assistant"}>
-                {m.text}
-              </p>
-            ))}
-            {conversation?.busy && <output className="desk-working">Working on it…</output>}
-            <span ref={(node) => node?.scrollIntoView({ block: "nearest" })} />
-          </div>
+          <ChatMessages
+            key={`${request.task}:${request.contextId ?? ""}`}
+            messages={conversation === undefined ? undefined : (conversation?.messages ?? [])}
+            prompt={request.prompt ?? prompts[request.task]}
+            busy={!!conversation?.busy}
+            stream={request.task === "onboarding"}
+          />
           {sourceId && (
             <SourceResult
               sourceId={sourceId}
@@ -336,55 +332,65 @@ export function TaskChat({
               </Button>
             </div>
           </form>
-          {request.task === "onboarding" && conversation && (
-            <OnboardingDetails
-              chatId={conversation._id}
-              draft={conversation.draft}
-              busy={busy}
-              onSaved={onSaved}
-            />
-          )}
           {(error || conversation?.error) && (
             <p className="desk-error" role="alert">
               {error ?? conversation?.error}
             </p>
           )}
         </div>
-        {request.task !== "stock_update" && draft && Object.keys(draft).length > 0 && (
-          <aside className="desk-chat-preview" aria-label="Draft">
-            {conversation?.comparison && (
-              <div className="desk-comparison">
-                <p>{buyingPriorities[conversation.comparison.priority]}</p>
-                {conversation.comparison.options.map((o, index) => (
-                  <div key={o.index}>
-                    <strong>
-                      {index === 0 ? "Recommended: " : ""}
-                      {o.supplier}
-                    </strong>
-                    <span>
-                      {money(o.totalCents, o.currency)} · arrives {o.expectedOn}
-                    </span>
-                    {o.shortageDays !== null && o.shortageDays > 0 && (
-                      <small>
-                        May be out for {Number(o.shortageDays.toFixed(1))} days
-                        {o.lossCents !== null
-                          ? ` · about ${money(o.lossCents, o.currency)} lost`
-                          : ""}
-                      </small>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            <DraftPreview draft={draft} task={request.task} />
-            {draftReady(request.task, draft) &&
-              (!request.revision || !!conversation?.reviewedDraftKey) && (
-                <Button disabled={busy} onClick={() => void save()}>
-                  {pending ? "Saving…" : saveLabels[request.task]}
-                </Button>
+        {request.task !== "stock_update" &&
+          (request.task === "onboarding" || (draft && Object.keys(draft).length > 0)) && (
+            <aside className="desk-chat-preview" aria-label="Draft">
+              {conversation?.comparison && (
+                <div className="desk-comparison">
+                  <p>{buyingPriorities[conversation.comparison.priority]}</p>
+                  {conversation.comparison.options.map((o, index) => (
+                    <div key={o.index}>
+                      <strong>
+                        {index === 0 ? "Recommended: " : ""}
+                        {o.supplier}
+                      </strong>
+                      <span>
+                        {money(o.totalCents, o.currency)} · arrives {o.expectedOn}
+                      </span>
+                      {o.shortageDays !== null && o.shortageDays > 0 && (
+                        <small>
+                          May be out for {Number(o.shortageDays.toFixed(1))} days
+                          {o.lossCents !== null
+                            ? ` · about ${money(o.lossCents, o.currency)} lost`
+                            : ""}
+                        </small>
+                      )}
+                    </div>
+                  ))}
+                </div>
               )}
-          </aside>
-        )}
+              {request.task === "onboarding" && (
+                <>
+                  <h3>Company details</h3>
+                  {!draft?.companyName && (
+                    <p>Your company name and delivery address will appear here.</p>
+                  )}
+                </>
+              )}
+              <DraftPreview draft={draft ?? {}} task={request.task} />{" "}
+              {request.task === "onboarding" && conversation && (
+                <OnboardingDetails
+                  chatId={conversation._id}
+                  draft={conversation.draft}
+                  busy={busy}
+                  onSaved={onSaved}
+                />
+              )}
+              {draft &&
+                draftReady(request.task, draft) &&
+                (!request.revision || !!conversation?.reviewedDraftKey) && (
+                  <Button disabled={busy} onClick={() => void save()}>
+                    {pending ? "Saving…" : saveLabels[request.task]}
+                  </Button>
+                )}
+            </aside>
+          )}
       </div>
     </section>
   );

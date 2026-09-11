@@ -1606,3 +1606,39 @@ body {
   font-size: 11px;
   color: var(--muted-foreground);
 }
+
+/* Reveal validated questions without moving the composer or streaming raw model prose. */
+.desk-question-word {
+  animation: desk-question-reveal 140ms ease-out both;
+}
+@keyframes desk-question-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.desk-typing-dots > span {
+  animation: desk-typing-pulse 900ms ease-in-out infinite alternate;
+}
+.desk-typing-dots > span:nth-child(2) {
+  animation-delay: 150ms;
+}
+.desk-typing-dots > span:nth-child(3) {
+  animation-delay: 300ms;
+}
+@keyframes desk-typing-pulse {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .desk-question-word,
+  .desk-typing-dots > span {
+    animation: none;
+  }
+}

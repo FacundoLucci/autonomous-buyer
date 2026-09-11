@@ -661,3 +661,41 @@ test("manual setup cannot change another task or a busy conversation", async () 
     a.mutation(api.desk.setOnboardingDetails, { ...details, chatId: otherId }),
   ).rejects.toThrow("no longer editable");
 });
+
+test("onboarding help is scoped to the active request and does not edit the form", async () => {
+  const { t, draft } = await fixture();
+  const chatId = await draft("onboarding", { companyName: "LUHV FOOD" });
+  await t.run((ctx) =>
+    ctx.db.patch("taskChats", chatId, { busy: true, currentMessageId: "current" }),
+  );
+  await t.mutation(internal.desk.setOnboardingHelp, {
+    chatId,
+    messageId: "current",
+    kind: "example",
+    field: "shippingAddress",
+  });
+  const chat = await t.run((ctx) => ctx.db.get("taskChats", chatId));
+  expect(chat?.draft).toEqual({ companyName: "LUHV FOOD" });
+  expect(chat?.resultSummary).toContain("[postal code]");
+  expect(chat?.question).toBe("shippingAddress");
+  await expect(
+    t.mutation(internal.desk.setOnboardingHelp, {
+      chatId,
+      messageId: "old",
+      kind: "example",
+      field: "current",
+    }),
+  ).rejects.toThrow(/no longer editable/);
+  const other = await draft("settings", {});
+  await t.run((ctx) =>
+    ctx.db.patch("taskChats", other, { busy: true, currentMessageId: "current" }),
+  );
+  await expect(
+    t.mutation(internal.desk.setOnboardingHelp, {
+      chatId: other,
+      messageId: "current",
+      kind: "example",
+      field: "current",
+    }),
+  ).rejects.toThrow(/no longer editable/);
+});

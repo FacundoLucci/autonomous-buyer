@@ -6,6 +6,7 @@ import { z } from "zod";
 import { v } from "convex/values";
 import { components, internal } from "./_generated/api";
 import { env, internalAction, type ActionCtx } from "./_generated/server";
+import { respondToOnboarding } from "./onboardingAgent";
 import { questions } from "./deskPolicy";
 import { productUrl } from "./inventorySources";
 import type { Id, Doc } from "./_generated/dataModel";
@@ -47,6 +48,12 @@ export async function respondToTask(
     const chat = await ctx.runQuery(internal.desk.readChat, { chatId: args.chatId });
     if (!chat.busy || chat.currentMessageId !== args.messageId) return null;
     if (!env.OPENAI_API_KEY) throw new Error("Assistant is not configured.");
+    if (chat.task === "onboarding") {
+      await respondToOnboarding(ctx, args, chat);
+      await ctx.runMutation(internal.buyer.noteCredit, { ...args, credit: "openai" });
+      await ctx.runMutation(internal.desk.finish, args);
+      return null;
+    }
     const agent = new Agent(components.agent, {
       name: "BUY HARD",
       languageModel: createOpenAI({ apiKey: env.OPENAI_API_KEY })("gpt-5.4-mini"),

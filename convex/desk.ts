@@ -1,3 +1,4 @@
+import { onboardingHelp } from "./onboardingHelp";
 import { ConvexError, v } from "convex/values";
 import { createThread, listMessages, saveMessage } from "@convex-dev/agent";
 import { api, components, internal } from "./_generated/api";
@@ -1123,5 +1124,37 @@ export const compareOptions = internalMutation({
       updatedAt: Date.now(),
     });
     return comparison;
+  },
+});
+
+export const setOnboardingHelp = internalMutation({
+  args: {
+    chatId: v.id("taskChats"),
+    messageId: v.string(),
+    kind: v.union(
+      v.literal("explain"),
+      v.literal("example"),
+      v.literal("rephrase"),
+      v.literal("no_website"),
+      v.literal("which_address"),
+      v.literal("why_needed"),
+    ),
+    field: v.union(v.literal("companyName"), v.literal("shippingAddress"), v.literal("current")),
+  },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db.get("taskChats", args.chatId);
+    if (
+      !chat ||
+      chat.task !== "onboarding" ||
+      !chat.busy ||
+      chat.savedAt ||
+      chat.currentMessageId !== args.messageId
+    )
+      throw new Error("This setup request is no longer editable.");
+    await ctx.db.patch("taskChats", chat._id, {
+      resultSummary: onboardingHelp(chat.draft, { kind: args.kind, field: args.field }),
+      question: requiredQuestion("onboarding", chat.draft),
+      toolUsed: true,
+    });
   },
 });

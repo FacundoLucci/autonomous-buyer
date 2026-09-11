@@ -1,275 +1,279 @@
 # BUY HARD — GTM and social plan
 
-Working plan · September 5, 2026 · Owner: Facundo
+Revised September 10, 2026 · Owner: Facundo · Campaign not started
 
-**Lead with the purchasing problem. Show the app solving it. Give each sponsor credit beside the work it enables. Turn that attention into conversations with early customers.**
+**Purchasing. Handled. Keep the line moving.**
 
-Before the hackathon ends, every main campaign post should tag **Convex, OpenAI, Firecrawl, and AgentMail**. Each sponsor gets its own feature spotlight, plus a shared place in the final demo.
+Introduce BUY HARD through its simpler daily experience: tell your buyer what is on hand, review the purchase it prepares, and report what arrives. Show one useful moment per post. Before the hackathon deadline, tag **Convex, OpenAI, Firecrawl, and AgentMail** and explain the work each enables.
 
-## 1. Who we want to reach
+This replaces the September 5 campaign. No earlier posts, outreach, or results are assumed. Start from September 10; there is no backlog to catch up on.
 
-Our first customer hypothesis is **small food businesses that regularly reorder packaging**: delis, caterers, food producers, and small operators buying lids, containers, and similar supplies. Start with owners and purchasing leads who manage orders through email and spreadsheets. Validate this focus in the first ten conversations.
+## 1. The story we should tell
 
-| Audience                         | What they care about                                 | What we show                                                                  | Next step                                    |
-| -------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------- |
-| Owners and purchasing leads      | Keeping supplies available; less time chasing quotes | One familiar item, a shortage, the supplier options, and the buyer's decision | Watch the demo; reply about an early pilot   |
-| Hackathon community and sponsors | Useful software and meaningful integrations          | Short clips showing each sponsor doing a specific job                         | Try the demo, give feedback, share the build |
+**Positioning:** BUY HARD is an AI buyer for the everyday supplies that keep a small business running.
 
-**Positioning:** BUY HARD is an AI purchasing assistant for recurring supplies. It helps spot shortages, research suppliers, and prepare a purchase for human review.
+**Supporting line:** “Tell your buyer what you have. Review what needs buying. Get back to your business.”
 
-**Main message:** “Keep the lids coming. Keep the buying under control.”
+The product direction is that the agent handles recurring purchasing work using stock counts, usage, and buying rules. The owner approves spending and handles physical deliveries or exceptions. Replenishment must first be enabled for the item. Keep live availability claims within the evidence below.
 
-**Pilot offer:** Start with one recurring item, one buyer, and a guided review of the buying process. Learn where BUY HARD can remove work. Broader automation follows verified product readiness.
+Our first audience remains owners and purchasing leads at small food businesses: delis, cafés, caterers, and food producers. Cups, lids, gloves, towels, and labels make the story concrete. This is a starting audience hypothesis; learn from the first ten operator conversations before expanding to other businesses.
 
-## 2. What we can market today
+Three messages should carry the campaign:
 
-The repository documents a completed purchasing rehearsal with real provider calls and controlled email recipients. New company workspaces support signup, source imports, and inventory setup; automated supplier outreach and ordering for those workspaces remain unfinished. The campaign should invite people to **explore the demo and help shape an early pilot**. [Current app scope](../README.md) · [Onboarding status](onboarding.md)
+- **Say it naturally.** “We have 8 cases of paper cups left.” The conversation stays beside the work.
+- **Know what needs you.** Clear stock sentences and a specific buying decision make the next step easy to understand.
+- **Keep the buying moving.** Counts, supplier information, approvals, and delivery updates belong to the same process.
 
-Use the recorded Buy Desk flow for sponsor proof. The landing page's animated receipts are an **illustrative scenario**; their sample suppliers, dates, percentages, and activity timings are not results from a live purchasing run. [Recording guide](demo-screenplay.md) · [Landing scenario](../src/components/landing/autonomous-landing.tsx)
+Use the current lime background, black type, large sentences, dot-matrix wordmark, and persistent **Your buyer** dock. Keep captions short and readable on a phone. Introduce BUY HARD as new to the audience; a redesign post can explain the build process later.
 
-Keep these distinctions in captions and recordings:
+## 2. What changed, and what we can show
 
-- Label footage “Controlled demo.” Real website research and controlled email replies are separate evidence.
-- Describe a confirmed order as incoming inventory; it is not proof that physical goods arrived.
-- Share measured outcomes only. Seeded savings, sample confidence percentages, and staged timings are not customer results.
-- Credit OpenAI when the selected record shows OpenAI work. The app also supports a separately labeled OpenRouter path.
+Reviewed the current working tree, including uncommitted purchasing additions, against commits through September 9. On September 10, the public review link displayed the new frontend and sample workspace. A local sample interaction accepted “We have 8 cases of paper cups left” and showed 8 cases on hand. This verifies the sample interaction, not a live OpenAI request.
 
-## 3. Sponsor story and visibility inside the app
+| Current feature                                                           | Customer benefit                                                       | Marketing treatment                                                                               |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Simple Dashboard, Inventory, and Buys; sentence-based actions             | See the situation and the next decision quickly                        | Lead with the new public demo; use current screenshots                                            |
+| Persistent buyer conversation with contextual actions                     | Update stock and work on buying tasks without repeatedly opening forms | Show a short conversation; distinguish sample replies from live agent work                        |
+| Product links and bulk file imports, including invoices and spreadsheets  | Start with information the business already has                        | Show source → extracted item → human review; confirm stock separately                             |
+| Buying priorities, stock forecasts, and automatic replenishment controls  | Set how the buyer should handle recurring supplies                     | Show as an implementation preview until the current live company flow is proved                   |
+| **Approve and order**, supplier confirmations, full and partial receiving | Make a purchase decision and keep deliveries accounted for             | Show the sample experience now; use verified provider records for delivery claims                 |
+| Supplier directory with buying websites and notes                         | Bring the suppliers the business uses                                  | A supporting feature; adding a website does not prove checkout support                            |
+| Verified email alerts, purchase history, and audit history                | Stay informed and inspect what happened                                | Follow-up content after the core story; purchasing email and alert delivery are separate services |
 
-The official event calls for posts tagging all four sponsors and judges their actual use in the product. Its linked X accounts are [@convex](https://x.com/Convex), [@OpenAI](https://x.com/openai), [@firecrawl](https://x.com/firecrawl), and [@agentmail](https://x.com/agentmail). On LinkedIn, select the matching official company pages in the mention picker. [Event instructions](https://luma.com/convex-allgas-hackathon)
+Sources: [current frontend](../src/components/desk/app.tsx), [buyer conversation](../src/components/desk/agent-live.tsx), [company purchasing and its September 6 rehearsal](company-ordering.md), and [latest implementation verification](agent-led-purchasing-verification.md).
 
-| Sponsor   | Strength to highlight                                     | BUY HARD proof shot                                                      | In-app attribution                                                   |
-| --------- | --------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| Convex    | Keeps the buying record and live workspace in sync        | Inventory, purchase progress, and the saved decision in the same flow    | “Live updates via Convex” beside the activity area                   |
-| Firecrawl | Makes supplier website information usable                 | Open a discovered product page and show its stored source link           | “Sources via Firecrawl” beside supplier research                     |
-| OpenAI    | Turns supplier language into usable details               | A reply beside the extracted terms, missing information, and explanation | “Details extracted by OpenAI” beside supported output                |
-| AgentMail | Gives the buying agent an email inbox and ongoing threads | The quote request, clarification, reply, and order confirmation          | “Sent via AgentMail” / “Replied via AgentMail” beside email evidence |
+The old plan's statement that company ordering is simply unfinished is outdated. Company purchase orders, imports, alerts, and receiving have an earlier documented development rehearsal. The newer automatic replenishment, supplier research, and browser checkout work has local verification, with live supplier checks still pending in the current verification notes. The hosted sample shows the interface; it does not establish those live outcomes. This review did not test private company purchasing or a real supplier checkout.
 
-These contextual credits already exist in the [Buy Desk](../src/routes/index.tsx) through the shared [SponsorCredit component](../src/components/buy-hard/sponsor-credit.tsx). Before recording, verify they appear at readable size in the selected run. Keep them close to the result, with BUY HARD as the main brand. Use the existing [provider marks](../public/brand/README.md).
+The new ordering direction also covers how suppliers sell: use an emailed purchase order when acceptance is verified, or a prepared website checkout for a supported supplier. The owner reviews the purchase terms in the same buying experience. Website checkout remains preview content until that supplier and the hosted worker have passed live checks. [Ordering plan](agent-led-purchasing-plan.md)
 
-For each spotlight, explain **the job → the sponsor's contribution → the benefit to the buyer**. Example: “Supplier quotes arrive as emails. OpenAI extracts the stated terms so the buyer can review them together.” BUY HARD's rules handle the comparison and calculations; the human approves the purchase. [AI task boundaries](../convex/aiNode.ts)
+**Use three clear evidence labels:**
 
-An optional build-story post can also credit Codex for implementation, using a concrete change from the build log. Keep that separate from OpenAI's role inside the product.
+- **Sample demo:** the public demo uses sample data and says no supplier is contacted. Preserve that label, including when cropping footage.
+- **Implementation preview:** new automation shown without a completed live supplier run. Describe what we are building and what the preview demonstrates.
+- **Verified provider run:** an actual recorded request, reply, or order result on the selected release. State when recipients or stores are controlled tests.
 
-## 4. Channels and effort
+The landing page's new **Where we've bought** section showed **0 orders and 0 merchants** during this review. It can become a useful proof point after confirmed orders exist. Demo spend, sample supplier names, and sample counts are not customer traction. Amazon, WebstaurantStore, or another listed website is not automatically a verified buying integration. [Metric implementation](../src/components/desk/merchant-metrics.tsx)
 
-These are starting choices to test, not established audience results.
+## 3. Make each sponsor's contribution obvious
 
-| Channel                    | Job                                                 | Starting cadence                                                           |
-| -------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------- |
-| Facundo's X account        | Build updates, sponsor spotlights, short demo clips | 4 main posts each week through submission; a final demo post               |
-| Facundo's LinkedIn         | Reach operators through concrete business problems  | 2 posts each week; reuse the same footage with more context                |
-| Convex hackathon community | Get product feedback from participants              | One useful preview and one finished-demo update in the appropriate channel |
-| Reels / Shorts             | Test the deli story with a wider audience           | Repurpose the best 2 vertical clips if production time allows              |
+Every main pre-deadline post includes all four tags: **@convex @OpenAI @firecrawl @agentmail**. On LinkedIn, select the official company mentions. Give each sponsor one focused story inside that shared credit. [Official event instructions](https://www.convex.dev/hackathons/all-gas)
 
-Start with **$0 in paid distribution**. Budget one 2–3 hour recording session, then 30 minutes a day for posting, replies, and tracking. Reply to specific feedback; invite interested people into a pilot conversation. Community posting and outreach are future actions in this plan.
+| Spotlight | Strength inside BUY HARD                                                              | Short proof to capture                                                               | Buyer-facing explanation                        |
+| --------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| OpenAI    | Understands requests, prepares structured work, and reads supplied information        | A live request beside its resulting stock update or reviewed draft                   | “Tell your buyer what changed.”                 |
+| Firecrawl | Reads product and supplier pages for research                                         | A source link beside the extracted item or supplier details                          | “Start with the product link you already have.” |
+| AgentMail | Gives the buyer a purchasing inbox and linked supplier conversations                  | A verified purchase email and matching reply in the current interface                | “Keep the supplier conversation with the buy.”  |
+| Convex    | Stores the conversation, stock, approvals, and background work; updates the workspace | A saved change reflected in another view, or a conversation resumed after navigation | “Your buyer keeps track as the work moves.”     |
 
-## 5. Calendar through the deadline
+The current [agent dock](../src/components/desk/agent.tsx) already names all four sponsors. [Task results](../src/components/desk/agent-work.tsx) and [activity messages](../src/components/desk/agent-live.tsx) also support credits beside the relevant work. Keep those credits readable in clips. The earlier six-stop demo's placement instructions no longer describe the main frontend.
 
-Submissions close **September 22, 2026 at 12 PM Pacific / 2 PM Chicago**. Winners are scheduled for September 25. Aim to finish the submission package on **September 21**. The video must be under three minutes. [Official timeline and requirements](https://www.convex.dev/hackathons/all-gas)
+For provider spotlights, a logo or scripted sample reply alone does not prove a provider call. Capture the actual result when available. Otherwise use the preview wording in the copy bank and label the asset accordingly. Purchase emails belong to AgentMail; the separate low-stock alert sender should not be credited to it. BUY HARD's rules handle stock and money calculations, and the user approves spending.
 
-All main posts below carry all four sponsor tags. The named sponsor gets the main story and visible proof. Dates are planned, not scheduled.
+## 4. A manageable calendar starting now
 
-| Date            | Main post                        | Asset and purpose                                           |
-| --------------- | -------------------------------- | ----------------------------------------------------------- |
-| Sep 6           | P1 — Introduce BUY HARD          | 15-second shortage → buyer review clip; pin this post       |
-| Sep 7           | P2 — Convex spotlight            | Show the connected buying record and activity               |
-| Sep 9           | P3 — Firecrawl spotlight         | Supplier source page → research result                      |
-| Sep 11          | P4 — OpenAI spotlight            | Supplier reply → extracted terms                            |
-| Sep 13          | P5 — AgentMail spotlight         | Missing delivery detail → clarification → reply             |
-| Sep 15          | P6 — Buyer stays in control      | Quote comparison and recorded approval                      |
-| Sep 17          | P7 — Film teaser                 | Quote-comparison hook from the proposed film                |
-| Sep 19          | P8 — Early pilot invitation      | One recurring item; invite operator feedback                |
-| Sep 21          | P9 — Full demo and sponsor recap | Completed video, working public app link, all four mentions |
-| Sep 22, morning | Submission check                 | Check public links, social post URL, and submission receipt |
+The deadline remains **September 22, 2026, 12 PM Pacific / 2 PM Chicago**. Finish the package on September 21. The submission requires a public app and repository, social sharing, and a video under three minutes. [Verified event requirements](https://www.convex.dev/hackathons/all-gas)
 
-Adapt P1, P3, P5, and P8 for LinkedIn across the first two weeks; use the longer drafts below as anchors. Keep Sep 22 as a buffer, not the first day sponsors hear about the app.
+**Minimum campaign: six posts** — introduction, four sponsor spotlights, final demo. Add the three optional posts only if assets are ready. Use X for the short build updates and two LinkedIn adaptations to reach operators. Reserve about 30 minutes per publishing day plus one recording session. Start with $0 in paid distribution.
 
-## 6. Social copy bank
+| Date            | Post                                    | Priority      | Asset                                                      |
+| --------------- | --------------------------------------- | ------------- | ---------------------------------------------------------- |
+| Sep 10          | P1 — Introduce the simpler BUY HARD     | Essential     | 15-second dashboard and buyer dock clip                    |
+| Sep 11          | P2 — Talk to your buyer / OpenAI        | Essential     | Stock sentence → response; sample or live label            |
+| Sep 13          | P3 — Start with a link / Firecrawl      | Essential     | Product source → reviewed item details                     |
+| Sep 15          | P4 — Supplier conversations / AgentMail | Essential     | Purchasing inbox and linked reply; verified run or preview |
+| Sep 17          | P5 — Keep the work connected / Convex   | Essential     | Conversation and stock context across views                |
+| Sep 18          | P6 — Replenishment preview              | Optional      | Item rules and prepared purchase; retain preview label     |
+| Sep 19          | P7 — A delivery can arrive in parts     | Optional      | Partial receiving interaction using sample data            |
+| Sep 20          | P8 — Find early pilot partners          | Optional      | One familiar supply item and a clear invitation            |
+| Sep 21          | P9 — Full demo and sponsor recap        | Essential     | Fresh video of the current frontend; working public link   |
+| Sep 22, morning | Submission receipt and link check       | Required task | Public app, repo, video, social URL, submission receipt    |
 
-Drafts below are for review and publishing later. Replace **[DEMO_URL]** with the selected public demo and **[VIDEO_URL]** with the finished video. Each short post includes all four sponsor mentions.
+Use L1 on LinkedIn on September 10 or 11 and L2 on September 20. Reuse the same clips. Share one relevant update in the hackathon community when the demo is ready. Check replies after publishing and again the next day; follow up with operators who express interest. These are planned actions, not scheduled or completed activity.
 
-### P1 — Product introduction · X
+If time gets tight, retain the six essential posts and the submission. A useful screen recording is enough to start; the cinematic film does not need to be finished first.
 
-> A lunch rush needs lids.
+## 5. Revised social copy
+
+The demo link below opened the new public sample workspace on September 10. Check it again before publishing. Only **[VIDEO_URL]** remains to be filled after a current video exists. Each X draft fits a 280-character budget with the usual link allowance.
+
+### P1 — Introduction · X
+
+> Meet BUY HARD. An AI buyer for everyday supplies.
 >
-> We're building BUY HARD: spot a shortage, research suppliers, and bring the purchase to a human for review.
+> A clear stock picture. A conversation beside the work. A purchase for you to review.
 >
-> Our All Gas Hackathon demo: [DEMO_URL]
+> Explore the sample demo: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-### P2 — Convex · X
+### P2 — OpenAI · X
 
-> A buying process spans inventory, quotes, and approvals. The buyer needs one clear record.
+> "We have 8 cases of paper cups left."
 >
-> Convex connects that flow in BUY HARD. Here's the controlled demo: [DEMO_URL]
+> That's how a stock update should start.
+>
+> We're building BUY HARD's buyer with OpenAI. Try the sample conversation: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P3 — Firecrawl · X
 
-> Finding a supplier starts with finding the evidence.
+> Already have a product link? Start there.
 >
-> Firecrawl brings supplier pages into BUY HARD's research, with links the buyer can inspect.
+> BUY HARD uses Firecrawl to read product pages and bring details into the buying process for review.
 >
-> See the demo: [DEMO_URL]
->
-> @convex @OpenAI @firecrawl @agentmail
-
-### P4 — OpenAI · X
-
-> Supplier quotes arrive as emails.
->
-> In BUY HARD, OpenAI extracts the stated terms and flags missing details. The buyer can check the original reply.
->
-> Controlled demo: [DEMO_URL]
+> Explore the sample app: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-### P5 — AgentMail · X
+### P4 — AgentMail · X
 
-> A quote without a delivery date needs a follow-up.
+> Supplier replies belong with the purchase.
 >
-> In our controlled BUY HARD demo, AgentMail carries the clarification and reply in the email thread.
+> AgentMail gives BUY HARD's buyer an inbox for quote requests, replies, and order messages.
 >
-> Watch: [DEMO_URL]
+> Explore the sample experience: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-### P6 — Human approval · X
+### P5 — Convex · X
 
-> The cheapest quote can still arrive too late.
+> Your buyer needs to remember the work.
 >
-> BUY HARD's demo compares cost and delivery before putting the purchase in front of the buyer for approval.
+> Convex keeps BUY HARD's conversation, stock, and purchases connected as you move through the app.
 >
-> Explore: [DEMO_URL]
+> Explore the sample demo: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-### P7 — Film teaser · X
+### P6 — Replenishment preview · X
 
-> Why pay more for the same deli lids?
+> Give your buyer the count, usage, and buying rules. Review the purchase it prepares.
 >
-> In BUY HARD's recorded demo, delivery timing explains the choice.
+> That's the replenishment flow we're building in BUY HARD.
 >
-> Watch the evidence come together, then the buyer decide. [DEMO_URL]
+> Sample preview: https://festive-coyote-483.convex.site/?demo=true
+>
+> @convex @OpenAI @firecrawl @agentmail
+
+### P7 — Receiving · X
+
+> Ordered 20 cases. Only 8 arrived.
+>
+> BUY HARD's receiving flow records what arrived and keeps the rest outstanding.
+>
+> One small detail from the sample app: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P8 — Pilot invitation · X
 
-> Do you reorder packaging for a food business?
+> Do you buy supplies for a deli, café, or food business?
 >
-> We're looking for early BUY HARD pilot partners. Start with one recurring item and help shape the buying workflow.
+> Help shape BUY HARD around one item you reorder. We're looking for early pilot partners.
 >
-> Reply "pilot". Demo: [DEMO_URL]
+> Reply "pilot". Sample demo: https://festive-coyote-483.convex.site/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P9 — Final demo · X
 
-> BUY HARD, built for the All Gas Hackathon.
+> BUY HARD. Keep the line moving.
 >
-> Watch our controlled purchasing demo: shortage, supplier research, quote emails, buyer approval, and order confirmation.
+> Here's our All Gas Hackathon demo: talk to your buyer, review a purchase, and track what arrives.
 >
-> [VIDEO_URL]
+> Built with four sponsors doing useful work. [VIDEO_URL]
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-Attach the completed video where supported and put the public app link in the first reply. Publish this before submission; keep its URL with the submission materials.
+Label the final video with the evidence level actually shown. Include at least one verified result for each provider claim; describe any remaining automation as a preview. Add the working public app link in the first reply and retain the post URL for submission.
 
-### L1 — Founder introduction · LinkedIn
+### L1 — A simpler way to buy · LinkedIn
 
-> A food business can have a great product and still get stuck because it ran out of lids.
+> Buying supplies should fit into running a business.
 >
-> We're building BUY HARD around that everyday problem.
+> That's the idea behind BUY HARD.
 >
-> Our hackathon demo follows one packaging item through a shortage, supplier research, quote emails, buyer approval, and order confirmation.
+> Tell your buyer what's on hand. See what needs attention. Review a prepared purchase. Record what actually arrives.
 >
-> Convex keeps the buying record connected. Firecrawl brings in supplier pages. OpenAI extracts the stated terms. AgentMail handles the email conversation.
+> I've been simplifying the app around those everyday moments: clear sentences, a persistent conversation, and the details close by when you need them.
 >
-> The rehearsal uses real provider calls and controlled email recipients. We're now looking for operators to help shape the next step: a guided pilot around one recurring item.
+> OpenAI powers the live buyer. Firecrawl reads product pages. AgentMail handles purchasing conversations. Convex keeps the work connected.
+>
+> The public demo uses sample data. We're building toward a guided pilot around one recurring item, with live supplier checks still ahead for the newest automation.
 >
 > What supply do you spend too much time chasing?
 >
-> Explore the demo: [DEMO_URL]
+> Explore: https://festive-coyote-483.convex.site/?demo=true
 >
-> Built for the Convex All Gas Hackathon with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail].
+> Building for the Convex All Gas Hackathon with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail].
 
-### L2 — Sponsor story · LinkedIn
+### L2 — One item to start · LinkedIn
 
-> A supplier quote arrives. The price is there. The delivery date is missing.
+> Cups. Lids. Gloves. Labels.
 >
-> That small gap is where buying work piles up.
+> Ordinary supplies create real work: checking stock, chasing supplier details, reviewing an order, and counting a delivery.
 >
-> In our controlled BUY HARD demo, OpenAI extracts the stated details, the app identifies what is missing, and AgentMail carries a focused clarification in the same email thread. Convex keeps the purchase record updated. Firecrawl provides the supplier website research the buyer can inspect alongside it.
+> BUY HARD brings that work into a conversation and a clear buying view.
 >
-> The buyer sees the comparison and approves the purchase.
+> We're looking for a few food-business operators to help shape an early pilot. Start with one recurring item and walk through how you buy it today. We'll try the supported setup together and agree on the next step.
 >
-> Here's that flow: [DEMO_URL]
+> Which item would you start with?
 >
-> If you buy recurring supplies, which detail do you most often have to chase?
+> Sample demo: https://festive-coyote-483.convex.site/?demo=true
 >
-> Built for the Convex All Gas Hackathon with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail].
+> Built with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail] for the All Gas Hackathon.
 
-## 7. Creative ideas to try
+## 6. Record once, make several useful assets
 
-**Start by cutting social clips from the proposed [“The $400 Decision” film](demo-film-treatment.md).** Its price-versus-arrival question gives the campaign a clear hook and lets us reuse the main recording. Verify the selected purchase before using exact dollar amounts. “The Last Lid” and the other concepts below remain optional follow-on ideas.
+**First clip: 15–30 seconds.** Show the dashboard, type “We have 8 cases of paper cups left,” and show the sample buyer's response. End on “Keep the line moving” and the demo link. Preserve the sample label and sponsor footer. This is enough for the introduction and a conversation teaser.
 
-| Idea                           | Execution                                                                                   | Sponsor moment                                                          | Effort |
-| ------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
-| The Last Lid                   | A short deli scene: busy counter, nearly empty lid sleeve, BUY HARD showing the buying work | Each sponsor appears beside its actual contribution in the app footage  | Medium |
-| One purchase, four sponsors    | Four quick cuts: source page, extracted terms, email thread, connected purchase record      | One useful sentence and a readable credit per sponsor                   | Low    |
-| The missing delivery date      | A cropped email, the missing field, then the clarification and reply                        | OpenAI + AgentMail, with Convex keeping the record                      | Low    |
-| Cheapest versus useful         | Show two recorded quotes and explain why arrival affects the choice                         | Source information and extracted terms feed BUY HARD's comparison rules | Low    |
-| The buying receipt             | A four-frame carousel: problem, evidence, buyer decision, confirmed order                   | Reuse BUY HARD's receipt style and contextual credits                   | Low    |
-| Two versions of the lunch rush | A staged split-screen story about chasing supplies versus reviewing a prepared purchase     | Close with real app footage and shared sponsor credits                  | Medium |
-| What would you hand over?      | Ask operators which recurring item they would start with                                    | Use a short demo clip as context                                        | Low    |
+**Main demo: aim for 2:15–2:40.** Open with an everyday supply problem, then show the buyer doing useful work in the current interface.
 
-Use real deli footage where available, with captions and tight app crops. Keep staged scenes clearly separate from recorded product evidence. Follow the proposed film's opening question and brief deli context, then spend most of the submission video showing the working product.
+| Moment                   | What to show                                                     | What the viewer should understand                          |
+| ------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| Know the stock           | A short stock update and the relevant inventory view             | I can tell it what changed                                 |
+| Prepare and review a buy | Product evidence, a prepared purchase, and **Approve and order** | The agent does the preparation; I decide what to spend     |
+| Follow the delivery      | A linked supplier confirmation, then full or partial receiving   | Promised stock and physically received stock stay distinct |
 
-## 8. After submission: turn attention into learning
+The stock update and existing purchase in the public sample are separate examples. Do not edit them to imply the sample generated and placed a real order. A continuous purchasing story needs a verified company run. **Approve and order** includes a confirmation of exact terms; describe one purchase decision, not a guaranteed one-click transaction.
 
-**Sep 23–25:** Share what we learned and answer feedback. Credit the sponsors for the work shown. Mention any result only after the official announcement.
+Capture the new frontend throughout. The older [film treatment](demo-film-treatment.md) and [six-stop recording guide](demo-screenplay.md) describe the previous interface; their product shots and timings need a new recording before campaign use. Existing deli footage can provide a brief opening. Use the current buyer conversation as the main story.
 
-**Sep 26–Oct 22:** Shift to approximately three customer-problem or learning posts for every build post. Aim for ten operator conversations and three suitable pilot candidates. These are working targets, not commitments or results.
+Additional ideas, in order of effort:
 
-In each conversation, learn the recurring item, reorder frequency, current process, cost of running short, who approves orders, and which buying step takes the most effort. Finish by asking whether they want to review their own workflow with us.
+1. **One sentence, one job:** a series of short stock, item, and delivery interactions.
+2. **Less screen, clearer decision:** one optional build post showing how the interface was simplified; finish on the new experience.
+3. **Bring your own supplier:** show the directory and notes, while making the supplier's actual support status clear.
+4. **The delivery that arrived in parts:** show an ordinary receiving problem handled clearly.
+5. **Our first verified merchant:** publish only after a confirmed order appears, explaining exactly what was proved.
 
-Run supported setup and guided reviews first. Expand pilots into supplier outreach and ordering after those features are ready and each buyer has agreed to the specific activity. Ask about willingness to pay once someone has experienced a useful outcome; use that evidence to shape pricing.
+Use captions and real app footage. Repurpose the best clip vertically after the X and LinkedIn assets are ready.
+
+## 7. Turn attention into early customer conversations
+
+**Primary action now:** explore the sample demo. **Next action:** reply about an early pilot. Treat sponsor and builder engagement as distribution; count operator interest separately.
+
+Offer a 20-minute review of one recurring item: how it is bought today, where the work piles up, and whether BUY HARD's supported setup helps. Ask about counts, usage, suppliers, approval, and delivery handling. Expand to live purchasing after the selected supplier and workflow are verified and the buyer agrees to the specific activity.
+
+Working targets: five operator conversations and two interested pilot candidates by submission; ten conversations and three suitable candidates in the first 30 days after it. These are planning targets, not existing traction or promised capacity.
+
+Track date, post URL, sponsor focus, useful replies, operator conversations, and pilot interest in a simple sheet. Add demo visits only if tracking is confirmed; otherwise mark them unmeasured. Repeat the story that produces relevant conversations. If only builders respond, make the next post about the operator's daily work and ask existing contacts for relevant introductions.
+
+After September 22, shift toward customer problems, lessons, and verified pilot outcomes. Continue crediting sponsors where their work appears. Any pricing proposal should follow a useful pilot outcome and a conversation about willingness to pay.
 
 **Post-hackathon draft:**
 
-> We're taking BUY HARD into its next round of learning.
+> We're shaping BUY HARD around the work of buying everyday supplies.
 >
-> If you regularly buy packaging for a food business, we'd like to understand one item you reorder and the work around it.
+> If you run a food business, pick one item you reorder and show us the process around it.
 >
 > Want to help shape an early pilot? Reply "pilot".
 
-## 9. Measure what moves people forward
+## 8. Start here
 
-Track each post in a simple sheet: date, platform, angle, sponsor focus, post URL, demo visits if available, useful replies, operator conversations, and pilot interest.
+- [ ] **Today:** record the short stock-conversation clip from the current sample app and prepare P1. The [public demo](https://festive-coyote-483.convex.site/?demo=true) was checked September 10; verify the same page before capture.
+- [ ] **Next:** prepare the four sponsor assets. Use actual provider evidence where available and labeled previews where live proof is pending. Keep the current interface and readable credits in view.
+- [ ] **By September 21:** record the current main demo, replace [VIDEO_URL], publish the final sponsor recap, and assemble the public app, repo, build log, and video for the [official submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma). Retain the submission receipt. [Event requirements](https://www.convex.dev/hackathons/all-gas)
 
-| Checkpoint                     | Working target                                                          | Decision                                                  |
-| ------------------------------ | ----------------------------------------------------------------------- | --------------------------------------------------------- |
-| Before Sep 22                  | Four sponsor spotlights and one complete demo post, all properly tagged | Confirm every sponsor's actual work is easy to see        |
-| First week of posts            | Establish response and demo-visit baselines                             | Repeat the two angles producing useful replies or visits  |
-| First 30 days after submission | Ten operator conversations; three suitable pilot candidates             | Refine the audience and pilot offer around repeated needs |
-
-Use tagged links if visit tracking is available: `utm_source=x` or `linkedin`, `utm_medium=organic_social`, `utm_campaign=all_gas_2026`, and a short post name in `utm_content`. Do not report tracking as installed until checked. Record “not measured” where data is unavailable.
-
-If sponsors and builders respond but buyers do not, spend the next week on operator problems and direct conversations. If people open the demo but do not ask about pilots, make the pilot offer clearer and ask what stopped them. Expand distribution after the demo and guided setup are reliable.
-
-## 10. First actions
-
-Facundo owns the following unless another owner is assigned:
-
-- [ ] Select the campaign URL and open it signed out on phone and desktop. The [current review demo](https://festive-coyote-483.convex.site/?demo=1) has the latest design according to the README; the listed production release is older. A public campaign URL has not been selected in this plan.
-- [ ] Capture one short proof clip per sponsor from a recorded purchase, using the recording guide. Confirm readable credits and the actual provider evidence.
-- [ ] Review the proposed film treatment and select existing deli footage; cut a short comparison teaser from the same app recording.
-- [ ] Replace the two URL placeholders; check company mentions in the publishing interface.
-- [ ] Publish P1, then the four sponsor spotlights on the planned dates; log their URLs and replies.
-- [ ] Complete the final video, public links, build log, and social recap by Sep 21. Submit through the [official form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma) and retain the receipt. [Submission requirements](https://luma.com/convex-allgas-hackathon)
-
-This document creates the plan and draft copy. Publishing, scheduling, outreach, and submission are not completed by creating it.
+Status: strategy and drafts revised. No posts, outreach, scheduling, deployment, or submission performed by this revision.

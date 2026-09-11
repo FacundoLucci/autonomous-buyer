@@ -117,7 +117,11 @@ export function allowedQuestion(task: Task, question: Question) {
 }
 export function requiredQuestion(task: Task, d: Doc<"taskChats">["draft"]): Question {
   if (task === "onboarding" || task === "settings")
-    return !d.companyName ? "companyName" : !d.shippingAddress ? "shippingAddress" : "ready";
+    return !d.companyName?.trim()
+      ? "companyName"
+      : (d.shippingAddress?.trim().length ?? 0) < 12
+        ? "shippingAddress"
+        : "ready";
   if (task === "add_item") return d.name ? "ready" : "name";
   if (task === "new_buy") return d.itemId ? "ready" : "itemId";
   if (task === "stock_update") return d.itemId ? "stock" : "itemId";
