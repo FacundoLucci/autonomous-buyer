@@ -19,6 +19,7 @@ vi.mock("@/lib/buyer-auth", () => ({
   useAuthActions: () => ({ version: "password", signIn: vi.fn(), signOut: vi.fn() }),
 }));
 vi.mock("convex/react", () => ({
+  useMutation: () => vi.fn(),
   useQuery: (reference: Parameters<typeof getFunctionName>[0]) =>
     getFunctionName(reference).startsWith("authData:") ? state.user : state.workspace,
 }));

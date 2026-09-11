@@ -39,6 +39,7 @@ export function MerchantMetricsView({
   summary?: MerchantSummary;
   unavailable?: boolean;
 }) {
+  if (unavailable || !summary || summary.totalOrders <= 0) return null;
   const number = (value: number) => value.toLocaleString("en-US");
   return (
     <section id="tested-merchants" className="desk-merchant-metrics" aria-label="Tested merchants">

@@ -1,13 +1,7 @@
+import { socialMeta } from "./social-meta";
 export function landingHead() {
   return {
-    meta: [
-      { title: "BUY HARD — Your AI buyer" },
-      {
-        name: "description",
-        content:
-          "Spot low stock, find a supplier, and order what you need. Your AI buyer does the busywork. You stay in control.",
-      },
-    ],
+    meta: [{ title: "BUY HARD — Your AI buyer" }, ...socialMeta],
     links: [
       {
         rel: "preload",

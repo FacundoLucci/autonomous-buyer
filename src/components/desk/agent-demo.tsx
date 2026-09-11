@@ -98,6 +98,7 @@ export function DemoBuyer({
       setTask(undefined);
       setRequest(undefined);
       setFocus({ page: "buys", buy: buy?.id });
+      if (buy) window.dispatchEvent(new Event("buyhard:demo-use"));
       record(
         buy
           ? `${buy.name}: ${buyStatus(buy).toLowerCase()}${buy.order?.expectedOn ? `, expected ${buy.order.expectedOn}` : ""}.`

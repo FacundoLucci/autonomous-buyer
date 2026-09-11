@@ -1,3 +1,4 @@
+import { webhook as marketingWebhook } from "./marketingWebhook";
 import { AgentMail } from "@agentmail/convex";
 import { httpRouter } from "convex/server";
 
@@ -12,6 +13,7 @@ const agentmail = new AgentMail(components.agentmail, {
   onEvent: internal.companyOrders.onMailEvent,
 });
 const http = httpRouter();
+http.route({ path: "/api/marketing/cal", method: "POST", handler: marketingWebhook });
 
 auth.addHttpRoutes(http);
 http.route({ path: "/api/browser/authorize", method: "POST", handler: authorizeCommitHttp });

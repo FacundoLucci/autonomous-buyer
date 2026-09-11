@@ -1,3 +1,4 @@
+import { socialMeta } from "@/components/landing/social-meta";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import {
@@ -20,12 +21,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#dce985" },
-      { title: "BUY HARD — Buy Desk" },
-      {
-        name: "description",
-        content:
-          "Your buy desk. Stay ahead of stockouts, compare quotes, and keep procurement moving.",
-      },
+      { title: "BUY HARD — Your AI buyer" },
+      ...socialMeta,
     ],
     links: [
       { rel: "stylesheet", href: `${import.meta.env.BASE_URL}textures/powder-coat.css` },

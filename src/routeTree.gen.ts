@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LandingRouteImport } from './routes/landing'
+import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as LegacyRouteImport } from './routes/legacy'
 import { Route as PrototypeRouteImport } from './routes/prototype'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as WalkthroughRouteImport } from './routes/walkthrough'
 import { Route as LegacyLandingRouteImport } from './routes/legacy_.landing'
 import { Route as LegacyPrototypeRouteImport } from './routes/legacy_.prototype'
 import { Route as LegacySetupRouteImport } from './routes/legacy_.setup'
@@ -26,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadsRoute = LeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegacyRoute = LegacyRouteImport.update({
@@ -41,6 +48,11 @@ const PrototypeRoute = PrototypeRouteImport.update({
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalkthroughRoute = WalkthroughRouteImport.update({
+  id: '/walkthrough',
+  path: '/walkthrough',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegacyLandingRoute = LegacyLandingRouteImport.update({
@@ -62,9 +74,11 @@ const LegacySetupRoute = LegacySetupRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/leads': typeof LeadsRoute
   '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/walkthrough': typeof WalkthroughRoute
   '/legacy/landing': typeof LegacyLandingRoute
   '/legacy/prototype': typeof LegacyPrototypeRoute
   '/legacy/setup': typeof LegacySetupRoute
@@ -72,9 +86,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/leads': typeof LeadsRoute
   '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/walkthrough': typeof WalkthroughRoute
   '/legacy/landing': typeof LegacyLandingRoute
   '/legacy/prototype': typeof LegacyPrototypeRoute
   '/legacy/setup': typeof LegacySetupRoute
@@ -83,9 +99,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/leads': typeof LeadsRoute
   '/legacy': typeof LegacyRoute
   '/prototype': typeof PrototypeRoute
   '/setup': typeof SetupRoute
+  '/walkthrough': typeof WalkthroughRoute
   '/legacy_/landing': typeof LegacyLandingRoute
   '/legacy_/prototype': typeof LegacyPrototypeRoute
   '/legacy_/setup': typeof LegacySetupRoute
@@ -95,9 +113,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/landing'
+    | '/leads'
     | '/legacy'
     | '/prototype'
     | '/setup'
+    | '/walkthrough'
     | '/legacy/landing'
     | '/legacy/prototype'
     | '/legacy/setup'
@@ -105,9 +125,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/landing'
+    | '/leads'
     | '/legacy'
     | '/prototype'
     | '/setup'
+    | '/walkthrough'
     | '/legacy/landing'
     | '/legacy/prototype'
     | '/legacy/setup'
@@ -115,9 +137,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/landing'
+    | '/leads'
     | '/legacy'
     | '/prototype'
     | '/setup'
+    | '/walkthrough'
     | '/legacy_/landing'
     | '/legacy_/prototype'
     | '/legacy_/setup'
@@ -126,9 +150,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LandingRoute: typeof LandingRoute
+  LeadsRoute: typeof LeadsRoute
   LegacyRoute: typeof LegacyRoute
   PrototypeRoute: typeof PrototypeRoute
   SetupRoute: typeof SetupRoute
+  WalkthroughRoute: typeof WalkthroughRoute
   LegacyLandingRoute: typeof LegacyLandingRoute
   LegacyPrototypeRoute: typeof LegacyPrototypeRoute
   LegacySetupRoute: typeof LegacySetupRoute
@@ -150,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leads': {
+      id: '/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legacy': {
       id: '/legacy'
       path: '/legacy'
@@ -169,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/walkthrough': {
+      id: '/walkthrough'
+      path: '/walkthrough'
+      fullPath: '/walkthrough'
+      preLoaderRoute: typeof WalkthroughRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legacy_/landing': {
@@ -198,9 +238,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LandingRoute: LandingRoute,
+  LeadsRoute: LeadsRoute,
   LegacyRoute: LegacyRoute,
   PrototypeRoute: PrototypeRoute,
   SetupRoute: SetupRoute,
+  WalkthroughRoute: WalkthroughRoute,
   LegacyLandingRoute: LegacyLandingRoute,
   LegacyPrototypeRoute: LegacyPrototypeRoute,
   LegacySetupRoute: LegacySetupRoute,

@@ -1,3 +1,4 @@
+import { attribution, stage, event, deliveryStatus } from "./marketingFields";
 import { questionCode } from "./deskFields";
 import { chatTask, deskDraft } from "./deskFields";
 import { buyerFocus, buyerCredit } from "./buyerFields";
@@ -42,6 +43,32 @@ const operationStatusValidator = v.union(
 );
 
 export default defineSchema({
+  marketingLeads: defineTable({
+    email: v.string(),
+    businessName: v.string(),
+    challenge: v.string(),
+    source: attribution,
+    stage,
+    replyDueAt: v.number(),
+    confirmation: deliveryStatus,
+    notification: deliveryStatus,
+    confirmedBookingAt: v.optional(v.number()),
+    pilotStartedAt: v.optional(v.number()),
+  }).index("by_email", ["email"]),
+  marketingEvents: defineTable({ visitorId: v.string(), event, source: attribution }).index(
+    "by_visitorId_and_event",
+    ["visitorId", "event"],
+  ),
+  marketingBookings: defineTable({
+    uid: v.string(),
+    leadId: v.id("marketingLeads"),
+    status: v.string(),
+    startTime: v.string(),
+    updatedAt: v.number(),
+  })
+    .index("by_uid", ["uid"])
+    .index("by_leadId", ["leadId"]),
+
   organizations: defineTable({
     name: v.string(),
     address: v.optional(

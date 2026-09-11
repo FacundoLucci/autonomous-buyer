@@ -1,3 +1,4 @@
+import { VisitTracker } from "./marketing";
 import { DemoSupplierDirectory } from "./suppliers";
 import { useState, type FormEvent } from "react";
 import { ArrowUp } from "lucide-react";
@@ -263,6 +264,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
       via,
     );
     event(`${item.name}: ${count} ${item.unit} on hand.`);
+    window.dispatchEvent(new Event("buyhard:demo-use"));
   };
   const updateRules: UpdateRules = async (item, rules) => {
     setWorkspace((w) => ({
@@ -587,6 +589,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
       revise={revise}
       audit={<AuditLog entries={auditEntries} />}
     >
+      <VisitTracker />
       <WorkspaceScreen
         workspace={workspace}
         snapshot={snapshot}
