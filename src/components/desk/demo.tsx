@@ -236,6 +236,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
       { _id: crypto.randomUUID(), name, action, actor: "You", via, changes, createdAt: Date.now() },
       ...entries,
     ]);
+    window.dispatchEvent(new Event("buyhard:demo-use"));
   }
   function event(summary: string) {
     setSnapshot((s) => ({
