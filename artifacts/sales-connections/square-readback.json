@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-09-14T03:07:05.613766+00:00",
+  "environment": "local Convex and Square Sandbox only",
+  "view": {
+    "connections": [
+      {
+        "_creationTime": 1789354045377.932,
+        "_id": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+        "accountId": "MLSH9Y1BCTNAE",
+        "createdAt": 1789354045377,
+        "lastEventAt": 1789355195173,
+        "lastSyncAt": 1789354592032,
+        "name": "Square sandbox",
+        "organizationId": "p572b21v8apy79b3b61h30m2qh8ed92n",
+        "provider": "square",
+        "sandbox": true,
+        "status": "connected"
+      }
+    ],
+    "decisions": [
+      {
+        "_creationTime": 1789354592007.7378,
+        "_id": "qx7cp80n8vcs9q8ny9tqk8tbmn8ecpsg",
+        "afterQuantity": 79.92871643518518,
+        "beforeQuantity": 139.92852199074073,
+        "connectionId": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+        "consumed": 60,
+        "createdAt": 1789354592007,
+        "eventId": "r176abkj6y03gmwswq4cav36sd8eccwq",
+        "itemId": "nh7c017fdfyfz0c053822vd8g18edy6f",
+        "orderQuantity": 125,
+        "organizationId": "p572b21v8apy79b3b61h30m2qh8ed92n",
+        "planState": "buying",
+        "requiredBy": "2026-09-17",
+        "source": "square: orDwJheMWZoxs6qd4P8K0bElHXaZY",
+        "sourceAt": 1789354284062,
+        "summary": "BUY HARD TEST Gift set \u00b7 Regular \u00b7 BUY-HARD-TEST-GIFT-SET sales updated the outlook for Shipping boxes.",
+        "unit": "units"
+      }
+    ],
+    "mappings": [
+      {
+        "_creationTime": 1789354246430.465,
+        "_id": "r57179pajtgmwn96w9zdg5jg9x8eddcn",
+        "connectionId": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+        "createdAt": 1789354246430,
+        "externalId": "6TG452R2OHB3QZ4OQDBBTASQ",
+        "externalName": "BUY HARD TEST Gift set \u00b7 Regular \u00b7 BUY-HARD-TEST-GIFT-SET",
+        "itemId": "nh7c017fdfyfz0c053822vd8g18edy6f",
+        "locationId": "L0TF745H4NTW1",
+        "mode": "sales",
+        "organizationId": "p572b21v8apy79b3b61h30m2qh8ed92n",
+        "unitsPerSale": 1,
+        "unitsPerStockUnit": 1
+      }
+    ]
+  },
+  "events": [
+    {
+      "_creationTime": 1789355194962.851,
+      "_id": "r17axrx2ng2wvca6wbv4gsj9sx8ed2kd",
+      "attempts": 0,
+      "connectionId": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+      "key": "a83b7f98-9171-3c4f-8713-bd3129d0b6f0",
+      "kind": "sales",
+      "message": "No new mapped consumption or stock count.",
+      "receivedAt": 1789355194962,
+      "resourceId": "orDwJheMWZoxs6qd4P8K0bElHXaZY",
+      "state": "ignored"
+    },
+    {
+      "_creationTime": 1789355194012.492,
+      "_id": "r17es45www6ebrs1n8kk3jt7618ed77z",
+      "attempts": 0,
+      "connectionId": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+      "key": "15be14e9-5631-3592-b109-fd4d2c7bfa6f",
+      "kind": "sales",
+      "message": "No new mapped consumption or stock count.",
+      "receivedAt": 1789355194012,
+      "resourceId": "orDwJheMWZoxs6qd4P8K0bElHXaZY",
+      "state": "ignored"
+    },
+    {
+      "_creationTime": 1789354591981.13,
+      "_id": "r176abkj6y03gmwswq4cav36sd8eccwq",
+      "attempts": 0,
+      "connectionId": "qn784nk0fb57px4f2mhz1w25b18edw7k",
+      "key": "orDwJheMWZoxs6qd4P8K0bElHXaZY:2",
+      "kind": "sales",
+      "message": "Forecast updated; buyer recheck scheduled.",
+      "receivedAt": 1789354591981,
+      "resourceId": "orDwJheMWZoxs6qd4P8K0bElHXaZY",
+      "state": "processed"
+    }
+  ]
+}

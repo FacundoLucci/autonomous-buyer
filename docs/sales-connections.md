@@ -12,10 +12,10 @@ The user confirms a relationship such as **one coffee uses one cup**, or **one g
 
 The sample has Square and Shopify tabs, a sales event, the changed stock and buying plan, a “Why now?” explanation, duplicate-event replay, and a delivery recovery step. It uses the app's real buying calculator with illustrative events and suppliers. The sample does not call a provider or place a purchase.
 
-| Example | Starting stock | Sales | Stock after sales | Prepared purchase |
-| --- | ---: | ---: | ---: | ---: |
-| Square coffee sales | 800 cups | 300 coffees | 500 cups | 600 cups, six packs |
-| Shopify gift sets | 140 boxes | 60 gift sets | 80 boxes | 125 boxes, five packs |
+| Example             | Starting stock |        Sales | Stock after sales |     Prepared purchase |
+| ------------------- | -------------: | -----------: | ----------------: | --------------------: |
+| Square coffee sales |       800 cups |  300 coffees |          500 cups |   600 cups, six packs |
+| Shopify gift sets   |      140 boxes | 60 gift sets |          80 boxes | 125 boxes, five packs |
 
 ## Connection setup
 
@@ -38,6 +38,10 @@ In the following paths, `<callback-origin>` means that public callback origin.
 5. From BUY HARD, choose **Connect Square** and authorize the intended sandbox seller. Then match a product variation and location to a supply.
 
 Requested scopes: `ORDERS_READ`, `INVENTORY_READ`, `ITEMS_READ`, `MERCHANT_PROFILE_READ`. Square API calls use version `2026-08-19`. Sandbox is the default unless explicitly set to `false`.
+
+For a local sandbox, open the seller's **Square Dashboard** from the Developer Console before connecting. Sandbox uses that seller session; only production authorization sends `session=false`. Set `SQUARE_SANDBOX_CALLBACK_URL=http://localhost:54362/api/sales/square/callback` when using the local backend described below. Square permits HTTP localhost redirects in Sandbox. This override is ignored in production mode; webhooks still need the public HTTPS origin.
+
+Keep a development tunnel's configuration separate from other projects. An existing Cloudflare ingress configuration can override `--url` and return a misleading 404. Start the tunnel with an explicit, task-owned empty YAML configuration. Before entering its URL in a provider dashboard, send an unsigned POST to `/api/sales/square/events` and confirm **401 Invalid signature**; a 404 at the root is not a route health check.
 
 ### Shopify
 
@@ -82,7 +86,7 @@ Work is isolated on `codex/sales-connections`, based on `b661028`. The primary c
 
 Validated locally:
 
-- Sales and replenishment tests, including real HTTP signature handling with mocked provider order reads, duplicates, out-of-order updates, stock recounts and receipts, ownership checks, encrypted credentials, and token refresh races.
+- 25 sales and replenishment tests, including real HTTP signature handling with mocked provider order reads, duplicates, out-of-order updates, stock recounts and receipts, ownership checks, encrypted credentials, token refresh races, and sandbox versus production OAuth behavior.
 - TypeScript/build and lint.
 - In-app browser: both interactive scenarios, duplicate replay, deliveries, explanations, and a 390px mobile viewport without horizontal overflow.
 - HyperFrames: zero lint/runtime/motion issues, nine layout samples passing, and 103/103 text contrast checks passing.
@@ -91,13 +95,16 @@ The wider `company.test.ts` suite has three existing alert-workflow failures (`p
 
 Provider setup at handoff:
 
-- Shopify BUY HARD app `422973243393` was created in organization `131156169`; its `sales-local-dev` version is configured for development store `quickstart-93217b41.myshopify.com`. Installation is awaiting permission; no store connection or real sales delivery is yet proven.
-- Square's BUY HARD application form is prepared in `facundo llc`. Creating it requires accepting Square's Developer Terms; that approval is pending. No Square credentials are configured yet.
-- Local frontend: `http://127.0.0.1:54363`; local Convex: ports `54361` and `54362`. The temporary callback tunnel used for Shopify setup is `https://intend-includes-cab-fred.trycloudflare.com`. If restarted with a different URL, update the backend origin and provider redirect/webhook configuration before retrying authorization.
+- Shopify BUY HARD app `422973243393` was created in organization `131156169`; active development version `sales-local-dev-callback` (`1127364952065`) is configured for `quickstart-93217b41.myshopify.com`. Installation is awaiting permission; no store connection or real sales delivery is yet proven.
+- Square BUY HARD app `sq0idp-TO9c6AiZCqojJZrZ2BIeIg` was created in `facundo llc` after the user accepted the Developer Terms. Sandbox OAuth completed against merchant `MLSH9Y1BCTNAE`. Credentials are stored only in the local test backend, and catalog browsing and mapping were verified through the app.
+- A zero-dollar Square Sandbox order for 60 test gift sets reached `COMPLETED`. BUY HARD's scheduled recovery sync read the order, subtracted 60 boxes from projected stock (139.93 to 79.93 at the event time), and calculated a 125-box buying plan. This is a plan, not a supplier purchase. The fixture identifiers are recorded in `artifacts/sales-connections/square-pilot.json`.
+- The live test caught and fixed a local-runtime incompatibility with `Request.bytes()`; signed webhook bodies now use `arrayBuffer()`. After correcting the tunnel configuration, Square retried `order.created` and `order.updated` at 03:06:33–34 UTC on September 14, 2026. Square reported HTTP 200 for all four deliveries. BUY HARD stored two distinct provider event IDs, read the order, and recognized its already-applied consumption. The buying decision remained a single 60-box reduction and a 125-box plan. `artifacts/sales-connections/square-readback.json` records the sync, webhook events, and unchanged decision.
+- Local frontend: `http://127.0.0.1:54363`; local Convex: ports `54361` and `54362`. The working temporary callback tunnel is `https://calvin-focused-mel-twiki.trycloudflare.com`. If restarted with a different URL, update the backend origin and provider redirect/webhook configuration before retrying authorization. Square Sandbox OAuth uses the separate localhost redirect above.
 - The authorization link expires after ten minutes. Restart **Connect Shopify** from BUY HARD if the pending installation's callback has expired.
 
 ## Provider references
 
+- [Square OAuth and Sandbox redirects](https://developer.squareup.com/docs/oauth-api/overview)
 - [Square webhook signatures](https://developer.squareup.com/docs/webhooks/step3validate)
 - [Square token renewal](https://developer.squareup.com/docs/oauth-api/refresh-revoke-limit-scope)
 - [Square catalog items and variations](https://developer.squareup.com/reference/square/objects/CatalogItem)

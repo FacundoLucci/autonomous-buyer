@@ -253,6 +253,47 @@ test("unauthorized users cannot read credentials, create mappings, or reconnect 
   expect(view.connections[0]).not.toHaveProperty("credentials");
   expect(view.connections[0]).not.toHaveProperty("webhookKey");
 });
+test("Square sandbox keeps the seller session and authorization state is bound and single-use", async () => {
+  const f = await fixture();
+  vi.stubEnv("SALES_CREDENTIAL_KEY", base64(new Uint8Array(32).fill(3)));
+  vi.stubEnv("SALES_CALLBACK_BASE_URL", "https://callbacks.example");
+  vi.stubEnv("SQUARE_APP_ID", "sandbox-test-app");
+  vi.stubEnv("SQUARE_APP_SECRET", "test-secret");
+  vi.stubEnv("SQUARE_WEBHOOK_SIGNATURE_KEY", "test-signature-key");
+  vi.stubEnv("SQUARE_SANDBOX", "true");
+  const url = new URL(await f.user.action(api.salesAuth.begin, { provider: "square" }));
+  expect(url.origin).toBe("https://connect.squareupsandbox.com");
+  expect(url.searchParams.has("session")).toBe(false);
+  expect(url.searchParams.get("redirect_uri")).toBe(
+    "https://callbacks.example/api/sales/square/callback",
+  );
+  const state = url.searchParams.get("state")!;
+  await expect(
+    f.t.mutation(internal.salesAuth.consumeState, {
+      state,
+      provider: "shopify",
+      shop: "other.myshopify.com",
+    }),
+  ).rejects.toThrow("expired");
+  expect(await f.t.mutation(internal.salesAuth.consumeState, { state, provider: "square" })).toBe(
+    f.organizationId,
+  );
+  await expect(
+    f.t.mutation(internal.salesAuth.consumeState, { state, provider: "square" }),
+  ).rejects.toThrow("expired");
+  vi.stubEnv("SQUARE_SANDBOX_CALLBACK_URL", "http://localhost:54362/api/sales/square/callback");
+  const localUrl = new URL(await f.user.action(api.salesAuth.begin, { provider: "square" }));
+  expect(localUrl.searchParams.get("redirect_uri")).toBe(
+    "http://localhost:54362/api/sales/square/callback",
+  );
+  vi.stubEnv("SQUARE_SANDBOX", "false");
+  const liveUrl = new URL(await f.user.action(api.salesAuth.begin, { provider: "square" }));
+  expect(liveUrl.origin).toBe("https://connect.squareup.com");
+  expect(liveUrl.searchParams.get("session")).toBe("false");
+  expect(liveUrl.searchParams.get("redirect_uri")).toBe(
+    "https://callbacks.example/api/sales/square/callback",
+  );
+});
 test("Square signs URL plus raw body; Shopify signs raw body; modified data is refused", async () => {
   const key = "test-secret",
     body = '{"quantity":300}',

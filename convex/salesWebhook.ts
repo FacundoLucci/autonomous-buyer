@@ -9,7 +9,7 @@ export const receive = httpAction(async (ctx, request) => {
     isSquare = url.pathname === "/api/sales/square/events";
   const length = request.headers.get("content-length");
   if (length && Number(length) > 1_000_000) return new Response("Too large", { status: 413 });
-  const bytes = await request.bytes();
+  const bytes = new Uint8Array(await request.arrayBuffer());
   if (bytes.length > 1_000_000) return new Response("Too large", { status: 413 });
   const raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   const secret = isSquare ? env.SQUARE_WEBHOOK_SIGNATURE_KEY : env.SHOPIFY_CLIENT_SECRET;

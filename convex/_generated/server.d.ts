@@ -56,6 +56,7 @@ type Env = {
   readonly SQUARE_APP_ID: string | undefined;
   readonly SQUARE_APP_SECRET: string | undefined;
   readonly SQUARE_SANDBOX: string | undefined;
+  readonly SQUARE_SANDBOX_CALLBACK_URL: string | undefined;
   readonly SQUARE_WEBHOOK_SIGNATURE_KEY: string | undefined;
 };
 

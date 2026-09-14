@@ -12,6 +12,9 @@ export const squareBase = (sandbox: boolean) =>
   sandbox ? "https://connect.squareupsandbox.com" : "https://connect.squareup.com";
 export const salesCallbackBase = () =>
   (env.SALES_CALLBACK_BASE_URL ?? env.CONVEX_SITE_URL).replace(/\/$/, "");
+export const squareCallbackUrl = () =>
+  (env.SQUARE_SANDBOX !== "false" && env.SQUARE_SANDBOX_CALLBACK_URL) ||
+  salesCallbackBase() + "/api/sales/square/callback";
 export function needed(value: string | undefined, name: string): string {
   if (!value) throw new ConvexError(name + " is not configured yet.");
   return value;
@@ -108,7 +111,10 @@ export const begin = action({
   handler: async (ctx, a) => {
     needed(env.SALES_CREDENTIAL_KEY, "Sales connections");
     const shop = a.provider === "shopify" ? shopDomain(a.shop ?? "") : undefined;
-    const callback = salesCallbackBase() + "/api/sales/" + a.provider + "/callback";
+    const callback =
+      a.provider === "square"
+        ? squareCallbackUrl()
+        : salesCallbackBase() + "/api/sales/shopify/callback";
     const state = randomKey();
     let url: URL;
     if (a.provider === "square") {
@@ -117,7 +123,9 @@ export const begin = action({
       url = new URL(squareBase(env.SQUARE_SANDBOX !== "false") + "/oauth2/authorize");
       url.searchParams.set("client_id", needed(env.SQUARE_APP_ID, "Square"));
       url.searchParams.set("scope", "ORDERS_READ INVENTORY_READ ITEMS_READ MERCHANT_PROFILE_READ");
-      url.searchParams.set("session", "false");
+      // Sandbox authorization uses the already-open test seller dashboard.
+      // Square only supports forced sign-in for production sellers.
+      if (env.SQUARE_SANDBOX === "false") url.searchParams.set("session", "false");
     } else {
       needed(env.SHOPIFY_CLIENT_SECRET, "Shopify");
       url = new URL("https://" + shop + "/admin/oauth/authorize");
@@ -225,7 +233,7 @@ export const callback = httpAction(async (ctx, request) => {
           client_secret: env.SQUARE_APP_SECRET,
           code,
           grant_type: "authorization_code",
-          redirect_uri: salesCallbackBase() + "/api/sales/square/callback",
+          redirect_uri: squareCallbackUrl(),
         }),
       });
       accountId = text(tokens.merchant_id);

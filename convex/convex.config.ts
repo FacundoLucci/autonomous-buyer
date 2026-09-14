@@ -19,6 +19,7 @@ const app = defineApp({
     SALES_CREDENTIAL_KEY: v.optional(v.string()),
     SALES_CALLBACK_BASE_URL: v.optional(v.string()),
     SQUARE_APP_ID: v.optional(v.string()),
+    SQUARE_SANDBOX_CALLBACK_URL: v.optional(v.string()),
     SQUARE_APP_SECRET: v.optional(v.string()),
     SQUARE_WEBHOOK_SIGNATURE_KEY: v.optional(v.string()),
     SQUARE_SANDBOX: v.optional(v.string()),
