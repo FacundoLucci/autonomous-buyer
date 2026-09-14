@@ -49,7 +49,8 @@ Keep a development tunnel's configuration separate from other projects. An exist
 2. Set `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` on the test backend.
 3. Add `<callback-origin>/api/sales/shopify/callback` as a redirect URL and the frontend connections page as the app URL.
 4. Configure `read_orders`, `read_products`, `read_inventory`, and `read_locations`.
-5. Enter the development store's `*.myshopify.com` domain in BUY HARD and choose **Connect Shopify**. Complete installation on the intended store.
+5. In the Partner Dashboard, open **API access requests → Protected customer data access**. For development-store testing, select **Store management** in Step 1 and save. Orders require this setting even when the app does not request customer contact fields. Leave name, email, phone, and address fields unselected for this integration. Production/App Store review is a separate step.
+6. Enter the development store's `*.myshopify.com` domain in BUY HARD and choose **Connect Shopify**. Complete installation on the intended store.
 
 After authorization, the callback registers order, inventory, and uninstall webhooks with Shopify. The endpoint is `<callback-origin>/api/sales/shopify/events/<connection-key>`; do not configure the key manually. Admin GraphQL uses version `2026-07`. Offline tokens are expiring and refreshed automatically; rotated refresh tokens are saved together with the new access token.
 
@@ -95,12 +96,13 @@ The wider `company.test.ts` suite has three existing alert-workflow failures (`p
 
 Provider setup at handoff:
 
-- Shopify BUY HARD app `422973243393` was created in organization `131156169`; active development version `sales-local-dev-callback` (`1127364952065`) is configured for `quickstart-93217b41.myshopify.com`. Installation is awaiting permission; no store connection or real sales delivery is yet proven.
+- Shopify BUY HARD app `422973243393` was created in organization `131156169`; active development version `sales-local-dev-callback` (`1127364952065`) is configured for `quickstart-93217b41.myshopify.com`. Installation and the local connection completed on September 14, 2026 at 03:17:49 UTC. The first attempts reached token exchange but Shopify rejected `ORDERS_PAID` registration until the development data-use setting above was saved. Customer contact fields remain unselected, and no App Store review was submitted.
+- Shopify's four notification registrations completed, and the app loaded 27 real development-store product variants in its mapping form. No Shopify supply mapping or live order-to-stock delivery is claimed yet. `artifacts/sales-connections/shopify-install-readback.json` records the connection and catalog readback. Connection failures now log fixed stage/reason names without codes, tokens, or callback URLs.
 - Square BUY HARD app `sq0idp-TO9c6AiZCqojJZrZ2BIeIg` was created in `facundo llc` after the user accepted the Developer Terms. Sandbox OAuth completed against merchant `MLSH9Y1BCTNAE`. Credentials are stored only in the local test backend, and catalog browsing and mapping were verified through the app.
 - A zero-dollar Square Sandbox order for 60 test gift sets reached `COMPLETED`. BUY HARD's scheduled recovery sync read the order, subtracted 60 boxes from projected stock (139.93 to 79.93 at the event time), and calculated a 125-box buying plan. This is a plan, not a supplier purchase. The fixture identifiers are recorded in `artifacts/sales-connections/square-pilot.json`.
 - The live test caught and fixed a local-runtime incompatibility with `Request.bytes()`; signed webhook bodies now use `arrayBuffer()`. After correcting the tunnel configuration, Square retried `order.created` and `order.updated` at 03:06:33–34 UTC on September 14, 2026. Square reported HTTP 200 for all four deliveries. BUY HARD stored two distinct provider event IDs, read the order, and recognized its already-applied consumption. The buying decision remained a single 60-box reduction and a 125-box plan. `artifacts/sales-connections/square-readback.json` records the sync, webhook events, and unchanged decision.
 - Local frontend: `http://127.0.0.1:54363`; local Convex: ports `54361` and `54362`. The working temporary callback tunnel is `https://calvin-focused-mel-twiki.trycloudflare.com`. If restarted with a different URL, update the backend origin and provider redirect/webhook configuration before retrying authorization. Square Sandbox OAuth uses the separate localhost redirect above.
-- The authorization link expires after ten minutes. Restart **Connect Shopify** from BUY HARD if the pending installation's callback has expired.
+- Authorization links expire after ten minutes. Restart **Connect Shopify** from BUY HARD if a future installation callback expires.
 
 ## Provider references
 
@@ -111,3 +113,4 @@ Provider setup at handoff:
 - [Shopify standalone authorization](https://shopify.dev/docs/apps/build/authentication-authorization/authenticate-standalone-apps)
 - [Shopify expiring offline tokens](https://shopify.dev/docs/apps/build/authentication-authorization/migrate-to-expiring-offline-access-tokens)
 - [Shopify webhook registration](https://shopify.dev/docs/api/admin-graphql/latest/mutations/webhookSubscriptionCreate)
+- [Shopify development access to order data](https://shopify.dev/docs/apps/launch/protected-customer-data)

@@ -191,6 +191,7 @@ function returnToApp(ok: boolean) {
 export const callback = httpAction(async (ctx, request) => {
   const url = new URL(request.url),
     provider = url.pathname.includes("/square/") ? "square" : "shopify";
+  let stage = "callback-validation";
   try {
     const code = needed(url.searchParams.get("code") ?? undefined, "Authorization code");
     const state = needed(url.searchParams.get("state") ?? undefined, "Connection state");
@@ -219,6 +220,7 @@ export const callback = httpAction(async (ctx, request) => {
       internal.salesAuth.consumeState,
       { state, provider, shop },
     );
+    stage = "token-exchange";
     let accountId: string,
       name: string,
       sandbox = false;
@@ -253,6 +255,7 @@ export const callback = httpAction(async (ctx, request) => {
       name = shop!;
     }
     const accessToken = text(tokens.access_token);
+    stage = "credential-encryption";
     const credentials = await seal(
       {
         accessToken,
@@ -273,6 +276,7 @@ export const callback = httpAction(async (ctx, request) => {
       throw new Error("Store already connected.");
     const webhookKey = prior?.webhookKey ?? randomKey();
     if (provider === "shopify") {
+      stage = "webhook-list";
       const uri = salesCallbackBase() + "/api/sales/shopify/events/" + webhookKey;
       const existing = await shopifyGraph(
         shop!,
@@ -290,6 +294,7 @@ export const callback = httpAction(async (ctx, request) => {
         "APP_UNINSTALLED",
       ]) {
         if (nodes.some((n) => n.topic === topic && n.uri === uri)) continue;
+        stage = "webhook-" + topic;
         const result = await shopifyGraph(
           shop!,
           accessToken,
@@ -297,10 +302,19 @@ export const callback = httpAction(async (ctx, request) => {
           { topic, input: { uri, format: "JSON" } },
         );
         const errors = object(result.webhookSubscriptionCreate).userErrors;
-        if (Array.isArray(errors) && errors.length)
+        if (Array.isArray(errors) && errors.length) {
+          const messages = errors.map((error) => String(object(error).message).toLowerCase());
+          const reason = messages.some((message) => message.includes("protected customer"))
+            ? "protected-customer-data-access"
+            : messages.some((message) => /access|scope|permission|authoriz/.test(message))
+              ? "provider-permission"
+              : "subscription-rejected";
+          console.warn("Shopify webhook setup rejected", { topic, reason });
           throw new Error("Could not register Shopify updates.");
+        }
       }
     }
+    stage = "connection-save";
     const connectionId: Id<"salesConnections"> = await ctx.runMutation(internal.salesAuth.save, {
       organizationId,
       provider,
@@ -313,6 +327,8 @@ export const callback = httpAction(async (ctx, request) => {
     await ctx.scheduler.runAfter(0, internal.salesProvider.sync, { connectionId });
     return returnToApp(true);
   } catch {
+    // Log only fixed stage names, never callback URLs, codes, or credentials.
+    console.warn("Sales authorization failed", { provider, stage });
     return returnToApp(false);
   }
 });
