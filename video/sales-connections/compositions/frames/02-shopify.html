@@ -1,0 +1,75 @@
+<template><style>
+@font-face{font-family:Arimo;src:url("assets/fonts/arimo.woff2") format("woff2");font-weight:100 900}
+@font-face{font-family:"Share Tech Mono";src:url("assets/fonts/share-tech-mono.woff2") format("woff2")}
+#root{width:1920px;height:1080px;position:relative;overflow:hidden;color:#172015;font-family:Arimo,sans-serif}
+.clip{position:absolute;inset:0;width:1920px;height:1080px}.hf-02-shopify-ground{background:#fffef7}
+.hf-02-shopify-chrome{position:absolute;left:96px;right:96px;top:52px;display:flex;align-items:center;justify-content:space-between}
+.hf-02-shopify-brand{font-size:36px;font-weight:800;letter-spacing:-2px}.hf-02-shopify-meta{font:23px "Share Tech Mono",monospace;letter-spacing:1px}
+.hf-02-shopify-title{position:absolute;left:96px;top:140px;margin:0;font-size:88px;font-weight:700;line-height:1.05;letter-spacing:-4px}
+.hf-02-shopify-source{position:absolute;left:96px;top:285px;width:640px;height:555px;background:#fffef7;border:2px solid #bdc9ac;border-radius:12px;overflow:hidden;box-sizing:border-box}
+.hf-02-shopify-window{height:55px;padding:0 28px;border-bottom:1px solid #bdc9ac;display:flex;align-items:center;justify-content:space-between;font:20px "Share Tech Mono",monospace}
+.hf-02-shopify-body{padding:34px 36px}.hf-02-shopify-name{font-size:31px;font-weight:700;margin-bottom:28px}
+.hf-02-shopify-label{font:22px "Share Tech Mono",monospace;text-transform:uppercase;letter-spacing:1px}
+.hf-02-shopify-quantity{font-size:114px;line-height:1.06;letter-spacing:-6px;font-weight:700;margin-top:14px}
+.hf-02-shopify-line{font-size:27px;margin-top:4px}.hf-02-shopify-mapping{border-top:1px solid #bdc9ac;padding-top:24px;margin-top:30px;font-size:25px}
+.hf-02-shopify-event{margin-top:26px;display:flex;align-items:center;gap:11px;font-size:23px;color:#37723b}
+.hf-02-shopify-dot{width:11px;height:11px;border-radius:50%;background:#37723b}
+.hf-02-shopify-link{position:absolute;left:754px;top:514px;width:96px;height:76px;overflow:visible}
+.hf-02-shopify-buyer{position:absolute;left:870px;top:285px;width:954px;height:555px;box-sizing:border-box;background:#dcec8a;border:2px solid #b3c379;border-radius:12px;padding:32px 38px}
+.hf-02-shopify-top{display:flex;justify-content:space-between;align-items:center}.hf-02-shopify-small-brand{font-size:30px;font-weight:800;letter-spacing:-1.5px}
+.hf-02-shopify-state{position:relative;width:320px;height:26px;font-size:22px;text-align:right}.hf-02-shopify-state>span{position:absolute;right:0;top:0}
+.hf-02-shopify-stock{position:absolute;left:38px;top:106px;width:386px}.hf-02-shopify-item{font-size:28px;margin:0}
+.hf-02-shopify-stack{position:relative;height:116px;margin-top:6px}.hf-02-shopify-number{position:absolute;left:0;top:0;font-size:94px;font-weight:700;letter-spacing:-4px;line-height:1.12}
+.hf-02-shopify-number small{font-size:24px;font-weight:400;letter-spacing:0;margin-left:12px}
+.hf-02-shopify-track{width:370px;height:10px;background:#b4c566;overflow:hidden;border-radius:5px}.hf-02-shopify-fill{height:10px;background:#37723b;transform-origin:0 50%;border-radius:5px}
+.hf-02-shopify-cover{position:relative;height:46px;margin-top:15px;font-size:24px}.hf-02-shopify-cover>span{position:absolute;top:0;left:0}
+.hf-02-shopify-timing{position:absolute;left:474px;top:110px;width:402px}.hf-02-shopify-timing-value{position:relative;height:80px;margin-top:18px}
+.hf-02-shopify-timing-value>strong{position:absolute;left:0;top:0;font-size:62px;letter-spacing:-2px;line-height:1}
+.hf-02-shopify-why{font-size:23px;line-height:1.5;margin:5px 0}
+.hf-02-shopify-message{position:absolute;left:38px;right:38px;top:327px;height:186px;box-sizing:border-box;background:#fffef7;border:1px solid #afc075;border-radius:8px;padding:25px 28px}
+.hf-02-shopify-author{font:20px "Share Tech Mono",monospace}.hf-02-shopify-message p{font-size:31px;font-weight:700;letter-spacing:-.7px;margin:13px 0}
+.hf-02-shopify-buy-row{display:flex;justify-content:space-between;align-items:center;font-size:24px}.hf-02-shopify-pill{font-size:20px;background:#edf3e7;border:1px solid #b6caa7;border-radius:5px;padding:8px 13px}
+.hf-02-shopify-watching{position:absolute;left:38px;right:38px;top:345px;font-size:31px;line-height:1.4}
+.hf-02-shopify-foot{position:absolute;left:96px;right:96px;top:874px;display:flex;align-items:center;justify-content:space-between;font-size:25px}
+.hf-02-shopify-disclaimer{position:absolute;left:96px;top:956px;font:20px "Share Tech Mono",monospace;color:#54634b}
+</style>
+<div data-hf-id="hf-9otn" id="root" data-composition-id="02-shopify" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+<div data-hf-id="hf-jg49" id="scene-02-shopify-ground" class="clip hf-02-shopify-ground" data-start="0" data-duration="12" data-track-index="0"></div>
+<div data-hf-id="hf-fiiu" id="scene-02-shopify-content" class="clip hf-02-shopify-content" data-start="0" data-duration="12" data-track-index="1">
+<div data-hf-id="hf-nk8f" class="hf-02-shopify-chrome"><strong data-hf-id="hf-yhrn" class="hf-02-shopify-brand">BUY HARD</strong><span data-hf-id="hf-6d2a" class="hf-02-shopify-meta">SAMPLE SCENARIO · Shopify</span></div>
+<h1 data-hf-id="hf-ob0l" class="hf-02-shopify-title">More orders. Boxes ready.</h1>
+<section data-hf-id="hf-0rda" class="hf-02-shopify-source"><div data-hf-id="hf-zzlt" class="hf-02-shopify-window"><span data-hf-id="hf-93bb">Shopify / sample store</span><span data-hf-id="hf-9wtw">10:42</span></div>
+<div data-hf-id="hf-8kq1" class="hf-02-shopify-body"><div data-hf-id="hf-g3xo" class="hf-02-shopify-name">Morrow Goods</div><div data-hf-id="hf-34ef" class="hf-02-shopify-label">Paid gift-set orders</div>
+<div data-hf-id="hf-x9dv" class="hf-02-shopify-sales"><div data-hf-id="hf-oq2w" class="hf-02-shopify-quantity">60</div><div data-hf-id="hf-h255" class="hf-02-shopify-line">Gift set sold</div></div>
+<div data-hf-id="hf-lcg8" class="hf-02-shopify-mapping">1 gift set uses 1 box</div><div data-hf-id="hf-o7zx" class="hf-02-shopify-event"><span data-hf-id="hf-p1p5" class="hf-02-shopify-dot"></span>Sales update received</div></div></section>
+<svg data-hf-id="hf-h7vm" class="hf-02-shopify-link" viewBox="0 0 96 76" fill="none" aria-hidden="true"><path data-hf-id="hf-kw97" class="hf-02-shopify-arrow" d="M4 38H88M72 22L88 38L72 54" stroke="#37723b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+<section data-hf-id="hf-67de" class="hf-02-shopify-buyer"><div data-hf-id="hf-vzdq" class="hf-02-shopify-top"><strong data-hf-id="hf-8asl" class="hf-02-shopify-small-brand">BUY HARD</strong><div data-hf-id="hf-pj4c" class="hf-02-shopify-state"><span data-hf-id="hf-j1q9" class="hf-02-shopify-before">Watching your stock</span><span data-hf-id="hf-ap6l" class="hf-02-shopify-after">Reorder brought forward</span></div></div>
+<div data-hf-id="hf-us1x" class="hf-02-shopify-stock"><p data-hf-id="hf-re94" class="hf-02-shopify-item">Shipping boxes</p><div data-hf-id="hf-epv3" class="hf-02-shopify-stack"><div data-hf-id="hf-f6id" class="hf-02-shopify-number hf-02-shopify-before">140<small data-hf-id="hf-cdq2">boxes left</small></div><div data-hf-id="hf-7jij" class="hf-02-shopify-number hf-02-shopify-after">80<small data-hf-id="hf-pr8e">boxes left</small></div></div><div data-hf-id="hf-57im" class="hf-02-shopify-track"><div data-hf-id="hf-vhjq" class="hf-02-shopify-fill"></div></div><div data-hf-id="hf-czs6" class="hf-02-shopify-cover"><span data-hf-id="hf-6asx" class="hf-02-shopify-before">7 days of cover</span><span data-hf-id="hf-06tp" class="hf-02-shopify-after">4 days of cover</span></div></div>
+<div data-hf-id="hf-49qv" class="hf-02-shopify-timing"><div data-hf-id="hf-dfjg" class="hf-02-shopify-label">Next buy</div><div data-hf-id="hf-byyr" class="hf-02-shopify-timing-value"><strong data-hf-id="hf-w29v" class="hf-02-shopify-before">In 3 days</strong><strong data-hf-id="hf-im0o" class="hf-02-shopify-after">Today</strong></div><p data-hf-id="hf-1ubv" class="hf-02-shopify-why">2d delivery + 1d preparation<br data-hf-id="hf-x5px">+ 1d reserve</p></div>
+<div data-hf-id="hf-v8hw" class="hf-02-shopify-watching">You’re stocked for now.<br data-hf-id="hf-rsrt">I’ll keep an eye on what changes.</div>
+<div data-hf-id="hf-0ncu" class="hf-02-shopify-message"><div data-hf-id="hf-qcth" class="hf-02-shopify-author">YOUR BUYER · SAMPLE</div><p data-hf-id="hf-plmr">A good launch. A ready buyer.</p><div data-hf-id="hf-smls" class="hf-02-shopify-buy-row"><strong data-hf-id="hf-36vx">125 boxes · 5 packs</strong><span data-hf-id="hf-rf9x" class="hf-02-shopify-pill">For your review</span></div></div></section>
+<div data-hf-id="hf-4eqh" class="hf-02-shopify-foot"><span data-hf-id="hf-23kk" class="hf-02-shopify-payoff">Stay stocked. Keep doing your thing.</span><strong data-hf-id="hf-cilu">buyhard.app</strong></div>
+<div data-hf-id="hf-b640" class="hf-02-shopify-disclaimer">Illustrative sales and purchase draft · No order has been placed</div>
+</div></div>
+<script src="assets/gsap.min.js"></script>
+<script>
+(function(){
+ const scope=document.querySelector('[data-composition-id="02-shopify"]');
+ const q=s=>scope.querySelectorAll(s);
+ const tl=gsap.timeline({paused:true,defaults:{ease:"power3.out"}});
+ tl.fromTo(q(".hf-02-shopify-title"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},0);
+ tl.fromTo(q(".hf-02-shopify-sales"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.5},2);
+ tl.fromTo(q(".hf-02-shopify-event"),{y:8,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},3.1);
+ tl.fromTo(q(".hf-02-shopify-arrow"),{strokeDasharray:140,strokeDashoffset:140},{strokeDashoffset:0,duration:.65},3.65);
+ tl.set(q(".hf-02-shopify-before"),{autoAlpha:0},4.5);
+ tl.fromTo(q(".hf-02-shopify-after"),{y:9,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},4.5);
+ tl.fromTo(q(".hf-02-shopify-fill"),{scaleX:1},{scaleX:0.5714285714285714,duration:.65},4.5);
+ tl.to(q(".hf-02-shopify-watching"),{autoAlpha:0,duration:.15},6.85);
+ tl.fromTo(q(".hf-02-shopify-message"),{y:12,autoAlpha:0},{y:0,autoAlpha:1,duration:.55},7);
+ tl.fromTo(q(".hf-02-shopify-why"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},8.4);
+ tl.fromTo(q(".hf-02-shopify-payoff"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},9.5);
+ tl.to({},{duration:12},0);
+ window.__timelines=window.__timelines||{};
+ window.__timelines["02-shopify"]=tl;
+})();
+</script></template>

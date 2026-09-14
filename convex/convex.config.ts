@@ -16,6 +16,14 @@ import rateLimiter from "@convex-dev/rate-limiter/convex.config";
 const app = defineApp({
   httpPrefix: "/",
   env: {
+    SALES_CREDENTIAL_KEY: v.optional(v.string()),
+    SALES_CALLBACK_BASE_URL: v.optional(v.string()),
+    SQUARE_APP_ID: v.optional(v.string()),
+    SQUARE_APP_SECRET: v.optional(v.string()),
+    SQUARE_WEBHOOK_SIGNATURE_KEY: v.optional(v.string()),
+    SQUARE_SANDBOX: v.optional(v.string()),
+    SHOPIFY_CLIENT_ID: v.optional(v.string()),
+    SHOPIFY_CLIENT_SECRET: v.optional(v.string()),
     AUTH_PRIVATE_KEY: v.string(),
     AUTH_JWKS: v.string(),
     AUTH_ORIGIN: v.optional(v.string()),

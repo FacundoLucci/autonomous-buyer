@@ -49,6 +49,14 @@ type Env = {
   readonly FIRECRAWL_WEBHOOK_SECRET: string | undefined;
   readonly OPENAI_API_KEY: string | undefined;
   readonly OPENROUTER_API_KEY: string | undefined;
+  readonly SALES_CALLBACK_BASE_URL: string | undefined;
+  readonly SALES_CREDENTIAL_KEY: string | undefined;
+  readonly SHOPIFY_CLIENT_ID: string | undefined;
+  readonly SHOPIFY_CLIENT_SECRET: string | undefined;
+  readonly SQUARE_APP_ID: string | undefined;
+  readonly SQUARE_APP_SECRET: string | undefined;
+  readonly SQUARE_SANDBOX: string | undefined;
+  readonly SQUARE_WEBHOOK_SIGNATURE_KEY: string | undefined;
 };
 
 /**

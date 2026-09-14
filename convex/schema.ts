@@ -1,4 +1,5 @@
 import { questionCode } from "./deskFields";
+import { salesTables } from "./salesFields";
 import { chatTask, deskDraft } from "./deskFields";
 import { buyerFocus, buyerCredit } from "./buyerFields";
 import { authTables } from "@convex-dev/auth/server";
@@ -42,6 +43,7 @@ const operationStatusValidator = v.union(
 );
 
 export default defineSchema({
+  ...salesTables,
   organizations: defineTable({
     name: v.string(),
     address: v.optional(
@@ -117,6 +119,11 @@ export default defineSchema({
     .index("by_organizationId", ["organizationId"]),
 
   inventoryItems: defineTable({
+    salesConnectionId: v.optional(v.id("salesConnections")),
+    salesBaselineAt: v.optional(v.number()),
+    salesBaselineQuantity: v.optional(v.number()),
+    salesConsumed: v.optional(v.number()),
+    salesObservedThrough: v.optional(v.number()),
     supplierSku: v.optional(v.string()),
     leadResearchKey: v.optional(v.string()),
     leadResearchState: v.optional(

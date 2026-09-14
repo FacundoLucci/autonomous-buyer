@@ -6,6 +6,7 @@ export const buyerFocus = v.object({
     v.literal("inventory"),
     v.literal("buys"),
     v.literal("settings"),
+    v.literal("connections"),
     v.literal("audit"),
   ),
   item: v.optional(v.string()),
