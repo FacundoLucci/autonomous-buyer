@@ -27,12 +27,11 @@ export function DemoNextStep() {
   });
   return (
     <>
-      <a href={marketingHref("/walkthrough")}>Try this with your business</a>
       {used && !dismissed && (
         <aside className="marketing-demo-next" aria-label="Your next step">
           <span>
-            Have an item like this?{" "}
-            <a href={marketingHref("/walkthrough")}>Book a 20-minute walkthrough</a>
+            Want this for your business?{" "}
+            <a href={marketingHref("/setup")}>Join the early access list</a>
           </span>
           <button
             type="button"

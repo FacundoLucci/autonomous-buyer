@@ -1,8 +1,16 @@
 # Pilot inquiries and walkthroughs
 
-The landing page explains the product, links to `/walkthrough` and the sample demo, and has a short pilot form. No signup is needed. “Where we’ve bought” remains in place but renders only when its live confirmed-order total is greater than zero.
+The primary landing action and demo invitation links now lead to `/setup` for
+invite-only early access. Applicants create an account, save company details, and
+reach a persistent invitation confirmation. “Schedule with Facundo” opens the
+existing full-page calendar at `https://cal.com/facundolucci/buyhard`, preserving
+campaign attribution. The general walkthrough and short pilot inquiry form remain available.
+Facundo reviews these requests separately in `/leads` and grants access after
+onboarding. Booking alone never unlocks the app. See [onboarding](onboarding.md).
 
-The sample-data label and “Make it yours” remain. A quiet next-step suggestion appears after the demo understands a stock count or shows an existing purchase’s status. The suggestion can be dismissed.
+The landing page explains the product, links to the sample demo, and has a short pilot form. No signup is needed for a walkthrough, demo, or inquiry. “Where we’ve bought” remains in place but renders only when its live confirmed-order total is greater than zero.
+
+The sample-data label remains. “Request an invitation” replaces “Make it yours.” A quiet next-step suggestion appears after the demo understands a stock count or shows an existing purchase’s status. The suggestion can be dismissed.
 
 ## Follow-up
 

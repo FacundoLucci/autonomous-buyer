@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Setup } from "@/components/buy-hard/setup";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/legacy_/setup")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -9,5 +8,5 @@ export const Route = createFileRoute("/legacy_/setup")({
 });
 
 function SetupRoute() {
-  return <Setup key={Route.useSearch().mode} mode={Route.useSearch().mode} />;
+  return <Navigate to="/setup" search={{ mode: Route.useSearch().mode }} replace />;
 }

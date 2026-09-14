@@ -13,6 +13,7 @@ const state = vi.hoisted(() => ({
     canApproveDemo: boolean;
   },
   workspace: null as null | { companyName: string },
+  invitation: null as null | { companyName: string; shippingAddress: string; requestedAt: number },
 }));
 vi.mock("@/lib/buyer-auth", () => ({
   useConvexAuth: () => ({ isAuthenticated: state.authenticated, isLoading: false }),
@@ -21,7 +22,11 @@ vi.mock("@/lib/buyer-auth", () => ({
 vi.mock("convex/react", () => ({
   useMutation: () => vi.fn(),
   useQuery: (reference: Parameters<typeof getFunctionName>[0]) =>
-    getFunctionName(reference).startsWith("authData:") ? state.user : state.workspace,
+    getFunctionName(reference).startsWith("authData:")
+      ? state.user
+      : getFunctionName(reference).startsWith("onboardingAccess:")
+        ? state.invitation
+        : state.workspace,
 }));
 vi.mock("@tanstack/react-router", () => ({ Navigate: () => <span>Open workspace</span> }));
 vi.mock("./chat", () => ({ TaskChat: () => <span>Resume saved setup</span> }));
@@ -33,15 +38,41 @@ beforeEach(() => {
   state.authenticated = false;
   state.user = null;
   state.workspace = null;
+  state.invitation = null;
 });
 test("signup and login offer their own form and a link to the other mode", () => {
   const signup = renderToStaticMarkup(<AccountPage mode="signup" />);
-  expect(signup).toContain("Create your account.");
+  expect(signup).toContain("Request your invitation.");
+  expect(signup).toContain("INVITE-ONLY EARLY ACCESS");
+  expect(signup).toContain("before your workspace opens");
   expect(signup).toContain("/setup?mode=login&amp;method=password");
   expect(signup).toContain('autoComplete="new-password"');
   const login = renderToStaticMarkup(<AccountPage mode="login" />);
   expect(login).toContain("/setup?mode=signup&amp;method=password");
   expect(login).toContain('autoComplete="current-password"');
+});
+test("a saved invitation replaces onboarding on both signup and returning sign-in", () => {
+  state.authenticated = true;
+  state.user = {
+    name: "Buyer",
+    email: "buyer@example.test",
+    isJudgeDemo: false,
+    canApproveDemo: false,
+  };
+  state.invitation = {
+    companyName: "A company",
+    shippingAddress: "100 Test Street, Chicago IL 60601",
+    requestedAt: 1,
+  };
+  for (const mode of ["signup", "login"] as const) {
+    const html = renderToStaticMarkup(<AccountPage mode={mode} />);
+    expect(html).toContain("You’re on the list.");
+    expect(html).toContain("A company");
+    expect(html).toContain('href="https://cal.com/facundolucci/buyhard"');
+    expect(html).toContain('href="/?demo=true"');
+    expect(html).not.toContain("Resume saved setup");
+    expect(html).not.toContain("Open workspace");
+  }
 });
 test("a demo session does not replace account forms with a sign-out dead end", () => {
   state.authenticated = true;

@@ -34,8 +34,18 @@ async function fixture() {
   rateLimiter.default.register(t);
   const [aId, bId] = await t.run(async (ctx) =>
     Promise.all([
-      ctx.db.insert("users", { name: "A", isActive: true, role: "viewer" }),
-      ctx.db.insert("users", { name: "B", isActive: true, role: "viewer" }),
+      ctx.db.insert("users", {
+        name: "A",
+        isActive: true,
+        role: "viewer",
+        workspaceAccessGrantedAt: 1,
+      }),
+      ctx.db.insert("users", {
+        name: "B",
+        isActive: true,
+        role: "viewer",
+        workspaceAccessGrantedAt: 1,
+      }),
     ]),
   );
   const a = t.withIdentity({ subject: aId }),

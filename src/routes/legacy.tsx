@@ -1,4 +1,4 @@
-import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, Navigate, stripSearchParams } from "@tanstack/react-router";
 import { useAuthActions, useConvexAuth } from "@/lib/buyer-auth";
 import { useAction, useMutation, useQuery } from "convex/react";
 import {
@@ -18,7 +18,6 @@ import { createContext, useCallback, useContext, useRef, useState } from "react"
 
 import { HardwareMetric, HardwareMetricRack } from "@/components/buy-hard/hardware-metric";
 import { CompanyWorkspace } from "@/components/buy-hard/company-workspace";
-import { Setup } from "@/components/buy-hard/setup";
 import { AutonomousLanding } from "@/components/landing/autonomous-landing";
 import { landingHead } from "@/components/landing/landing-head";
 import { LiveBuyList } from "@/components/buy-hard/live-buy-list";
@@ -230,7 +229,8 @@ function Home() {
         initialOrder={search.companyOrder}
       />
     );
-  if (user && !user.isJudgeDemo && user.role === "viewer") return <Setup mode="signup" />;
+  if (user && !user.isJudgeDemo && user.role === "viewer")
+    return <Navigate to="/setup" search={{ mode: "signup" }} replace />;
   return user ? <DemoHome /> : <AutonomousLanding />;
 }
 

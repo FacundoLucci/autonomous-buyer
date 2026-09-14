@@ -6,6 +6,7 @@ import { query, type QueryCtx, type MutationCtx } from "./_generated/server";
 import { mutation } from "./audited";
 import { setupFieldError, stockOutlook, type CompanySetup } from "../src/lib/setup-fields";
 import { activeCompanyItems } from "./companyStock";
+import { requireWorkspaceInvitation } from "./onboardingAccess";
 
 const unit = v.union(
   v.literal("units"),
@@ -59,6 +60,7 @@ export const complete = mutation({
         throw new ConvexError("Use a separate account for your own company.");
       return existing._id;
     }
+    requireWorkspaceInvitation(user);
     for (const key of Object.keys(args) as (keyof typeof args)[]) {
       if (key === "timezone") continue;
       const error = setupFieldError(key as keyof CompanySetup, args[key]);
@@ -253,6 +255,7 @@ export const completeFromSource = mutation({
       if (org && !org.isDemo) return org._id;
       throw new ConvexError("Use your own account for your company.");
     }
+    requireWorkspaceInvitation(user);
     for (const field of ["companyName", "shippingAddress", "itemName"] as const) {
       const message = setupFieldError(field, args[field]);
       if (message) throw new ConvexError(message);

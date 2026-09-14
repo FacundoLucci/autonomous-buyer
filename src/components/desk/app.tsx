@@ -32,6 +32,7 @@ import { useClock } from "@/lib/use-clock";
 import { StockCount, BuyingRules, type UpdateCount, type UpdateRules } from "./inventory";
 import { Brand, Empty, Loading, OutLink, PageHeading } from "./primitives";
 import { Landing } from "./landing";
+import { InvitationPending } from "./invitation";
 import { TaskChat } from "./chat";
 import { LiveBuyer } from "./agent-live";
 import { useBuyer } from "./agent";
@@ -74,9 +75,14 @@ function RealDesk({ search, navigate }: { search: SearchState; navigate: Navigat
   const { isAuthenticated, isLoading } = useConvexAuth();
   const workspace = useQuery(api.onboarding.getWorkspace, isAuthenticated ? {} : "skip");
   const user = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
-  if (isLoading || (isAuthenticated && (workspace === undefined || user === undefined)))
+  const invitation = useQuery(api.onboardingAccess.current, isAuthenticated ? {} : "skip");
+  if (
+    isLoading ||
+    (isAuthenticated && (workspace === undefined || user === undefined || invitation === undefined))
+  )
     return <Loading />;
   if (!isAuthenticated) return <Landing />;
+  if (!workspace && invitation) return <InvitationPending request={invitation} />;
   if (!workspace)
     return <Landing resumeSetup={!!user && !user.isJudgeDemo && !user.canApproveDemo} />;
   return <LiveWorkspace workspace={workspace} search={search} navigate={navigate} />;
@@ -1100,7 +1106,7 @@ export function WorkspaceScreen({
           <>
             <DemoNextStep />
             <a href="/setup">
-              Make it yours <ArrowUpRight size={14} />
+              Request an invitation <ArrowUpRight size={14} />
             </a>
           </>
         )}

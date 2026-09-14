@@ -1,8 +1,10 @@
 import "@/components/desk/marketing.css";
 import { createFileRoute } from "@tanstack/react-router";
-import { Component, type ReactNode } from "react";
+import { Component, useState, type ReactNode } from "react";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
+import { errorText } from "@/components/desk/model";
 export const Route = createFileRoute("/leads")({ component: LeadsPage });
 class PrivateBoundary extends Component<{ children: ReactNode }, { denied: boolean }> {
   state = { denied: false };
@@ -28,9 +30,70 @@ function LeadsPage() {
       <h1>Follow-up list</h1>
       <p>Reply goal: within one business day. Email status shows the provider’s response.</p>
       <PrivateBoundary>
+        <OnboardingRequests />
         <Leads />
       </PrivateBoundary>
     </main>
+  );
+}
+function OnboardingRequests() {
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.onboardingAccess.ownerList,
+    {},
+    { initialNumItems: 25 },
+  );
+  const grant = useMutation(api.onboardingAccess.grant);
+  const [pending, setPending] = useState<Id<"onboardingRequests"> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <section className="marketing-leads" aria-labelledby="onboarding-requests-title">
+      <h2 id="onboarding-requests-title">Invitation requests</h2>
+      <p>
+        Prioritize scheduled onboarding sessions. Grant workspace access after you finish onboarding
+        together.
+      </p>
+      {status === "LoadingFirstPage" && <p>Loading invitation requests…</p>}
+      {status !== "LoadingFirstPage" && !results.length && <p>No invitation requests yet.</p>}
+      {error && (
+        <p className="desk-error" role="alert">
+          {error}
+        </p>
+      )}
+      {results.map((request) => (
+        <article key={request._id}>
+          <h3>{request.companyName}</h3>
+          {request.email && <a href={`mailto:${request.email}`}>{request.email}</a>}
+          <p>{request.shippingAddress}</p>
+          <p>Requested {new Date(request.requestedAt).toLocaleString()}</p>
+          {request.approvedAt ? (
+            <p>Workspace access granted {new Date(request.approvedAt).toLocaleString()}</p>
+          ) : (
+            <button
+              className="desk-cta"
+              disabled={pending !== null}
+              onClick={async () => {
+                setPending(request._id);
+                setError(null);
+                try {
+                  await grant({ requestId: request._id });
+                } catch (e) {
+                  setError(errorText(e));
+                } finally {
+                  setPending(null);
+                }
+              }}
+            >
+              {pending === request._id ? "Granting access…" : "Grant workspace access"}
+            </button>
+          )}
+        </article>
+      ))}
+      {status === "CanLoadMore" && (
+        <button className="desk-text-link" onClick={() => loadMore(25)}>
+          Load more invitation requests
+        </button>
+      )}
+    </section>
   );
 }
 const deliveryLabels = {

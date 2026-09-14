@@ -17,8 +17,18 @@ async function fixture() {
   const t = convexTest(schema, modules);
   const [aId, bId] = await t.run(async (ctx) =>
     Promise.all([
-      ctx.db.insert("users", { name: "A", isActive: true, role: "viewer" }),
-      ctx.db.insert("users", { name: "B", isActive: true, role: "viewer" }),
+      ctx.db.insert("users", {
+        name: "A",
+        isActive: true,
+        role: "viewer",
+        workspaceAccessGrantedAt: 1,
+      }),
+      ctx.db.insert("users", {
+        name: "B",
+        isActive: true,
+        role: "viewer",
+        workspaceAccessGrantedAt: 1,
+      }),
     ]),
   );
   const a = t.withIdentity({ subject: aId }),
@@ -128,7 +138,7 @@ test("draft mutation enforces the task allowlist on the server", async () => {
     t.mutation(internal.desk.updateDraft, { chatId, draft: { stock: 999 } }),
   ).rejects.toThrow(/cannot change/);
 });
-test("onboarding can create a workspace without invented inventory", async () => {
+test("onboarding saves an invitation request without opening a workspace", async () => {
   const t = convexTest(schema, modules);
   const userId = await t.run((ctx) =>
     ctx.db.insert("users", { name: "New user", isActive: true, role: "viewer" }),
@@ -146,8 +156,10 @@ test("onboarding can create a workspace without invented inventory", async () =>
   );
   await a.mutation(api.desk.commit, { chatId, timezone: "America/Chicago" });
   const workspace = await a.query(api.onboarding.getWorkspace, {});
-  expect(workspace?.items).toEqual([]);
-  expect(workspace?.companyName).toBe("New company");
+  expect(workspace).toBeNull();
+  expect(await a.query(api.onboardingAccess.current, {})).toMatchObject({
+    companyName: "New company",
+  });
 });
 
 test("onboarding redirects to the next setup question without exposing off-topic model prose", async () => {
@@ -610,7 +622,7 @@ test("address confirmation shows the address or asks for manual entry", () => {
   );
 });
 
-test("manual setup recovers an empty draft and opens a workspace without an agent reply", async () => {
+test("manual setup saves an invitation request without needing an agent reply", async () => {
   const { t, b } = await fixture();
   const userId = await t.run((ctx) =>
     ctx.db.insert("users", { name: "New user", isActive: true, role: "viewer" }),
@@ -640,7 +652,10 @@ test("manual setup recovers an empty draft and opens a workspace without an agen
   await user.mutation(api.desk.setOnboardingDetails, details);
   const id = await user.mutation(api.desk.commit, { chatId, timezone: "America/Chicago" });
   const workspace = await user.query(api.onboarding.getWorkspace, {});
-  expect(workspace?.organizationId).toBe(id);
+  expect(workspace).toBeNull();
+  expect(await user.query(api.onboardingAccess.current, {})).toMatchObject({
+    companyName: "My company",
+  });
   expect(await user.mutation(api.desk.commit, { chatId, timezone: "America/Chicago" })).toBe(id);
 });
 
