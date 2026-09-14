@@ -102,3 +102,57 @@ test.skipIf(!process.env.BUYER_LIVE_ONBOARDING_CHECK || !process.env.OPENAI_API_
   },
   90000,
 );
+
+test.skipIf(!process.env.BUYER_LIVE_ONBOARDING_CHECK || !process.env.OPENAI_API_KEY)(
+  "real model requires confirmation before using researched company details",
+  async () => {
+    for (const [reply, accepted] of [
+      ["Yes", true],
+      ["No, that is not my company or address.", false],
+      ["Why do you need my address?", false],
+    ] as const) {
+      const t = convexTest(schema, modules);
+      const path: string = "@convex-dev/agent/test";
+      (await import(path)).default.register(t);
+      const ids = await t.run(async (ctx) => {
+        const userId = await ctx.db.insert("users", { name: "QA", isActive: true, role: "viewer" });
+        const threadId = await createThread(ctx, components.agent, { userId });
+        const { messageId } = await saveMessage(ctx, components.agent, {
+          threadId,
+          message: { role: "user", content: reply },
+        });
+        const chatId = await ctx.db.insert("taskChats", {
+          userId,
+          threadId,
+          task: "onboarding",
+          draft: {},
+          busy: true,
+          lastUserText: reply,
+          currentMessageId: messageId,
+          updatedAt: Date.now(),
+        });
+        await ctx.db.insert("companySuggestions", {
+          userId,
+          domain: "luhvfood.com",
+          status: "offered",
+          companyName: "LUHV FOOD",
+          shippingAddress: "123 Test Street, Philadelphia PA 19103, USA",
+          createdAt: Date.now(),
+        });
+        return { chatId, messageId };
+      });
+      await t.action(internal.deskAgent.respond, ids);
+      const chat = await t.run((ctx) => ctx.db.get("taskChats", ids.chatId));
+      expect(chat?.error).toBeUndefined();
+      if (accepted) {
+        expect(chat?.draft.companyName).toBe("LUHV FOOD");
+        expect(chat?.draft.shippingAddress).toContain("123 Test Street");
+        expect(chat?.question).toBe("ready");
+      } else {
+        expect(chat?.draft.companyName).toBeUndefined();
+        expect(chat?.draft.shippingAddress).toBeUndefined();
+      }
+    }
+  },
+  90000,
+);

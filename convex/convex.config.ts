@@ -11,8 +11,7 @@ import username from "@convex-dev/auth2/username/convex.config";
 import anonymous from "@convex-dev/auth2/providers/anonymous/convex.config";
 import rateLimiter from "@convex-dev/rate-limiter/convex.config";
 
-// Your own HTTP endpoints (convex/http.ts) are served under /api so the
-// static site can own the root.
+// App-owned HTTP routing adds SEO headers to pages and serves static assets.
 const app = defineApp({
   httpPrefix: "/",
   env: {
@@ -33,12 +32,15 @@ const app = defineApp({
     ALERT_EMAIL_URL: v.optional(v.string()),
     ALERT_EMAIL_SECRET: v.optional(v.string()),
     APP_URL: v.optional(v.string()),
+    MARKETING_OWNER_USER_ID: v.optional(v.string()),
+    MARKETING_NOTIFY_EMAIL: v.optional(v.string()),
+    CAL_WEBHOOK_SECRET: v.optional(v.string()),
     BROWSER_WORKER_URL: v.optional(v.string()),
     BROWSER_WORKER_SECRET: v.optional(v.string()),
   },
 });
 
-app.use(staticHosting, { httpPrefix: "/" });
+app.use(staticHosting);
 app.use(auth, {
   httpPrefix: "/auth",
   env: {

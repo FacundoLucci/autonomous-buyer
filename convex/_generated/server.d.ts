@@ -45,8 +45,11 @@ type Env = {
   readonly BROWSER_WORKER_SECRET: string | undefined;
   readonly BROWSER_WORKER_URL: string | undefined;
   readonly BUYER_EMAIL: string | undefined;
+  readonly CAL_WEBHOOK_SECRET: string | undefined;
   readonly FIRECRAWL_API_KEY: string;
   readonly FIRECRAWL_WEBHOOK_SECRET: string | undefined;
+  readonly MARKETING_NOTIFY_EMAIL: string | undefined;
+  readonly MARKETING_OWNER_USER_ID: string | undefined;
   readonly OPENAI_API_KEY: string | undefined;
   readonly OPENROUTER_API_KEY: string | undefined;
 };

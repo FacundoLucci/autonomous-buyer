@@ -215,6 +215,7 @@ export const send = mutation({
     contextId: v.optional(v.string()),
     text: v.string(),
     revision: v.optional(v.boolean()),
+    suggestionId: v.optional(v.id("companySuggestions")),
   },
   returns: v.id("taskChats"),
   handler: async (ctx, args) => {
@@ -230,6 +231,20 @@ export const send = mutation({
       .order("desc")
       .first();
     if (chat?.busy) throw new ConvexError("One moment, I’m still working on that.");
+    if (args.task === "onboarding") {
+      const suggestion = await ctx.db
+        .query("companySuggestions")
+        .withIndex("by_userId", (q) => q.eq("userId", user._id))
+        .unique();
+      if (suggestion && ["pending", "ready"].includes(suggestion.status)) {
+        await ctx.db.patch("companySuggestions", suggestion._id, {
+          status:
+            suggestion.status === "ready" && suggestion._id === args.suggestionId && !chat
+              ? "offered"
+              : "dismissed",
+        });
+      }
+    }
     if (!chat || chat.savedAt || chat.buyerSessionId) {
       const threadId = await createThread(ctx, components.agent, {
         userId: user._id,
@@ -293,8 +308,16 @@ export const readChat = internalQuery({
           .withIndex("by_org_archived", (q) => q.eq("organizationId", chat.organizationId!))
           .take(250)
       : [];
+    const suggested =
+      chat.task === "onboarding"
+        ? await ctx.db
+            .query("companySuggestions")
+            .withIndex("by_userId", (q) => q.eq("userId", chat.userId))
+            .unique()
+        : null;
     return {
       ...chat,
+      companySuggestion: suggested?.status === "offered" ? suggested : null,
       items: items
         .filter((i) => !i.archived)
         .map((i) => ({

@@ -1,3 +1,5 @@
+import { companySuggestions } from "./companySuggestionFields";
+import { attribution, stage, event, deliveryStatus } from "./marketingFields";
 import { questionCode } from "./deskFields";
 import { chatTask, deskDraft } from "./deskFields";
 import { buyerFocus, buyerCredit } from "./buyerFields";
@@ -42,6 +44,33 @@ const operationStatusValidator = v.union(
 );
 
 export default defineSchema({
+  companySuggestions,
+  marketingLeads: defineTable({
+    email: v.string(),
+    businessName: v.string(),
+    challenge: v.string(),
+    source: attribution,
+    stage,
+    replyDueAt: v.number(),
+    confirmation: deliveryStatus,
+    notification: deliveryStatus,
+    confirmedBookingAt: v.optional(v.number()),
+    pilotStartedAt: v.optional(v.number()),
+  }).index("by_email", ["email"]),
+  marketingEvents: defineTable({ visitorId: v.string(), event, source: attribution }).index(
+    "by_visitorId_and_event",
+    ["visitorId", "event"],
+  ),
+  marketingBookings: defineTable({
+    uid: v.string(),
+    leadId: v.id("marketingLeads"),
+    status: v.string(),
+    startTime: v.string(),
+    updatedAt: v.number(),
+  })
+    .index("by_uid", ["uid"])
+    .index("by_leadId", ["leadId"]),
+
   organizations: defineTable({
     name: v.string(),
     address: v.optional(
@@ -70,6 +99,7 @@ export default defineSchema({
     organizationId: v.optional(v.id("organizations")),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
+    onboardingEmail: v.optional(v.string()),
     image: v.optional(v.string()),
     emailVerificationTime: v.optional(v.number()),
     phone: v.optional(v.string()),

@@ -1,8 +1,8 @@
 # Signup and company onboarding
 
-`/setup` starts with Convex Auth 2.0 passkeys: an account name, then the device's
+`/setup` starts with Convex Auth 2.0 passkeys: an email address, then the device's
 passkey prompt. The account exists before any company questions appear. Returning
-passkey users enter the same name. Existing password accounts use
+passkey users enter the same email. Older account-name credentials remain usable through the browser’s saved-passkey autofill. Existing password accounts use
 `/setup?mode=login&method=password`; their users and company memberships remain intact.
 
 After signup, the flow asks for the company and delivery address, then a product
@@ -115,3 +115,26 @@ field is needed. It ends with the next missing question. It cannot write form
 values or publish arbitrary model prose. A mixed reply can supply a real company
 detail and request help; the detail is saved before clarification. Stale or non-setup
 help calls are rejected. Visible help uses the same word-by-word reveal as questions.
+
+## Email-based company suggestions (local, not deployed)
+
+New passkey accounts require an email address. It is stored as `onboardingEmail`,
+separately from verified/legacy account email, and cannot link accounts or grant demo
+buyer privileges. The passkey provider continues to identify accounts by its own
+credential; existing sessions and saved-passkey autofill remain intact.
+
+After successful account creation, business domains trigger a background public
+website lookup. Common personal email providers skip it. Only the domain is sent
+to the lookup. A possible company name and one complete, unambiguous public address
+are kept in an owner-only suggestion, never automatically saved as a delivery
+address. The opening question asks for confirmation, with a source link and yes/no
+buttons; users can also answer in chat. Confirmations may fill the form, while
+rejections and help requests do not. Missing addresses are asked for normally.
+Late research cannot replace a conversation the user has already started, and
+failed lookups fall back to the usual questions. No company is created until the
+user selects Open my workspace.
+
+Validation includes email input rendering, normalization, personal-domain fallback,
+private suggestions, preserved identity boundaries, late-result rejection, and
+real-model confirmation/rejection/help checks. Local desktop/mobile layout checks
+use a labeled test address; they do not prove a live public-address match.

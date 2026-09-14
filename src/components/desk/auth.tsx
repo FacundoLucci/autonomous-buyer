@@ -123,7 +123,7 @@ function PasskeyForm({
         setError(
           result.userError.error === "CEREMONY_ABORTED"
             ? "Passkey cancelled. Try again when you’re ready."
-            : "We couldn’t use that passkey. Check your account name and try again.",
+            : "We couldn’t use that passkey. Check your email and try again.",
         );
     } catch (e) {
       setError(errorText(e));
@@ -135,13 +135,17 @@ function PasskeyForm({
   return (
     <form onSubmit={submit} className="desk-auth-form">
       <FloatingInput
-        id="username"
-        label="Account name"
+        id="passkey-email"
+        label="Email"
+        type="email"
+        inputMode="email"
+        autoCapitalize="none"
+        spellCheck={false}
         autoComplete="username webauthn"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
-        maxLength={120}
+        maxLength={254}
       />
       <Button type="submit" disabled={switching || pending || !username.trim()}>
         {switching || pending

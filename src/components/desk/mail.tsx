@@ -28,20 +28,53 @@ export function PurchasingInbox({ email }: { email?: string }) {
     }
   }
   return (
+    <PurchasingInboxContent
+      email={email}
+      messages={messages}
+      message={message}
+      busy={busy}
+      error={error}
+      onRefresh={() =>
+        void run(async () => {
+          setMessages(await list({}));
+          setMessage(null);
+        })
+      }
+      onRead={(messageId) =>
+        void run(async () => {
+          setMessage(await read({ messageId }));
+        })
+      }
+      onBack={() => setMessage(null)}
+    />
+  );
+}
+
+export function PurchasingInboxContent({
+  email,
+  messages,
+  message,
+  busy = false,
+  error,
+  onRefresh,
+  onRead,
+  onBack,
+}: {
+  email?: string;
+  messages: FunctionReturnType<typeof api.companyMail.messages> | null;
+  message: FunctionReturnType<typeof api.companyMail.readMessage> | null;
+  busy?: boolean;
+  error?: string | null;
+  onRefresh: () => void;
+  onRead: (messageId: string) => void;
+  onBack: () => void;
+}) {
+  return (
     <section className="desk-settings-section">
       <div className="desk-section-heading">
         <h2>Purchasing email</h2>
         {email && (
-          <Button
-            variant="outline"
-            disabled={busy}
-            onClick={() =>
-              void run(async () => {
-                setMessages(await list({}));
-                setMessage(null);
-              })
-            }
-          >
+          <Button variant="outline" disabled={busy} onClick={onRefresh}>
             {busy ? "Reading…" : "Read replies"}
           </Button>
         )}
@@ -49,7 +82,7 @@ export function PurchasingInbox({ email }: { email?: string }) {
       <p className="desk-muted">{email ?? "Created when you send your first purchase order."}</p>
       {message ? (
         <article className="desk-mail-message">
-          <Button variant="ghost" onClick={() => setMessage(null)}>
+          <Button variant="ghost" onClick={onBack}>
             Back to replies
           </Button>
           <h3>{message.subject || "No subject"}</h3>
@@ -60,16 +93,7 @@ export function PurchasingInbox({ email }: { email?: string }) {
         <p className="desk-empty">No replies yet.</p>
       ) : (
         messages?.map((m) => (
-          <button
-            className="desk-mail-row"
-            disabled={busy}
-            key={m.id}
-            onClick={() =>
-              void run(async () => {
-                setMessage(await read({ messageId: m.id }));
-              })
-            }
-          >
+          <button className="desk-mail-row" disabled={busy} key={m.id} onClick={() => onRead(m.id)}>
             <span>{m.subject || "No subject"}</span>
             <small>{m.from}</small>
           </button>

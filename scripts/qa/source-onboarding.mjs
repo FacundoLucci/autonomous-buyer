@@ -39,7 +39,7 @@ function cbor(value) {
 }
 async function register(suffix) {
   const client = new ConvexHttpClient(CONVEX_URL, { logger: false });
-  const username = `source-qa-${Date.now()}-${suffix}`;
+  const username = `source-qa-${Date.now()}-${suffix}@gmail.com`;
   const begin = await client.mutation("passkeyAuth:startSignIn", { username });
   assert.equal(begin.step, "register");
   const pair = generateKeyPairSync("ec", { namedCurve: "prime256v1" });

@@ -68,6 +68,7 @@ export function AgentSurface({
   attachment,
   renderWork,
   demo = false,
+  presentation,
 }: {
   children: ReactNode;
   state: AgentState;
@@ -83,13 +84,18 @@ export function AgentSurface({
     showTask: boolean,
   ) => ReactNode;
   demo?: boolean;
+  /** Optional controlled view state for previews using the same app components. */
+  presentation?: { open: boolean; input: string; now: number };
 }) {
-  const [open, setOpen] = useState(false),
-    [input, setInput] = useState("");
+  const [internalOpen, setOpen] = useState(false),
+    [internalInput, setInput] = useState("");
   const [pending, setPending] = useState(false),
     [error, setError] = useState<string>();
   const [focus, setFocus] = useState<AgentFocus>();
-  const now = useClock();
+  const clock = useClock();
+  const open = presentation?.open ?? internalOpen,
+    input = presentation?.input ?? internalInput,
+    now = presentation?.now ?? clock;
   const inputRef = useRef<HTMLTextAreaElement>(null),
     fileRef = useRef<HTMLInputElement>(null),
     latestRef = useRef<HTMLButtonElement>(null),

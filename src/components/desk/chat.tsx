@@ -185,6 +185,11 @@ export function TaskChat({
     task: request.task,
     contextId: request.contextId,
   });
+  const suggestion = useQuery(
+    api.companySuggestion.current,
+    request.task === "onboarding" ? {} : "skip",
+  );
+  const proposed = suggestion?.status === "ready" && !conversation ? suggestion : null;
   const send = useMutation(api.desk.send),
     commit = useMutation(api.desk.commit);
   const { token } = useAuthActions();
@@ -196,14 +201,18 @@ export function TaskChat({
   const busy = pending || !!conversation?.busy;
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (!input.trim() || busy) return;
+    await submitText(input);
+  }
+  async function submitText(text: string) {
+    if (!text.trim() || busy) return;
     setPending(true);
     setError(null);
     try {
       await send({
         task: request.task,
         contextId: request.contextId,
-        text: input.trim(),
+        text: text.trim(),
+        suggestionId: proposed?._id,
         revision: request.revision,
       });
       setInput("");
@@ -269,8 +278,16 @@ export function TaskChat({
           <ChatMessages
             key={`${request.task}:${request.contextId ?? ""}`}
             messages={conversation === undefined ? undefined : (conversation?.messages ?? [])}
-            prompt={request.prompt ?? prompts[request.task]}
-            busy={!!conversation?.busy}
+            prompt={
+              proposed
+                ? proposed.shippingAddress
+                  ? "Is this your company and delivery address?"
+                  : "Is this your company?"
+                : suggestion?.status === "pending" && !conversation
+                  ? "I’m looking up your company. You can also enter its name below."
+                  : (request.prompt ?? prompts[request.task])
+            }
+            busy={!!conversation?.busy || (suggestion?.status === "pending" && !conversation)}
             stream={request.task === "onboarding"}
           />
           {sourceId && (
@@ -368,7 +385,38 @@ export function TaskChat({
               {request.task === "onboarding" && (
                 <>
                   <h3>Company details</h3>
-                  {!draft?.companyName && (
+                  {proposed && (
+                    <div>
+                      <p>Possible match</p>
+                      <p>{proposed.companyName}</p>
+                      {proposed.shippingAddress && <p>{proposed.shippingAddress}</p>}
+                      <a href={proposed.sourceUrl} target="_blank" rel="noreferrer">
+                        View source
+                      </a>
+                      <div className="desk-suggestion-actions">
+                        <Button
+                          disabled={busy}
+                          onClick={() =>
+                            void submitText("Yes, those are my company details. Use them.")
+                          }
+                        >
+                          Yes, use these
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          disabled={busy}
+                          onClick={() =>
+                            void submitText(
+                              "No, that is not my company or delivery address. I will enter my details.",
+                            )
+                          }
+                        >
+                          No, I’ll enter my details
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  {!proposed && !draft?.companyName && (
                     <p>Your company name and delivery address will appear here.</p>
                   )}
                 </>

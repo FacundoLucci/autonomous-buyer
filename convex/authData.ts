@@ -1,3 +1,5 @@
+import { businessDomain, passkeyEmail } from "./companySuggestionFields";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
 import { internalQuery, query } from "./_generated/server";
@@ -42,7 +44,7 @@ export const getCurrentUser = query({
     return {
       userId: user._id,
       name: user.name ?? user.email ?? "Signed-in viewer",
-      email: user.email ?? null,
+      email: user.email ?? user.onboardingEmail ?? null,
       role,
       isJudgeDemo: user.isAnonymous === true,
       canApproveDemo:
@@ -102,7 +104,7 @@ export const claimConfiguredBuyer = mutation({
     return {
       userId: user._id,
       name: name ?? "Demo buyer",
-      email: user.email ?? null,
+      email: user.email ?? user.onboardingEmail ?? null,
       role: "buyer" as const,
       isJudgeDemo: user.isAnonymous === true,
       canApproveDemo: true,
@@ -118,9 +120,25 @@ export const createPasskeyUser = internalMutation({
   },
   returns: v.id("users"),
   handler: async (ctx, args) => {
-    const name = args.profile.username?.trim();
-    if (!name || name.length > 120) throw new Error("Choose an account name under 121 characters.");
-    return await ctx.db.insert("users", { name, role: "viewer", isActive: true });
+    const email = passkeyEmail(args.profile.username);
+    // A passkey proves control of the credential, not ownership of this email.
+    const userId = await ctx.db.insert("users", {
+      name: email,
+      onboardingEmail: email,
+      role: "viewer",
+      isActive: true,
+    });
+    const domain = businessDomain(email);
+    if (domain) {
+      const id = await ctx.db.insert("companySuggestions", {
+        userId,
+        domain,
+        status: "pending",
+        createdAt: Date.now(),
+      });
+      await ctx.scheduler.runAfter(0, internal.companySuggestion.enrich, { id });
+    }
+    return userId;
   },
 });
 export const createAnonymousUser = internalMutation({

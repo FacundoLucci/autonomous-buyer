@@ -1,3 +1,4 @@
+import { DemoNextStep } from "./marketing";
 import { useState, type ReactNode } from "react";
 import { useAction, useMutation, useQuery } from "convex/react";
 import {
@@ -1083,9 +1084,12 @@ export function WorkspaceScreen({
           {search.demo ? "Sample data. No supplier is contacted." : "Keep the line moving."}
         </span>
         {search.demo && (
-          <a href="/setup">
-            Make it yours <ArrowUpRight size={14} />
-          </a>
+          <>
+            <DemoNextStep />
+            <a href="/setup">
+              Make it yours <ArrowUpRight size={14} />
+            </a>
+          </>
         )}
       </footer>
     </div>
