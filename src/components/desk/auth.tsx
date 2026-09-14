@@ -10,6 +10,7 @@ import { FloatingInput } from "./floating-input";
 import { Brand, Loading } from "./primitives";
 import { TaskChat } from "./chat";
 import { errorText } from "./model";
+import { InvitationPending } from "./invitation";
 export function AccountPage({ mode }: { mode: "signup" | "login" }) {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { version, signOut } = useAuthActions();
@@ -17,9 +18,12 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
   const [authenticating, setAuthenticating] = useState(false);
   const user = useQuery(api.authData.getCurrentUser, isAuthenticated ? {} : "skip");
   const workspace = useQuery(api.onboarding.getWorkspace, isAuthenticated ? {} : "skip");
+  const invitation = useQuery(api.onboardingAccess.current, isAuthenticated ? {} : "skip");
   if (
     !authenticating &&
-    (isLoading || (isAuthenticated && (user === undefined || workspace === undefined)))
+    (isLoading ||
+      (isAuthenticated &&
+        (user === undefined || workspace === undefined || invitation === undefined)))
   )
     return <Loading />;
   if (workspace)
@@ -30,6 +34,7 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
         replace
       />
     );
+  if (isAuthenticated && invitation) return <InvitationPending request={invitation} />;
   return (
     <main className="desk-public">
       <header className="desk-public-header">
@@ -40,7 +45,12 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
       </header>
       {isAuthenticated && user && !user.isJudgeDemo && !user.canApproveDemo ? (
         <section className="desk-onboarding">
-          <h1>Let’s set up your desk.</h1>
+          <p className="desk-eyebrow">INVITE-ONLY EARLY ACCESS · COMPANY DETAILS</p>
+          <h1>Tell us about your business.</h1>
+          <p className="desk-setup-intro">
+            We’ll save these details, then you can schedule time with Facundo to finish onboarding.
+            Your workspace opens by invitation.
+          </p>
           <p>{user.email ?? user.name}</p>
           <a className="desk-secondary-link" href="/">
             Finish later
@@ -65,14 +75,22 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
           <TaskChat
             request={{ task: "onboarding" }}
             onSaved={() => {
-              window.location.href = "/";
+              window.location.href = "/setup";
             }}
           />
         </section>
       ) : (
         <section className="desk-account">
-          <p className="desk-eyebrow">YOUR BUY DESK</p>
-          <h1>{mode === "login" ? "Sign in." : "Create your account."}</h1>
+          <p className="desk-eyebrow">
+            {mode === "login" ? "YOUR BUY DESK" : "INVITE-ONLY EARLY ACCESS"}
+          </p>
+          <h1>{mode === "login" ? "Sign in." : "Request your invitation."}</h1>
+          {mode === "signup" && (
+            <p className="desk-setup-intro">
+              Create your account and tell us about your business. Then finish onboarding with
+              Facundo before your workspace opens.
+            </p>
+          )}
           {isAuthenticated && <p>Demo access is separate from your own account.</p>}
           {version === "passkey" ? (
             <PasskeyForm mode={mode} onBusyChange={setAuthenticating} />
@@ -83,7 +101,9 @@ export function AccountPage({ mode }: { mode: "signup" | "login" }) {
             className="desk-secondary-link"
             href={`/setup?mode=${mode === "login" ? "signup" : "login"}&method=${version}`}
           >
-            {mode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}
+            {mode === "login"
+              ? "New here? Request an invitation"
+              : "Already have an account? Sign in"}
           </a>
         </section>
       )}

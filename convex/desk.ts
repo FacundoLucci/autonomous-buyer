@@ -5,6 +5,7 @@ import { api, components, internal } from "./_generated/api";
 import { query, internalQuery, type MutationCtx, type QueryCtx } from "./_generated/server";
 import { mutation, internalMutation } from "./audited";
 import { account, ownedCompany } from "./onboarding";
+import { submitOnboardingRequest } from "./onboardingAccess";
 import {
   allowedDraft,
   allowedQuestion,
@@ -491,26 +492,11 @@ export const commit = mutation({
     let itemId = d.itemId;
     let summary = "Details updated.";
     if (chat.task === "onboarding") {
-      const name = boundedText(d.companyName ?? "", "your company name");
-      const address = boundedText(d.shippingAddress ?? "", "your delivery address", 500);
-      if (address.length < 12) throw new ConvexError("I still need your full delivery address.");
-      try {
-        new Intl.DateTimeFormat("en", { timeZone: args.timezone });
-      } catch {
-        throw new ConvexError("Choose a valid timezone.");
-      }
-      organizationId = await ctx.db.insert("organizations", {
-        name,
-        shippingAddress: address,
-        timezone: args.timezone,
-        approvalPolicy: { humanApprovalRequired: true, maximumAutomaticFollowUps: 1 },
-        isDemo: false,
-      });
-      await ctx.db.patch("users", user._id, { organizationId, role: "admin" });
-      resultId = organizationId;
-      summary = "Workspace created.";
+      const requestId = await submitOnboardingRequest(ctx, user, d, args.timezone);
+      await ctx.db.patch("taskChats", chat._id, { savedAt: Date.now(), resultId: requestId });
+      return requestId;
     }
-    if (chat.task === "add_item" || (chat.task === "onboarding" && d.name)) {
+    if (chat.task === "add_item") {
       const name = boundedText(d.name ?? "", "an item name");
       itemId = await ctx.runMutation(api.companyInventory.addItem, {
         name,

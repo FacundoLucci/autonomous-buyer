@@ -42,7 +42,7 @@ export function onboardingHelp(draft: Doc<"taskChats">["draft"], help: Clarifica
     }[parsed.kind];
   } else {
     explanation =
-      "Your company name and delivery address are filled in. You can correct either one in chat, or select ‘Open my workspace’ to continue.";
+      "Your company name and delivery address are filled in. You can correct either one in chat, or select ‘Join the list’ to save them. Then schedule onboarding with Facundo to complete your setup.";
   }
   return `${explanation}\n\n${questions[next]}`;
 }

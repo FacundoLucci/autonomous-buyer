@@ -31,7 +31,12 @@ test("a sent message runs through the router and task agent into a real stock re
     agentTest.register(t);
     rateLimiterTest.register(t);
     const userId = await t.run((ctx) =>
-      ctx.db.insert("users", { name: "Test buyer", role: "buyer", isActive: true }),
+      ctx.db.insert("users", {
+        name: "Test buyer",
+        role: "buyer",
+        isActive: true,
+        workspaceAccessGrantedAt: 1,
+      }),
     );
     const user = t.withIdentity({ subject: userId });
     await user.mutation(api.onboarding.completeFromSource, {

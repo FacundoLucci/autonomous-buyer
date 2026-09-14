@@ -38,7 +38,7 @@ const titles = {
 };
 export const saveLabels = {
   stock_update: "Updated",
-  onboarding: "Open my workspace",
+  onboarding: "Join the list",
   add_item: "Add item",
   edit_item: "Save changes",
   new_buy: "Start buy",
@@ -560,7 +560,7 @@ function OnboardingDetails({
           />
         </label>
         <Button type="submit" disabled={busy || pending}>
-          {pending ? "Saving…" : "Open my workspace"}
+          {pending ? "Saving…" : saveLabels.onboarding}
         </Button>
         {error && (
           <p className="desk-error" role="alert">

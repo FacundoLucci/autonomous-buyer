@@ -29,15 +29,17 @@ export function Landing({
           An AI buyer for the everyday supplies your business runs on.
         </p>
         <div className="marketing-actions">
-          <a className="desk-cta" href={href("/walkthrough")}>
-            Book a 20-minute walkthrough <ArrowUpRight size={21} />
+          <a className="desk-cta" href={href("/setup")}>
+            {resumeSetup ? "Continue your invitation request" : "Request an invitation"}{" "}
+            <ArrowUpRight size={21} />
           </a>
           <a className="desk-text-link" href={href("/?demo=true")}>
             Explore the sample demo <ArrowUpRight size={17} />
           </a>
         </div>
         <p className="marketing-offer">
-          Bring one item you regularly reorder. We’ll explore how BUY HARD could help.
+          Invite-only early access. Tell us about your business, then finish onboarding with
+          Facundo.
         </p>
         <a className="desk-text-link" href="#pilot">
           Interested in the pilot? ↓
@@ -69,7 +71,7 @@ export function Landing({
       <footer className="desk-landing-footer">
         <span>From low stock to your loading dock.</span>
         <a className="desk-text-link" href="/setup">
-          {resumeSetup ? "Continue setup" : "Get started"} <ArrowUpRight size={17} />
+          {resumeSetup ? "Continue setup" : "Request an invitation"} <ArrowUpRight size={17} />
         </a>
       </footer>
     </main>

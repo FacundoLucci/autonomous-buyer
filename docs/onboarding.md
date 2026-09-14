@@ -1,5 +1,40 @@
 # Signup and company onboarding
 
+## Invite-only early access
+
+New accounts can complete the guided company setup, but saving now joins the early
+access list. The confirmation says “You’re on the list” and offers “Schedule with
+Facundo,” leading directly to the existing 20-minute Cal event at
+`https://cal.com/facundolucci/buyhard`, with campaign attribution preserved.
+Booking is the path to priority onboarding; it does not grant workspace
+access or imply an invitation has been approved. The sample demo stays public.
+
+Company name, delivery address, and timezone are saved in `onboardingRequests`,
+scoped to the authenticated user. Repeated submissions return the same request.
+No company, inventory, purchasing inbox, or order is created when joining the list.
+Returning to `/setup` or the main app shows the saved request until access is granted.
+Legacy setup links redirect to the current invitation flow, and both older public
+workspace-creation mutations reject accounts without a server-side invitation.
+Existing workspaces remain accessible.
+
+Facundo manages requests in the private `/leads` page. It uses the existing
+`MARKETING_OWNER_USER_ID` setting and checks the exact signed-in user ID, active
+account, and non-demo identity. After completing onboarding and verifying the
+applicant, select **Grant workspace access** on that request. This atomically
+creates the company, assigns the applicant to it, and records who approved it and
+when. Repeated approvals return the same company. An email match, buyer/admin
+role, client flag, or calendar callback cannot approve an invitation. No automated
+email is sent by submitting or approving a request.
+
+Validation: `convex/onboardingAccess.test.ts` covers persistence, duplicate requests,
+private access, legacy API bypasses, owner-only grants, and invalid/inactive users.
+Existing workspace tests use explicitly invited fixtures. The older full source
+onboarding scripts described below predate this gate and need invited test accounts;
+they no longer establish that a new signup can open a workspace on its own.
+
+The implementation below describes the account and workspace features that remain
+available during assisted onboarding and after an invitation.
+
 `/setup` starts with Convex Auth 2.0 passkeys: an email address, then the device's
 passkey prompt. The account exists before any company questions appear. Returning
 passkey users enter the same email. Older account-name credentials remain usable through the browser’s saved-passkey autofill. Existing password accounts use

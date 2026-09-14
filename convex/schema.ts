@@ -46,6 +46,16 @@ const operationStatusValidator = v.union(
 
 export default defineSchema({
   companySuggestions,
+  onboardingRequests: defineTable({
+    userId: v.id("users"),
+    companyName: v.string(),
+    shippingAddress: v.string(),
+    timezone: v.string(),
+    requestedAt: v.number(),
+    approvedAt: v.optional(v.number()),
+    approvedBy: v.optional(v.id("users")),
+    organizationId: v.optional(v.id("organizations")),
+  }).index("by_userId", ["userId"]),
   marketingLeads: defineTable({
     email: v.string(),
     businessName: v.string(),
@@ -102,6 +112,7 @@ export default defineSchema({
     name: v.optional(v.string()),
     email: v.optional(v.string()),
     onboardingEmail: v.optional(v.string()),
+    workspaceAccessGrantedAt: v.optional(v.number()),
     image: v.optional(v.string()),
     emailVerificationTime: v.optional(v.number()),
     phone: v.optional(v.string()),

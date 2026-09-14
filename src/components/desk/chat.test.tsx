@@ -51,5 +51,5 @@ test("researched company is presented for confirmation rather than ready to save
   expect(html).toContain("Is this your company and delivery address?");
   expect(html).toContain("LUHV FOOD");
   expect(html).toContain("Yes, use these");
-  expect(html).not.toContain("Open my workspace");
+  expect(html).not.toContain("Join the list");
 });
