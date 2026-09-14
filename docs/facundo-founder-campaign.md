@@ -2,6 +2,8 @@
 
 September 12, 2026 · Separate from the [BUY HARD product campaign](gtm-marketing-strategy.md)
 
+Updated September 13: Facundo will record short iPhone clips; Codex will edit them into selected posts with product visuals and captions. [Start with the first script](founder-recording-plan.md). These are conditional video replacements for the existing image schedules, not additional daily posts.
+
 **Internal goal:** Turn hackathon attention into a strong job opportunity or progress toward a place at Y Combinator. BUY HARD is the work people can inspect; Facundo is the person this campaign introduces. YC is an internal aim, not a public hook or named audience in the posts.
 
 The product campaign continues to sell staying stocked, delegated buying and walkthroughs. This campaign shows the thinking behind the product: choosing a useful problem, simplifying an overwhelming frontend, connecting agent tools, and improving the result. Each campaign has its own copy, tracking and outcomes.
@@ -44,6 +46,19 @@ Reserve the fourth daily slot for this campaign on selected days. Do not add ano
 | Sep 18, 20:00 | I’d love to build more of this | Invite a friendly conversation about work or shared projects |
 | Sep 21, 20:00 | What would you hand off first? | Invite everyday purchasing stories and ideas |
 
+### Add a real voice and face
+
+Start with a 25–40 second short: Facundo opens on camera, continues speaking over the relevant images or product footage, and returns for the invitation. New social edits use Hyperframes, with optional fal transcription, noise cleanup and background removal. Preserve his actual voice and appearance. Use restrained animated captions and keep sample labels readable. Improved engagement and trust are hypotheses to assess through relevant conversations.
+
+| Existing post | Raw recording target | Edit cutoff | Fallback |
+| --- | --- | --- | --- |
+| Sep 14, 20:00 · F01, simpler frontend | Sep 14, noon | Sep 14, 18:00 | Approved old/current UI pair |
+| Sep 16, 20:00 · F02, handoff | Sep 15, 18:00 | Sep 16, 18:00 | Approved conversation/decision pair |
+| Sep 18, 20:00 · F03, more of this work | Sep 17, 18:00 | Sep 18, 18:00 | Approved desktop/mobile and details pair |
+| Sep 21, 20:00 · F04, what to hand off | Sep 20, noon | Sep 21, 18:00 | Approved ambition/inventory pair |
+
+The [recording packet](founder-recording-plan.md) gives each exact script and edit sequence. The [manifest](../output/marketing/2026-09-14-founder-recordings/recording-plan.json) tracks receipt and readiness; [video-copy drafts](../output/marketing/2026-09-14-founder-recordings/video-copy-drafts.json) adapt the image captions for the future edits. No recording or video replacement exists yet. The original approved images continue unless a reviewed export is ready before the cutoff. When replacing, use the existing Zernio ID and preserve its time, both accounts, founder tracking and sponsor mentions. Read back the saved result and retain a new receipt. Footage arriving after publication can support a later story with a fresh angle.
+
 Keep all four sponsor mentions before the hackathon deadline, and credit the contribution when discussing a specific tool. Use buyhard.app with `utm_campaign=facundo_builder_202609`. Product posts keep `buyhard_allgas_202609`.
 
 ## Turn attention into opportunities
@@ -73,4 +88,4 @@ Next assets:
 - A compact explanation of how the buyer connects stock, research, supplier messages and approval.
 - A founder introduction in Facundo's own voice, plus the strongest public work links.
 
-These recordings are work to prepare. The current package is the four revised captions and their two-image sets.
+The recording work now has specific scripts and handoff dates. Start with F01 only, due September 14 at noon for that evening's post. The current saved publishing package is still the four approved captions and their two-image sets.

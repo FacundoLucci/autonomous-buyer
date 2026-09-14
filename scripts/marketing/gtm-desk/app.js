@@ -121,7 +121,20 @@ function toolbar(showStatus = false) {
 }
 
 function calendar() {
-  return `${intro("One shared calendar.", "Three product slots a day. Founder stories use selected fourth slots at 8 p.m. All times are Chicago time.")}${toolbar(true)}<div id="posts-list"></div><div class="note"><strong>The next open slot is Tuesday, Sep 15 at 5:30 p.m.</strong><p>Later product themes remain flexible. The napkin is a held draft for Sep 17 or later, after two earlier film references have published. The live queue remains in ${link("https://zernio.com/dashboard/posts-all?view=table", "Zernio")}.</p></div>`;
+  return `${intro("One shared calendar.", "Three product slots a day. Founder stories use selected fourth slots at 8 p.m. All times are Chicago time.")}<div class="banner"><p><strong>Your recordings fit the existing slots.</strong> Image posts remain the fallback until an edited video is ready. See the short scripts and handoff dates.</p><a href="#recordings">Recording plan ↗</a></div>${toolbar(true)}<div id="posts-list"></div><div class="note"><strong>The next open slot is Tuesday, Sep 15 at 5:30 p.m.</strong><p>Later product themes remain flexible. The napkin is a held draft for Sep 17 or later, after two earlier film references have published. The live queue remains in ${link("https://zernio.com/dashboard/posts-all?view=table", "Zernio")}.</p></div>`;
+}
+
+function recordingNote(key) {
+  const clip = data.recordings?.clips.find((item) => item.key === key);
+  if (!clip) return "";
+  return `<p class="proof">${html(clip.id)} · ${html(clip.statusLabel)} · recording target ${date(clip.recordBy, true)}. <a href="#recordings">Read script ↗</a></p>`;
+}
+
+function recordings() {
+  const plan = data.recordings;
+  if (!plan) return intro("Your next recording.", "No recording plan has been saved yet.");
+  const first = plan.clips.find((clip) => clip.id === plan.startWith);
+  return `${intro("One short clip is enough to start.", "You record. Codex handles the cuts, product visuals, sound and captions. Read one sentence at a time; pauses are useful.")}<div class="banner"><p><strong>Start with ${html(plan.startWith)} only.</strong> Record vertically with the phone at eye level and a light in front of you. Send the original MOV or MP4 here.${first ? ` Send by ${date(first.recordBy, true)} for the ${date(first.targetAt, true)} target.` : ""}</p>${sourceLink(plan.guide, "Full recording guide")}</div><p class="help">All times are Chicago time. The four image posts stay scheduled until a finished replacement is ready. ${html(plan.status)}.</p><div class="list">${plan.clips.map((clip) => `<article class="work-row"><div>${campaignTag(clip.campaign)}<p>${tag(clip.statusLabel, clip.status === "ready" ? "success" : "neutral")}</p><div class="proof">${html(clip.id)} · ${html(clip.durationTarget)}</div></div><div><h2>${html(clip.title)}</h2><p>${html(clip.prompt)}</p><div class="meta"><span>Send by ${date(clip.recordBy, true)}</span><span> · Target ${date(clip.targetAt, true)}</span></div><p class="proof">${html(clip.targetKind)}${clip.replaceBy ? ` · Replacement cutoff ${date(clip.replaceBy, true)}` : ""}</p>${clip.script ? `<details ${clip.id === plan.startWith ? "open" : ""}><summary>Read this aloud</summary>${clip.script.split("\n\n").map((line) => `<p>${html(line)}</p>`).join("")}</details>` : sourceLink(clip.scriptSource, "Current film script")}<p><strong>The edit:</strong> ${html(clip.edit)}</p><p class="proof">${html(clip.fallback)}</p></div></article>`).join("")}</div><div class="note"><strong>Ready means edited and checked.</strong><p>Codex combines your actual voice and camera with the existing images and product footage. We keep short captions readable and sample labels visible. A late recording can become a later story. A saved video schedule still needs separate publication evidence.</p><p>Plan updated ${date(plan.updatedAt, true)}. This page reads saved records; sending a file here does not update it automatically.</p></div>`;
 }
 
 function renderPosts() {
@@ -148,7 +161,7 @@ function renderPosts() {
                   }).format(new Date(p.scheduledAt))
                 : "Held for Sep 17+";
             const impressions = p.metrics?.impressions;
-            return `<article class="post"><time>${time}<small>${clock}</small></time><div><div class="tags">${campaignTag(p.campaign)}${tag(...status)}</div><h3>${html(p.title)}</h3><small>${html(p.evidence)}</small><div class="post-links">${link(p.providerUrl, "Open in Zernio")}${(p.links || []).map((url) => link(url, url.includes("linkedin") ? "LinkedIn" : "X")).join("")}${p.captionSource ? sourceLink(p.captionSource, "Copy") : ""}</div>${p.copy ? `<details><summary>Read caption</summary><p>${html(p.copy)}</p></details>` : ""}</div><div class="stat">${p.status === "published" ? `${impressions == null ? "Unavailable" : html(impressions)}<br>reported impressions<br><small>Combined Zernio row</small>` : "X + LinkedIn"}</div></article>`;
+            return `<article class="post"><time>${time}<small>${clock}</small></time><div><div class="tags">${campaignTag(p.campaign)}${tag(...status)}</div><h3>${html(p.title)}</h3><small>${html(p.evidence)}</small>${recordingNote(p.key)}<div class="post-links">${link(p.providerUrl, "Open in Zernio")}${(p.links || []).map((url) => link(url, url.includes("linkedin") ? "LinkedIn" : "X")).join("")}${p.captionSource ? sourceLink(p.captionSource, "Copy") : ""}</div>${p.copy ? `<details><summary>Read caption</summary><p>${html(p.copy)}</p></details>` : ""}</div><div class="stat">${p.status === "published" ? `${impressions == null ? "Unavailable" : html(impressions)}<br>reported impressions<br><small>Combined Zernio row</small>` : "X + LinkedIn"}</div></article>`;
           })
           .join("")
       : `<div class="empty"><h2>No matching stories.</h2><p>Try a different campaign, status or search.</p></div>`
@@ -171,7 +184,7 @@ function renderConversations() {
 function work() {
   return `${intro("The work behind the stories.", "Track what is ready, what is being built, and what still needs your part. Completion notes stay separate from publication and release evidence.")}<div class="banner"><p><strong>Submission: Sep 22, 2 p.m. Chicago.</strong> Aim to have the package ready Sep 21. The official judging criteria require a video under three minutes.</p>${link("https://www.convex.dev/hackathons/all-gas", "Official requirements")}</div>
   <div class="section-title"><h2>Open work</h2><span class="help">Owner and next step included</span></div>${actionRows(data.actions)}
-  <div class="section-title space-top"><h2>Assets & product work</h2></div><div class="list">${data.workstreams.map((w) => `<article class="work-row"><div>${tag(w.status, w.tone)}<div class="proof">${html(w.owner)}</div></div><div><h3>${html(w.title)}</h3><p>${html(w.detail)}</p><p class="proof">${html(w.proof)}</p>${w.url ? link(w.url, w.linkTitle || "Open") : ""}${w.source ? sourceLink(w.source) : ""}</div></article>`).join("")}</div><div class="note"><strong>Source drift found in this review</strong><p>The strategy still describes the older recording work, although the assembled cut is ready for narration. The backlog still calls sales connections a proposal, while the separate build task has committed Square and Shopify work locally. Check the dated evidence before reusing those status claims.</p></div>`;
+  <div class="section-title space-top"><h2>Assets & product work</h2></div><div class="list">${data.workstreams.map((w) => `<article class="work-row"><div>${tag(w.status, w.tone)}<div class="proof">${html(w.owner)}</div></div><div><h3>${html(w.title)}</h3><p>${html(w.detail)}</p><p class="proof">${html(w.proof)}</p>${w.url ? link(w.url, w.linkTitle || "Open") : ""}${w.source ? sourceLink(w.source) : ""}</div></article>`).join("")}</div><div class="note"><strong>Source drift found in this review</strong><p>The recording plan now follows the current assembled film and gives each short clip a script and deadline. Sales-connection notes still reflect the earlier review; check the dated build and release evidence before reusing those claims.</p></div>`;
 }
 
 function sources() {
@@ -180,7 +193,7 @@ function sources() {
 
 function render() {
   if (!data) return;
-  const pages = { overview, calendar, followups, work, sources };
+  const pages = { overview, calendar, recordings, followups, work, sources };
   if (!pages[page]) page = "overview";
   document.querySelectorAll("[data-page]").forEach((a) => {
     if (a.dataset.page === page) a.setAttribute("aria-current", "page");
@@ -225,6 +238,15 @@ async function reload() {
     const response = await fetch("/api/overview");
     if (!response.ok) throw new Error((await response.json()).error);
     data = await response.json();
+    if (data.recordingPlan) {
+      try {
+        const recordingResponse = await fetch(sourceUrl(data.recordingPlan));
+        if (!recordingResponse.ok) throw new Error("Recording plan unavailable");
+        data.recordings = await recordingResponse.json();
+      } catch {
+        data.warnings.push("Could not load the recording plan; other campaign records remain available");
+      }
+    }
     render();
   } catch (error) {
     const node = document.querySelector("#error");

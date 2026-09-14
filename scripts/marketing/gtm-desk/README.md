@@ -14,6 +14,7 @@ Open [the dashboard](http://127.0.0.1:8796) in the Codex in-app browser. Stop th
 - Reads existing campaign post metadata, schedule/publication receipts, dated Zernio observations and complete app aggregate snapshots.
 - Merges post states by campaign post key and observation timestamp. A past scheduled date remains unverified until publication evidence is present.
 - Shows separate product and founder goals, shared publishing slots, actions, sources and outcome limits.
+- The Recordings page reads the existing review’s `recordingPlan` source: read-aloud scripts, raw-file delivery targets, replacement cutoffs and edit status. Publishing rows show matching clip deadlines. No file is uploaded and no post is changed by this page.
 - Saves action checkmarks and follow-up records atomically to `~/.local/share/buyhard-gtm-desk/state.json`, outside this public app repository. Reloading or restarting the server preserves these records. Concurrent stale saves are rejected instead of overwriting newer changes.
 
 There is no direct publishing, messaging, calendar write or production write. The server has no API credentials. Refreshing the page or choosing **Reload records** rereads local files, not the live services.

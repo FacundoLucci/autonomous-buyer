@@ -65,3 +65,16 @@ Zernio reported 366 impressions, six likes and one comment across the seven prod
 **Brand timing:** “Live free. Buy hard.” has published receipts. Monday's “A good day to buy hard” is only scheduled and does not count as the second published prerequisite yet. The standalone napkin stays an unscheduled draft for September 17 or later, subject to that second receipt.
 
 **Next review:** Check the AgentMail publication, the new operator invitations, and any answer to the sales-connection question when it publishes. Compare posts at matching ages, preserve founder tracking separately, and fill the next rolling slots without recreating existing schedules.
+
+
+## September 13 — Facundo recordings in the existing schedule
+
+Facundo requested specific iPhone recording prompts and asked Codex to edit his real camera and voice into the current image, slide and Hyperframes posts, including captions. He authorized redrafting scheduled posts when the footage arrives in time. The [recording packet](../../../docs/founder-recording-plan.md) now has four short founder scripts, an optional narrated sales/cups concept, and a separate main-film handoff. Start with F01 only.
+
+**Live queue readback:** Zernio still shows the four founder stories scheduled at 20:00 on Sep 14, 16, 18 and 21 with two images each; five product stories remain scheduled through Tuesday midday. The AgentMail story is now published with both platform links. No publishing mutation was made. [Nine-post schedule observation](../2026-09-14-founder-recordings/queue-readback.json).
+
+**Operating decision:** Use the same founder IDs and time slots. Target F01 delivery Sep 14 at noon; later founder takes Sep 15 at 18:00, Sep 17 at 18:00, and Sep 20 at noon. Only replace an image post if the edited, checked video is ready at least two hours before it runs. Otherwise the approved images publish and the footage can support a later story. The optional sales/Hyperframes clip targets Sep 17 midday as a flexible theme, not a saved schedule. Main-film raw narration target: Sep 19 noon; final export Sep 20 at 18:00, strictly under three minutes.
+
+**Production:** Codex owns take selection, image/product composition, captions and sound. fal options were checked against current official docs: Whisper word times, DeepFilterNet 3 noise cleanup, optional Bria background removal and H3 Max Turbo for a missing illustrative insert. Reuse existing visuals first. Preserve Facundo's actual face and voice. No recording has arrived and no paid generation job was submitted. The current sales Hyperframes source is an HTML preview; render and verify it before using an MP4.
+
+Both strategies and the shared GTM desk now expose the recording handoff. The existing twice-daily marketing review was updated and read back: it remains active at 07:30 and 15:30 on the same task, now checking this plan and ready assets. Prepared video-copy drafts are separate from saved provider receipts. Keep product and founder outcomes separate; improved trust/engagement is a hypothesis to evaluate, not a promised result.

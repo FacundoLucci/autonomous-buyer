@@ -49,6 +49,13 @@
   },
   "actions": [
     {
+      "id": "record-f01",
+      "title": "Record the first 30-second clip",
+      "owner": "Facundo records; Codex edits",
+      "when": "Sep 14, noon → Sep 14, 8 p.m. post",
+      "next": "Open Recordings and read F01 one sentence at a time. Send the original iPhone file here. Codex adds the old/current UI, trims the take, cleans sound and adds captions. Keep the scheduled images if the edit is not ready by 6 p.m."
+    },
+    {
       "id": "operator-conversations",
       "title": "Start the first operator conversations",
       "owner": "Facundo",
@@ -64,10 +71,10 @@
     },
     {
       "id": "narration",
-      "title": "Record your narration and shorten the final cut",
-      "owner": "Facundo",
-      "when": "By Sep 21",
-      "next": "The assembled cut is ready for your voice and camera. Its actual duration is 180.053 seconds; trim the finished narrated version below three minutes and verify playback."
+      "title": "Record the main-film narration after the short pilot",
+      "owner": "Facundo records; Codex edits",
+      "when": "Raw recording Sep 19, noon; final cut Sep 20, 6 p.m.",
+      "next": "Use the current You handle today script in sections. Codex adds your voice/camera to the working assembly and trims the final film to 2:45–2:55, strictly below three minutes. Playback and publication remain separate checks."
     },
     {
       "id": "provider-checks",
@@ -117,19 +124,28 @@
       "linkTitle": "Open publishing queue"
     },
     {
+      "title": "iPhone → captioned social shorts",
+      "status": "Ready for F01 recording",
+      "tone": "warn",
+      "owner": "Facundo + Codex",
+      "detail": "Four founder scripts use approved images; an optional product script uses the existing sales Hyperframes preview. Codex handles cutting, captions, sound and exports.",
+      "proof": "Scripts and conditional deadlines prepared. No input recordings received, no paid fal jobs submitted, and no live schedule replaced.",
+      "source": "docs/founder-recording-plan.md"
+    },
+    {
       "title": "Founder campaign",
-      "status": "Scheduled",
+      "status": "Images scheduled; recordings planned",
       "tone": "neutral",
       "owner": "Facundo",
-      "detail": "Four approved stories run Sep 14, 16, 18 and 21 at 8 p.m. with two images each. No founder post is published yet.",
-      "proof": "Keep product pilots separate from hiring, introductions and interviews. Private responses have not been reviewed.",
+      "detail": "Four image posts run Sep 14, 16, 18 and 21 at 8 p.m. Short scripts now map to those same slots. No camera recording or video replacement exists yet.",
+      "proof": "Sep 13 late-evening Zernio readback confirmed the four scheduled two-image posts. Replace in place only if the finished cut is ready two hours before publication.",
       "source": "docs/facundo-founder-campaign.md"
     },
     {
       "title": "You handle today · launch film",
       "status": "Ready for narration",
       "tone": "warn",
-      "owner": "Facundo",
+      "owner": "Facundo records; Codex edits",
       "detail": "The final cut combines owner footage, the real app components and staged story data. The edit and browser playback are verified. Your narration and camera remain.",
       "proof": "Fresh ffprobe: 180.053333 seconds. The official judging criteria say under three minutes. This is a staged demonstration, not a real supplier order.",
       "source": "assets/storyboard/you-handle-today-footage/assembly/README-v2.md"
@@ -217,6 +233,38 @@
       "title": "GTM check-in",
       "description": "The consolidated findings, priorities and operating arrangement.",
       "path": "docs/gtm-review-2026-09-13.md"
+    },
+    {
+      "kind": "Recordings",
+      "title": "Read-aloud scripts and edit plan",
+      "description": "Start with F01. Exact words, recording setup, asset matches, deadlines and fallback rules.",
+      "path": "docs/founder-recording-plan.md"
+    },
+    {
+      "kind": "Recordings",
+      "title": "Recording handoff status",
+      "description": "One record per clip: recording target, edit cutoff, existing post ID and separate completion receipts.",
+      "path": "output/marketing/2026-09-14-founder-recordings/recording-plan.json"
+    },
+    {
+      "kind": "Drafts",
+      "title": "Video caption drafts",
+      "description": "Adapted X and LinkedIn copy for the future videos. Local drafts, not saved publishing content.",
+      "path": "output/marketing/2026-09-14-founder-recordings/video-copy-drafts.json"
+    },
+    {
+      "kind": "Evidence",
+      "title": "Recording-plan queue readback",
+      "description": "Nine existing image schedules observed in Zernio; no replacements made.",
+      "path": "output/marketing/2026-09-14-founder-recordings/queue-readback.json"
+    },
+    {
+      "kind": "Recordings",
+      "title": "Current main-film narration",
+      "description": "Record this script in sections after the short-clip pilot.",
+      "path": "assets/storyboard/you-handle-today-footage/narration.md"
     }
-  ]
+  ],
+  "recordingPlan": "output/marketing/2026-09-14-founder-recordings/recording-plan.json",
+  "recordingPlanUpdatedAt": "2026-09-14T03:48:13.325900+00:00"
 }

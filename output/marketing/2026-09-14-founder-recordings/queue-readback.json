@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-09-14T03:48:13.325900+00:00",
+  "method": "Authenticated Codex in-app browser; Zernio posts overview readback.",
+  "scope": "Four founder schedules and five product schedules. Dates, scheduled state and displayed image counts observed; existing IDs matched to saved campaign receipts. No post editor or account connection was changed.",
+  "completeQueue": false,
+  "queueMutationPerformed": false,
+  "posts": [
+    {
+      "key": "simpler_frontend",
+      "zernioPostId": "6aa5ebc2f75a3d18d84801e6",
+      "scheduledAt": "2026-09-14T20:00:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "two images",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "give_agent_a_job",
+      "zernioPostId": "6aa5ec7320dac980f28780cf",
+      "scheduledAt": "2026-09-16T20:00:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "two images",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "build_useful_ai",
+      "zernioPostId": "6aa5ecda10074d9a4cda491e",
+      "scheduledAt": "2026-09-18T20:00:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "two images",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "zernioPostId": "6aa5ed36b2f850b20780fd12",
+      "scheduledAt": "2026-09-21T20:00:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "two images",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "start_with_source",
+      "zernioPostId": "6aa709c113935182e6a4ab78",
+      "scheduledAt": "2026-09-14T08:30:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "one image",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "sales_plan_the_buy",
+      "zernioPostId": "6aa70a94ed3bca1c37ccc8ed",
+      "scheduledAt": "2026-09-14T12:30:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "one image",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "good_day_sample",
+      "zernioPostId": "6aa70b10d555df48e001d35e",
+      "scheduledAt": "2026-09-14T17:30:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "one image",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "your_existing_supplier",
+      "zernioPostId": "6aa70b7dc3324dc13aaab5e5",
+      "scheduledAt": "2026-09-15T08:30:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "one image",
+      "videoReplacementScheduled": false
+    },
+    {
+      "key": "no_because",
+      "zernioPostId": "6aa70bc75a06629f7e02fe25",
+      "scheduledAt": "2026-09-15T12:30:00-05:00",
+      "status": "scheduled",
+      "displayedMedia": "one image",
+      "videoReplacementScheduled": false
+    }
+  ]
+}

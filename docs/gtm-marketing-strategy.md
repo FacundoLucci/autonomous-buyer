@@ -99,7 +99,7 @@ For provider spotlights, a logo or scripted sample reply alone does not prove a 
 
 Keep the next **48 hours** concrete. Prepare the following days as themes so product progress and audience response can change them. [Weekend captions](../output/marketing/2026-09-12-daily-campaign/weekend-posts.md) · [Structured weekend batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.json).
 
-**September 13 afternoon queue:** Seven product stories have published on both platforms. Sunday's AgentMail post remains scheduled for 17:30. Five new product stories cover Monday's three slots and Tuesday's first two, with one image each and both platform captions verified after saving. Monday's separately approved founder post remains at 20:00. Tuesday evening is outside this review's 48-hour window and stays a flexible theme for the next review. [New captions and visuals](../output/marketing/2026-09-13-daily-campaign/posts.md) · [Schedule receipts](../output/marketing/2026-09-13-daily-campaign/zernio-schedule-receipt.json).
+**September 13 late-evening queue:** Eight product stories have published on both platforms, including Sunday's AgentMail post. Five product stories cover Monday's three slots and Tuesday's first two. The four founder image posts remain scheduled at 20:00 on September 14, 16, 18 and 21. The live Zernio overview was read again for the [recording plan](founder-recording-plan.md); no post was changed. Tuesday evening remains flexible. [New captions and visuals](../output/marketing/2026-09-13-daily-campaign/posts.md) · [Schedule receipts](../output/marketing/2026-09-13-daily-campaign/zernio-schedule-receipt.json) · [Recording queue readback](../output/marketing/2026-09-14-founder-recordings/queue-readback.json).
 
 | Date | 08:30 | 12:30 | 17:30 |
 | --- | --- | --- | --- |
@@ -117,9 +117,15 @@ Keep the next **48 hours** concrete. Prepare the following days as themes so pro
 
 Every row also has the conditional 20:00 slot. After September 22, retain the same daily rhythm around operator problems, product demonstrations, and verified improvements. The hackathon submission deadline remains **September 22, noon Pacific / 14:00 Chicago**; finish the submission assets on September 21. Keep buyhard.app in marketing and an accepted convex.site or chatgpt.site app address for the submission. [Official event requirements](https://www.convex.dev/hackathons/all-gas).
 
+**Add Facundo's voice to selected existing slots.** The four founder posts can become 25–40 second narrated videos using their current images and actual sample screens. Start with the September 14 frontend comparison; raw recording target is noon that day. The [recording packet](founder-recording-plan.md) includes exact scripts, asset matches and deadlines. The optional sales/cups narration can use the existing Hyperframes sample in September 17's midday slot; that slot is a flexible theme, not a saved schedule. Retain “sample” and “idea being explored” wording unless release and provider proof support stronger claims. Keep the total cadence unchanged.
+
+The original image is each scheduled post's fallback. Replace media and adapt the copy on the existing Zernio ID only after the finished cut passes review and at least two hours remain. Late footage moves to a later suitable story. Use the [recording manifest](../output/marketing/2026-09-14-founder-recordings/recording-plan.json) to distinguish footage received, edit ready, video scheduled and publication. The existing marketing review owns this handoff; do not create a second posting automation.
+
 ### Adjust twice daily
 
 At **07:30 and 15:30 Chicago time**, read the actual publishing queue, recent replies, available platform metrics, the app's campaign funnel, and the latest product changes. Update the next 48 hours and record what changed and why in the [decision log](../output/marketing/2026-09-12-daily-campaign/decision-log.md).
+
+Also read the recording plan, check supplied clips, and advance edits that fit the next slots. Compare narrated posts with image posts within each campaign and platform at 24 and 72 hours. Useful conversations and walkthroughs remain the outcomes; higher engagement or trust is a hypothesis, not an established result. Keep unavailable video metrics marked unavailable.
 
 Use demo use, inquiries, confirmed walkthroughs, and pilot starts as the main outcomes. Keep impressions, reactions, comments, and clicks as supporting signals. Compare X with X and LinkedIn with LinkedIn. Read both 24-hour and 72-hour results when available. One new post is too little evidence to declare a winning topic or posting time.
 
@@ -271,6 +277,10 @@ Label the final video with the evidence level actually shown. Include at least o
 
 ## 6. Record once, make several useful assets
 
+**Facundo records; Codex edits.** The [short recording packet](founder-recording-plan.md) is now the starting point. Record one sentence at a time on an iPhone; Codex selects takes, cleans sound when needed, combines the footage with approved visuals, adds readable animated captions and produces the exports. New social shorts use Hyperframes. fal supplies word timings, optional noise cleanup and optional background removal; extra generated scene footage is used only where existing assets cannot do the job. Keep Facundo's actual face, voice and delivery.
+
+**Current main film:** [You handle today, version 2](../assets/storyboard/you-handle-today-footage/assembly/README-v2.md) is already assembled and has playback evidence. It needs Facundo's camera/narration and a shorter final export: target 2:45–2:55, strictly below three minutes. Raw narration target is September 19 at noon; final export target is September 20 at 18:00. The current cut is about 180.053 seconds and is not the finished narrated submission. Use its [current script](../assets/storyboard/you-handle-today-footage/narration.md) and working compositor. Staged app scenes do not establish a real supplier purchase.
+
 **First clip: 15–30 seconds.** Open on a recurring item with replenishment enabled, then show why stock is projected to run low and the purchase the buyer has prepared. Finish on the owner's approval decision and buyhard.app. Preserve sample labels. Use a continuous verified run for cause-and-effect claims; otherwise identify the scenes as examples. Manual stock entry should not be the opening action.
 
 **Main demo: aim for 2:15–2:40.** Open with an everyday supply problem, then show the buyer doing useful work in the current interface.
@@ -283,7 +293,7 @@ Label the final video with the evidence level actually shown. Include at least o
 
 The stock update and existing purchase in the public sample are separate examples. Do not edit them to imply the sample generated and placed a real order. A continuous purchasing story needs a verified company run. **Approve and order** includes a confirmation of exact terms; describe one purchase decision, not a guaranteed one-click transaction.
 
-Capture the new frontend throughout. The older [film treatment](demo-film-treatment.md) and [six-stop recording guide](demo-screenplay.md) describe the previous interface; their product shots and timings need a new recording before campaign use. Existing deli footage can provide a brief opening. Use the current buyer conversation as the main story.
+Capture the new frontend for any additional product shots. The older [film treatment](demo-film-treatment.md) and [six-stop recording guide](demo-screenplay.md) describe a previous interface and are historical references. The current version 2 assembly and narration script above are the source for this film. Use the current buyer conversation for new short examples.
 
 Additional ideas, in order of effort:
 
@@ -322,7 +332,9 @@ After September 22, shift toward customer problems, lessons, and verified pilot 
 - [x] Restore the OpenAI product card and separate the handwritten napkin for later.
 - [x] Confirm seven weekend posts in Zernio; [saved schedule receipts](../output/marketing/2026-09-12-daily-campaign/zernio-schedule-receipt.json) are separate from later publication.
 - [x] Activate reviews at 07:30 and 15:30 Chicago time. At each run, record material evidence, content decisions and product work.
+- [x] Add iPhone recording scripts, edit ownership, conditional replacements and image fallbacks to both campaign plans and the GTM desk.
+- [ ] Receive F01, edit the first captioned clip and verify its replacement schedule if ready in time.
 - [ ] Complete the continuous reorder demo and supplier proof tasks before their stronger claims run.
-- [ ] By September 21, record the current main demo, replace [VIDEO_URL], and assemble the app, repository, build log, video, and social links for the [submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma).
+- [ ] By September 21, finish and verify the narrated main demo, replace [VIDEO_URL], and assemble the app, repository, build log, video, and social links for the [submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma).
 
 Current publishing state is recorded in the [daily campaign batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.json) and [posting package](../output/marketing/2026-09-11-first-three/ready/README.md). The campaign plan is updated as product proof and audience evidence change.

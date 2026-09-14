@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-09-14T03:57:20.444393+00:00",
+  "scope": "Recording plan and GTM integration; no media production or live post replacement.",
+  "checks": {
+    "sixRecordingEntriesAndUniqueIds": true,
+    "fourFounderTargetsMatchExistingPostIdsAndTimes": true,
+    "twoHourCutoffsAndEarlierRecordingTargets": true,
+    "allListedAssetsAndLocalGuideLinksExist": true,
+    "fiveCopyDraftsKeepCampaignTagsAndFourSponsors": true,
+    "xCharacterEstimatesWithin280": true,
+    "javascriptSyntax": true,
+    "gitDiffCheck": true,
+    "inAppBrowserRecordingPage": true,
+    "firstScriptVisibleAndExpanded": true,
+    "publishingRowsShowAllFourRecordingDeadlines": true,
+    "renderedDesktopLayoutInspected": true,
+    "existingAutomationReadback": {
+      "id": "buy-hard-daily-marketing",
+      "kind": "heartbeat",
+      "status": "ACTIVE",
+      "localReviewTimes": [
+        "07:30",
+        "15:30"
+      ],
+      "timezone": "America/Chicago",
+      "sameTargetTask": true,
+      "recordingInstructionsPresent": true
+    }
+  },
+  "existingFilmDurationSeconds": 180.053333,
+  "recordingsReceived": 0,
+  "videosRendered": 0,
+  "paidFalJobsSubmitted": 0,
+  "providerPostMutations": 0,
+  "limitations": [
+    "No recording has been supplied, so cleanup quality, caption timing and final video appearance are not yet verified.",
+    "Video captions are local drafts; the original image posts remain scheduled.",
+    "The existing sales Hyperframes project is an HTML preview, not a verified MP4.",
+    "Browser layout review used the current desktop viewport."
+  ],
+  "guide": "docs/founder-recording-plan.md",
+  "deskUrl": "http://127.0.0.1:8796/#recordings"
+}

@@ -60,3 +60,10 @@ The existing shared strategy, campaign files and product checkout were left inta
 Prepare the package on September 21. The current official deadline is September 22 at noon Pacific / 2 p.m. Chicago. The official checklist requires the public repository, root `hackathon.md`, a public `convex.site` or `chatgpt.site` app, sponsor-tagged social posts, and the video. Verify the actual submitted receipt separately. [Official requirements](https://www.convex.dev/hackathons/all-gas)
 
 This review did not publish, reschedule, send outreach, change the marketing automation, deploy production, or submit the hackathon entry.
+
+
+## Late-evening recording-plan update
+
+Facundo requested short iPhone recordings mixed with the existing images, slides and Hyperframes videos. The [recording plan](founder-recording-plan.md) now gives four founder scripts, delivery targets, an optional sales/cups clip and a main-film narration handoff. The GTM desk has a [Recordings page](http://127.0.0.1:8796/#recordings), and publishing rows show the corresponding recording deadlines. Both strategies and the existing twice-daily marketing review now include this handoff.
+
+Start with F01 by September 14 at noon for the existing 20:00 post. Codex handles the edit and captions. The four founder image schedules were confirmed again; they remain the fallback until a finished video is ready at least two hours before posting. Video-copy drafts are prepared separately. No raw recording, rendered short, paid fal job or live post replacement exists from this update. [Verification](../output/marketing/2026-09-14-founder-recordings/verification.json). The earlier assessment above remains dated; the old recording-section drift has now been corrected in the strategy.
