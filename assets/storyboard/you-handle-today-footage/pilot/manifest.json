@@ -1,0 +1,286 @@
+{
+  "title": "BUY HARD - You handle today - footage pilot",
+  "created_at": "2026-09-13",
+  "rate_valid_through": "2026-09-14",
+  "pilot_limit_usd": "2.00",
+  "available_credit_reported_by_user_usd": "10.00",
+  "pricing_source": "https://fal.ai/minimax-h3-max",
+  "cost_note": "USD output estimates, not invoice amounts. Images generated with the built-in image tool are outside this fal video estimate.",
+  "jobs": [
+    {
+      "id": "01-unloading-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/01-unload.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "quality",
+        "enable_safety_checker": true,
+        "seed": 101,
+        "prompt": "One continuous five-second naturalistic shot. The delivery worker at the far left slowly bends and sets the carton he is holding onto the hand truck beside him, then straightens up with empty hands. The deli owner at the far-right doorway glances at the central delivery and stays by the door. All four central cup cartons and the two bread crates remain stationary and unchanged. Preserve the owner and worker identities, outfits, storefront and truck. Very subtle forward camera drift. Realistic hands, ordinary weight and deliberate movements. Quiet street ambience and a gentle cardboard rustle. No dialogue, music, text, overlays, cuts or new objects."
+      }
+    },
+    {
+      "id": "02-impact-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/02-impact-start.png",
+      "last_frame": "frames/02-impact-end.png",
+      "usd_per_second": "0.02",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "quality",
+        "enable_safety_checker": true,
+        "seed": 102,
+        "prompt": "Locked camera, one continuous five-second shot with the provided intact delivery as the first frame and the provided crushed delivery as the last frame. During the first second the unattended delivery pile is still. A broad shadow crosses the cartons. Between seconds one and two, a single heavy dark wooden upright piano drops vertically from above the top of the frame onto the SAME central shipment, crushing the paper-cup cartons and bread crates together. The piano arrives from above at speed and lands heavily with realistic gravity; it never fades into existence. A short burst of cardboard dust, white paper cups and bread rolls scatter, then settle around the solid piano. The owner at the far-right doorway and worker by the far-left truck react with a restrained flinch, staying clear and unharmed. Both remain in their respective positions. The piano settles into the provided final position. One weighty impact and a brief discordant piano resonance, followed by street ambience. Photographic realism with dry absurdist humor. No explosion, injury, dialogue, music, text, camera cut, dissolves or morphing."
+      }
+    },
+    {
+      "id": "03-phone-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/03-phone.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "quality",
+        "enable_safety_checker": true,
+        "seed": 103,
+        "prompt": "One continuous five-second medium shot with a gentle push in. The deli owner stays stationary and looks down at the smartphone held naturally in both hands in front of his chest. He types a short message with his thumbs, taps once and lowers the phone slightly. His expression shifts from dry disbelief to practical resolve. Preserve his identity, short dark hair, olive shirt, charcoal apron, hands and phone shape. Keep the phone screen facing him and its back facing the camera. The damaged delivery and upright piano remain softly out of focus behind him, stationary. Natural street ambience and faint clothing movement. No phone call, speaking, lip sync, music, text, interface overlays or camera cuts."
+      }
+    },
+    {
+      "id": "02-impact-max",
+      "endpoint": "minimax/h3-max/image-to-video",
+      "first_frame": "frames/02-impact-start.png",
+      "last_frame": "frames/02-impact-end.png",
+      "usd_per_second": "0.04",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "quality",
+        "enable_safety_checker": true,
+        "seed": 102,
+        "prompt": "Locked camera, one continuous five-second shot with the provided intact delivery as the first frame and the provided crushed delivery as the last frame. During the first second the unattended delivery pile is still. A broad shadow crosses the cartons. Between seconds one and two, a single heavy dark wooden upright piano drops vertically from above the top of the frame onto the SAME central shipment, crushing the paper-cup cartons and bread crates together. The piano arrives from above at speed and lands heavily with realistic gravity; it never fades into existence. A short burst of cardboard dust, white paper cups and bread rolls scatter, then settle around the solid piano. The owner at the far-right doorway and worker by the far-left truck react with a restrained flinch, staying clear and unharmed. Both remain in their respective positions. The piano settles into the provided final position. One weighty impact and a brief discordant piano resonance, followed by street ambience. Photographic realism with dry absurdist humor. No explosion, injury, dialogue, music, text, camera cut, dissolves or morphing."
+      }
+    },
+    {
+      "id": "02-impact-turbo-v2",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/02-impact-start.png",
+      "last_frame": "frames/02-impact-end.png",
+      "usd_per_second": "0.02",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 202,
+        "prompt": "Fixed camera, ordinary live-action footage recorded and played at normal speed, 24 fps. The supplied first image is the unchanged opening composition. No slow motion. A heavy walnut upright piano is falling from a high floor well above the camera view, so it is ALREADY MOVING FAST when it enters at the top edge. Hold the intact shipment only for the first 0.35 seconds. The entire visible descent then takes about 0.25 seconds, only six video frames: rapid downward acceleration, strong brief vertical motion blur, and an abrupt heavy collision with the central cups-and-bread shipment by 0.60 seconds. It must not hover, glide, ease into the landing, decelerate before contact, or descend for several seconds. At the INSTANT of impact the cartons collapse, black bread crates break, cups and bread kick outward, and both people reflexively flinch simultaneously. All of these are one quick physical event, not separate delayed actions. Heavy mass, normal Earth gravity. Debris drops quickly and bounces with short natural arcs, with rolls slowing through friction. By 1.5 seconds the piano and most debris are still. The remaining time is the real-time aftermath: drifting dust, the two unharmed people looking at the wreckage, the piano motionless. Keep both people in their original separated positions by the truck and doorway. One sharp crash exactly on contact, short wooden crack and discordant piano clang, brief cup clatter, normal street sound. No dramatic camera move, no music, no dialogue, no freeze-frame, no speed ramp, no artificial suspended particles. Do not stretch the collision or delay reactions to fill the five seconds. The ending image specifies the wreckage arrangement only: reach that settled state by 1.5 seconds and hold naturally. Do not spread the fall over the interval between the two reference images."
+      },
+      "purpose": "Regenerate the impact at natural speed; user selected Turbo only."
+    },
+    {
+      "id": "02-impact-turbo-v3",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/02-impact-start.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 203,
+        "prompt": "Fixed camera, ordinary live-action footage recorded and played at normal speed, 24 fps. The supplied first image is the unchanged opening composition. No slow motion. A heavy walnut upright piano is falling from a high floor well above the camera view, so it is ALREADY MOVING FAST when it enters at the top edge. Hold the intact shipment only for the first 0.35 seconds. The entire visible descent then takes about 0.25 seconds, only six video frames: rapid downward acceleration, strong brief vertical motion blur, and an abrupt heavy collision with the central cups-and-bread shipment by 0.60 seconds. It must not hover, glide, ease into the landing, decelerate before contact, or descend for several seconds. At the INSTANT of impact the cartons collapse, black bread crates break, cups and bread kick outward, and both people reflexively flinch simultaneously. All of these are one quick physical event, not separate delayed actions. Heavy mass, normal Earth gravity. Debris drops quickly and bounces with short natural arcs, with rolls slowing through friction. By 1.5 seconds the piano and most debris are still. The remaining time is the real-time aftermath: drifting dust, the two unharmed people looking at the wreckage, the piano motionless. Keep both people in their original separated positions by the truck and doorway. One sharp crash exactly on contact, short wooden crack and discordant piano clang, brief cup clatter, normal street sound. No dramatic camera move, no music, no dialogue, no freeze-frame, no speed ramp, no artificial suspended particles. Do not stretch the collision or delay reactions to fill the five seconds. The piano ends upright but tilted slightly on the flattened cardboard, its exposed keyboard facing the camera, with broken crates, white paper cups and bread rolls close around its base. Maintain the same scene and a coherent solid piano throughout."
+      },
+      "purpose": "Regenerate the impact at natural speed; user selected Turbo only."
+    },
+    {
+      "id": "02-impact-turbo-v4",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/02-impact-start.png",
+      "last_frame": "frames/02-impact-end-broken-v2.png",
+      "usd_per_second": "0.02",
+      "purpose": "Sudden gravity-driven impact startles both people and breaks the piano apart, as requested by the user.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 204,
+        "prompt": "Locked wide camera, candid real-time street footage, normal 24 fps playback. This accident is SUDDEN and startles both unsuspecting men. Begin exactly with the first image. They are looking at the delivery, relaxed; neither looks upward nor follows the falling object. After a brief quarter-second, a heavy walnut upright piano already falling at high speed flashes vertically through the top of frame and SLAMS into the central shipment. Its visible descent takes only a blink, approximately 0.25 seconds, with strong vertical motion blur. Gravity accelerates it straight DOWN, keyboard horizontal and facing the camera. No gentle landing. The hard collision is one immediate physical event: cup cartons and bread crates collapse as the PIANO ITSELF breaks apart under its weight. Its wooden cabinet buckles and splits, broad front and top panels tear loose, the keyboard snaps, a few keys and wooden splinters scatter, and its heavy internal frame collapses downward into the low wreckage shown by the last image. No explosion, no fire, no bouncing intact piano. At the instant of the loud CRASH, both men involuntarily jolt backward, duck their shoulders and throw their hands up in surprise. The worker recoils toward his truck; the owner flinches back into his doorway. They react to the impact rather than anticipating or tracking the fall. Both remain unharmed and clear of all debris. Cups, bread and small fragments scatter briefly, fall fast and stop; the main heavy wooden pieces drop close to the wreck. Finish all violent motion within the first 1.5 seconds, then let the stunned men slowly lower their hands and stare at the broken piano in disbelief. Final image is the settled aftermath, not a target to delay the crash until. Sound: one abrupt heavy crash exactly on impact, splintering timber and clattering broken piano keys, a short discordant clang, then street ambience. No music, dialogue, slow motion, hovering, suspended dust, camera movement or staged theatrical reaction."
+      },
+      "selected_edit": {
+        "file": "clips/02-impact-turbo-v4-edited.mp4",
+        "duration_seconds": 4,
+        "record": "impact-retiming-v4.json"
+      }
+    },
+    {
+      "id": "03-phone-turbo-v2",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/03-phone-broken-v2.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Keep the shattered piano consistent in the next shot; natural-speed phone handoff.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 205,
+        "prompt": "Natural-speed candid live-action footage, normal 24 fps, fixed medium shot. The owner, now composed after the accident, briskly types a short message with his thumbs on the single phone held naturally in both hands at chest height, taps send once, briefly exhales and lowers the phone a little, ready to get on with the day. Ordinary practical movement at full speed, no slow motion or dramatic lingering. Preserve his identity, face, olive shirt, apron, realistic hands and phone shape. Only the back of the phone is visible; no phone call or spoken dialogue. The shattered piano and flattened delivery remain motionless and softly out of focus behind him. Keep the broken exposed string frame and scattered wooden panels broken, matching the image, throughout the shot. Nothing repairs itself, no moving debris or new objects. Natural street sound, faint cloth movement, no music, captions, generated interface or camera moves."
+      }
+    },
+    {
+      "id": "04-leaving-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/04-leaving.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 304,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner puts his keys into a pocket, then walks purposefully out to the right along the clear sidewalk, leaving the frame. Two or three ordinary brisk steps, no lingering. His phone stays put away. The broken piano stays broken and still in the background; the worker remains by the truck. Fixed camera, footsteps and street ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "05-emergency-cups-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/05-emergency-cups.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 305,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner pulls the single sleeve of paper cups free of the shelf with his right hand, lowers it and places it firmly into the wire basket held in his left hand. He glances toward the end of the aisle, ready to go. Complete the movement in about three seconds at ordinary shopping speed. One sleeve moves continuously; no multiplying cups, twisting fingers or changing basket. Camera fixed; soft packaging rustle, quiet store ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "06-emergency-bread-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/06-emergency-bread.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 306,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner lifts the clear bag of bread rolls from the shelf and sets it into his wire basket beside the two wrapped sleeves of cups. Then he takes the basket handle and begins to turn away. One continuous believable grip, ordinary brisk shopping speed, no extra hands or new packages. Fixed camera, plastic rustle, quiet shop ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "07-loading-car-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/07-loading-car.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 307,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner lowers the grocery bag a short distance onto the trunk floor, releases both hands only once it rests securely, then straightens and reaches up toward the open hatch. Keep the hatch open until the cut. Car stays parked, no phone. Bag contents retain shape, one continuous two-handed movement, normal speed and weight. Paper bag rustle, light street ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "08-returning-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/08-returning-v2.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 308,
+        "prompt": "Single continuous five-second candid live-action shot at normal speed. Preserve the EXACT exterior camera and geography of the reference: truck at far left, shattered piano in central foreground, original deli entrance at far right. The owner at the right, carrying one brown grocery bag containing emergency cups and bread, takes two brisk steps INTO THE SAME DOOR to his right and disappears into the shop. We see his back and side as he enters; he does not walk toward the camera or down the street. His hands keep the bag secure. He passes beside the wreckage without stepping through it. The shattered piano stays fixed exactly where it fell, just to the left of the entrance. No new doorway, shifted storefront or moving wreckage. Worker stays by truck. Natural footsteps and street ambience, no slow motion, dialogue, music, overlays or camera movement. The worker lowers his hands naturally and looks over the wreckage."
+      },
+      "continuity_correction": "User rejected the invented interior reverse angle. Return shot must preserve the original exterior geography."
+    },
+    {
+      "id": "09-review-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/09-review.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 309,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. Stationary behind the counter, the owner briefly reads his phone, taps once with a thumb, gives a small decisive nod and lowers the phone. One quick review, about three seconds, then attention returns to the room. Hands and phone remain coherent. Phone screen faces him and no interface is visible. Quiet deli ambience, no notification ping. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "10-serving-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/10-serving.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 310,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner smoothly slides the paper cup a few centimeters across the wooden counter and releases it. The customer's hand comes in only after release and takes the cup out to the right. The owner gives a brief natural smile and turns back to work. Keep the cup stable and upright, no spilling, merging hands or cups. Normal service speed. Soft cup movement and quiet cafe ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "11-back-to-business-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/11-back-to-business.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "Approved continuation of the natural-speed footage style.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 311,
+        "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner finishes arranging two bread rolls in the shallow basket, sets the basket squarely on the counter and looks up toward a customer with a small welcoming nod. Background customers move naturally and subtly. Phone stays away. Ordinary real-time deli work, no posing or exaggerated smiles. Warm quiet cafe ambience, fixed eye-level camera. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+      }
+    },
+    {
+      "id": "08-returning-cleanup-turbo",
+      "endpoint": "minimax/h3-max-turbo/image-to-video",
+      "first_frame": "frames/08-returning-cleanup.png",
+      "last_frame": null,
+      "usd_per_second": "0.02",
+      "purpose": "User correction: same original doorway and wreckage, delivery truck/driver gone, cleanup underway on the owner\u2019s return.",
+      "input": {
+        "duration": 5,
+        "resolution": "1080P",
+        "prompt_expansion_mode": "balanced",
+        "enable_safety_checker": true,
+        "seed": 408,
+        "prompt": "Single five-second locked-camera candid shot at normal 24 fps playback. Keep the exact exterior geography of the reference, including the original deli entrance at far right and broken piano in central foreground. The owner at far right carries emergency cups and bread in one grocery bag, takes two brisk steps into that same doorway and disappears inside. Meanwhile two cleanup workers at the LEFT of the piano calmly continue their work: one makes two short natural broom strokes gathering small loose debris, the other picks up a piece of cardboard and puts it into the refuse sack. Modest practical movements with believable weight and grips. The heavy piano stays fixed, the doorway never moves, and the owner passes on the clear right side. No delivery truck, delivery driver or hand truck returns. No shocked people, dramatic reactions, new vehicles, magically disappearing wreckage, slow motion, camera moves, dialogue, music or overlays. Natural street ambience, broom scrape, cardboard rustle and footsteps."
+      }
+    }
+  ],
+  "model_decision": "Use H3 Max Turbo for further generation. User found the initial regular H3 Max comparison visually equivalent."
+}

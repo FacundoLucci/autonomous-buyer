@@ -1,0 +1,23 @@
+{
+  "mode": "built-in image_gen",
+  "revision": 2,
+  "reason": "Remove visible sequence labels; each social post should stand alone.",
+  "edits": [
+    {
+      "id": "meet-your-buyer-v2",
+      "source": "01-introduction.png",
+      "prompt": "Use case: precise-object-edit. Edit the supplied BUY HARD social campaign card. Remove only the small top-right serial text '01 / INTRODUCTION'. Seamlessly fill that small removed area with the surrounding pale lime background. Preserve the entire rest of the image exactly: same 1536 x 1024 canvas and framing, same BUY HARD masthead, headline, typography, supporting copy, all sponsor credits and powered-by wording, all objects, shadows, colors, texture, lines, positions and sizes. Do not recompose, crop, add text, renumber, or change the artwork. This is a surgical removal of an internal campaign serial label, with everything else locked."
+    },
+    {
+      "id": "just-say-whats-left-v2",
+      "source": "02-openai.png",
+      "prompt": "Use case: precise-object-edit. Edit the supplied BUY HARD social campaign card. Remove only the small top-right serial text '02 / OPENAI' and the short vertical separator immediately to its left. Keep the neighboring 'WORKFLOW ILLUSTRATION' text. Seamlessly fill that small removed area with the surrounding pale lime background. Preserve the entire rest of the image exactly: same 1536 x 1024 canvas and framing, same BUY HARD masthead, headline, typography, supporting copy, all sponsor credits and powered-by wording, all objects, shadows, colors, texture, lines, positions and sizes. Do not recompose, crop, add text, renumber, or change the artwork. This is a surgical removal of an internal campaign serial label, with everything else locked."
+    },
+    {
+      "id": "start-with-a-link-v2",
+      "source": "03-firecrawl.png",
+      "prompt": "Use case: precise-object-edit. Edit the supplied BUY HARD social campaign card. Remove only the small top-right serial text '03 / FIRECRAWL'. Keep the long thin horizontal rule below it. Seamlessly fill that small removed area with the surrounding pale lime background. Preserve the entire rest of the image exactly: same 1536 x 1024 canvas and framing, same BUY HARD masthead, headline, typography, supporting copy, all sponsor credits and powered-by wording, all objects, shadows, colors, texture, lines, positions and sizes. Do not recompose, crop, add text, renumber, or change the artwork. This is a surgical removal of an internal campaign serial label, with everything else locked."
+    }
+  ]
+}
+

@@ -1,0 +1,55 @@
+{
+  "source": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4.mp4",
+  "output": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4-edited.mp4",
+  "segments": [
+    {
+      "start": 0,
+      "end": 0.25,
+      "speed": 1
+    },
+    {
+      "start": 0.25,
+      "end": 2.25,
+      "speed": 2
+    },
+    {
+      "start": 2.25,
+      "end": 5,
+      "speed": 1
+    }
+  ],
+  "duration_seconds": 4,
+  "note": "Newly generated Turbo take; the fall, collision and debris are tightened together at 2x. Opening and settled aftermath retain original speed. Audio follows the same timing with pitch preserved. Original take retained.",
+  "command": [
+    "ffmpeg",
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-y",
+    "-i",
+    "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4.mp4",
+    "-filter_complex",
+    "[0:v]split=3[vs0][vs1][vs2];[0:a]asplit=3[as0][as1][as2];[vs0]trim=start=0:end=0.25,setpts=(PTS-STARTPTS)/1,fps=24[v0];[as0]atrim=start=0:end=0.25,asetpts=PTS-STARTPTS,atempo=1,aformat=sample_rates=48000:channel_layouts=stereo[a0];[vs1]trim=start=0.25:end=2.25,setpts=(PTS-STARTPTS)/2,fps=24[v1];[as1]atrim=start=0.25:end=2.25,asetpts=PTS-STARTPTS,atempo=2,aformat=sample_rates=48000:channel_layouts=stereo[a1];[vs2]trim=start=2.25:end=5,setpts=(PTS-STARTPTS)/1,fps=24[v2];[as2]atrim=start=2.25:end=5,asetpts=PTS-STARTPTS,atempo=1,aformat=sample_rates=48000:channel_layouts=stereo[a2];[v0][a0][v1][a1][v2][a2]concat=n=3:v=1:a=1[v][a]",
+    "-map",
+    "[v]",
+    "-map",
+    "[a]",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "medium",
+    "-crf",
+    "18",
+    "-pix_fmt",
+    "yuv420p",
+    "-c:a",
+    "aac",
+    "-b:a",
+    "192k",
+    "-t",
+    "4",
+    "-movflags",
+    "+faststart",
+    "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4-edited.mp4"
+  ]
+}

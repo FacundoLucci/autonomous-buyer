@@ -1,0 +1,46 @@
+{
+  "created": "2026-09-11",
+  "mode": "review-only",
+  "timezone": "America/Chicago",
+  "publicOrigin": "https://buyhard.app",
+  "posts": [
+    {
+      "id": "01-introduction",
+      "title": "Meet your buyer.",
+      "image": "meet-your-buyer-v2.png",
+      "intendedOrder": 1,
+      "alt": "BUY HARD campaign card on a pale lime background. Meet your buyer. Everyday supplies. One clear buying flow. Paper cups, a cardboard carton, and a roll of labels. Early pilot; your approval comes first. Credits: Convex, OpenAI, Firecrawl, AgentMail.",
+      "x": "Meet BUY HARD: an AI buyer for everyday business supplies.\n\nTell it what's on hand. Review the buy. Keep the line moving.\n\nExplore the sample demo or book a walkthrough: https://buyhard.app/?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p1_intro\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedin": "Cups. Gloves. Labels.\n\nOrdinary supplies can take a surprising amount of attention.\n\nI'm building BUY HARD to make that everyday buying work easier: tell your buyer what's on hand, review a prepared purchase, and keep track of what arrives.\n\nThe new experience centers on a simple conversation and a clear next step. You approve spending.\n\nWe're inviting businesses to explore an early pilot. Bring one item you regularly reorder to a 20-minute walkthrough and we'll see how BUY HARD could help.\n\nExplore the sample demo or book a walkthrough:\nhttps://buyhard.app/?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p1_intro\n\nBuilt with Convex, OpenAI, Firecrawl, and AgentMail for the Convex All Gas Hackathon.\n\nThe public demo uses sample data.",
+      "status": "draft",
+      "scheduledAt": null,
+      "xWeightedCharacters": 232
+    },
+    {
+      "id": "02-openai",
+      "title": "Just say what's left.",
+      "image": "just-say-whats-left-v2.png",
+      "intendedOrder": 2,
+      "alt": "BUY HARD campaign card. Just say what's left. A quote reads: We have 8 cases of cups left. A stack of paper cups sits beside it. Update stock in a conversation. Powered by OpenAI. Labeled workflow illustration; credits Convex, OpenAI, Firecrawl, AgentMail.",
+      "x": "\"We have 8 cases of cups left.\"\n\nA stock update should feel that simple. We're using OpenAI to make stock updates conversational in BUY HARD.\n\nTry the sample demo: https://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p2_openai\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedin": "\"We have 8 cases of cups left.\"\n\nThat's how I want a stock update to start.\n\nIn BUY HARD, OpenAI helps the buyer understand everyday requests and prepare the work behind them. The conversation stays beside the inventory and buying tasks, so you can keep your attention on the business.\n\nThe goal is simple: say what changed, see the next step, and stay in control of purchases.\n\nTry the sample conversation:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p2_openai\n\nWant to explore it with your business? The demo includes a walkthrough link. Bring one item you regularly reorder.\n\nBuilt with Convex, OpenAI, Firecrawl, and AgentMail for the Convex All Gas Hackathon.\n\nThe visual illustrates the workflow. The public demo uses sample data and does not demonstrate a live OpenAI request.",
+      "status": "draft",
+      "scheduledAt": null,
+      "xWeightedCharacters": 226
+    },
+    {
+      "id": "03-firecrawl",
+      "title": "Start with a link.",
+      "image": "start-with-a-link-v3.png",
+      "intendedOrder": 3,
+      "alt": "BUY HARD campaign card. Start with a link. Product details, ready for review. An illustrated paper-cup product page connects by an arrow to an item-details card reading Paper cups; Review before adding. Powered by Firecrawl. Labeled workflow illustration; all four sponsors credited.",
+      "x": "Already have a product link? Start there.\n\nFirecrawl reads product pages for BUY HARD, bringing item details into the buying process for review.\n\nBring a link to a walkthrough: https://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p3_firecrawl\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedin": "Already have a product link? Start there.\n\nOne of the easiest ways to make buying software feel like work is to ask someone to type in details they already have.\n\nBUY HARD uses Firecrawl to read product pages and bring item details into the buying process for review. A familiar supplier link becomes a starting point.\n\nYou review the information before using it. Reading a product page doesn't mean an order has been placed.\n\nBring one product link to a 20-minute walkthrough and we'll explore how BUY HARD could fit your business:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p3_firecrawl\n\nBuilt with Convex, OpenAI, Firecrawl, and AgentMail for the Convex All Gas Hackathon.\n\nThe visual illustrates the workflow; it is not a supplier website or a completed order.",
+      "status": "draft",
+      "scheduledAt": null,
+      "xWeightedCharacters": 239
+    }
+  ],
+  "revision": 3,
+  "revisionNote": "Matched the Firecrawl headline typography to the other two cards. No sequence labels; all public campaign links use buyhard.app."
+}

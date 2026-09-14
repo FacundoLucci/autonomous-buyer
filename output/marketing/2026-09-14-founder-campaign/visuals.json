@@ -1,0 +1,256 @@
+{
+  "revision": 2,
+  "createdAt": "2026-09-12T13:13:18.173761+00:00",
+  "status": "approved_and_scheduled",
+  "format": {
+    "type": "png",
+    "width": 1536,
+    "height": 1024
+  },
+  "preview": "http://127.0.0.1:54238/2026-09-14-founder-campaign/html-preview/",
+  "publicVoice": "Relaxed, positive and open; no explicit YC reference.",
+  "posts": [
+    {
+      "key": "simpler_frontend",
+      "title": "I’ve been simplifying things.",
+      "proposedDate": "2026-09-14",
+      "images": [
+        {
+          "type": "image",
+          "path": "ready/old-ui-annotated.png",
+          "card": "old-ui",
+          "altText": "Earlier BUY HARD interface, annotated to show competing metrics, a dense purchase panel and updates in a separate area. Archived UI with recorded demo data.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "ad26e2f4bd97561298070cb4a0398ca57721708184345815cd78eb3414893ba5",
+          "bytes": 358229,
+          "url": "https://media.zernio.com/media/1789258688101_nwspfgmo_old-ui-annotated.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/current-ui-annotated.png",
+          "card": "current-ui",
+          "altText": "Current BUY HARD dashboard, annotated to show a clear stock summary, a direct buying decision and the buyer conversation within reach. Actual sample UI.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "04c95f6f10897d36f7a7c26f8d5f201c68162fa023ff942d678f91da93d4ff7c",
+          "bytes": 164927,
+          "url": "https://media.zernio.com/media/1789258688831_2rs9sdug_current-ui-annotated.png"
+        }
+      ],
+      "status": "scheduled",
+      "scheduledAt": "2026-09-14T20:00:00-05:00",
+      "zernioPostId": "6aa5ebc2f75a3d18d84801e6"
+    },
+    {
+      "key": "give_agent_a_job",
+      "title": "Figuring out the handoff.",
+      "proposedDate": "2026-09-16",
+      "images": [
+        {
+          "type": "image",
+          "path": "ready/buyer-conversation.png",
+          "card": "buyer-conversation",
+          "altText": "A sample conversation in BUY HARD answers a question about paper cups and brings the purchase details and $400 approval into the same conversation.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "483e370c36864780be23fbda2452f16830981571ac1b585ff8958945d8bffa9d",
+          "bytes": 164322,
+          "url": "https://media.zernio.com/media/1789258864198_i8iupskl_buyer-conversation.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/purchase-decision.png",
+          "card": "purchase-decision",
+          "altText": "The actual BUY HARD sample purchase screen shows 20 cases of paper cups, WebstaurantStore, delivery details and the $400 total before the owner decides.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "49b477b677ecfe1fe6a1397bdd42d6c95c51abacf297c08733f48db78a14eb75",
+          "bytes": 149687,
+          "url": "https://media.zernio.com/media/1789258864937_mne931e8_purchase-decision.png"
+        }
+      ],
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T20:00:00-05:00",
+      "zernioPostId": "6aa5ec7320dac980f28780cf"
+    },
+    {
+      "key": "build_useful_ai",
+      "title": "I’d love to build more of this.",
+      "proposedDate": "2026-09-18",
+      "images": [
+        {
+          "type": "image",
+          "path": "ready/building-buyhard.png",
+          "card": "building-buyhard",
+          "altText": "Actual BUY HARD desktop dashboard and mobile purchase screen, with a note from Facundo about enjoying the work. Sample data.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "7b97441fbcba3c88dee8a95379da4ddc0844a9845c57e9388d0c0ec6bf7cdca1",
+          "bytes": 190130,
+          "url": "https://media.zernio.com/media/1789258967546_pq0i0z1r_building-buyhard.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/small-details.png",
+          "card": "small-details",
+          "altText": "Enlarged actual interface details: Approve and order beside No, because, and the buyer conversation dock that stays within reach. Sample UI.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "d3433cd3ab653a20cc0407b51db2709bdb290722d0845d39cd67f05c09c5d3de",
+          "bytes": 136046,
+          "url": "https://media.zernio.com/media/1789258968275_hwgmzy65_small-details.png"
+        }
+      ],
+      "status": "scheduled",
+      "scheduledAt": "2026-09-18T20:00:00-05:00",
+      "zernioPostId": "6aa5ecda10074d9a4cda491e"
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "title": "What would you hand off first?",
+      "proposedDate": "2026-09-21",
+      "images": [
+        {
+          "type": "image",
+          "path": "ready/what-if-stay-stocked.png",
+          "card": "stay-stocked",
+          "altText": "What if supplies just stayed stocked? An idea Facundo is exploring with BUY HARD, illustrated with paper cups, a cardboard box and a roll of labels.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "f6fa42dff46071054744d0281f22782875008401aaf5a9530eb200cf7d24bd14",
+          "bytes": 384335,
+          "url": "https://media.zernio.com/media/1789259060596_7pmbu2s9_what-if-stay-stocked.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/what-would-you-hand-off.png",
+          "card": "what-next",
+          "altText": "Current BUY HARD sample inventory screen showing stock, usage and buying rules, next to questions about which purchasing tasks people would like to hand off.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "df0a1b605fe7e10b92c3b30d2b773b24e27ea9d5b8b82be125115ddbaeb5c058",
+          "bytes": 187996,
+          "url": "https://media.zernio.com/media/1789259061410_0sv6215n_what-would-you-hand-off.png"
+        }
+      ],
+      "status": "scheduled",
+      "scheduledAt": "2026-09-21T20:00:00-05:00",
+      "zernioPostId": "6aa5ed36b2f850b20780fd12"
+    }
+  ],
+  "sources": [
+    {
+      "path": "html-preview/assets/current-dashboard.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "56c903af2266e67419c19c49548b0e7cfbba5e2b9573223f1ab0bd3237ff9b2f",
+      "source": "Fresh headless screenshot of the public sample workspace, visually checked in the Codex in-app browser.",
+      "origin": "https://buyhard.app/",
+      "mode": "demo=true",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals",
+      "captureDate": "2026-09-12",
+      "screen": "Public in-memory sample data; no customer records and no real order."
+    },
+    {
+      "path": "html-preview/assets/current-approval-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "9b66ec954e53473015c6a10ca21a2a6cf0345b52605ddf6cb691404cfc51d43e",
+      "source": "Fresh headless screenshot of the public sample workspace, visually checked in the Codex in-app browser.",
+      "origin": "https://buyhard.app/",
+      "mode": "demo=true",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals",
+      "captureDate": "2026-09-12",
+      "screen": "Public in-memory sample data; no customer records and no real order."
+    },
+    {
+      "path": "html-preview/assets/current-inventory.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "ba90c55f856b3e8a5eb3c92e8db6b8158fafda772c757b3bc4341fb069786684",
+      "source": "Fresh headless screenshot of the public sample workspace, visually checked in the Codex in-app browser.",
+      "origin": "https://buyhard.app/",
+      "mode": "demo=true",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals",
+      "captureDate": "2026-09-12",
+      "screen": "Public in-memory sample data; no customer records and no real order."
+    },
+    {
+      "path": "html-preview/assets/current-approval.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "0d84ff0e15d75195bc4f8abef889e70257a5b9320efac02065b3356384caa0d4",
+      "source": "Fresh headless screenshot of the public sample workspace, visually checked in the Codex in-app browser.",
+      "origin": "https://buyhard.app/",
+      "mode": "demo=true",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals",
+      "captureDate": "2026-09-12",
+      "screen": "Public in-memory sample data; no customer records and no real order."
+    },
+    {
+      "path": "html-preview/assets/supplies.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "88ec6cd0f7437678bfc8f8c4d98db85980874646983404b5c1c66b1dd9038443",
+      "source": "Reused separate PNG from the previously reviewed product campaign; original generated product cutout, not a new UI render.",
+      "rendering": "The approved product campaign HTML cutout renderer removes the baked preview checkerboard; no UI screenshots pass through it."
+    },
+    {
+      "path": "html-preview/assets/old-dashboard.png",
+      "width": 1440,
+      "height": 950,
+      "sha256": "aeffc05962c799a7079c31b0702f17c3786b92c6fe3bc243c2021601cc8e0a43",
+      "source": "Unmodified archived screenshot: output/playwright/judge-live-desktop.png",
+      "repositoryCommit": "ee59776cff0a9fa1bddf88276efecb3897cd8c26",
+      "commitDate": "2026-09-05T13:03:54-05:00",
+      "note": "Archive commit date is not an asserted capture date. Old and current examples use different demo data; this is a UI comparison."
+    },
+    {
+      "path": "html-preview/assets/current-buyer-conversation.png",
+      "width": 551,
+      "height": 660,
+      "sha256": "7eeb9f307d2d124d629cdcfccbe7e9f57f0a39c0aa8a06c07c2500e6c1cb8ef7",
+      "source": "Fresh headless screenshot of the public sample workspace, visually checked in the Codex in-app browser.",
+      "origin": "https://buyhard.app/",
+      "mode": "demo=true",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals",
+      "captureDate": "2026-09-12",
+      "screen": "Public in-memory sample data; no customer records and no real order."
+    },
+    {
+      "path": "html-preview/assets/current-approval-2x.png",
+      "width": 2880,
+      "height": 2000,
+      "cssViewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "deviceScaleFactor": 2,
+      "sha256": "c6320cb37a90e8e418ee457932b5a10244e8ea7fb999d782fcb969bd1cb262e2",
+      "source": "Fresh higher resolution browser screenshot of the actual public sample approval screen; used for the enlarged crop.",
+      "origin": "https://buyhard.app/",
+      "captureDate": "2026-09-12",
+      "utm_source": "launch-check",
+      "utm_campaign": "founder_visuals"
+    }
+  ],
+  "exportedAt": "2026-09-12T13:26:41.822191+00:00",
+  "reviewStatus": "Approved by Facundo and uploaded to four verified Zernio schedules. No founder post is published yet.",
+  "approvedAt": "2026-09-13T00:18:29.480086+00:00",
+  "scheduledAt": "2026-09-13T00:27:22.251448+00:00",
+  "scheduleReceipt": "zernio-schedule-receipt.json"
+}

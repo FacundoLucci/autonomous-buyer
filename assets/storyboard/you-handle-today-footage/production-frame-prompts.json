@@ -1,0 +1,71 @@
+{
+  "mode": "built-in image_gen",
+  "frames": [
+    {
+      "id": "04-leaving",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png",
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/02-impact-end-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use image 1 for owner identity and image 2 for the exact deli exterior and broken piano. Medium-wide street view at the same doorway. The owner has put his phone into his apron pocket and holds a small ordinary key ring in his right hand at waist height. He is taking his first purposeful step out of the doorway toward the clear right side of the sidewalk, looking where he is going. The low shattered piano, split wooden panels, crushed cup boxes and bread crates remain in the left background, matching image 2. He has a clear path around the wreckage. White truck in the distance. Keep the owner in the right third of the image, leaving the left open for a later editorial crop. The two reference views depict one location.",
+      "first_frame": "frames/04-leaving.png"
+    },
+    {
+      "id": "05-emergency-cups",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference only for the owner's identity, wardrobe and photographic style. New location: a modest neighborhood wholesale grocery store, in an aisle of plain disposable cups and take-away containers. Medium side view. Owner occupies the left third, turned toward shelves on the right. His right hand naturally grips one shrink-wrapped sleeve of plain white paper cups at chest height, just beginning to pull it off a shelf. His left hand holds the handle of an ordinary wire shopping basket with a second sleeve of the same cups inside. Keep all fingers believable and show one simple action. Practical concentration, ordinary fluorescent shop lighting mixed with daylight. Shelves have generic unbranded packaging with no readable labels. Aisle is otherwise quiet. No phone.",
+      "first_frame": "frames/05-emergency-cups.png"
+    },
+    {
+      "id": "06-emergency-bread",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference only for the owner's identity and wardrobe. New location: bread section of the same modest neighborhood grocery store. Medium three-quarter shot, owner on the left half, naturally reaching with one hand to lift a clear sealed bag containing several ordinary bread rolls from a low shelf at waist height. His wire shopping basket rests securely on the counter beside him; two wrapped sleeves of plain white paper cups are already in it. These are emergency supplies. One bag, one hand grasp, believable grip, practical concentration. Warm ordinary store lighting, generic packaging and no readable labels. Keep his face recognizable. No phone, cashier or added people.",
+      "first_frame": "frames/06-emergency-bread.png"
+    },
+    {
+      "id": "07-loading-car",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference only for the owner's identity and wardrobe. Outside the neighborhood grocery store in daylight, beside the open rear hatch of a parked gray station wagon. Medium-wide side view. Owner at the left is lowering one brown grocery bag onto the flat trunk floor with both hands gripping the bag naturally. The bag has a visible wrapped sleeve of plain white cups and a clear bag of bread rolls peeking above its rim. A second small grocery bag already rests on the trunk floor. The car is stationary, hatch stays high above him, no driving or phone. The camera sees his face in three-quarter profile and the cargo area clearly. Use a believable everyday curbside parking scene with no readable license plate or signage.",
+      "first_frame": "frames/07-loading-car.png"
+    },
+    {
+      "id": "08-returning",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png",
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/02-impact-end-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use image 1 for identity and image 2 for the exact red-brick deli entrance and surrounding street. Later that morning: medium-wide view from just inside the open deli doorway looking outward. Owner faces the camera while stepping through the door, carrying one sturdy brown grocery bag at waist level in both arms. A wrapped sleeve of plain white paper cups and a clear bag of bread rolls are visible at the top. The wrecked piano is small and softly out of focus far behind him on the sidewalk to the left, still broken, with a clear walking path to the door. Warm wood counter edge in foreground, original brick door frame to the right. Practical movement, he looks at where he will set down the bag. No new delivery, no phone.",
+      "first_frame": "frames/08-returning.png"
+    },
+    {
+      "id": "09-review",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference for identity, wardrobe, phone and photographic style. Inside the owner's same small brick deli, medium portrait from waist up behind a warm wooden service counter. Owner stands stationary on the LEFT side of frame, looking down at the same dark smartphone held simply in both hands at chest level; phone back faces camera. His expression is calm and focused, making one short practical decision. A basket with bread rolls and a stack of plain white paper cups sit on the counter nearby. Warm brick wall, coffee machine and soft window daylight in the background. Keep the right half quiet and softly focused for an editorial crop. No extra people or readable UI.",
+      "first_frame": "frames/09-review.png"
+    },
+    {
+      "id": "10-serving",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference for the owner's identity and wardrobe. Inside the same warm brick deli behind a wooden service counter. Medium-wide view, owner on left, customer cropped naturally to a shoulder and one hand at the far right. Owner has just set a single filled plain white paper cup on the counter and his relaxed hand is touching the cup's side, ready to slide it a few centimeters toward the customer. The cup sits firmly on the counter throughout this first frame, avoid overlapping hands. Bread rolls in a simple basket and another small stack of paper cups are visible. Owner looks up toward the customer with a small natural welcoming smile. Simple everyday service, no exaggerated grin, no phone, no visible labels.",
+      "first_frame": "frames/10-serving.png"
+    },
+    {
+      "id": "11-back-to-business",
+      "refs": [
+        "/Users/facundo/repos/github/buyer/assets/storyboard/you-handle-today-footage/pilot/frames/03-phone-broken-v2.png"
+      ],
+      "prompt": "Asset: one clean photographic first frame for the BUY HARD film. Output one full-bleed landscape 16:9 photograph, no collage. Preserve the same fictional male owner in his early thirties: short dark wavy hair, subtle stubble, olive rolled-sleeve work shirt and charcoal apron. Match the reference's warm natural daylight, honest skin texture, muted olives and walnut colors, and grounded candid realism. Ordinary lens perspective, realistic anatomy, only natural objects. No added text, captions, borders, app interface, floating graphics, presenter circle, brand logos or watermark. This is a real-world action insert, not a polished fashion pose. Use the reference for the owner's identity and wardrobe. Wide natural view across the inside of the same small red-brick deli. Owner behind the warm wooden counter on the right half is arranging a few bread rolls in a shallow basket with one hand while glancing toward an out-of-focus seated customer near the window at left. Plain white paper cups and a coffee machine establish that service continues with the emergency supplies. Phone is put away. The owner's expression and posture are relaxed and purposeful. Eye-level candid documentary composition, realistic warm morning window light. No accident visible in the shop, no computer dashboard, no readable branding, no new supplier delivery.",
+      "first_frame": "frames/11-back-to-business.png"
+    }
+  ]
+}

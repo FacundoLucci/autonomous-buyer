@@ -1,0 +1,159 @@
+{
+  "recordedAt": "2026-09-12T04:03:06.889229+00:00",
+  "method": "Authenticated Codex in-app browser. Every saved post reopened and exact caption fields compared to the prepared batch.",
+  "scope": "Seven scheduled product stories, each for X and LinkedIn. These are future schedules, not completed publications.",
+  "posts": [
+    {
+      "key": "openai",
+      "zernioPostId": "6aa3fe01f465f18b88c37f09",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa3fe01f465f18b88c37f09",
+      "scheduledAt": "2026-09-12T08:30:00-05:00",
+      "scheduledAtUtc": "2026-09-12T13:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 213,
+      "linkedinSha256": "86283e2ec8646f9eb2e04f18f2fcef1e7c0a2d4e7340b925367abf8b20a9ddb9",
+      "xSha256": "d59aa0b4caff2e3fe6dcd6fd2a7c3a4265757be6815f22480a67872573c85080",
+      "image": "your-buyer-stays-ahead-html.png",
+      "imageDimensions": [
+        1536,
+        1024
+      ],
+      "imageAltMatches": true
+    },
+    {
+      "key": "firecrawl",
+      "zernioPostId": "6aa3fe3b826fd8af227c45c4",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa3fe3b826fd8af227c45c4",
+      "scheduledAt": "2026-09-12T12:30:00-05:00",
+      "scheduledAtUtc": "2026-09-12T17:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 240,
+      "linkedinSha256": "bf215543e30011077b918d702f2cca41a1fdb7b3de53823ec6a96850cd5a1f36",
+      "xSha256": "ab45f10711fd245512de4426614c9c40b324987bc75ac19de155ce35ac57f75a",
+      "image": "automated-buying-html.png",
+      "imageDimensions": [
+        1536,
+        1024
+      ],
+      "imageAltMatches": true
+    },
+    {
+      "key": "p5_convex",
+      "zernioPostId": "6aa4cd3179dec5e655576fc3",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4cd3179dec5e655576fc3",
+      "scheduledAt": "2026-09-12T17:30:00-05:00",
+      "scheduledAtUtc": "2026-09-12T22:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 259,
+      "linkedinSha256": "28059e7eeda9a0ba36bdd2918367da217c3a517b217f6e0c181dc1e0d8a94e6c",
+      "xSha256": "9ccb11c5d2ba0c1930f0d46df473606689018dfefa171671031f095e6cfc2980"
+    },
+    {
+      "key": "what_if_inventory",
+      "zernioPostId": "6aa4cd8d50a8424391d483c3",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4cd8d50a8424391d483c3",
+      "scheduledAt": "2026-09-12T20:00:00-05:00",
+      "scheduledAtUtc": "2026-09-13T01:00:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 227,
+      "linkedinSha256": "174ab51a981b3112c9eb98767eb1b6e15253b80aa62c8950c8c44c0894a9d68e",
+      "xSha256": "de6dffd911bfb21eea867ba261df980c0425d544eedd332c6b431cd31b4e2a5a"
+    },
+    {
+      "key": "approve_the_spend",
+      "zernioPostId": "6aa4cdb28eb8f11cc516feb5",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4cdb28eb8f11cc516feb5",
+      "scheduledAt": "2026-09-13T08:30:00-05:00",
+      "scheduledAtUtc": "2026-09-13T13:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 231,
+      "linkedinSha256": "5a54e5036808bc69dca85b655fcc8ce12264fbefdbe5ac4e7ac3f95122e8888e",
+      "xSha256": "633d9e5f0142a035127a1748d5856cbdd4716cf9882e23cf5310130e52e810ee"
+    },
+    {
+      "key": "one_item_walkthrough",
+      "zernioPostId": "6aa4cdd48eb8f11cc5170a8d",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4cdd48eb8f11cc5170a8d",
+      "scheduledAt": "2026-09-13T12:30:00-05:00",
+      "scheduledAtUtc": "2026-09-13T17:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 256,
+      "linkedinSha256": "3a197e5a7b0bdfd6938f119bcd46851a377a92787c246c7eed53891a7620a5cd",
+      "xSha256": "b3b8799852014c363e419c445036d4137a46e7e4539b9305a90405ecf9979b1e"
+    },
+    {
+      "key": "p4_agentmail",
+      "zernioPostId": "6aa4cdfbf45b15ff61c0ec29",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4cdfbf45b15ff61c0ec29",
+      "scheduledAt": "2026-09-13T17:30:00-05:00",
+      "scheduledAtUtc": "2026-09-13T22:30:00+00:00",
+      "status": "scheduled",
+      "timezone": "America/Chicago",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "youtubeSelected": false,
+      "mode": "Schedule",
+      "xWeightedCharacters": 244,
+      "linkedinSha256": "642b008c97e9c1b743350100272b0182effda5fa463d61dbdd90c3563dcf9665",
+      "xSha256": "6b62765a2a47fa2f7f6e798db47813194aaa2cb44f2583cb5a3fa3ff2c80c1a2"
+    }
+  ]
+}

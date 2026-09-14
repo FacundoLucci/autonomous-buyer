@@ -1,0 +1,223 @@
+{
+  "recordedAt": "2026-09-13T04:13:25.745806+00:00",
+  "snapshotWindowUtc": {
+    "from": "2026-09-13T04:02:00Z",
+    "to": "2026-09-13T04:12:00Z"
+  },
+  "timezone": "America/Chicago",
+  "method": "Read-only live Zernio Posts table, native X profile/post views, and public LinkedIn post in the Codex in-app browser. No social API requests or mutations.",
+  "queueUrl": "https://zernio.com/dashboard/posts-all?view=table",
+  "productStoriesPublished": 5,
+  "platformPublications": 10,
+  "scheduledProductStoriesRemaining": 3,
+  "founderCampaign": {
+    "status": "scheduled_not_started",
+    "stories": 4,
+    "platforms": [
+      "x",
+      "linkedin"
+    ],
+    "dates": [
+      "2026-09-14",
+      "2026-09-16",
+      "2026-09-18",
+      "2026-09-21"
+    ],
+    "localTime": "20:00",
+    "taggedVisits": 0
+  },
+  "posts": [
+    {
+      "contentId": "p1_intro",
+      "title": "Meet your new buyer",
+      "publishedAtShownByZernio": "2026-09-11T13:34:00-05:00",
+      "status": "published_on_x_and_linkedin",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098480454227698101",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/"
+      },
+      "zernioCombinedRow": {
+        "impressions": 63,
+        "reach": 38,
+        "likes": 3,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "clicks": null,
+        "views": null
+      },
+      "nativeX": {
+        "views": 125,
+        "likes": 0,
+        "replies": 0,
+        "reposts": 0,
+        "bookmarks": 0
+      },
+      "appRecordedTaggedVisitors": 5,
+      "appSources": {
+        "linkedin": 4,
+        "x": 1
+      }
+    },
+    {
+      "contentId": "p2_openai",
+      "title": "Your buyer stays ahead / OpenAI",
+      "publishedAtShownByZernio": "2026-09-12T08:30:00-05:00",
+      "status": "published_on_x_and_linkedin",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098766393877356595",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504532095780827136/"
+      },
+      "zernioCombinedRow": {
+        "impressions": 64,
+        "reach": 45,
+        "likes": 1,
+        "comments": 1,
+        "shares": null,
+        "saves": null,
+        "clicks": null,
+        "views": null
+      },
+      "nativeX": {
+        "views": 28,
+        "likes": 0,
+        "replies": 0,
+        "reposts": 0,
+        "bookmarks": null
+      },
+      "appRecordedTaggedVisitors": 1,
+      "appSources": {
+        "linkedin": 1
+      }
+    },
+    {
+      "contentId": "p3_firecrawl",
+      "title": "Automated buying / Firecrawl",
+      "publishedAtShownByZernio": "2026-09-12T12:30:00-05:00",
+      "status": "published_on_x_and_linkedin",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098826588846514181",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504592308437262336/"
+      },
+      "zernioCombinedRow": {
+        "impressions": 104,
+        "reach": 12,
+        "likes": 1,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "clicks": null,
+        "views": null
+      },
+      "nativeX": {
+        "views": 25,
+        "likes": 0,
+        "replies": 0,
+        "reposts": 0,
+        "bookmarks": null
+      },
+      "appRecordedTaggedVisitors": 2,
+      "appSources": {
+        "linkedin": 2
+      }
+    },
+    {
+      "contentId": "p5_convex",
+      "title": "Live free. Buy hard. / Convex",
+      "publishedAtShownByZernio": "2026-09-12T17:30:00-05:00",
+      "status": "published_on_x_and_linkedin",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098902276559507829",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504667985190481920/"
+      },
+      "zernioCombinedRow": {
+        "impressions": 18,
+        "reach": 9,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "clicks": null,
+        "views": null
+      },
+      "nativeX": {
+        "views": 26,
+        "likes": 1,
+        "replies": 0,
+        "reposts": 0,
+        "bookmarks": null
+      },
+      "appRecordedTaggedVisitors": 1,
+      "appSources": {
+        "linkedin": 1
+      }
+    },
+    {
+      "contentId": "what_if_inventory",
+      "title": "What if inventory magically regenerated?",
+      "publishedAtShownByZernio": "2026-09-12T20:00:00-05:00",
+      "status": "published_on_x_and_linkedin",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098939829048234267",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504705533564567553/"
+      },
+      "zernioCombinedRow": {
+        "impressions": 5,
+        "reach": 4,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "clicks": null,
+        "views": null
+      },
+      "nativeX": {
+        "views": 12,
+        "likes": 0,
+        "replies": 0,
+        "reposts": 0,
+        "bookmarks": null
+      },
+      "appRecordedTaggedVisitors": 3,
+      "appSources": {
+        "linkedin": 3
+      }
+    }
+  ],
+  "totals": {
+    "zernioReportedImpressions": 254,
+    "zernioReportedLikes": 5,
+    "zernioReportedComments": 1,
+    "nativeXViews": 216,
+    "nativeXLikes": 1,
+    "nativeXReplies": 0,
+    "nativeXReposts": 0,
+    "appTaggedVisitors": 12
+  },
+  "qualitativeFeedback": [
+    {
+      "post": "p2_openai",
+      "platform": "linkedin",
+      "url": "https://www.linkedin.com/feed/update/urn:li:share:7504532095780827136/",
+      "observedCommentCount": 1,
+      "shortQuote": "the reorder-without-asking part is the actual interesting bit",
+      "paraphrase": "The commenter values a buyer that acts without waiting for a chat prompt and asks whether stock checks run on a schedule or are triggered by inventory events.",
+      "classification": "Technical interest in the proactive workflow; operator need, pilot intent and hiring intent not established.",
+      "replySent": false
+    }
+  ],
+  "profileSnapshot": {
+    "xFollowers": 352,
+    "linkedinFollowersPublicPage": 151,
+    "growth": null,
+    "note": "No comparable follower baseline was collected; these counts do not establish campaign-driven growth."
+  },
+  "limitations": [
+    "Zernio rows combine two platforms. The platform contribution to each displayed metric was not established; missing dashes are stored as null, not zero.",
+    "Native X shows one Convex-post like while the Zernio row is blank. Provider reporting is incomplete or delayed.",
+    "Do not add Zernio impressions to native X views; potential overlap is unresolved. Reach is not deduplicated across posts.",
+    "Native X views are cumulative post views, not unique people. Metrics include unequal exposure periods and may include our checks.",
+    "The first post time is 13:34 in Zernio; native X displays 13:35. The app launch cohort boundary is accurate to the scheduler minute.",
+    "No verified click-through rate, follower growth, private-message outcomes, or external calendar results are available from this review."
+  ]
+}

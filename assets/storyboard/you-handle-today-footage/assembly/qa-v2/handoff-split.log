@@ -1,0 +1,23 @@
+🧹 Webpack config change detected. Clearing cache... 
+Bundling 6%
+Bundling 21%
+Bundling 32%
+Bundling 43%
+Bundling 54%
+Bundling 65%
+Bundling 70%
+Bundling 75%
+Bundling 80%
+Bundling 85%
+Bundling 91%
+Bundling 98%
+Bundling 100%
+Getting composition
+⚡️ Cached bundle. Subsequent renders will be faster.
+Composition          YouHandleToday
+Format               png
+Output               ../assets/storyboard/you-handle-today-footage/assembly/qa-v2/handoff-split.png
+Rendered 0/1
+Rendered 0/1
+Rendered 1/1
++                    ../assets/storyboard/you-handle-today-footage/assembly/qa-v2/handoff-split.png

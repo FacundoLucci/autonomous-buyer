@@ -1,0 +1,65 @@
+{
+  "verifiedOn": "2026-09-11",
+  "reviewUrl": "https://zernio.com/dashboard/posts-all",
+  "drafts": [
+    {
+      "contentId": "01-introduction",
+      "zernioPostId": "6aa3fd1079b987e18ac8a2a8",
+      "verifiedStatus": "draft",
+      "publication": "Not scheduled or published",
+      "verifiedOn": "2026-09-11",
+      "platforms": [
+        "linkedin",
+        "twitter"
+      ],
+      "mainContent": "Cups. Gloves. Labels.\n\nOrdinary supplies can take a surprising amount of attention.\n\nI'm building BUY HARD to make that everyday buying work easier: tell your buyer what's on hand, review a prepared purchase, and keep track of what arrives.\n\nThe new experience centers on a simple conversation and a clear next step. You approve spending.\n\nWe're inviting businesses to explore an early pilot. Bring one item you regularly reorder to a 20-minute walkthrough and we'll see how BUY HARD could help.\n\nExplore the sample demo or book a walkthrough:\nhttps://buyhard.app/?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p1_intro\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail (YC S25)](urn:li:organization:106989461) for the Convex All Gas Hackathon.\n\nThe public demo uses sample data.",
+      "xCustomCaption": "Meet BUY HARD: an AI buyer for everyday business supplies.\n\nTell it what's on hand. Review the buy. Keep the line moving.\n\nExplore the sample demo or book a walkthrough: https://buyhard.app/?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p1_intro\n\n@convex @OpenAI @firecrawl @agentmail",
+      "image": "meet-your-buyer-v2.png",
+      "alt": "BUY HARD campaign card on a pale lime background. Meet your buyer. Everyday supplies. One clear buying flow. Paper cups, a cardboard carton, and a roll of labels. Early pilot; your approval comes first. Credits: Convex, OpenAI, Firecrawl, AgentMail.",
+      "verification": "Reopened revised draft in Zernio; verified buyhard.app in both captions, saved v2 image, alt text, and Draft mode."
+    },
+    {
+      "contentId": "02-openai",
+      "zernioPostId": "6aa3fe01f465f18b88c37f09",
+      "verifiedStatus": "draft",
+      "publication": "Not scheduled or published",
+      "verifiedOn": "2026-09-11",
+      "platforms": [
+        "linkedin",
+        "twitter"
+      ],
+      "mainContent": "\"We have 8 cases of cups left.\"\n\nThat's how I want a stock update to start.\n\nIn BUY HARD, OpenAI helps the buyer understand everyday requests and prepare the work behind them. The conversation stays beside the inventory and buying tasks, so you can keep your attention on the business.\n\nThe goal is simple: say what changed, see the next step, and stay in control of purchases.\n\nTry the sample conversation:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p2_openai\n\nWant to explore it with your business? The demo includes a walkthrough link. Bring one item you regularly reorder.\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail (YC S25)](urn:li:organization:106989461) for the Convex All Gas Hackathon.\n\nThe visual illustrates the workflow. The public demo uses sample data and does not demonstrate a live OpenAI request.",
+      "xCustomCaption": "\"We have 8 cases of cups left.\"\n\nA stock update should feel that simple. We're using OpenAI to make stock updates conversational in BUY HARD.\n\nTry the sample demo: https://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p2_openai\n\n@convex @OpenAI @firecrawl @agentmail",
+      "image": "just-say-whats-left-v2.png",
+      "alt": "BUY HARD campaign card. Just say what's left. A quote reads: We have 8 cases of cups left. A stack of paper cups sits beside it. Update stock in a conversation. Powered by OpenAI. Labeled workflow illustration; credits Convex, OpenAI, Firecrawl, AgentMail.",
+      "verification": "Reopened revised draft in Zernio; verified buyhard.app in both captions, saved v2 image, alt text, and Draft mode."
+    },
+    {
+      "contentId": "03-firecrawl",
+      "zernioPostId": "6aa3fe3b826fd8af227c45c4",
+      "verifiedStatus": "draft",
+      "publication": "Not scheduled or published",
+      "verifiedOn": "2026-09-11",
+      "platforms": [
+        "linkedin",
+        "twitter"
+      ],
+      "mainContent": "Already have a product link? Start there.\n\nOne of the easiest ways to make buying software feel like work is to ask someone to type in details they already have.\n\nBUY HARD uses Firecrawl to read product pages and bring item details into the buying process for review. A familiar supplier link becomes a starting point.\n\nYou review the information before using it. Reading a product page doesn't mean an order has been placed.\n\nBring one product link to a 20-minute walkthrough and we'll explore how BUY HARD could fit your business:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p3_firecrawl\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail (YC S25)](urn:li:organization:106989461) for the Convex All Gas Hackathon.\n\nThe visual illustrates the workflow; it is not a supplier website or a completed order.",
+      "xCustomCaption": "Already have a product link? Start there.\n\nFirecrawl reads product pages for BUY HARD, bringing item details into the buying process for review.\n\nBring a link to a walkthrough: https://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=p3_firecrawl\n\n@convex @OpenAI @firecrawl @agentmail",
+      "image": "start-with-a-link-v3.png",
+      "alt": "BUY HARD campaign card. Start with a link. Product details, ready for review. An illustrated paper-cup product page connects by an arrow to an item-details card reading Paper cups; Review before adding. Powered by Firecrawl. Labeled workflow illustration; all four sponsors credited.",
+      "verification": "Zernio update succeeded and Draft list shows start-with-a-link-v3.png. Existing buyhard.app captions and alt text preserved in the edit form."
+    }
+  ],
+  "revision": 3,
+  "domainVerification": {
+    "origin": "https://buyhard.app",
+    "checkedOn": "2026-09-11",
+    "observed": [
+      "Homepage and pilot call to action",
+      "Walkthrough page with calendar availability",
+      "Sample demo dashboard"
+    ],
+    "method": "In-app browser"
+  }
+}

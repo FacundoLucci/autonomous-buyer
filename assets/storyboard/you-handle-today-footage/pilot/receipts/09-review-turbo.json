@@ -1,0 +1,74 @@
+{
+  "job_id": "09-review-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T18:01:28.630050+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "09-review-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/09-review.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 309,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. Stationary behind the counter, the owner briefly reads his phone, taps once with a thumb, gives a small decisive nod and lowers the phone. One quick review, about three seconds, then attention returns to the room. Hands and phone remain coherent. Phone screen faces him and no interface is visible. Quiet deli ambience, no notification ping. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "6dae781c5af76938bd3330340f91c9441b78ec53e0f9dbf319a65ebc285deaaa",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T18:03:03.995075+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-6c8d-7d63-91b5-ec3c0d1cf84e/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.941999912261963
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a19/7VeNTAh19S3Syo1zKytTi_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "7VeNTAh19S3Syo1zKytTi_minimax-h3.mp4",
+      "file_size": 10680691
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: <Picture 1> This is a live-action, cinematic shot. The scene opens on S1, a man with dark wavy hair and a neat beard, wearing an olive button-down shirt and a charcoal apron, standing behind a rustic wooden deli counter. He is holding a black smartphone with both hands, looking down at the screen with a focused expression. The background features wooden shelves filled with jars and bread, a professional espresso machine, and a large window letting in natural light into the space. The camera is a Static Shot, capturing a medium framing of S1. Throughout the five seconds, S1 performs natural, full-speed movements: he reads the phone for two seconds, then at 00:02.000, he performs a single, decisive tap on the screen with his thumb. Immediately after, he gives a small, sharp nod of confirmation to what he read. At 00:03.500, he lowers the phone to chest level and shifts his gaze away from the device to look toward the room, returning his attention to his environment. His hands, the phone, and the surrounding objects like bread and cups on the counter remain perfectly coherent and stable throughout the motion.\n\noverall_soundscape: The quiet ambient atmosphere of a peaceful deli includes the distant faint hum of a refrigerator and the subtle clink of ceramic jars nearby. The soft, tactile thud of a thumb hitting a phone screen is audible, followed by the faint rustle of fabric as S1 moves his arms.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.4813414602540433
+    }
+  },
+  "downloaded_at": "2026-09-13T18:03:05.196475+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/09-review-turbo.mp4",
+  "video_bytes": 10680691
+}

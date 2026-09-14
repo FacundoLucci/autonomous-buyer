@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-09-13T20:49:58.602044+00:00",
+  "source": "Refreshed Zernio table and public platform UI in the Codex in-app browser",
+  "posts": [
+    {
+      "key": "p1_intro",
+      "status": "published",
+      "displayedTime": "2026-09-11T13:34:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098480454227698101",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/"
+      }
+    },
+    {
+      "key": "p2_openai",
+      "status": "published",
+      "displayedTime": "2026-09-12T08:30:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098766393877356595",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504532095780827136/"
+      }
+    },
+    {
+      "key": "p3_firecrawl",
+      "status": "published",
+      "displayedTime": "2026-09-12T12:30:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098826588846514181",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504592308437262336/"
+      }
+    },
+    {
+      "key": "p5_convex",
+      "status": "published",
+      "displayedTime": "2026-09-12T17:30:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098902276559507829",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504667985190481920/"
+      }
+    },
+    {
+      "key": "what_if_inventory",
+      "status": "published",
+      "displayedTime": "2026-09-12T20:00:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2098939829048234267",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504705533564567553/"
+      }
+    },
+    {
+      "key": "approve_the_spend",
+      "status": "published",
+      "displayedTime": "2026-09-13T08:30:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2099128769747316894",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504894476629434370/"
+      }
+    },
+    {
+      "key": "one_item_walkthrough",
+      "status": "published",
+      "displayedTime": "2026-09-13T12:30:00-05:00",
+      "links": {
+        "x": "https://x.com/FacundoLucci/status/2099189194539024881",
+        "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504954901958127617/"
+      }
+    }
+  ],
+  "upcomingExistingPost": {
+    "key": "p4_agentmail",
+    "status": "scheduled",
+    "scheduledAt": "2026-09-13T17:30:00-05:00"
+  },
+  "failedPostsVisible": 0
+}

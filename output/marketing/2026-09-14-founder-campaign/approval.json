@@ -1,0 +1,76 @@
+{
+  "approvedAt": "2026-09-13T00:18:29.480086+00:00",
+  "userApproval": "personal ones are good to go i like them!",
+  "scope": "Four personal posts on X and LinkedIn with the approved captions and two image attachments each. Planned dates at 20:00 America/Chicago: September 14, 16, 18 and 21, 2026.",
+  "approvedContentRevision": 2,
+  "posts": [
+    {
+      "key": "simpler_frontend",
+      "xSha256": "0d99811b5105ac677a43d8717ba7f45d2955309e5f33dc2d0cdb0f4234af5e56",
+      "linkedinTaggedSha256": "a710cc905b7168e941b5ef0f088067ee6ffd72f0825c760890aedd971ad55163",
+      "media": [
+        {
+          "path": "ready/old-ui-annotated.png",
+          "sha256": "ad26e2f4bd97561298070cb4a0398ca57721708184345815cd78eb3414893ba5",
+          "altText": "Earlier BUY HARD interface, annotated to show competing metrics, a dense purchase panel and updates in a separate area. Archived UI with recorded demo data."
+        },
+        {
+          "path": "ready/current-ui-annotated.png",
+          "sha256": "04c95f6f10897d36f7a7c26f8d5f201c68162fa023ff942d678f91da93d4ff7c",
+          "altText": "Current BUY HARD dashboard, annotated to show a clear stock summary, a direct buying decision and the buyer conversation within reach. Actual sample UI."
+        }
+      ]
+    },
+    {
+      "key": "give_agent_a_job",
+      "xSha256": "d2910c485362dda6f054711cd5b5e0532da047dd114e1960320931e428a4ac4e",
+      "linkedinTaggedSha256": "a84d031b3a961c85312af6a1af0a2334e64d7537adb8349fee5789637cfe6d0e",
+      "media": [
+        {
+          "path": "ready/buyer-conversation.png",
+          "sha256": "483e370c36864780be23fbda2452f16830981571ac1b585ff8958945d8bffa9d",
+          "altText": "A sample conversation in BUY HARD answers a question about paper cups and brings the purchase details and $400 approval into the same conversation."
+        },
+        {
+          "path": "ready/purchase-decision.png",
+          "sha256": "49b477b677ecfe1fe6a1397bdd42d6c95c51abacf297c08733f48db78a14eb75",
+          "altText": "The actual BUY HARD sample purchase screen shows 20 cases of paper cups, WebstaurantStore, delivery details and the $400 total before the owner decides."
+        }
+      ]
+    },
+    {
+      "key": "build_useful_ai",
+      "xSha256": "72e2b7ffd58dcdb100d4cae3701b78577c3e63076b33e2f3d0431a8e2334fa4c",
+      "linkedinTaggedSha256": "7a02a2017088083c8c6bc3c1a4b9ee569a2d6012e13d61f29e9fee2e63306530",
+      "media": [
+        {
+          "path": "ready/building-buyhard.png",
+          "sha256": "7b97441fbcba3c88dee8a95379da4ddc0844a9845c57e9388d0c0ec6bf7cdca1",
+          "altText": "Actual BUY HARD desktop dashboard and mobile purchase screen, with a note from Facundo about enjoying the work. Sample data."
+        },
+        {
+          "path": "ready/small-details.png",
+          "sha256": "d3433cd3ab653a20cc0407b51db2709bdb290722d0845d39cd67f05c09c5d3de",
+          "altText": "Enlarged actual interface details: Approve and order beside No, because, and the buyer conversation dock that stays within reach. Sample UI."
+        }
+      ]
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "xSha256": "d35ed51012edbabfe9760c6fd42df2a1516ab19e7b91f852197ee48adc10aafc",
+      "linkedinTaggedSha256": "c6e307130507880bcdc09acfd41a7bab3e98a47f429da7d90da9b05bb64202c9",
+      "media": [
+        {
+          "path": "ready/what-if-stay-stocked.png",
+          "sha256": "f6fa42dff46071054744d0281f22782875008401aaf5a9530eb200cf7d24bd14",
+          "altText": "What if supplies just stayed stocked? An idea Facundo is exploring with BUY HARD, illustrated with paper cups, a cardboard box and a roll of labels."
+        },
+        {
+          "path": "ready/what-would-you-hand-off.png",
+          "sha256": "df0a1b605fe7e10b92c3b30d2b773b24e27ea9d5b8b82be125115ddbaeb5c058",
+          "altText": "Current BUY HARD sample inventory screen showing stock, usage and buying rules, next to questions about which purchasing tasks people would like to hand off."
+        }
+      ]
+    }
+  ]
+}

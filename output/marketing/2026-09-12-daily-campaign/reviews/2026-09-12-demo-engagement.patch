@@ -1,0 +1,32 @@
+From 59277a11fe6882f2f45be326e2980864ebf23aba Mon Sep 17 00:00:00 2001
+From: FacundoLucci <92830973+FacundoLucci@users.noreply.github.com>
+Date: Sat, 12 Sep 2026 07:48:29 -0500
+Subject: [PATCH] Track demo engagement after sample changes
+
+---
+ src/components/desk/demo.tsx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/components/desk/demo.tsx b/src/components/desk/demo.tsx
+index bbeaa42..6a102f6 100644
+--- a/src/components/desk/demo.tsx
++++ b/src/components/desk/demo.tsx
+@@ -236,6 +236,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate:
+       { _id: crypto.randomUUID(), name, action, actor: "You", via, changes, createdAt: Date.now() },
+       ...entries,
+     ]);
++    window.dispatchEvent(new Event("buyhard:demo-use"));
+   }
+   function event(summary: string) {
+     setSnapshot((s) => ({
+@@ -264,7 +265,6 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate:
+       via,
+     );
+     event(`${item.name}: ${count} ${item.unit} on hand.`);
+-    window.dispatchEvent(new Event("buyhard:demo-use"));
+   };
+   const updateRules: UpdateRules = async (item, rules) => {
+     setWorkspace((w) => ({
+-- 
+2.55.0
+

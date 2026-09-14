@@ -1,0 +1,26 @@
+{
+  "file": "mobile-app-staged-v1.mp4",
+  "full_decode": "passed",
+  "dimensions": [
+    1080,
+    2340
+  ],
+  "duration": 90,
+  "fps": 24,
+  "frames": 2160,
+  "individual_clips": 6,
+  "missing_render_resources": 0,
+  "browser_playback": {
+    "browser": "in-app browser",
+    "duration": 90,
+    "currentTime": 24.069853,
+    "paused": false,
+    "error": null
+  },
+  "production_typecheck": "passed",
+  "focused_lint": "passed",
+  "existing_chat_tests": {
+    "passed": 3
+  },
+  "visual_review": "Twelve exported frames inspected; final footer assets verified after correction."
+}

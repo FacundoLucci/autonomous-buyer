@@ -1,0 +1,100 @@
+{
+  "duration": 90,
+  "fps": 24,
+  "width": 1080,
+  "height": 2340,
+  "viewport": {
+    "width": 360,
+    "height": 780
+  },
+  "chapters": [
+    {
+      "name": "Handoff",
+      "start": 0,
+      "end": 24
+    },
+    {
+      "name": "Cups online",
+      "start": 24,
+      "end": 32
+    },
+    {
+      "name": "Bakery email",
+      "start": 32,
+      "end": 53
+    },
+    {
+      "name": "Review terms",
+      "start": 53,
+      "end": 68
+    },
+    {
+      "name": "Confirmations",
+      "start": 68,
+      "end": 78
+    },
+    {
+      "name": "Later change",
+      "start": 78,
+      "end": 90
+    }
+  ],
+  "file": "mobile-app-staged-v1.mp4",
+  "bytes": 27635256,
+  "sha256": "26f9f269de8258bc65a3dfc4dde21a8c899a9a78f90bb2cd2a12330ccc361c54",
+  "renderer": "Hyperframes 0.8.37",
+  "ui": "Production React components and styles imported from this checkout",
+  "data": "Staged fictional film scenario; timed word reveal, no live model stream",
+  "externalActions": "No orders, supplier emails, or paid video generation",
+  "narration": "Silent; ready for Facundo's Loom overlay",
+  "exports": [
+    {
+      "name": "Handoff",
+      "start": 0,
+      "end": 24,
+      "file": "clips/01-handoff.mp4",
+      "duration": 24,
+      "bytes": 5690014
+    },
+    {
+      "name": "Cups online",
+      "start": 24,
+      "end": 32,
+      "file": "clips/02-cups-online.mp4",
+      "duration": 8,
+      "bytes": 2070595
+    },
+    {
+      "name": "Bakery email",
+      "start": 32,
+      "end": 53,
+      "file": "clips/03-bakery-email.mp4",
+      "duration": 21,
+      "bytes": 6324238
+    },
+    {
+      "name": "Review terms",
+      "start": 53,
+      "end": 68,
+      "file": "clips/04-review-terms.mp4",
+      "duration": 15,
+      "bytes": 4411967
+    },
+    {
+      "name": "Confirmations",
+      "start": 68,
+      "end": 78,
+      "file": "clips/05-confirmations.mp4",
+      "duration": 10,
+      "bytes": 2682976
+    },
+    {
+      "name": "Later change",
+      "start": 78,
+      "end": 90,
+      "file": "clips/06-later-change.mp4",
+      "duration": 12,
+      "bytes": 3459349
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "mobileSourceSha256": "26f9f269de8258bc65a3dfc4dde21a8c899a9a78f90bb2cd2a12330ccc361c54",
+  "files": [
+    {
+      "name": "mobile-app-staged-v1.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/mobile-app/mobile-app-staged-v1.mp4"
+    },
+    {
+      "name": "11-back-to-business-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/11-back-to-business-turbo.mp4"
+    },
+    {
+      "name": "10-serving-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/10-serving-turbo.mp4"
+    },
+    {
+      "name": "01-unloading-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/01-unloading-turbo.mp4"
+    },
+    {
+      "name": "02-impact-turbo-v4-edited.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4-edited.mp4"
+    },
+    {
+      "name": "02-impact-end-broken-v2.png",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/frames/02-impact-end-broken-v2.png"
+    },
+    {
+      "name": "03-phone-turbo-v2.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/03-phone-turbo-v2.mp4"
+    },
+    {
+      "name": "04-leaving-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/04-leaving-turbo.mp4"
+    },
+    {
+      "name": "05-emergency-cups-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/05-emergency-cups-turbo.mp4"
+    },
+    {
+      "name": "06-emergency-bread-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/06-emergency-bread-turbo.mp4"
+    },
+    {
+      "name": "07-loading-car-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/07-loading-car-turbo.mp4"
+    },
+    {
+      "name": "08-returning-cleanup-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/08-returning-cleanup-turbo.mp4"
+    },
+    {
+      "name": "09-review-turbo.mp4",
+      "source": "assets/storyboard/you-handle-today-footage/pilot/clips/09-review-turbo.mp4"
+    }
+  ],
+  "holds": [
+    {
+      "start": 53,
+      "duration": 1,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 68,
+      "duration": 4,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 98,
+      "duration": 3,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 114,
+      "duration": 5,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 124.5,
+      "duration": 2.4583,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 132,
+      "duration": 5.625,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 138,
+      "duration": 1,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 143,
+      "duration": 3.9583,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    },
+    {
+      "start": 152,
+      "duration": 1,
+      "reason": "Reading hold on the final app frame; footage and streaming retain their original speed."
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "checkedAt": "2026-09-13T12:34:01.120284+00:00",
+  "timezone": "America/Chicago",
+  "target": "Production selected by convex run --prod in buyer repo",
+  "method": "Read-only fully paginated marketing:events and marketing:list queries; only aggregates retained.",
+  "complete": true,
+  "pages": {
+    "events": 1,
+    "leads": 1
+  },
+  "events": {
+    "visit": 48
+  },
+  "recordedVisitorIds": 48,
+  "eventsBySource": {
+    "linkedin": {
+      "visit": 12
+    },
+    "direct_or_unattributed": {
+      "visit": 35
+    },
+    "x": {
+      "visit": 1
+    }
+  },
+  "eventsByCampaign": {
+    "buyhard_allgas_202609": {
+      "visit": 13
+    },
+    "unattributed": {
+      "visit": 35
+    }
+  },
+  "eventsByContent": {
+    "what_if_inventory": {
+      "visit": 4
+    },
+    "unattributed": {
+      "visit": 35
+    },
+    "p5_convex": {
+      "visit": 1
+    },
+    "p3_firecrawl": {
+      "visit": 2
+    },
+    "p2_openai": {
+      "visit": 1
+    },
+    "p1_intro": {
+      "visit": 5
+    }
+  },
+  "eventsByCampaignAndSource": {
+    "buyhard_allgas_202609 / linkedin": {
+      "visit": 12
+    },
+    "unattributed / direct_or_unattributed": {
+      "visit": 35
+    },
+    "buyhard_allgas_202609 / x": {
+      "visit": 1
+    }
+  },
+  "visitsByContentAndSource": {
+    "what_if_inventory": {
+      "linkedin": 4
+    },
+    "unattributed": {
+      "direct_or_unattributed": 35
+    },
+    "p5_convex": {
+      "linkedin": 1
+    },
+    "p3_firecrawl": {
+      "linkedin": 2
+    },
+    "p2_openai": {
+      "linkedin": 1
+    },
+    "p1_intro": {
+      "linkedin": 4,
+      "x": 1
+    }
+  },
+  "eventsByDay": {
+    "2026-09-13": {
+      "visit": 10
+    },
+    "2026-09-12": {
+      "visit": 19
+    },
+    "2026-09-11": {
+      "visit": 8
+    },
+    "2026-09-10": {
+      "visit": 11
+    }
+  },
+  "excludedLaunchCheckEvents": {
+    "demo_use": 4,
+    "visit": 3,
+    "booking_confirmed": 1,
+    "inquiry": 1
+  },
+  "nonTestLeads": 0,
+  "leadStages": {},
+  "excludedLaunchCheckLeads": 1,
+  "sinceFirstPublishedPost": {
+    "from": "2026-09-11T13:34:00-05:00",
+    "events": {
+      "visit": 34
+    },
+    "visitsBySource": {
+      "linkedin": 12,
+      "direct_or_unattributed": 21,
+      "x": 1
+    }
+  },
+  "rawVisitorRecordsRetained": false,
+  "limitations": [
+    "Visit and demo_use events are deduplicated by visitor ID across the stored history, not counted as page views or sessions.",
+    "Visitor IDs identify browser storage, not verified people or operators; own visits or automated visits may be present.",
+    "Returning visitors following another post may not create a new visit event.",
+    "Known demo approval/receiving tracking gap may undercount activity until its frontend fix is released."
+  ],
+  "changeSinceLastEveningReview": {
+    "comparedWith": "../2026-09-12-results/app-metrics.json",
+    "additionalRecordedVisitors": 10,
+    "additionalLinkedInVisitors": 1,
+    "additionalXVisitors": 0
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "review": "2026-09-12 07:30 America/Chicago",
+  "savedAt": "2026-09-12T12:50:37.397072+00:00",
+  "queue": {
+    "checkedAt": "2026-09-12T12:34:00.723Z",
+    "source": "Refreshed authenticated Zernio queue in the in-app browser",
+    "posts": [
+      {
+        "key": "openai",
+        "title": "Your buyer stays ahead.",
+        "zernioPostId": "6aa3fe01f465f18b88c37f09",
+        "scheduledAt": "2026-09-12T08:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "firecrawl",
+        "title": "Start with a link.",
+        "zernioPostId": "6aa3fe3b826fd8af227c45c4",
+        "scheduledAt": "2026-09-12T12:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "p5_convex",
+        "title": "Your buyer keeps working between visits.",
+        "zernioPostId": "6aa4cd3179dec5e655576fc3",
+        "scheduledAt": "2026-09-12T17:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "what_if_inventory",
+        "title": "What if inventory could magically regenerate?",
+        "zernioPostId": "6aa4cd8d50a8424391d483c3",
+        "scheduledAt": "2026-09-12T20:00:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "approve_the_spend",
+        "title": "Your buyer does the legwork.",
+        "zernioPostId": "6aa4cdb28eb8f11cc516feb5",
+        "scheduledAt": "2026-09-13T08:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "one_item_walkthrough",
+        "title": "Start with one recurring item.",
+        "zernioPostId": "6aa4cdd48eb8f11cc5170a8d",
+        "scheduledAt": "2026-09-13T12:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      },
+      {
+        "key": "p4_agentmail",
+        "title": "Supplier replies belong with the buy.",
+        "zernioPostId": "6aa4cdfbf45b15ff61c0ec29",
+        "scheduledAt": "2026-09-13T17:30:00-05:00",
+        "observedStatus": "scheduled",
+        "platforms": [
+          "x",
+          "linkedin"
+        ]
+      }
+    ],
+    "failedPostsObserved": 0,
+    "next48HoursCovered": true,
+    "scheduledThisReview": 0,
+    "napkin": {
+      "zernioPostId": "6aa4ce3c179a3753f94f33b7",
+      "status": "draft",
+      "hold": "September 17 or later, after two earlier Die Hard references have published URLs"
+    },
+    "founderPosts": "Four prepared locally; none scheduled"
+  },
+  "social": {
+    "observationWindow": "2026-09-12 07:35-07:36 America/Chicago",
+    "x": {
+      "url": "https://x.com/FacundoLucci/status/2098480454227698101",
+      "views": 113,
+      "replies": 0,
+      "reposts": 0,
+      "likes": 0,
+      "bookmarks": 0,
+      "ownerDetailMetrics": "unavailable"
+    },
+    "linkedin": {
+      "url": "https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/",
+      "reactions": 3,
+      "comments": "unavailable in the unauthenticated view"
+    },
+    "zernioAnalytics": "Gated by current pricing plan; no plan change made"
+  },
+  "appMetrics": {
+    "sourceFile": "2026-09-12-0730-metrics.json",
+    "nonTestVisits": 23,
+    "deltaFromBaseline": {
+      "visit": 4,
+      "source": "direct_or_unattributed"
+    },
+    "laterStageEventsRecorded": 0,
+    "caveat": "Direct sample approval was missing demo-use instrumentation; no evidence that zero recorded demo use means nobody interacted."
+  },
+  "productChange": {
+    "worktree": "/Users/facundo/.codex/worktrees/marketing-demo-engagement/buyer",
+    "branch": "codex/marketing-demo-engagement",
+    "base": "68718f1c75ef1ed04d675c93949e3dbf81af257d",
+    "commit": "59277a11fe6882f2f45be326e2980864ebf23aba",
+    "files": [
+      "src/components/desk/demo.tsx"
+    ],
+    "behavior": "Applied sample changes trigger the existing demo-use tracking and walkthrough suggestion.",
+    "validation": [
+      "in-app desktop and mobile checks",
+      "dismissal persists after receiving",
+      "campaign link preserved",
+      "one deduplicated QA demo_use event read back from the released backend",
+      "typecheck",
+      "production build",
+      "focused lint",
+      "2 attribution tests",
+      "git diff --check"
+    ],
+    "pushed": false,
+    "deployed": false,
+    "evidence": "2026-09-12-demo-engagement-fix.md"
+  },
+  "decision": "Keep the verified weekend queue. Preserve separate product and founder campaigns within 3-4 total stories per day. Keep founder drafts for selected fourth slots and the napkin held. The local demo handoff fix is ready for production review; no production code changed."
+}

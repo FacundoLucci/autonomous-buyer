@@ -1,0 +1,202 @@
+{
+  "recordedAt": "2026-09-13T00:27:22.251448+00:00",
+  "method": "Authenticated Codex in-app browser. Each saved post reopened; platform captions, both media attachments, order, alt text, date, and Chicago timezone read back. All four rows remained scheduled after a final reload.",
+  "scope": "Four approved personal stories, each scheduled for X and LinkedIn. These are future schedules, not published posts.",
+  "approval": "approval.json",
+  "approvedContentRevision": 2,
+  "duplicateFounderPosts": 0,
+  "posts": [
+    {
+      "key": "simpler_frontend",
+      "zernioPostId": "6aa5ebc2f75a3d18d84801e6",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa5ebc2f75a3d18d84801e6",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-14T20:00:00-05:00",
+      "scheduledAtUtc": "2026-09-15T01:00:00+00:00",
+      "timezone": "America/Chicago",
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "mode": "Schedule",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "linkedinSha256": "a710cc905b7168e941b5ef0f088067ee6ffd72f0825c760890aedd971ad55163",
+      "xSha256": "0d99811b5105ac677a43d8717ba7f45d2955309e5f33dc2d0cdb0f4234af5e56",
+      "xWeightedCharacters": 224,
+      "mediaOrderMatches": true,
+      "imageAltTextMatches": true,
+      "media": [
+        {
+          "type": "image",
+          "path": "ready/old-ui-annotated.png",
+          "card": "old-ui",
+          "altText": "Earlier BUY HARD interface, annotated to show competing metrics, a dense purchase panel and updates in a separate area. Archived UI with recorded demo data.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "ad26e2f4bd97561298070cb4a0398ca57721708184345815cd78eb3414893ba5",
+          "bytes": 358229,
+          "url": "https://media.zernio.com/media/1789258688101_nwspfgmo_old-ui-annotated.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/current-ui-annotated.png",
+          "card": "current-ui",
+          "altText": "Current BUY HARD dashboard, annotated to show a clear stock summary, a direct buying decision and the buyer conversation within reach. Actual sample UI.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "04c95f6f10897d36f7a7c26f8d5f201c68162fa023ff942d678f91da93d4ff7c",
+          "bytes": 164927,
+          "url": "https://media.zernio.com/media/1789258688831_2rs9sdug_current-ui-annotated.png"
+        }
+      ],
+      "publishedAt": null
+    },
+    {
+      "key": "give_agent_a_job",
+      "zernioPostId": "6aa5ec7320dac980f28780cf",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa5ec7320dac980f28780cf",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T20:00:00-05:00",
+      "scheduledAtUtc": "2026-09-17T01:00:00+00:00",
+      "timezone": "America/Chicago",
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "mode": "Schedule",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "linkedinSha256": "a84d031b3a961c85312af6a1af0a2334e64d7537adb8349fee5789637cfe6d0e",
+      "xSha256": "d2910c485362dda6f054711cd5b5e0532da047dd114e1960320931e428a4ac4e",
+      "xWeightedCharacters": 251,
+      "mediaOrderMatches": true,
+      "imageAltTextMatches": true,
+      "media": [
+        {
+          "type": "image",
+          "path": "ready/buyer-conversation.png",
+          "card": "buyer-conversation",
+          "altText": "A sample conversation in BUY HARD answers a question about paper cups and brings the purchase details and $400 approval into the same conversation.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "483e370c36864780be23fbda2452f16830981571ac1b585ff8958945d8bffa9d",
+          "bytes": 164322,
+          "url": "https://media.zernio.com/media/1789258864198_i8iupskl_buyer-conversation.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/purchase-decision.png",
+          "card": "purchase-decision",
+          "altText": "The actual BUY HARD sample purchase screen shows 20 cases of paper cups, WebstaurantStore, delivery details and the $400 total before the owner decides.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "49b477b677ecfe1fe6a1397bdd42d6c95c51abacf297c08733f48db78a14eb75",
+          "bytes": 149687,
+          "url": "https://media.zernio.com/media/1789258864937_mne931e8_purchase-decision.png"
+        }
+      ],
+      "publishedAt": null
+    },
+    {
+      "key": "build_useful_ai",
+      "zernioPostId": "6aa5ecda10074d9a4cda491e",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa5ecda10074d9a4cda491e",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-18T20:00:00-05:00",
+      "scheduledAtUtc": "2026-09-19T01:00:00+00:00",
+      "timezone": "America/Chicago",
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "mode": "Schedule",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "linkedinSha256": "7a02a2017088083c8c6bc3c1a4b9ee569a2d6012e13d61f29e9fee2e63306530",
+      "xSha256": "72e2b7ffd58dcdb100d4cae3701b78577c3e63076b33e2f3d0431a8e2334fa4c",
+      "xWeightedCharacters": 239,
+      "mediaOrderMatches": true,
+      "imageAltTextMatches": true,
+      "media": [
+        {
+          "type": "image",
+          "path": "ready/building-buyhard.png",
+          "card": "building-buyhard",
+          "altText": "Actual BUY HARD desktop dashboard and mobile purchase screen, with a note from Facundo about enjoying the work. Sample data.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "7b97441fbcba3c88dee8a95379da4ddc0844a9845c57e9388d0c0ec6bf7cdca1",
+          "bytes": 190130,
+          "url": "https://media.zernio.com/media/1789258967546_pq0i0z1r_building-buyhard.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/small-details.png",
+          "card": "small-details",
+          "altText": "Enlarged actual interface details: Approve and order beside No, because, and the buyer conversation dock that stays within reach. Sample UI.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "d3433cd3ab653a20cc0407b51db2709bdb290722d0845d39cd67f05c09c5d3de",
+          "bytes": 136046,
+          "url": "https://media.zernio.com/media/1789258968275_hwgmzy65_small-details.png"
+        }
+      ],
+      "publishedAt": null
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "zernioPostId": "6aa5ed36b2f850b20780fd12",
+      "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa5ed36b2f850b20780fd12",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-21T20:00:00-05:00",
+      "scheduledAtUtc": "2026-09-22T01:00:00+00:00",
+      "timezone": "America/Chicago",
+      "accounts": [
+        "LinkedIn @Facundo Lucci",
+        "X @FacundoLucci"
+      ],
+      "mode": "Schedule",
+      "linkedinMatches": true,
+      "xMatches": true,
+      "linkedinSha256": "c6e307130507880bcdc09acfd41a7bab3e98a47f429da7d90da9b05bb64202c9",
+      "xSha256": "d35ed51012edbabfe9760c6fd42df2a1516ab19e7b91f852197ee48adc10aafc",
+      "xWeightedCharacters": 246,
+      "mediaOrderMatches": true,
+      "imageAltTextMatches": true,
+      "media": [
+        {
+          "type": "image",
+          "path": "ready/what-if-stay-stocked.png",
+          "card": "stay-stocked",
+          "altText": "What if supplies just stayed stocked? An idea Facundo is exploring with BUY HARD, illustrated with paper cups, a cardboard box and a roll of labels.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "f6fa42dff46071054744d0281f22782875008401aaf5a9530eb200cf7d24bd14",
+          "bytes": 384335,
+          "url": "https://media.zernio.com/media/1789259060596_7pmbu2s9_what-if-stay-stocked.png"
+        },
+        {
+          "type": "image",
+          "path": "ready/what-would-you-hand-off.png",
+          "card": "what-next",
+          "altText": "Current BUY HARD sample inventory screen showing stock, usage and buying rules, next to questions about which purchasing tasks people would like to hand off.",
+          "width": 1536,
+          "height": 1024,
+          "status": "scheduled",
+          "sha256": "df0a1b605fe7e10b92c3b30d2b773b24e27ea9d5b8b82be125115ddbaeb5c058",
+          "bytes": 187996,
+          "url": "https://media.zernio.com/media/1789259061410_0sv6215n_what-would-you-hand-off.png"
+        }
+      ],
+      "publishedAt": null
+    }
+  ]
+}

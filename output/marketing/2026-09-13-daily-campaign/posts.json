@@ -1,0 +1,126 @@
+{
+  "revision": 2,
+  "direction": "Authorized rolling 48-hour schedule: three Monday product posts, approved founder fourth slot, two Tuesday product slots. Later dates remain flexible.",
+  "posts": [
+    {
+      "key": "start_with_source",
+      "title": "Start with what you have.",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-14T08:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "storyType": "setup-illustration",
+      "x": "Start with a supplier link or invoice.\n\nBUY HARD reads the item details. You review them, confirm stock and set buying rules.\n\nBring one recurring item: https://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=start_with_source\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "Your next buying system can start with one thing you already reorder.\n\nBring the supplier link or invoice you already have. BUY HARD reads the item details so you can review them, confirm stock and set the buying rules.\n\nOne item is enough to start a useful conversation. Bring yours to a 20-minute walkthrough:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=start_with_source\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 215,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/start_with_source.png",
+          "altText": "A sample invoice for paper cups, gloves and labels connects to a buyer setup card. Start with what you have. A supplier link or invoice can help set up one recurring item. Setup illustration; buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 111275,
+          "sha256": "1fb79e6c1c0456dbe1cff2583464c4c925fa42c6f60e0ac86d2d408cf1723091"
+        }
+      ],
+      "zernioPostId": "6aa709c113935182e6a4ab78"
+    },
+    {
+      "key": "sales_plan_the_buy",
+      "title": "What if sales planned the next buy?",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-14T12:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "storyType": "aspirational-question",
+      "x": "What if today's coffee sales planned tomorrow's cup order?\n\nThat's a direction for BUY HARD: sales and inventory data helping the buyer stay ahead.\n\nWhich app should it connect to?\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=sales_plan_the_buy\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "What if a busy day at the counter helped plan the next cup order?\n\nMore takeaway coffees sold. Cups and lids used faster. A buyer that adjusts the next purchase before it becomes your problem.\n\nThat's a direction we're exploring for BUY HARD: connecting daily sales and inventory apps to the buying work.\n\nWhich sales or inventory app would it need to work with in your business?\n\nExplore the current sample:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=sales_plan_the_buy\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 243,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/sales_plan_the_buy.png",
+          "altText": "What if sales planned the next buy? A proposed flow shows a busy day, cups used faster, and an earlier reorder. Product idea, not an available sales integration. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 92104,
+          "sha256": "23e4c9572f263e5696afc9d6795ccf84c483ff66d8221bb84ffe11b70e4dd024"
+        }
+      ],
+      "zernioPostId": "6aa70a94ed3bca1c37ccc8ed"
+    },
+    {
+      "key": "good_day_sample",
+      "title": "A good day to buy hard.",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-14T17:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "storyType": "sample-demo",
+      "x": "A good day to buy hard.\n\nMeet your buyer. Review the quantity, supplier and price. Make the buying decision.\n\nTry BUY HARD's sample workspace:\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=good_day_sample\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "A good day to buy hard.\n\nOpen BUY HARD's sample workspace and explore one buying decision: the cups, the supplier, the quantity and the price, together.\n\nApprove the sample purchase or tell the buyer what you'd change.\n\nThe screen shown uses sample data. No supplier is contacted.\n\nTry it:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=good_day_sample\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 205,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/good_day_sample.png",
+          "altText": "A good day to buy hard. Review one buying decision in BUY HARD. An actual sample purchase screen shows paper cups, supplier, quantity, price, and approval options. Sample data; no supplier contacted. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 125770,
+          "sha256": "76e0d5d7cf8d9064ed7de4f4c4fa792a884baed3145bc391000e8b1727053583"
+        }
+      ],
+      "zernioPostId": "6aa70b10d555df48e001d35e"
+    },
+    {
+      "key": "your_existing_supplier",
+      "title": "Already have a supplier?",
+      "scheduledAt": "2026-09-15T08:30:00-05:00",
+      "storyType": "walkthrough-invitation",
+      "x": "Already have a supplier?\n\nBring their product link to a BUY HARD walkthrough. We'll start with one recurring item and the buying rules that matter to you.\n\nhttps://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=your_existing_supplier\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "You probably already know where you buy your cups, gloves or labels.\n\nBring that supplier's product link to a BUY HARD walkthrough. We'll look at the item you reorder, how quickly you use it, and what matters when buying it again.\n\nOne supplier. One recurring item. A useful place to start.\n\nBook a 20-minute walkthrough:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=your_existing_supplier\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "campaign": "buyhard_allgas_202609",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "xWeightedCharacters": 218,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/your_existing_supplier.png",
+          "altText": "Already have a supplier? Bring their link and start with one recurring buy. An illustrated supplier card lists a product link, paper cups and buying rules. Walkthrough invitation, buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 105159,
+          "sha256": "03b4881408331a29ba54498727bf44017f92a87116aab1d8ad5a40b8209ee4bf"
+        }
+      ],
+      "zernioPostId": "6aa70b7dc3324dc13aaab5e5"
+    },
+    {
+      "key": "no_because",
+      "title": "No, because…",
+      "scheduledAt": "2026-09-15T12:30:00-05:00",
+      "storyType": "sample-dialogue",
+      "x": "Not the right price? Quantity needs changing?\n\nBUY HARD's sample approval has a \"No, because...\" option. Tell the buyer what needs to change.\n\nTry the sample:\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=no_because\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "The quantity needs changing. The price is too high. The delivery date doesn't work.\n\nA prepared purchase should leave room for your answer.\n\nIn BUY HARD's sample app, choose \"No, because...\" and the buyer asks what needs to change. The purchase stays a decision you can discuss.\n\nThe image shows the sample dialogue; no supplier is contacted.\n\nTry the purchase review:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=no_because\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "campaign": "buyhard_allgas_202609",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "xWeightedCharacters": 221,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/no_because.png",
+          "altText": "No, because… A buying decision can start a conversation. The sample buyer asks: What needs to change? I’ll check how it affects the price and delivery. Price, quantity and timing. Sample dialogue, no supplier contacted. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 95018,
+          "sha256": "f0752e94ea203efad1f1d83100c0c8883ce61f306ddf2aeeef6fd6eb90a44908"
+        }
+      ],
+      "zernioPostId": "6aa70bc75a06629f7e02fe25"
+    }
+  ]
+}

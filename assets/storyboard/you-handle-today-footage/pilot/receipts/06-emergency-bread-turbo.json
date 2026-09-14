@@ -1,0 +1,74 @@
+{
+  "job_id": "06-emergency-bread-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:54:40.715105+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "06-emergency-bread-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/06-emergency-bread.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 306,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner lifts the clear bag of bread rolls from the shelf and sets it into his wire basket beside the two wrapped sleeves of cups. Then he takes the basket handle and begins to turn away. One continuous believable grip, ordinary brisk shopping speed, no extra hands or new packages. Fixed camera, plastic rustle, quiet shop ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "2bb43aece744cbd60aefc4f29f08c4ae05a3a1d91a00526aa11903f5e6c0276d",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09be8-3308-7f73-8bfe-5d55e01f0ed2",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:55:34.803131+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09be8-3308-7f73-8bfe-5d55e01f0ed2",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3308-7f73-8bfe-5d55e01f0ed2/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.037999868392944
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a09/XCqvQfOqtoPTfHBGGLKZc_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "XCqvQfOqtoPTfHBGGLKZc_minimax-h3.mp4",
+      "file_size": 13412190
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: <Picture 1> Cinematic, live-action, Static Shot. A man (S1) with dark wavy hair and a beard, wearing an olive-green button-down shirt and a charcoal apron, stands in a well-lit grocery store. He holds a black wire shopping basket in his left hand containing two wrapped sleeves of white cups. His right hand reaches toward a wooden shelf where a clear plastic bag of bread rolls sits. The lighting is warm and practical. S1 deports reaches out with his right hand, firmly gripping the clear plastic bag of bread rolls on the shelf. With a natural, brisk motion, he lifts the bag and places it into the wire basket next to the cups. The plastic crinkles realistically under his touch. Once settled, S1 adjusts his grip on the wire basket handle with his left hand and begins to turn his body away from the shelf, moving at an ordinary shopping pace. The camera remains fixed throughout the five-second sequence, maintaining the composition and the spatial layout of the grocery store environment.\n\noverall_soundscape: The ambient sound of a quiet grocery store provides a soft background hum. The sharp, rhythmic crinkle of plastic packaging is prominent as the bread bag is lifted and moved. There is a metallic clink and shift as the bag hits the wire basket and the man adjusts his grip.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.687390323015279
+    }
+  },
+  "downloaded_at": "2026-09-13T17:55:36.077142+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/06-emergency-bread-turbo.mp4",
+  "video_bytes": 13412190
+}

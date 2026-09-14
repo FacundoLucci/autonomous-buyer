@@ -1,0 +1,74 @@
+{
+  "job_id": "02-impact-turbo-v2",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:15:43.726856+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "02-impact-turbo-v2",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/02-impact-start.png",
+    "last_frame": "frames/02-impact-end.png",
+    "usd_per_second": "0.02",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 202,
+      "prompt": "Fixed camera, ordinary live-action footage recorded and played at normal speed, 24 fps. The supplied first image is the unchanged opening composition. No slow motion. A heavy walnut upright piano is falling from a high floor well above the camera view, so it is ALREADY MOVING FAST when it enters at the top edge. Hold the intact shipment only for the first 0.35 seconds. The entire visible descent then takes about 0.25 seconds, only six video frames: rapid downward acceleration, strong brief vertical motion blur, and an abrupt heavy collision with the central cups-and-bread shipment by 0.60 seconds. It must not hover, glide, ease into the landing, decelerate before contact, or descend for several seconds. At the INSTANT of impact the cartons collapse, black bread crates break, cups and bread kick outward, and both people reflexively flinch simultaneously. All of these are one quick physical event, not separate delayed actions. Heavy mass, normal Earth gravity. Debris drops quickly and bounces with short natural arcs, with rolls slowing through friction. By 1.5 seconds the piano and most debris are still. The remaining time is the real-time aftermath: drifting dust, the two unharmed people looking at the wreckage, the piano motionless. Keep both people in their original separated positions by the truck and doorway. One sharp crash exactly on contact, short wooden crack and discordant piano clang, brief cup clatter, normal street sound. No dramatic camera move, no music, no dialogue, no freeze-frame, no speed ramp, no artificial suspended particles. Do not stretch the collision or delay reactions to fill the five seconds. The ending image specifies the wreckage arrangement only: reach that settled state by 1.5 seconds and hold naturally. Do not spread the fall over the interval between the two reference images."
+    },
+    "purpose": "Regenerate the impact at natural speed; user selected Turbo only."
+  },
+  "input_sha256": "5dbd7beada808e400313a527408122c7b0e05773e93979c1cdaa6dbb4f616786",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bc4-8b16-7fa2-a79b-ea13e2d8d343",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:17:09.987282+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bc4-8b16-7fa2-a79b-ea13e2d8d343",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-8b16-7fa2-a79b-ea13e2d8d343/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 8.032000064849854
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4906/N_-DyBAZd-Zmgz9bLArGF_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "N_-DyBAZd-Zmgz9bLArGF_minimax-h3.mp4",
+      "file_size": 15584248
+    },
+    "expanded_prompt": "How the reference pictures align with the target video \u2014 Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 5.00-second mark of the target video.\n\nintegrated_multimodal_description: [Shot 1] This is an ordinary, live-action cinematic shot, presented as normal-speed, static, 24-footage. The scene opens exactly matching the established first frame: a sunlit, leafy brick sidewalk in a city. On the left, S1, a male delivery worker in a navy cap and shirt beside a white box truck, stands next to a hand truck. On the right, S2, a male shopkeeper in a dark apron, stands in the glass doorway of the \"DELI\" storefront. In the center, stacked brown shipping cartons of white cups and black crates of bagels are arranged on the pavement. A heavy, intact walnut upright piano falls vertically from the top of the frame, descending rapidly and moving fast. The entire piano is enveloped in extreme, strong vertical motion blur. At the moment of impact, the piano crashes into the exact center of the cup and bread stacked cartons. This single, instantaneous physical event causes the brown cardboard boxes to burst completely apart. The black plastic bread crates shatter into jagged pieces. The white plastic cups and the bagels are blasted outward in a rapid, scattered debris scatter around the piano's base. Both S1 and S2 reflexively flinch, their bodies visibly jolting backward in synchronization with the heavy collision. Debris from the cartons and broken crates falls quickly to the concrete sidewalks and bounces with short, natural arcs that slow through friction. By the end of the shot, all motion ceases: the heavy, intact walnut upright piano rests solid on the paved ground in the exact center, its keyboard facing forward, nestled firmly inside the completely destroyed cartons. The broken black crate fragments, scattered cups, and loose bagels remain static across the pavement, perfectly matching the final required layout. S1 and S2 stand completely still, holding their separated positions on either side of the damaged wreckage, staring directly across at the incident.\n\noverall_soundscape: A sudden, violent and loud crash instantly shatters the quiet urban street ambience. It is immediately accompanied by a sharp, crackling sound of tearing cardboard and jagged plastic, overlaid with a brief, rapid clatter of small plastic cups and heavy bagels tumbling and hitting the concrete. Once the initial heavy collision is absorbed, a faint, brief discordant ringing from the piano's internals is heard before normal, distant street traffic resumes.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7361462232656777
+    }
+  },
+  "downloaded_at": "2026-09-13T17:25:11.293153+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v2.mp4",
+  "video_bytes": 15584248
+}

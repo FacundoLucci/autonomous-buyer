@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#151813" />
+    <meta name="color-scheme" content="dark" />
+    <title>GTM desk · BUY HARD & Facundo</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="sidebar">
+      <a class="brand" href="#overview">BUY HARD<span>FACUNDO'S GTM DESK</span></a>
+      <nav aria-label="Dashboard sections">
+        <a href="#overview" data-page="overview"><span>01</span> Overview</a>
+        <a href="#calendar" data-page="calendar"><span>02</span> Publishing</a>
+        <a href="#followups" data-page="followups"><span>03</span> Follow-ups</a>
+        <a href="#work" data-page="work"><span>04</span> Work & assets</a>
+        <a href="#sources" data-page="sources"><span>05</span> Source records</a>
+      </nav>
+      <div class="side-note">
+        <span class="eyebrow">TWO CAMPAIGNS. ONE WEEK.</span>
+        <p>Find operators for BUY HARD.<br />Open doors for Facundo.</p>
+        <small>Private on this computer.</small>
+      </div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <header>
+        <span id="today" class="eyebrow"></span
+        ><button id="refresh" class="quiet">Reload records ↻</button>
+      </header>
+      <div id="error" role="alert" hidden></div>
+      <div id="content"><p>Reading campaign records…</p></div>
+      <footer id="freshness"></footer>
+    </main>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <dialog id="conversation-dialog" aria-labelledby="dialog-title">
+      <form id="conversation-form">
+        <div class="dialog-top">
+          <h2 id="dialog-title">Add a follow-up</h2>
+          <button type="button" id="close-dialog" class="quiet" aria-label="Close follow-up form">
+            ×
+          </button>
+        </div>
+        <input name="id" type="hidden" />
+        <label
+          >Person or business<input name="name" required maxlength="160" autocomplete="off"
+        /></label>
+        <div class="form-grid">
+          <label
+            >Campaign<select name="campaign">
+              <option value="product">BUY HARD · operators</option>
+              <option value="founder">Facundo · opportunities</option>
+            </select></label
+          ><label
+            >Stage<select name="stage">
+              <option>To contact</option>
+              <option>Replied</option>
+              <option>Meeting booked</option>
+              <option>Conversation held</option>
+              <option>Pilot interest</option>
+              <option>Pilot started</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Closed</option>
+            </select></label
+          >
+        </div>
+        <label
+          >Next step<textarea
+            name="next"
+            rows="3"
+            maxlength="2000"
+            placeholder="What will move this conversation forward?"
+          ></textarea>
+        </label>
+        <div class="form-grid">
+          <label>Follow-up date<input name="due" type="date" /></label
+          ><label
+            >Conversation or profile link<input name="url" type="url" placeholder="https://"
+          /></label>
+        </div>
+        <p class="help">
+          Saved on this computer. This records your follow-up; it does not send a message.
+        </p>
+        <p id="form-error" role="alert"></p>
+        <button type="submit" class="primary">Save follow-up</button>
+      </form>
+    </dialog>
+  </body>
+</html>

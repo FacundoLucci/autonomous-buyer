@@ -1,0 +1,75 @@
+{
+  "job_id": "08-returning-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T18:03:01.683849+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "08-returning-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/08-returning-v2.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 308,
+      "prompt": "Single continuous five-second candid live-action shot at normal speed. Preserve the EXACT exterior camera and geography of the reference: truck at far left, shattered piano in central foreground, original deli entrance at far right. The owner at the right, carrying one brown grocery bag containing emergency cups and bread, takes two brisk steps INTO THE SAME DOOR to his right and disappears into the shop. We see his back and side as he enters; he does not walk toward the camera or down the street. His hands keep the bag secure. He passes beside the wreckage without stepping through it. The shattered piano stays fixed exactly where it fell, just to the left of the entrance. No new doorway, shifted storefront or moving wreckage. Worker stays by truck. Natural footsteps and street ambience, no slow motion, dialogue, music, overlays or camera movement. The worker lowers his hands naturally and looks over the wreckage."
+    },
+    "continuity_correction": "User rejected the invented interior reverse angle. Return shot must preserve the original exterior geography."
+  },
+  "input_sha256": "c4ccefc788ce277a9081babf4c1cbb98eff01a169b16e9afea4bce5a65289b5e",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bef-d840-7e13-8bbf-a45889dbadfd",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T18:03:53.483447+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bef-d840-7e13-8bbf-a45889dbadfd",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bef-d840-7e13-8bbf-a45889dbadfd/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 7.134000062942505
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a22/Qbitksw5U8Oud2Qgf-6Jr_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "Qbitksw5U8Oud2Qgf-6Jr_minimax-h3.mp4",
+      "file_size": 16857879
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: [Shot 1] This is a live-action, candid cinematic shot with a static, locked-off tripod perspective. The scene captures a sunlit city street, maintaining the exact initial geography: a large white moving truck with its rear doors open occupies the far left, manned by a man (S1) wearing a dark blue cap, dark blue long-sleeved shirt, and work pants who stands beside a metal hand-truck loaded with cardboard boxes. In the central foreground, a severely shattered dark wooden grand piano lies on the sidewalk, its lid caved in, keyboard broken, and splintered wood mixed with spilled white styrofoam cups and loaves of bread in a chaotic pile. To the far right, the exterior of a deli features a brick facade with a dark wooden sign reading \"DELI\" and a large, open glass doorway. The owner (S2), a man wearing an olive green short-sleeved shirt, dark grey trousers, and a black apron tied at his waist, stands in front of the deli entrance. He holds both hands near his waist, cradling a brown paper grocery bag visibly containing a clear plastic bag of cups and bread. \n\nEarly on, the camera remains absolutely stationary. The owner (S2) takes two brisk steps forward and to his right, moving directly into the open doorway of the deli. His movement is entirely forward into the building; his back and left side are visible to the camera as he walks. His hands keep the bag secure against his torso with both forearms. He passes closely beside the wreckage of the piano without stepping over or through the debris, maintaining his footing on the clean sidewalk edge. By the end of the shot, he has completely disappeared into the dark interior of the shop, leaving the deli door open behind him.\n\nThroughout the sequence, the shattered piano and all surrounding debris remain entirely fixed in their exact positions, with no movement or shifting. On the left, the worker (S1) remains in his stationary position by the truck. He slowly lowers his hands naturally and turns his head slightly to look over the wreckage toward the deli entrance. The natural sunlight casts steady shadows, and the background trees and distant street remain static.\n\noverall_soundscape: The ambient sound of a quiet city street, including the subtle settling of splintered wood and plastic cups, punctuated by the crisp, rhythmic clacking of leather shoes hitting the pavement and the soft rustle of a paper bag. As the owner enters, the faint acoustic thud of footsteps continues inside the shop. A muffled, soft mechanical creak is heard from the metal hand-truck.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7402545280056074
+    }
+  },
+  "downloaded_at": "2026-09-13T18:03:59.789435+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/08-returning-turbo.mp4",
+  "video_bytes": 16857879
+}

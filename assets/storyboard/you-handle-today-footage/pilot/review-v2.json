@@ -1,0 +1,51 @@
+{
+  "reviewed_at": "2026-09-13T17:39:18.993874+00:00",
+  "selected_impact": "02-impact-turbo-v4",
+  "selected_phone": "03-phone-turbo-v2",
+  "editing": "impact-retiming-v4.json",
+  "rejected_takes": {
+    "02-impact-turbo-v3": "Piano rotates onto its end; implausible landing and continuity."
+  },
+  "superseded_takes": {
+    "02-impact-turbo-v2": "Faster intact-piano version, superseded by user request for startled people and a broken piano."
+  },
+  "visual_review": [
+    "Frame sequences inspected for normal-speed drop, reaction timing, piano breakage, aftermath continuity and phone handling.",
+    "The phone background retains the same broken instrument; small loose-debris placement differs between camera angles."
+  ],
+  "new_downloads": {
+    "provider_byte_counts_match": true,
+    "full_ffmpeg_decode_passed": true,
+    "jobs": [
+      "02-impact-turbo-v2",
+      "02-impact-turbo-v3",
+      "02-impact-turbo-v4",
+      "03-phone-turbo-v2"
+    ]
+  },
+  "edited_media": {
+    "full_ffmpeg_decode_passed": true,
+    "opening_duration_seconds": 14,
+    "size": [
+      1920,
+      1080
+    ],
+    "fps": 24,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "edited_impact_duration_seconds": 4
+  },
+  "browser": {
+    "surface": "Codex in-app browser",
+    "url": "https://v3b.fal.media/files/b/0aaa497d/Ue-Qb64E9_BHsiiN5ekuU_buy-hard-opening-revised.mp4",
+    "duration": 14,
+    "ended": true,
+    "currentTime": 14,
+    "media_error": null,
+    "review_page": "Local source links and comparison target IDs validated. Revised HTML controls were not re-tested in the browser."
+  },
+  "estimated_new_video_usd": "0.40",
+  "estimated_total_video_usd": "0.90",
+  "actual_billed_usd": null,
+  "generated_clips_total": 8
+}

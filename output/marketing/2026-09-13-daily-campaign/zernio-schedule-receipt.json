@@ -1,0 +1,157 @@
+{
+  "checkedAt": "2026-09-13T20:49:58.602044+00:00",
+  "status": "scheduled_and_verified",
+  "source": "Zernio UI in the Codex in-app browser",
+  "window": {
+    "from": "2026-09-13T15:31:58-05:00",
+    "through": "2026-09-15T15:31:58-05:00"
+  },
+  "createdStories": 5,
+  "platformSchedules": 10,
+  "publishedByThisAction": false,
+  "finalQueueReloadVerified": true,
+  "posts": [
+    {
+      "key": "start_with_source",
+      "zernioPostId": "6aa709c113935182e6a4ab78",
+      "scheduledAt": "2026-09-14T08:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "platforms": [
+        "linkedin",
+        "x"
+      ],
+      "reopenedAndVerified": true,
+      "linkedinSha256": "856198ada77c0d48e13fe107b00bc0e674e4fd6ee8d7efb371dcbba5d5356604",
+      "xSha256": "1b785675d7738ded1bedb4fd757a3364be5b96c9ebcdfc771c3b207952ac6b72",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/start_with_source.png",
+          "altText": "A sample invoice for paper cups, gloves and labels connects to a buyer setup card. Start with what you have. A supplier link or invoice can help set up one recurring item. Setup illustration; buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 111275,
+          "sha256": "1fb79e6c1c0456dbe1cff2583464c4c925fa42c6f60e0ac86d2d408cf1723091"
+        }
+      ]
+    },
+    {
+      "key": "sales_plan_the_buy",
+      "zernioPostId": "6aa70a94ed3bca1c37ccc8ed",
+      "scheduledAt": "2026-09-14T12:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "platforms": [
+        "linkedin",
+        "x"
+      ],
+      "reopenedAndVerified": true,
+      "linkedinSha256": "37a3c98048aa68e33817ec8b6837466f4cff3c4da998cba863617d4dfd0734c7",
+      "xSha256": "01363437202952212744387b316f503957256759a26298f471c23e63524b88fd",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/sales_plan_the_buy.png",
+          "altText": "What if sales planned the next buy? A proposed flow shows a busy day, cups used faster, and an earlier reorder. Product idea, not an available sales integration. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 92104,
+          "sha256": "23e4c9572f263e5696afc9d6795ccf84c483ff66d8221bb84ffe11b70e4dd024"
+        }
+      ]
+    },
+    {
+      "key": "good_day_sample",
+      "zernioPostId": "6aa70b10d555df48e001d35e",
+      "scheduledAt": "2026-09-14T17:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "platforms": [
+        "linkedin",
+        "x"
+      ],
+      "reopenedAndVerified": true,
+      "linkedinSha256": "e67b2f70ad40a2fc00a3ebbb1fa11f488fb7d1fe4a78668d48788c84a81ef907",
+      "xSha256": "65cfca9a58a7060df6e6f85b9066c651eaa62ff914ff34e50761a5571e10448b",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/good_day_sample.png",
+          "altText": "A good day to buy hard. Review one buying decision in BUY HARD. An actual sample purchase screen shows paper cups, supplier, quantity, price, and approval options. Sample data; no supplier contacted. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 125770,
+          "sha256": "76e0d5d7cf8d9064ed7de4f4c4fa792a884baed3145bc391000e8b1727053583"
+        }
+      ]
+    },
+    {
+      "key": "your_existing_supplier",
+      "zernioPostId": "6aa70b7dc3324dc13aaab5e5",
+      "scheduledAt": "2026-09-15T08:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "platforms": [
+        "linkedin",
+        "x"
+      ],
+      "reopenedAndVerified": true,
+      "linkedinSha256": "61850d56b1a4922fa2f0bafc82c728f407c5c2734da41928656e63f9394e58b0",
+      "xSha256": "87f6474f13252480d9407b035509bce02f83f6634b4dc93c1035cc992b9d7c81",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/your_existing_supplier.png",
+          "altText": "Already have a supplier? Bring their link and start with one recurring buy. An illustrated supplier card lists a product link, paper cups and buying rules. Walkthrough invitation, buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 105159,
+          "sha256": "03b4881408331a29ba54498727bf44017f92a87116aab1d8ad5a40b8209ee4bf"
+        }
+      ]
+    },
+    {
+      "key": "no_because",
+      "zernioPostId": "6aa70bc75a06629f7e02fe25",
+      "scheduledAt": "2026-09-15T12:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "platforms": [
+        "linkedin",
+        "x"
+      ],
+      "reopenedAndVerified": true,
+      "linkedinSha256": "1be5c988176b091b18209ab9961b3f958da3e272891814f64d474153ad02b452",
+      "xSha256": "db7e12fc7c5e1164d650e968a71f8aff5088d9e0662aac0c2c7ea625e6061e97",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-13-daily-campaign/ready/no_because.png",
+          "altText": "No, because… A buying decision can start a conversation. The sample buyer asks: What needs to change? I’ll check how it affects the price and delivery. Price, quantity and timing. Sample dialogue, no supplier contacted. buyhard.app and all four sponsors.",
+          "type": "image",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 95018,
+          "sha256": "f0752e94ea203efad1f1d83100c0c8883ce61f306ddf2aeeef6fd6eb90a44908"
+        }
+      ]
+    }
+  ],
+  "preservedFounderSchedules": [
+    "6aa5ebc2f75a3d18d84801e6",
+    "6aa5ec7320dac980f28780cf",
+    "6aa5ecda10074d9a4cda491e",
+    "6aa5ed36b2f850b20780fd12"
+  ],
+  "napkin": {
+    "status": "unscheduled_draft",
+    "earliestDate": "2026-09-17",
+    "publishedPrerequisiteStories": 1,
+    "requiredPublishedPrerequisiteStories": 2
+  },
+  "notes": [
+    "Each post was reopened after saving. LinkedIn main copy, X custom caption, one saved image, image description, Chicago date/time and Schedule mode were read back.",
+    "The date field required native accessibility setValue; its saved value was checked before submission and after reopening.",
+    "All five new stories remained scheduled after a fresh queue reload."
+  ]
+}

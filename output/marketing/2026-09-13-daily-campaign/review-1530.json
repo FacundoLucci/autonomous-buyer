@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-09-13T20:49:58.602044+00:00",
+  "automation": "buy-hard-daily-marketing",
+  "review": "2026-09-13 15:30 America/Chicago",
+  "status": "completed_with_five_new_schedules",
+  "window": {
+    "from": "2026-09-13T15:31:58-05:00",
+    "through": "2026-09-15T15:31:58-05:00"
+  },
+  "queue": {
+    "productStoriesPublished": 7,
+    "newProductStoriesScheduled": 5,
+    "existingSundayEveningScheduled": 1,
+    "approvedFounderStoriesScheduled": 4,
+    "failedPostsVisible": 0,
+    "napkinDraft": true
+  },
+  "productCampaign": {
+    "taggedRecordedVisitorIds": 17,
+    "recordedInquiries": 0,
+    "recordedConfirmedBookings": 0,
+    "recordedPilotStarts": 0,
+    "realOperatorConversationsVerified": null
+  },
+  "founderCampaign": {
+    "publishedStories": 0,
+    "taggedVisitsRecorded": 0,
+    "hiringConversations": null,
+    "founderIntroductions": null,
+    "privateMessagesReviewed": false
+  },
+  "repo": {
+    "head": "b661028",
+    "branch": "main",
+    "applicationCodeChangedByThisReview": false,
+    "deployedByThisReview": false,
+    "concurrentWorkPreserved": true,
+    "localTrackingFix": "59277a1",
+    "continuousDemo": "Gap inspected; implementation still needed",
+    "salesIntegration": "Proposed; no provider account connected"
+  },
+  "nextActions": [
+    "Verify Sunday AgentMail publication.",
+    "Preserve all existing IDs and compare post performance at comparable ages.",
+    "Fill Tuesday evening as it enters the next rolling window.",
+    "Review specific operator answers about existing sales/inventory tools before choosing the first live connection.",
+    "Keep napkin held until September 17+ and two earlier reference stories have published receipts."
+  ],
+  "scheduleReceipt": "zernio-schedule-receipt.json",
+  "appResults": "app-metrics-1530.json",
+  "socialResults": "social-metrics-1530.json"
+}

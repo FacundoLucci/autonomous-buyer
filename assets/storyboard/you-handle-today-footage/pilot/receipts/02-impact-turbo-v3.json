@@ -1,0 +1,74 @@
+{
+  "job_id": "02-impact-turbo-v3",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:15:50.137923+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "02-impact-turbo-v3",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/02-impact-start.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 203,
+      "prompt": "Fixed camera, ordinary live-action footage recorded and played at normal speed, 24 fps. The supplied first image is the unchanged opening composition. No slow motion. A heavy walnut upright piano is falling from a high floor well above the camera view, so it is ALREADY MOVING FAST when it enters at the top edge. Hold the intact shipment only for the first 0.35 seconds. The entire visible descent then takes about 0.25 seconds, only six video frames: rapid downward acceleration, strong brief vertical motion blur, and an abrupt heavy collision with the central cups-and-bread shipment by 0.60 seconds. It must not hover, glide, ease into the landing, decelerate before contact, or descend for several seconds. At the INSTANT of impact the cartons collapse, black bread crates break, cups and bread kick outward, and both people reflexively flinch simultaneously. All of these are one quick physical event, not separate delayed actions. Heavy mass, normal Earth gravity. Debris drops quickly and bounces with short natural arcs, with rolls slowing through friction. By 1.5 seconds the piano and most debris are still. The remaining time is the real-time aftermath: drifting dust, the two unharmed people looking at the wreckage, the piano motionless. Keep both people in their original separated positions by the truck and doorway. One sharp crash exactly on contact, short wooden crack and discordant piano clang, brief cup clatter, normal street sound. No dramatic camera move, no music, no dialogue, no freeze-frame, no speed ramp, no artificial suspended particles. Do not stretch the collision or delay reactions to fill the five seconds. The piano ends upright but tilted slightly on the flattened cardboard, its exposed keyboard facing the camera, with broken crates, white paper cups and bread rolls close around its base. Maintain the same scene and a coherent solid piano throughout."
+    },
+    "purpose": "Regenerate the impact at natural speed; user selected Turbo only."
+  },
+  "input_sha256": "10691a6ca64b1cd0a5c5eb4487ef43400ff9f54c350a90775065970333a6a0db",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bc4-a325-7a52-ba21-376d81283f5f",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:17:09.983969+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bc4-a325-7a52-ba21-376d81283f5f",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bc4-a325-7a52-ba21-376d81283f5f/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.566999912261963
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4907/zdyoe8MHUKim59A_SkvNM_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "zdyoe8MHUKim59A_SkvNM_minimax-h3.mp4",
+      "file_size": 14181588
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\n[Shot 1] Ordinary live-action, 24 fps, real-time pacing, Static Shot with a fixed medium-wide street level composition matching <Picture 1>. The clear daytime street features a red brick deli building labeled \"DELI\" on the right and a sidewalk where S1, a young adult male baker with dark hair wearing an olive shirt and a heavy dark brown work apron, stands on the far right near the glass doors. Stacked on the pavement are brown cardboard cartons, a lower black plastic crate filled with golden bread loaves, and a stack of tall white paper cups. On the left, S2, a male delivery worker wearing a blue baseball cap and dark blue coveralls, stands inside the open rear of a parked white box truck beside a metal handcart with a single cardboard box. The camera remains completely locked while the first 0.35 seconds preserve the exact stillness of the opening frame. At a strict real-time speed without any slow-motion, S3 enters abruptly at the top center as a heavy, pristine dark walnut-colored upright piano dropping at extreme velocity. The piano maintains a solid, coherent vertical form and a rapid downward acceleration without hovering or gliding, descending through visible intense vertical motion blur. By the 0.60 second mark, the sheer base of the piano violently collides with the central stack of cartons and the black plastic bread crate in a single quick impact. At the exact instant, the wooden cartons collapse completely, the black plastic bread crates shatter inward, and the white paper cups and golden bread rolls instantly erupt outward in a fast physical burst. Both S1 and S2 simultaneously exhibit rapid, sharp reflex flinch reactions as their upper torsos sharply jerk backward in shock to react to the sudden impact. The heavy dark walnut piano settles onto the pulverized crushed brown cardboard and debris of the destroyed bread crate, ending upright but tilting heavily to the left such that its side profile and white exposed piano keyboard point directly at the camera. The sudden burst of debris drops heavily on the pavement and bounces with a quick, short, natural deceleration arc, rapidly slowing to a complete halting of its motion. By the 1.5 second mark, the heavy piano is entirely still while a cloud of fine street-level dust slowly drifts upward from the shattered impact zone with no artificial suspended particles. S1 remains rigidly at his boundary near the doorway, and S2 holds position still in the back of the white truck, both staring silently at the wrecked piano. The video maintains a calm, natural normal street environment for the remainder of the 5 second duration, preserving every detail, character position, and precise timing of the sudden physical event.\n\noverall_soundscape: Normal real-time urban street ambient noise is the baseline throughout. The sudden, heavy collision creates a sharp smash impact, immediately followed by a brief high-pitched discordant clatter of falling white paper cups and a heavy thud, with a faint crunch of breaking cardboard, all stopping immediately to return exclusively to the dull background urban environment.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.5098191909492016
+    }
+  },
+  "downloaded_at": "2026-09-13T17:17:11.184132+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v3.mp4",
+  "video_bytes": 14181588
+}

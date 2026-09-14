@@ -1,0 +1,139 @@
+{
+  "status": "review_assembly_ready",
+  "verified_at": "2026-09-13T18:39:32.148760+00:00",
+  "files": [
+    {
+      "file": "you-handle-today-review-v1.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1920,
+            "height": 1080,
+            "r_frame_rate": "24/1",
+            "duration": "180.000000",
+            "nb_frames": "4320",
+            "side_data_list": [
+              {}
+            ]
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "duration": "180.053333",
+            "nb_frames": "8440"
+          }
+        ],
+        "format": {
+          "duration": "180.053333",
+          "size": "43675635"
+        }
+      },
+      "full_ffmpeg_decode": "passed; no errors"
+    },
+    {
+      "file": "footage-sequence-v1.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1920,
+            "height": 1080,
+            "r_frame_rate": "24/1",
+            "duration": "54.000000",
+            "nb_frames": "1296"
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "duration": "54.000000",
+            "nb_frames": "2533"
+          }
+        ],
+        "format": {
+          "duration": "54.000000",
+          "size": "66744619"
+        }
+      },
+      "full_ffmpeg_decode": "passed; no errors"
+    }
+  ],
+  "timeline": {
+    "seconds": 180,
+    "scenes": 33,
+    "narration_cues": 29,
+    "continuous": true,
+    "source_and_copy_match": true
+  },
+  "correction": {
+    "selected_shot": "08-returning-cleanup-turbo",
+    "in_review_at_seconds": [
+      92,
+      97
+    ],
+    "delivery_truck_and_driver_removed": true,
+    "cleanup_workers": 2,
+    "original_doorway_and_piano_position_preserved": true,
+    "superseded_return_shots_excluded": true
+  },
+  "visual_review": {
+    "contact_sheet": "final-review-contact.jpg",
+    "checked": [
+      "phone handoff",
+      "full handoff text",
+      "bakery enquiry",
+      "delivery-time follow-up",
+      "wide cleanup and original entrance",
+      "approval terms"
+    ],
+    "result": "Readable text; corrected return framing preserves both crew and doorway."
+  },
+  "in_app_browser": {
+    "review_url": "http://127.0.0.1:8792/assembly/",
+    "cleanup_button_result_seconds": 92.455338,
+    "playing": true,
+    "media_error": null,
+    "footage_playback_observed_seconds": 23.767287,
+    "range_check": {
+      "status": 206,
+      "matching_bytes": 1024
+    }
+  },
+  "source_validation": {
+    "downloaded_jobs": 17,
+    "all_provider_byte_counts_match": true
+  },
+  "video_generation_cost": {
+    "estimated_total_usd": "1.80",
+    "estimated_this_continuation_usd": "0.90",
+    "actual_billed_usd": null,
+    "remaining_balance": null
+  },
+  "render_typecheck": "npm run typecheck passed",
+  "hosted_previews": [
+    {
+      "file": "assets/storyboard/you-handle-today-footage/assembly/you-handle-today-review-v1.mp4",
+      "url": "https://v3b.fal.media/files/b/0aaa4ae1/UuxlTXyaNbAmghaRKz588_buy-hard-three-minute-review-v1.mp4",
+      "bytes": 43675635,
+      "head_status": 200,
+      "uploaded_at": "2026-09-13T18:35:00.136244+00:00"
+    },
+    {
+      "file": "assets/storyboard/you-handle-today-footage/assembly/footage-sequence-v1.mp4",
+      "url": "https://v3b.fal.media/files/b/0aaa4a9f/gpBzAHaHf4x_cm9nIxIuN_buy-hard-footage-sequence-v1.mp4",
+      "bytes": 66744619,
+      "head_status": 200,
+      "uploaded_at": "2026-09-13T18:23:55.266165+00:00"
+    }
+  ],
+  "remaining_for_final_demo": [
+    "Facundo Loom camera and narration recording",
+    "Verified app captures for this purchasing scenario",
+    "Phone screen compositing and final timing to the narration"
+  ],
+  "evidence_boundary": "Buyer messages, quantities, prices, approvals and confirmations are illustrative editorial cards. No live supplier emails, orders or address changes were made."
+}

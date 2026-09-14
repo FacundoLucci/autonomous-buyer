@@ -1,0 +1,29 @@
+{
+  "revision": 9,
+  "recordedAt": "2026-09-12T04:03:06.889229+00:00",
+  "key": "napkin",
+  "zernioPostId": "6aa4ce3c179a3753f94f33b7",
+  "zernioUrl": "https://zernio.com/dashboard/posts-all?post=6aa4ce3c179a3753f94f33b7",
+  "verifiedAt": "2026-09-12T04:00:00.611Z",
+  "status": "draft",
+  "scheduledAt": null,
+  "mode": "Draft",
+  "linkedinMatches": true,
+  "xMatches": true,
+  "altMatches": true,
+  "image": "now-i-have-a-machine-buyer-handwritten.png",
+  "width": 1536,
+  "height": 1024,
+  "sha256": "404df7f5de50a9c4b7d0b9cdf95449ce70b0137d5af8ccbf41815a1dbb1e91b2",
+  "accounts": [
+    "LinkedIn @Facundo Lucci",
+    "X @FacundoLucci"
+  ],
+  "releaseCondition": "September 17 or later, after two earlier Die Hard references have published receipts.",
+  "changes": [
+    "Restore the original OpenAI product card and captions.",
+    "Make the napkin its own quote-only handwritten artwork.",
+    "Scribble out gun and insert buyer.",
+    "Hold the separate napkin for September 17 or later, after two earlier references are live."
+  ]
+}

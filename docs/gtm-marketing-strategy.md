@@ -1,34 +1,53 @@
 # BUY HARD — GTM and social plan
 
-Revised September 10, 2026 · Owner: Facundo · Campaign not started
+Revised September 13, 2026 · Owner: Facundo · Campaign started September 11
+
+This remains the **product campaign**. A separate [Facundo founder campaign](facundo-founder-campaign.md) supports hiring opportunities and YC connections through the work behind BUY HARD. Keep their copy, tracking and outcomes distinct; coordinate the shared daily posting slots.
 
 **Purchasing. Handled. Keep the line moving.**
 
-Introduce BUY HARD through its simpler daily experience: tell your buyer what is on hand, review the purchase it prepares, and report what arrives. Show one useful moment per post. Before the hackathon deadline, tag **Convex, OpenAI, Firecrawl, and AgentMail** and explain the work each enables.
+Introduce BUY HARD through the work it takes off an operator's plate: keeping supplies stocked, preparing reorders, and handling approved purchases. The buyer starts the routine work; the owner approves spending and handles deliveries or exceptions. Before the hackathon deadline, tag **Convex, OpenAI, Firecrawl, and AgentMail** and explain the work each enables.
 
-This replaces the September 5 campaign. No earlier posts, outreach, or results are assumed. Start from September 10; there is no backlog to catch up on.
+The introduction is published: [X](https://twitter.com/i/web/status/2098480454227698101) · [LinkedIn](https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/). The campaign now targets **three product posts every day, including weekends, plus a fourth responsive post when useful**. The [weekend batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.md) contains the next seven posts. The [editable gallery](../output/marketing/2026-09-11-first-three/html-preview/index.html) keeps the product cards separate from the later handwritten napkin. Publishing mode and actual queue receipts are recorded in the daily campaign folder; proposed times are not proof of scheduling.
 
 ## 1. The story we should tell
 
 **Positioning:** BUY HARD is an AI buyer for the everyday supplies that keep a small business running.
 
-**Supporting line:** “Tell your buyer what you have. Review what needs buying. Get back to your business.”
+**Supporting line:** “Stay stocked. Skip the last-minute scramble.”
 
-The product direction is that the agent handles recurring purchasing work using stock counts, usage, and buying rules. The owner approves spending and handles physical deliveries or exceptions. Replenishment must first be enabled for the item. Keep live availability claims within the evidence below.
+The agent handles recurring purchasing work using recorded stock counts, usage, buying rules, and expected deliveries. Replenishment must first be enabled for the item. Once it is set up, the owner should not have to open a chat to start every buy. Manual stock corrections and one-off buys are useful exception stories, not the opening pitch. Keep live availability claims within the evidence below.
 
 Our first audience remains owners and purchasing leads at small food businesses: delis, cafés, caterers, and food producers. Cups, lids, gloves, towels, and labels make the story concrete. This is a starting audience hypothesis; learn from the first ten operator conversations before expanding to other businesses.
 
 Three messages should carry the campaign:
 
-- **Say it naturally.** “We have 8 cases of paper cups left.” The conversation stays beside the work.
-- **Know what needs you.** Clear stock sentences and a specific buying decision make the next step easy to understand.
-- **Keep the buying moving.** Counts, supplier information, approvals, and delivery updates belong to the same process.
+- **Stay ahead of shortages.** The buyer watches projected stock and starts replenishment when needed.
+- **Delegate the buying work.** Supplier research, a prepared reorder, and approved purchasing belong to the buyer.
+- **Keep control of decisions.** The owner approves spending, records deliveries, and deals with exceptions.
 
-Use the current lime background, black type, large sentences, dot-matrix wordmark, and persistent **Your buyer** dock. Keep captions short and readable on a phone. Introduce BUY HARD as new to the audience; a redesign post can explain the build process later.
+Use the current lime background, black type, large headlines, and consistent Inter typography in the campaign cards. Use the current frontend and persistent **Your buyer** dock in app clips. Keep captions short and readable on a phone. Introduce BUY HARD as new to the audience; a redesign post can explain the build process later.
+
+### Brand voice: establish the references, then use the napkin
+
+Keep the product clear in ordinary posts. Introduce a short Die Hard nod in roughly one of every five or six stories. The early references are **“Live free. Buy hard.”** with background buying work, **“A good day to buy hard.”** with a product demo, and **“Happy trails, paperwork.”** with a source-import story. Each should make sense without knowing the films.
+
+The napkin is a separate brand post for **September 17 at 17:30 Chicago time or later**. Publish it only after at least two earlier references are live, with their post links recorded. Move it back if those stories have not run. Its whole image is the handwritten quote: **“Now I have a machine gun. Ho ho ho.”**, with **gun** visibly scribbled out and **buyer** written in its place. No extra headline, product photo, explanation, or sponsor footer on this artwork. The caption stays short, with buyhard.app and the pre-deadline sponsor mentions.
+
+| Line | Where it belongs |
+| --- | --- |
+| Live free. Buy hard. | September 12 background-work post: the operator gets time back |
+| A good day to buy hard. | September 14 demo invitation or a later verified feature launch |
+| Happy trails, paperwork. | September 16 invoice or product-link import story |
+| Now I have a machine buyer. Ho ho ho. | Standalone handwritten napkin, held until the earlier references are established |
+| Welcome to the pilot, pal. | Welcome copy after an operator agrees to a pilot |
+| Yippee-ki-yay. Stock's on the way. | An occasional actual dispatch story, using the supplier's confirmed shipment details |
+
+Post numbers remain internal. Product cards retain Inter and the lime/ink palette. The napkin deliberately uses handwriting and a scribbled correction. Keep all four sponsor mentions in each pre-deadline caption.
 
 ## 2. What changed, and what we can show
 
-Reviewed the current working tree, including uncommitted purchasing additions, against commits through September 9. On September 10, the public review link displayed the new frontend and sample workspace. A local sample interaction accepted “We have 8 cases of paper cups left” and showed 8 cases on hand. This verifies the sample interaction, not a live OpenAI request.
+Reviewed the current working tree and September 10 purchasing verification notes again on September 11. The notes record hosted development and production workers, automatic replenishment, and approved ordering. They also distinguish a controlled-store model test from a real merchant purchase. The public demo shows the new frontend with sample data; it is suitable for explaining the workflow, not proving a supplier order.
 
 | Current feature                                                           | Customer benefit                                                       | Marketing treatment                                                                               |
 | ------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -42,9 +61,9 @@ Reviewed the current working tree, including uncommitted purchasing additions, a
 
 Sources: [current frontend](../src/components/desk/app.tsx), [buyer conversation](../src/components/desk/agent-live.tsx), [company purchasing and its September 6 rehearsal](company-ordering.md), and [latest implementation verification](agent-led-purchasing-verification.md).
 
-The old plan's statement that company ordering is simply unfinished is outdated. Company purchase orders, imports, alerts, and receiving have an earlier documented development rehearsal. The newer automatic replenishment, supplier research, and browser checkout work has local verification, with live supplier checks still pending in the current verification notes. The hosted sample shows the interface; it does not establish those live outcomes. This review did not test private company purchasing or a real supplier checkout.
+Company ordering, automatic replenishment, supplier research, and a generic browser checkout worker are implemented, with hosted releases recorded in the verification notes. A live model completed a controlled-store test; no real merchant purchase was made by those launch checks. Marketing can explain the complete intended workflow with clear example labels. A claim about a real supplier order needs that order's evidence.
 
-The new ordering direction also covers how suppliers sell: use an emailed purchase order when acceptance is verified, or a prepared website checkout for a supported supplier. The owner reviews the purchase terms in the same buying experience. Website checkout remains preview content until that supplier and the hosted worker have passed live checks. [Ordering plan](agent-led-purchasing-plan.md)
+The buying workflow can use an emailed purchase order when acceptance is verified, or a prepared website checkout. The owner reviews the purchase terms in the same buying experience. Hosted worker health is already documented; successful purchasing from a specific supplier remains a separate claim. [Ordering plan](agent-led-purchasing-plan.md)
 
 **Use three clear evidence labels:**
 
@@ -52,7 +71,7 @@ The new ordering direction also covers how suppliers sell: use an emailed purcha
 - **Implementation preview:** new automation shown without a completed live supplier run. Describe what we are building and what the preview demonstrates.
 - **Verified provider run:** an actual recorded request, reply, or order result on the selected release. State when recipients or stores are controlled tests.
 
-The landing page's new **Where we've bought** section showed **0 orders and 0 merchants** during this review. It can become a useful proof point after confirmed orders exist. Demo spend, sample supplier names, and sample counts are not customer traction. Amazon, WebstaurantStore, or another listed website is not automatically a verified buying integration. [Metric implementation](../src/components/desk/merchant-metrics.tsx)
+The public merchant metric counts confirmed app-placed orders. Demo spend, sample supplier names, and sample counts are not customer traction. Amazon, WebstaurantStore, or another listed website is not automatically a verified buying integration. The Firecrawl card uses WebstaurantStore in a labeled workflow illustration, not as a report of a completed merchant order. [Metric implementation](../src/components/desk/merchant-metrics.tsx)
 
 ## 3. Make each sponsor's contribution obvious
 
@@ -60,69 +79,93 @@ Every main pre-deadline post includes all four tags: **@convex @OpenAI @firecraw
 
 | Spotlight | Strength inside BUY HARD                                                              | Short proof to capture                                                               | Buyer-facing explanation                        |
 | --------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| OpenAI    | Understands requests, prepares structured work, and reads supplied information        | A live request beside its resulting stock update or reviewed draft                   | “Tell your buyer what changed.”                 |
+| OpenAI    | Helps the buyer research options and prepare purchases within the buying rules       | An agent-prepared reorder with its research; verified run or labeled illustration     | “Your buyer stays ahead.”                       |
 | Firecrawl | Reads product and supplier pages for research                                         | A source link beside the extracted item or supplier details                          | “Start with the product link you already have.” |
 | AgentMail | Gives the buyer a purchasing inbox and linked supplier conversations                  | A verified purchase email and matching reply in the current interface                | “Keep the supplier conversation with the buy.”  |
-| Convex    | Stores the conversation, stock, approvals, and background work; updates the workspace | A saved change reflected in another view, or a conversation resumed after navigation | “Your buyer keeps track as the work moves.”     |
+| Convex    | Stores stock, approvals, and scheduled purchasing work; updates the workspace        | Background replenishment and saved progress, with the actual evidence level shown    | “Your buyer keeps working between visits.”      |
 
 The current [agent dock](../src/components/desk/agent.tsx) already names all four sponsors. [Task results](../src/components/desk/agent-work.tsx) and [activity messages](../src/components/desk/agent-live.tsx) also support credits beside the relevant work. Keep those credits readable in clips. The earlier six-stop demo's placement instructions no longer describe the main frontend.
 
 For provider spotlights, a logo or scripted sample reply alone does not prove a provider call. Capture the actual result when available. Otherwise use the preview wording in the copy bank and label the asset accordingly. Purchase emails belong to AgentMail; the separate low-stock alert sender should not be credited to it. BUY HARD's rules handle stock and money calculations, and the user approves spending.
 
-## 4. A manageable calendar starting now
+## 4. Daily publishing and adjustment
 
-The deadline remains **September 22, 2026, 12 PM Pacific / 2 PM Chicago**. Finish the package on September 21. The submission requires a public app and repository, social sharing, and a video under three minutes. [Verified event requirements](https://www.convex.dev/hackathons/all-gas)
+**Three core stories a day, every day.** Start at **08:30, 12:30, and 17:30 America/Chicago**. Keep **20:00** for a fourth post when a bold product question, a useful reply, a verified improvement, or a result warrants it. Saturday starts with “What if you could make inventory magically regenerate?” The initial channels remain X and LinkedIn, with copy adapted to each. Schedule the next 48 hours, then adjust the following slots from evidence. These times are a starting experiment, not a claim about optimal reach.
 
-**Minimum campaign: six posts** — introduction, four sponsor spotlights, final demo. Add the three optional posts only if assets are ready. Use X for the short build updates and two LinkedIn adaptations to reach operators. Reserve about 30 minutes per publishing day plus one recording session. Start with $0 in paid distribution.
+- Morning: an operator's problem and the BUY HARD benefit.
+- Midday: show one buying job, decision, or result in the product.
+- Evening: a concrete demo or walkthrough invitation, a useful answer, or a product improvement.
+- Optional fourth: an ambitious “what if” question, timely evidence, or a real audience question. Do not present a question we invented as customer feedback.
 
-| Date            | Post                                    | Priority      | Asset                                                      |
-| --------------- | --------------------------------------- | ------------- | ---------------------------------------------------------- |
-| Sep 10          | P1 — Introduce the simpler BUY HARD     | Essential     | 15-second dashboard and buyer dock clip                    |
-| Sep 11          | P2 — Talk to your buyer / OpenAI        | Essential     | Stock sentence → response; sample or live label            |
-| Sep 13          | P3 — Start with a link / Firecrawl      | Essential     | Product source → reviewed item details                     |
-| Sep 15          | P4 — Supplier conversations / AgentMail | Essential     | Purchasing inbox and linked reply; verified run or preview |
-| Sep 17          | P5 — Keep the work connected / Convex   | Essential     | Conversation and stock context across views                |
-| Sep 18          | P6 — Replenishment preview              | Optional      | Item rules and prepared purchase; retain preview label     |
-| Sep 19          | P7 — A delivery can arrive in parts     | Optional      | Partial receiving interaction using sample data            |
-| Sep 20          | P8 — Find early pilot partners          | Optional      | One familiar supply item and a clear invitation            |
-| Sep 21          | P9 — Full demo and sponsor recap        | Essential     | Fresh video of the current frontend; working public link   |
-| Sep 22, morning | Submission receipt and link check       | Required task | Public app, repo, video, social URL, submission receipt    |
+Keep the next **48 hours** concrete. Prepare the following days as themes so product progress and audience response can change them. [Weekend captions](../output/marketing/2026-09-12-daily-campaign/weekend-posts.md) · [Structured weekend batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.json).
 
-Use L1 on LinkedIn on September 10 or 11 and L2 on September 20. Reuse the same clips. Share one relevant update in the hackathon community when the demo is ready. Check replies after publishing and again the next day; follow up with operators who express interest. These are planned actions, not scheduled or completed activity.
+**September 13 afternoon queue:** Seven product stories have published on both platforms. Sunday's AgentMail post remains scheduled for 17:30. Five new product stories cover Monday's three slots and Tuesday's first two, with one image each and both platform captions verified after saving. Monday's separately approved founder post remains at 20:00. Tuesday evening is outside this review's 48-hour window and stays a flexible theme for the next review. [New captions and visuals](../output/marketing/2026-09-13-daily-campaign/posts.md) · [Schedule receipts](../output/marketing/2026-09-13-daily-campaign/zernio-schedule-receipt.json).
 
-If time gets tight, retain the six essential posts and the submission. A useful screen recording is enough to start; the cinematic film does not need to be finished first.
+| Date | 08:30 | 12:30 | 17:30 |
+| --- | --- | --- | --- |
+| Sat Sep 12 | Your buyer stays ahead — OpenAI product card | Start with a link — Firecrawl product card | Working between visits — Convex; “Live free. Buy hard.” |
+| Sun Sep 13 | Your buyer does the legwork; you approve spending | Bring one recurring item to a walkthrough | Supplier replies belong with the buy — AgentMail |
+| Mon Sep 14 | Bring an invoice or product link | What if sales planned the next buy? — intended sales and inventory connections | “A good day to buy hard.” — explore the sample |
+| Tue Sep 15 | Start with a supplier you already use | “No, because…” — ask for a change to the sample purchase | Answer a useful buying question or show the next verified improvement; flexible |
+| Wed Sep 16 | Supplier follow-up connected to the purchase | Count the delivery and see what remains outstanding | “Happy trails, paperwork.” — source import |
+| Thu Sep 17 | Why the buyer starts before a shortage | A concrete product improvement or stronger workflow proof | Handwritten napkin, only after two earlier references are live |
+| Fri Sep 18 | One recurring item for a food business | Supplier comparison with the actual source evidence | Bring your own supplier link to a walkthrough |
+| Sat Sep 19 | Everyday supplies still need buying on weekends | The current buying experience on a phone | Product FAQ based on observed questions |
+| Sun Sep 20 | Stock need → prepared purchase | Supplier conversation → confirmed result, when verified | Walk through one item with us |
+| Mon Sep 21 | Current full product demo | Four sponsors, each doing visible buying work | What the product now handles; invite pilot conversations |
+| Tue Sep 22 | Product demo and public app | Final pre-deadline product recap | Verified submission update or the next product improvement |
+
+Every row also has the conditional 20:00 slot. After September 22, retain the same daily rhythm around operator problems, product demonstrations, and verified improvements. The hackathon submission deadline remains **September 22, noon Pacific / 14:00 Chicago**; finish the submission assets on September 21. Keep buyhard.app in marketing and an accepted convex.site or chatgpt.site app address for the submission. [Official event requirements](https://www.convex.dev/hackathons/all-gas).
+
+### Adjust twice daily
+
+At **07:30 and 15:30 Chicago time**, read the actual publishing queue, recent replies, available platform metrics, the app's campaign funnel, and the latest product changes. Update the next 48 hours and record what changed and why in the [decision log](../output/marketing/2026-09-12-daily-campaign/decision-log.md).
+
+Use demo use, inquiries, confirmed walkthroughs, and pilot starts as the main outcomes. Keep impressions, reactions, comments, and clicks as supporting signals. Compare X with X and LinkedIn with LinkedIn. Read both 24-hour and 72-hour results when available. One new post is too little evidence to declare a winning topic or posting time.
+
+Repeat useful topics with a new example; change the hook or action when people look but do not use the app. If only builders respond, make the next story more concrete for the operator. Use observed objections to choose product work. Keep three daily stories as the baseline, choosing the fourth when there is enough substance.
+
+[Zernio post analytics](https://docs.zernio.com/analytics/get-analytics) can be delayed or unavailable; keep missing metrics marked unavailable. Its [daily aggregate endpoint](https://docs.zernio.com/analytics/get-daily-metrics) requires the Analytics add-on. The app's existing marketing events provide a separate conversion source. Exclude `launch-check` events and keep personal lead details out of public reports. [Current aggregate baseline](../output/marketing/2026-09-12-daily-campaign/baseline-metrics.json).
+
+### Let the campaign drive product improvements
+
+Start with the useful product story we want to demonstrate. If BUY HARD falls short, publish the idea as a bold “what if” question and turn the desired capability into a specific build task. Use the response to prioritize improvements, then follow up with the actual feature and its proof. Do not let the current feature list permanently limit the campaign.
+
+Use the [campaign product backlog](gtm-product-backlog.md) to connect each desired post to the needed change and proof. Keep existing frontend work intact; use an isolated checkout when implementation overlaps concurrent edits. Prepare changes and focused checks before bringing a concrete production release for approval. Actual purchases and supplier messages still need authorization for their recipients, terms, and spend.
+
+Questions about future capabilities can run now. For example: “What if you could make inventory magically regenerate?” Pair them with a relevant product link and an invitation to respond. Use concrete statements for existing features and actual results; use questions or future-oriented wording for what we want to make possible. Publish specific availability or completed-outcome claims after the relevant feature or result is verified. Keep the distinction between a missing feature and a feature that exists but still needs a real supplier check.
 
 ## 5. Revised social copy
 
-The demo link below opened the new public sample workspace on September 10. Check it again before publishing. Only **[VIDEO_URL]** remains to be filled after a current video exists. Each X draft fits a 280-character budget with the usual link allowance.
+Use buyhard.app for all public campaign links. Post numbers and planning labels stay internal. The demo link below opened the public sample workspace on September 11. Check it again before publishing. Only **[VIDEO_URL]** remains to be filled after a current video exists. Each X draft fits a 280-character budget with the usual link allowance.
 
 ### P1 — Introduction · X
 
-> Meet BUY HARD. An AI buyer for everyday supplies.
+> Meet your new buyer.
 >
-> A clear stock picture. A conversation beside the work. A purchase for you to review.
+> BUY HARD helps keep everyday supplies stocked. It watches usage and prepares reorders. You approve the spend.
 >
-> Explore the sample demo: https://festive-coyote-483.convex.site/?demo=true
+> See the sample demo or book a walkthrough: https://buyhard.app
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P2 — OpenAI · X
 
-> "We have 8 cases of paper cups left."
+> Your buyer stays ahead.
 >
-> That's how a stock update should start.
+> BUY HARD watches stock and prepares reorders before you run out. OpenAI helps research and prepare the buy.
 >
-> We're building BUY HARD's buyer with OpenAI. Try the sample conversation: https://festive-coyote-483.convex.site/?demo=true
+> Sample workflow: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P3 — Firecrawl · X
 
-> Already have a product link? Start there.
+> Start with a link. Automated buying.
 >
-> BUY HARD uses Firecrawl to read product pages and bring details into the buying process for review.
+> Firecrawl reads the product page. BUY HARD prepares the purchase and orders after your approval.
 >
-> Explore the sample app: https://festive-coyote-483.convex.site/?demo=true
+> Illustrated workflow. Book a walkthrough: https://buyhard.app/walkthrough
 >
 > @convex @OpenAI @firecrawl @agentmail
 
@@ -132,27 +175,29 @@ The demo link below opened the new public sample workspace on September 10. Chec
 >
 > AgentMail gives BUY HARD's buyer an inbox for quote requests, replies, and order messages.
 >
-> Explore the sample experience: https://festive-coyote-483.convex.site/?demo=true
+> Explore the sample experience: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
 ### P5 — Convex · X
 
-> Your buyer needs to remember the work.
+> Your buyer keeps working between visits.
 >
-> Convex keeps BUY HARD's conversation, stock, and purchases connected as you move through the app.
+> Convex runs BUY HARD's background replenishment and keeps stock, buying progress, and approvals connected.
 >
-> Explore the sample demo: https://festive-coyote-483.convex.site/?demo=true
+> Live free. Buy hard.
+>
+> Explore the sample demo: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
-### P6 — Replenishment preview · X
+### P6 — A one-off stock correction · X · After the core sequence
 
-> Give your buyer the count, usage, and buying rules. Review the purchase it prepares.
+> "We have 8 cases of paper cups left."
 >
-> That's the replenishment flow we're building in BUY HARD.
+> An unexpected stock change shouldn't mean a form to fill out. Tell BUY HARD what changed; its buyer can adjust the plan.
 >
-> Sample preview: https://festive-coyote-483.convex.site/?demo=true
+> Sample stock update: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
@@ -162,7 +207,7 @@ The demo link below opened the new public sample workspace on September 10. Chec
 >
 > BUY HARD's receiving flow records what arrived and keeps the rest outstanding.
 >
-> One small detail from the sample app: https://festive-coyote-483.convex.site/?demo=true
+> One small detail from the sample app: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 
@@ -172,7 +217,7 @@ The demo link below opened the new public sample workspace on September 10. Chec
 >
 > Help shape BUY HARD around one item you reorder. We're looking for early pilot partners.
 >
-> Reply "pilot". Sample demo: https://festive-coyote-483.convex.site/?demo=true
+> Bring one item to a walkthrough: https://buyhard.app/walkthrough
 >
 > @convex @OpenAI @firecrawl @agentmail
 
@@ -180,7 +225,7 @@ The demo link below opened the new public sample workspace on September 10. Chec
 
 > BUY HARD. Keep the line moving.
 >
-> Here's our All Gas Hackathon demo: talk to your buyer, review a purchase, and track what arrives.
+> Our All Gas Hackathon demo: your buyer watches stock, prepares the reorder, and handles the approved purchase.
 >
 > Built with four sponsors doing useful work. [VIDEO_URL]
 >
@@ -194,9 +239,9 @@ Label the final video with the evidence level actually shown. Include at least o
 >
 > That's the idea behind BUY HARD.
 >
-> Tell your buyer what's on hand. See what needs attention. Review a prepared purchase. Record what actually arrives.
+> Set up a recurring item. Your buyer watches projected stock and prepares the reorder. You approve spending and record what arrives.
 >
-> I've been simplifying the app around those everyday moments: clear sentences, a persistent conversation, and the details close by when you need them.
+> I've been simplifying the app around the work it handles for you: routine replenishment, supplier research, and approved purchasing. The next decision is clear when it needs your attention.
 >
 > OpenAI powers the live buyer. Firecrawl reads product pages. AgentMail handles purchasing conversations. Convex keeps the work connected.
 >
@@ -204,7 +249,7 @@ Label the final video with the evidence level actually shown. Include at least o
 >
 > What supply do you spend too much time chasing?
 >
-> Explore: https://festive-coyote-483.convex.site/?demo=true
+> Explore: https://buyhard.app/?demo=true
 >
 > Building for the Convex All Gas Hackathon with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail].
 
@@ -214,25 +259,25 @@ Label the final video with the evidence level actually shown. Include at least o
 >
 > Ordinary supplies create real work: checking stock, chasing supplier details, reviewing an order, and counting a delivery.
 >
-> BUY HARD brings that work into a conversation and a clear buying view.
+> BUY HARD watches projected stock and prepares the next purchase, so the operator can focus on decisions and deliveries.
 >
 > We're looking for a few food-business operators to help shape an early pilot. Start with one recurring item and walk through how you buy it today. We'll try the supported setup together and agree on the next step.
 >
 > Which item would you start with?
 >
-> Sample demo: https://festive-coyote-483.convex.site/?demo=true
+> Sample demo: https://buyhard.app/?demo=true
 >
 > Built with [mention Convex], [mention OpenAI], [mention Firecrawl], and [mention AgentMail] for the All Gas Hackathon.
 
 ## 6. Record once, make several useful assets
 
-**First clip: 15–30 seconds.** Show the dashboard, type “We have 8 cases of paper cups left,” and show the sample buyer's response. End on “Keep the line moving” and the demo link. Preserve the sample label and sponsor footer. This is enough for the introduction and a conversation teaser.
+**First clip: 15–30 seconds.** Open on a recurring item with replenishment enabled, then show why stock is projected to run low and the purchase the buyer has prepared. Finish on the owner's approval decision and buyhard.app. Preserve sample labels. Use a continuous verified run for cause-and-effect claims; otherwise identify the scenes as examples. Manual stock entry should not be the opening action.
 
 **Main demo: aim for 2:15–2:40.** Open with an everyday supply problem, then show the buyer doing useful work in the current interface.
 
 | Moment                   | What to show                                                     | What the viewer should understand                          |
 | ------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------- |
-| Know the stock           | A short stock update and the relevant inventory view             | I can tell it what changed                                 |
+| Stay ahead of low stock  | Enabled replenishment, stock forecast, and the buyer starting work | The buyer notices the need and starts preparing the buy    |
 | Prepare and review a buy | Product evidence, a prepared purchase, and **Approve and order** | The agent does the preparation; I decide what to spend     |
 | Follow the delivery      | A linked supplier confirmation, then full or partial receiving   | Promised stock and physically received stock stay distinct |
 
@@ -242,7 +287,7 @@ Capture the new frontend throughout. The older [film treatment](demo-film-treatm
 
 Additional ideas, in order of effort:
 
-1. **One sentence, one job:** a series of short stock, item, and delivery interactions.
+1. **What your buyer handled:** a prepared reorder, supplier research, and a linked supplier reply, each with its evidence level visible.
 2. **Less screen, clearer decision:** one optional build post showing how the interface was simplified; finish on the new experience.
 3. **Bring your own supplier:** show the directory and notes, while making the supplier's actual support status clear.
 4. **The delivery that arrived in parts:** show an ordinary receiving problem handled clearly.
@@ -252,7 +297,7 @@ Use captions and real app footage. Repurpose the best clip vertically after the 
 
 ## 7. Turn attention into early customer conversations
 
-**Primary action now:** explore the sample demo. **Next action:** reply about an early pilot. Treat sponsor and builder engagement as distribution; count operator interest separately.
+**Primary action:** explore the sample demo. **Next action:** book a [20-minute walkthrough](https://buyhard.app/walkthrough) around one recurring item. Treat sponsor and builder engagement as distribution; count operator interest separately.
 
 Offer a 20-minute review of one recurring item: how it is bought today, where the work piles up, and whether BUY HARD's supported setup helps. Ask about counts, usage, suppliers, approval, and delivery handling. Expand to live purchasing after the selected supplier and workflow are verified and the buyer agrees to the specific activity.
 
@@ -268,12 +313,16 @@ After September 22, shift toward customer problems, lessons, and verified pilot 
 >
 > If you run a food business, pick one item you reorder and show us the process around it.
 >
-> Want to help shape an early pilot? Reply "pilot".
+> Bring one recurring item to a walkthrough: https://buyhard.app/walkthrough
 
-## 8. Start here
+## 8. Operating checklist
 
-- [ ] **Today:** record the short stock-conversation clip from the current sample app and prepare P1. The [public demo](https://festive-coyote-483.convex.site/?demo=true) was checked September 10; verify the same page before capture.
-- [ ] **Next:** prepare the four sponsor assets. Use actual provider evidence where available and labeled previews where live proof is pending. Keep the current interface and readable credits in view.
-- [ ] **By September 21:** record the current main demo, replace [VIDEO_URL], publish the final sponsor recap, and assemble the public app, repo, build log, and video for the [official submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma). Retain the submission receipt. [Event requirements](https://www.convex.dev/hackathons/all-gas)
+- [x] Introduction published September 11 on X and LinkedIn.
+- [x] Prepare seven posts covering Saturday and Sunday, including the aspirational inventory question.
+- [x] Restore the OpenAI product card and separate the handwritten napkin for later.
+- [x] Confirm seven weekend posts in Zernio; [saved schedule receipts](../output/marketing/2026-09-12-daily-campaign/zernio-schedule-receipt.json) are separate from later publication.
+- [x] Activate reviews at 07:30 and 15:30 Chicago time. At each run, record material evidence, content decisions and product work.
+- [ ] Complete the continuous reorder demo and supplier proof tasks before their stronger claims run.
+- [ ] By September 21, record the current main demo, replace [VIDEO_URL], and assemble the app, repository, build log, video, and social links for the [submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma).
 
-Status: strategy and drafts revised. No posts, outreach, scheduling, deployment, or submission performed by this revision.
+Current publishing state is recorded in the [daily campaign batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.json) and [posting package](../output/marketing/2026-09-11-first-three/ready/README.md). The campaign plan is updated as product proof and audience evidence change.

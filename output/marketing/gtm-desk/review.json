@@ -1,0 +1,222 @@
+{
+  "checkedAt": "2026-09-14T02:49:00Z",
+  "scope": "BUY HARD + Facundo founder content",
+  "titles": {
+    "p1_intro": "Meet your new buyer",
+    "p2_openai": "Your buyer stays ahead",
+    "p3_firecrawl": "Start with a link",
+    "p5_convex": "Live free. Buy hard.",
+    "what_if_inventory": "What if inventory regenerated?",
+    "approve_the_spend": "You approve the spending",
+    "one_item_walkthrough": "Bring one recurring item",
+    "p4_agentmail": "Supplier replies belong with the buy",
+    "start_with_source": "Start with what you have",
+    "sales_plan_the_buy": "What if sales planned the next buy?",
+    "good_day_sample": "A good day to buy hard.",
+    "your_existing_supplier": "Already have a supplier?",
+    "no_because": "No, because…",
+    "simpler_frontend": "I’ve been simplifying things",
+    "give_agent_a_job": "Figuring out the handoff",
+    "build_useful_ai": "I’d love to build more of this",
+    "ordinary_supplies_big_ambition": "What would you hand off first?",
+    "napkin_machine_buyer": "Now I have a machine buyer."
+  },
+  "founderKeys": [
+    "simpler_frontend",
+    "give_agent_a_job",
+    "build_useful_ai",
+    "ordinary_supplies_big_ambition"
+  ],
+  "postEvidence": {
+    "p1_intro": "Sample demo · operator invitation",
+    "p2_openai": "Illustrated workflow · sample demo",
+    "p3_firecrawl": "Workflow illustration · no completed merchant order claimed",
+    "p5_convex": "Implemented buying logic · public sample",
+    "what_if_inventory": "Future vision · question",
+    "approve_the_spend": "Sample purchase decision",
+    "one_item_walkthrough": "20-minute operator walkthrough invitation",
+    "p4_agentmail": "Sample supplier conversation · not a live exchange",
+    "start_with_source": "Setup illustration · one recurring item",
+    "sales_plan_the_buy": "Intended capability · ask which tools operators use",
+    "good_day_sample": "Public sample · no supplier contacted",
+    "your_existing_supplier": "Operator walkthrough invitation",
+    "no_because": "Sample dialogue · no supplier contacted",
+    "simpler_frontend": "Archived and current sample UI · design comparison",
+    "give_agent_a_job": "Sample agent workflow · builder conversation",
+    "build_useful_ai": "Current work sample · hiring invitation",
+    "ordinary_supplies_big_ambition": "Future vision and current inventory sample",
+    "napkin_machine_buyer": "Held until Sep 17+ and two earlier reference stories are published"
+  },
+  "actions": [
+    {
+      "id": "operator-conversations",
+      "title": "Start the first operator conversations",
+      "owner": "Facundo",
+      "when": "Start this week",
+      "next": "Record five relevant food-business contacts, the supply each reorders, and a next step. Aim for five conversations and two interested pilot candidates by submission."
+    },
+    {
+      "id": "tracking-release",
+      "title": "Release and recheck demo tracking",
+      "owner": "Facundo + product task",
+      "when": "Next release decision",
+      "next": "The tested demo-use and walkthrough handoff fix is local at 59277a1. Bring it into the chosen release and verify production before using demo conversion to judge posts."
+    },
+    {
+      "id": "narration",
+      "title": "Record your narration and shorten the final cut",
+      "owner": "Facundo",
+      "when": "By Sep 21",
+      "next": "The assembled cut is ready for your voice and camera. Its actual duration is 180.053 seconds; trim the finished narrated version below three minutes and verify playback."
+    },
+    {
+      "id": "provider-checks",
+      "title": "Finish the Square and Shopify checks",
+      "owner": "Existing product build task",
+      "when": "Build in progress",
+      "next": "Local commit 6b09402 contains both connections and an interactive walkthrough. Confirm the provider test accounts and complete event-to-forecast proof before claiming a live integration."
+    },
+    {
+      "id": "tuesday-slot",
+      "title": "Choose Tuesday evening’s product story",
+      "owner": "Daily marketing review",
+      "when": "Sep 15, 5:30 p.m. slot",
+      "next": "Fill this slot during the next rolling review using actual questions or verified progress. Preserve the five scheduled product stories and four founder schedules."
+    },
+    {
+      "id": "founder-opportunities",
+      "title": "Give founder responses a next step",
+      "owner": "Facundo",
+      "when": "From Sep 14",
+      "next": "Use the follow-up list for relevant replies, introductions and hiring conversations. Keep a compact portfolio of your best public work ready to share."
+    },
+    {
+      "id": "napkin-gate",
+      "title": "Check the napkin’s prerequisites",
+      "owner": "Daily marketing review",
+      "when": "Sep 17 or later",
+      "next": "Keep it as a draft until two earlier film-reference stories have published links. One is live now; the second is scheduled for Sep 14."
+    },
+    {
+      "id": "submission",
+      "title": "Assemble the submission package",
+      "owner": "Facundo",
+      "when": "Ready Sep 21; due Sep 22, 2 p.m.",
+      "next": "Confirm the public repository, root hackathon.md, accepted convex.site or chatgpt.site app URL, sponsor-tagged post links and final video link. Record the actual submission receipt."
+    }
+  ],
+  "workstreams": [
+    {
+      "title": "Daily product publishing",
+      "status": "Running",
+      "tone": "success",
+      "owner": "BUY HARD daily marketing",
+      "detail": "Eight stories are published on X and LinkedIn. Five more product stories are scheduled through Tuesday midday. One standalone brand post is held as a draft.",
+      "proof": "Queue read September 13, about 9:44 p.m. Chicago. The next 48-hour review fills later slots.",
+      "url": "https://zernio.com/dashboard/posts-all?view=table",
+      "linkTitle": "Open publishing queue"
+    },
+    {
+      "title": "Founder campaign",
+      "status": "Scheduled",
+      "tone": "neutral",
+      "owner": "Facundo",
+      "detail": "Four approved stories run Sep 14, 16, 18 and 21 at 8 p.m. with two images each. No founder post is published yet.",
+      "proof": "Keep product pilots separate from hiring, introductions and interviews. Private responses have not been reviewed.",
+      "source": "docs/facundo-founder-campaign.md"
+    },
+    {
+      "title": "You handle today · launch film",
+      "status": "Ready for narration",
+      "tone": "warn",
+      "owner": "Facundo",
+      "detail": "The final cut combines owner footage, the real app components and staged story data. The edit and browser playback are verified. Your narration and camera remain.",
+      "proof": "Fresh ffprobe: 180.053333 seconds. The official judging criteria say under three minutes. This is a staged demonstration, not a real supplier order.",
+      "source": "assets/storyboard/you-handle-today-footage/assembly/README-v2.md"
+    },
+    {
+      "title": "Square + Shopify sales connections",
+      "status": "Built locally; checks ongoing",
+      "tone": "warn",
+      "owner": "Plan hackathon GTM strategy",
+      "detail": "The separate sales-connections checkout has commit 6b09402: “Add Square and Shopify sales connections with interactive walkthrough”. The task is still active.",
+      "proof": "Current checkout also has ongoing auth and test changes. This review does not establish a hosted release or a provider-delivered real test run.",
+      "source": "docs/sales-driven-replenishment-proposal.md"
+    },
+    {
+      "title": "Walkthrough and app leads",
+      "status": "Released path; tracking gap",
+      "tone": "warn",
+      "owner": "Product + Facundo",
+      "detail": "The existing inquiry, calendar and private lead list have release evidence. The demo-use and direct-approval handoff fix is tested locally but lacks a verified production release in these records.",
+      "proof": "Fresh production queries found 20 tagged product browser IDs and zero non-test inquiries, confirmed bookings or pilot starts. Launch checks were excluded.",
+      "url": "https://buyhard.app/leads",
+      "linkTitle": "Open private leads"
+    },
+    {
+      "title": "First real supplier purchase",
+      "status": "Scenario needed",
+      "tone": "warn",
+      "owner": "Facundo + product task",
+      "detail": "Hosted worker and controlled-store checks are documented. A completed real merchant purchase still needs a chosen supplier, item, terms and capped approval.",
+      "proof": "A staged film, sample dialogue or running worker is not evidence of a real supplier purchase.",
+      "source": "docs/gtm-product-backlog.md"
+    }
+  ],
+  "sources": [
+    {
+      "kind": "Strategy",
+      "title": "Product campaign",
+      "description": "Audience, positioning, daily rhythm, sponsor stories, operator targets and submission checklist.",
+      "path": "docs/gtm-marketing-strategy.md"
+    },
+    {
+      "kind": "Strategy",
+      "title": "Founder campaign",
+      "description": "Personal voice, approved four-post sequence, hiring and founder outcomes.",
+      "path": "docs/facundo-founder-campaign.md"
+    },
+    {
+      "kind": "Build",
+      "title": "Campaign product backlog",
+      "description": "Five feature and verification tasks; some status text predates the active sales build.",
+      "path": "docs/gtm-product-backlog.md"
+    },
+    {
+      "kind": "Decisions",
+      "title": "Daily decision log",
+      "description": "Why posts changed, what the reviews learned and what follows.",
+      "path": "output/marketing/2026-09-12-daily-campaign/decision-log.md"
+    },
+    {
+      "kind": "Evidence",
+      "title": "Live queue snapshot",
+      "description": "The publishing states and links read in this review.",
+      "path": "output/marketing/gtm-desk/queue-observation.json"
+    },
+    {
+      "kind": "Evidence",
+      "title": "Production funnel snapshot",
+      "description": "Read-only aggregates from all event and lead pages; launch checks excluded.",
+      "path": "output/marketing/gtm-desk/app-metrics.json"
+    },
+    {
+      "kind": "Assets",
+      "title": "Assembled film",
+      "description": "Version 2, remaining narration, staged data boundary and edit map.",
+      "path": "assets/storyboard/you-handle-today-footage/assembly/README-v2.md"
+    },
+    {
+      "kind": "Conversion",
+      "title": "Walkthrough release notes",
+      "description": "Inquiry, booking, attribution and private lead-list behavior and verification.",
+      "path": "docs/marketing-walkthrough.md"
+    },
+    {
+      "kind": "Review",
+      "title": "GTM check-in",
+      "description": "The consolidated findings, priorities and operating arrangement.",
+      "path": "docs/gtm-review-2026-09-13.md"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "job_id": "03-phone-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T13:50:44.485570+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "03-phone-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/03-phone.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "quality",
+      "enable_safety_checker": true,
+      "seed": 103,
+      "prompt": "One continuous five-second medium shot with a gentle push in. The deli owner stays stationary and looks down at the smartphone held naturally in both hands in front of his chest. He types a short message with his thumbs, taps once and lowers the phone slightly. His expression shifts from dry disbelief to practical resolve. Preserve his identity, short dark hair, olive shirt, charcoal apron, hands and phone shape. Keep the phone screen facing him and its back facing the camera. The damaged delivery and upright piano remain softly out of focus behind him, stationary. Natural street ambience and faint clothing movement. No phone call, speaking, lip sync, music, text, interface overlays or camera cuts."
+    }
+  },
+  "input_sha256": "8a8100c0faedf5e7b8643420ffea3216e9721c57723d0049df4ed7e9ecc793a9",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09b08-dea8-7861-9847-3c1f8fcd3c5b",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T13:51:34.330118+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09b08-dea8-7861-9847-3c1f8fcd3c5b",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-dea8-7861-9847-3c1f8fcd3c5b/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 49.07100009918213
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4455/Kw3z7w9lcPWCL7PYg0mRU_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "Kw3z7w9lcPWCL7PYg0mRU_minimax-h3.mp4",
+      "file_size": 13048115
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\nintegrated_multimodal_description: [Shot 1] This is a live-action, cinematic medium shot. The camera executes a gentle, continuous push in throughout the entire clip, slowly tightening the framing on the primary subject while the background remains softly out of focus. In the foreground, a man, the deli owner, stands on a sunlit city sidewalk. He has short, dark, wavy hair and a neatly trimmed beard. He wears an olive green long-sleeve button-up shirt with the sleeves rolled up to his forearms, exposing his wrists, layered under a charcoal grey apron secured with dark metal rivets at the chest and a tied fabric strap around his waist. He holds a black smartphone naturally in both hands in front of his chest, with the phone's screen facing him and its dark back, featuring a camera module in the upper corner, facing the camera. His elbows are tucked close to his sides. The background is a detailed, softly blurred street scene beneath leafy green trees. To the right, a red brick building features a weathered wooden sign reading \"DELI\" in white capital letters above a black-framed glass door, with warm interior lights visible inside the shop. To the left, a white delivery truck is parked on the street, its rear cargo door open, revealing stacked brown cardboard boxes inside the dark interior. Between the truck and the deli, the sidewalk is a scene of mild chaos: a dark brown upright wooden piano sits incongruously on the pavement, surrounded by scattered brown cardboard boxes, overturned black plastic milk crates, spilled white paper cups, and several round bagels resting directly on the concrete surface. The lighting is natural daytime sunlight coming from the left, casting soft shadows and highlighting the texture of the man's hair and the fabric of his clothing. Early in the clip, the man remains stationary in his stance, his expression one of dry disbelief, characterized by a slightly furrowed brow and tightened lips as he looks down at the screen. He begins to type a short message, his thumbs moving in rapid, subtle twitches across the unseen glass surface. Faint clothing movement is visible as a gentle breeze catches the fabric of his shirt and apron. In the middle of the clip, he finishes typing and taps the screen once firmly with his right thumb to send the message; a soft, distinct tapping sound is heard at this moment. Toward the end of the clip, he lowers the phone slightly away from his chest, moving his hands down just a few inches. As he does this, his facial expression shifts noticeably: the furrowed brow relaxes, the eyes soften slightly, and his jaw sets firmly, transitioning from dry disbelief to a clear look of practical resolve. Throughout the entire sequence, the man's identity, clothing, and the shape of his hands and phone are perfectly preserved without any distortion. The damaged delivery items, the scattered cups and bagels, the upright piano, and the truck in the background remain completely stationary and softly out of focus, just as they appeared initially. The camera's gentle push in continues smoothly without any cuts or sudden movements. There is no speaking, no lip sync, and no on-screen text or interface overlays present at any point.\n\noverall_soundscape: The audio track begins with a continuous layer of natural street ambience, featuring the low, distant rumble of city traffic and the soft, airy sound of a gentle breeze blowing through the outdoor environment. As the man types on his phone, the subtle, rapid tapping of his thumbs against the glass screen is clearly heard in the foreground, accompanied by the faint, muffled rustling of his olive shirt and charcoal apron shifting slightly with his small arm movements. The moment he finishes his message, a single, distinct, and slightly louder tap is audible as his right thumb strikes the screen to send it. Followed by this, a soft fabric friction sound is produced as he lowers the smartphone slightly, shifting his posture. The ambient city sounds persist steadily throughout the entire clip, providing a realistic outdoor backdrop without any sudden loud interruptions or dramatic shifts in volume. There are no vocalizations, speaking, or phone call sounds present.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.825135777995456
+    }
+  },
+  "downloaded_at": "2026-09-13T13:51:35.694899+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/03-phone-turbo.mp4",
+  "video_bytes": 13048115
+}

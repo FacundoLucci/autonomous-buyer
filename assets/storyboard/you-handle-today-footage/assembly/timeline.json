@@ -1,0 +1,482 @@
+{
+  "fps": 24,
+  "duration": 180,
+  "status": "Review assembly with illustrative buyer cards and narration guide; founder recording and verified app captures pending.",
+  "scenes": [
+    {
+      "start": 0,
+      "duration": 5,
+      "layout": "full",
+      "shot": "11-back-to-business-turbo",
+      "title": "You handle the business.",
+      "eyebrow": "An ordinary morning"
+    },
+    {
+      "start": 5,
+      "duration": 5,
+      "layout": "full",
+      "shot": "10-serving-turbo",
+      "eyebrow": "Everyday supplies. Quietly handled."
+    },
+    {
+      "start": 10,
+      "duration": 5,
+      "layout": "full",
+      "shot": "01-unloading-turbo",
+      "eyebrow": "The next delivery"
+    },
+    {
+      "start": 15,
+      "duration": 2,
+      "layout": "card",
+      "title": "Then life happens.",
+      "eyebrow": "A very ordinary problem. An unusual cause."
+    },
+    {
+      "start": 17,
+      "duration": 4,
+      "layout": "full",
+      "shot": "02-impact-turbo-v4-edited",
+      "eyebrow": "The unexpected",
+      "loud": true
+    },
+    {
+      "start": 21,
+      "duration": 6,
+      "layout": "split",
+      "poster": "02-impact-end-broken-v2",
+      "title": "Cups. Bread.\nThe whole shipment.",
+      "eyebrow": "One ruined delivery",
+      "body": "And the customers are still coming.",
+      "focus": "55% center"
+    },
+    {
+      "start": 27,
+      "duration": 6,
+      "layout": "card",
+      "title": "Today still\nhas to happen.",
+      "eyebrow": "The owner knows the immediate fix.",
+      "body": "Pick up enough supplies to keep the shop running."
+    },
+    {
+      "start": 33,
+      "duration": 5,
+      "layout": "split",
+      "shot": "03-phone-turbo-v2",
+      "title": "One handoff.",
+      "eyebrow": "Owner → Buyer",
+      "body": "The shipment is ruined. I’m picking up emergency supplies.",
+      "focus": "80% center"
+    },
+    {
+      "start": 38,
+      "duration": 14,
+      "layout": "card",
+      "title": "I’ll cover the next few days.",
+      "eyebrow": "Owner → Buyer",
+      "body": "Please arrange replacement cups and bread as quickly as possible.\n\nThe cups can come from the online store. Our bakery takes orders by email."
+    },
+    {
+      "start": 52,
+      "duration": 6,
+      "layout": "card",
+      "title": "I’ve got it.",
+      "eyebrow": "Buyer → Owner",
+      "body": "You handle today. I’ll arrange the quickest replacements for both."
+    },
+    {
+      "start": 58,
+      "duration": 5,
+      "layout": "full",
+      "shot": "04-leaving-turbo",
+      "eyebrow": "The owner handles the immediate problem."
+    },
+    {
+      "start": 63,
+      "duration": 5,
+      "layout": "split",
+      "shot": "05-emergency-cups-turbo",
+      "title": "Cups, online.",
+      "eyebrow": "Meanwhile · The buyer",
+      "body": "Same product. The right quantity. The earliest delivery.",
+      "focus": "36% center"
+    },
+    {
+      "start": 68,
+      "duration": 7,
+      "layout": "card",
+      "title": "Replacement cups",
+      "eyebrow": "Online store · Terms ready",
+      "rows": [
+        [
+          "Paper cups",
+          "4 cases · 2,000 cups"
+        ],
+        [
+          "Total, including delivery",
+          "$96.00"
+        ],
+        [
+          "Arrival",
+          "Tomorrow, by 5 pm"
+        ]
+      ],
+      "note": "Ready for the owner’s decision."
+    },
+    {
+      "start": 75,
+      "duration": 5,
+      "layout": "split",
+      "shot": "06-emergency-bread-turbo",
+      "title": "Bread, by email.",
+      "eyebrow": "Buyer → Bakery",
+      "body": "Our delivery was damaged. Can you supply 120 bread rolls? Please confirm the total and your earliest delivery.",
+      "focus": "40% center"
+    },
+    {
+      "start": 80,
+      "duration": 5,
+      "layout": "split",
+      "shot": "07-loading-car-turbo",
+      "title": "The enquiry is underway.",
+      "eyebrow": "The owner keeps moving",
+      "body": "The buyer handles the supplier conversation while emergency supplies are loaded.",
+      "focus": "54% center"
+    },
+    {
+      "start": 85,
+      "duration": 4,
+      "layout": "card",
+      "title": "“We can supply 120 rolls.”",
+      "eyebrow": "Bakery → Buyer",
+      "body": "The total is $84, including delivery.",
+      "note": "The delivery time is still missing."
+    },
+    {
+      "start": 89,
+      "duration": 3,
+      "layout": "card",
+      "title": "Before 7 am tomorrow?",
+      "eyebrow": "Buyer → Bakery",
+      "body": "Can you confirm the delivery time?"
+    },
+    {
+      "start": 92,
+      "duration": 5,
+      "layout": "full",
+      "shot": "08-returning-cleanup-turbo",
+      "eyebrow": "Back at the same shop · Cleanup is underway."
+    },
+    {
+      "start": 97,
+      "duration": 7,
+      "layout": "card",
+      "title": "“Tomorrow, before 7 am.”",
+      "eyebrow": "Bakery → Buyer",
+      "body": "Confirmed: 120 bread rolls. $84 total, with delivery included."
+    },
+    {
+      "start": 104,
+      "duration": 5,
+      "layout": "card",
+      "title": "The answer, put together.",
+      "eyebrow": "No call. No chasing replies.",
+      "body": "The owner gets the terms that matter, with the missing detail resolved."
+    },
+    {
+      "start": 109,
+      "duration": 5,
+      "layout": "split",
+      "shot": "09-review-turbo",
+      "title": "One useful decision.",
+      "eyebrow": "Buyer → Owner",
+      "rows": [
+        [
+          "Cups",
+          "$96 · Tomorrow, by 5 pm"
+        ],
+        [
+          "Bread",
+          "$84 · Tomorrow, before 7 am"
+        ]
+      ],
+      "note": "Both replacements · $180 total",
+      "focus": "35% center"
+    },
+    {
+      "start": 114,
+      "duration": 8,
+      "layout": "card",
+      "title": "The replacement plan",
+      "eyebrow": "Two suppliers · Clear terms",
+      "rows": [
+        [
+          "4 cases of cups",
+          "$96 · Tomorrow, by 5 pm"
+        ],
+        [
+          "120 bread rolls",
+          "$84 · Tomorrow, before 7 am"
+        ],
+        [
+          "Total, including delivery",
+          "$180"
+        ]
+      ],
+      "note": "Emergency supplies cover the gap."
+    },
+    {
+      "start": 122,
+      "duration": 5,
+      "layout": "card",
+      "title": "“Go ahead with both.”",
+      "eyebrow": "Owner → Buyer",
+      "body": "One approval. Then back to the business."
+    },
+    {
+      "start": 127,
+      "duration": 5,
+      "layout": "split",
+      "shot": "10-serving-turbo",
+      "title": "The cup order is placed.",
+      "eyebrow": "Online store",
+      "body": "4 cases · $96\nTomorrow, by 5 pm",
+      "note": "Serving with the emergency supplies.",
+      "focus": "40% center"
+    },
+    {
+      "start": 132,
+      "duration": 6,
+      "layout": "card",
+      "title": "Store confirmation received.",
+      "eyebrow": "Cup order",
+      "rows": [
+        [
+          "Quantity",
+          "4 cases"
+        ],
+        [
+          "Total",
+          "$96"
+        ],
+        [
+          "Delivery",
+          "Tomorrow, by 5 pm"
+        ]
+      ],
+      "note": "Matches the approved terms."
+    },
+    {
+      "start": 138,
+      "duration": 5,
+      "layout": "split",
+      "shot": "11-back-to-business-turbo",
+      "title": "The bread order is sent.",
+      "eyebrow": "Buyer → Bakery",
+      "body": "Please go ahead with 120 rolls for $84, delivered tomorrow before 7 am, as agreed.",
+      "focus": "65% center"
+    },
+    {
+      "start": 143,
+      "duration": 4,
+      "layout": "card",
+      "title": "“Your order is confirmed.”",
+      "eyebrow": "Bakery → Buyer",
+      "body": "120 rolls · $84\nTomorrow, before 7 am",
+      "note": "The bakery’s reply matches the approved terms."
+    },
+    {
+      "start": 147,
+      "duration": 5,
+      "layout": "split",
+      "shot": "09-review-turbo",
+      "title": "And when something changes…",
+      "eyebrow": "Later · One conversation",
+      "body": "The same buyer already has the order and the bakery conversation.",
+      "focus": "35% center"
+    },
+    {
+      "start": 152,
+      "duration": 8,
+      "layout": "card",
+      "title": "“The bread needs to go\nto our other location.”",
+      "eyebrow": "Owner → Buyer",
+      "note": "Change requested. Supplier acceptance is not shown."
+    },
+    {
+      "start": 160,
+      "duration": 5,
+      "layout": "full",
+      "shot": "10-serving-turbo",
+      "eyebrow": "Emergency supplies handled."
+    },
+    {
+      "start": 165,
+      "duration": 5,
+      "layout": "full",
+      "shot": "11-back-to-business-turbo",
+      "eyebrow": "Back to the business."
+    },
+    {
+      "start": 170,
+      "duration": 2,
+      "layout": "card",
+      "title": "That’s the relationship.",
+      "eyebrow": "You handle today."
+    },
+    {
+      "start": 172,
+      "duration": 8,
+      "layout": "end",
+      "title": "PURCHASING.\nHANDLED.",
+      "eyebrow": "You handle the business. Your buyer handles the buying."
+    }
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 7.351351351351352,
+      "text": "The best day with BUY HARD is a day you barely think about purchasing. The everyday"
+    },
+    {
+      "start": 7.351351351351352,
+      "end": 13.324324324324325,
+      "text": "supplies are being looked after, and you’re busy running the business. Then something"
+    },
+    {
+      "start": 13.324324324324325,
+      "end": 17,
+      "text": "happens that no forecast could have seen coming."
+    },
+    {
+      "start": 17,
+      "end": 23.588235294117645,
+      "text": "A piano lands on our shipment. Cups, bread—the whole delivery is ruined. Unlikely? Sure."
+    },
+    {
+      "start": 23.588235294117645,
+      "end": 30.647058823529413,
+      "text": "But a damaged shipment, right before you need it? That happens. And the customers are"
+    },
+    {
+      "start": 30.647058823529413,
+      "end": 33,
+      "text": "still going to show up."
+    },
+    {
+      "start": 33,
+      "end": 41.65384615384615,
+      "text": "I know where to get enough to keep us going. So I tell my buyer: ‘The shipment’s ruined."
+    },
+    {
+      "start": 41.65384615384615,
+      "end": 48.38461538461539,
+      "text": "I’m picking up emergency supplies for the next few days. Please arrange replacement cups"
+    },
+    {
+      "start": 48.38461538461539,
+      "end": 56.07692307692308,
+      "text": "and bread as quickly as possible. The cups can come from the online store. Our bakery"
+    },
+    {
+      "start": 56.07692307692308,
+      "end": 58,
+      "text": "takes orders by email.’"
+    },
+    {
+      "start": 58,
+      "end": 64.97435897435898,
+      "text": "The buyer takes it from there. For the cups, it checks the right product, the quantity,"
+    },
+    {
+      "start": 64.97435897435898,
+      "end": 71.51282051282051,
+      "text": "and the quickest delivery available from the online store. It gets the purchase ready for"
+    },
+    {
+      "start": 71.51282051282051,
+      "end": 75,
+      "text": "approval while I’m out handling the immediate problem."
+    },
+    {
+      "start": 75,
+      "end": 83.6268656716418,
+      "text": "The bread takes a different route. Our bakery works by email, so the buyer writes to them"
+    },
+    {
+      "start": 83.6268656716418,
+      "end": 92.76119402985074,
+      "text": "with what we need and asks how soon they can deliver. They reply with a price, but haven’t"
+    },
+    {
+      "start": 92.76119402985074,
+      "end": 100.3731343283582,
+      "text": "confirmed the delivery time. The buyer follows up, gets that detail, and puts the answer"
+    },
+    {
+      "start": 100.3731343283582,
+      "end": 108.49253731343283,
+      "text": "together. I haven’t had to call the bakery, chase the reply, or copy anything into a"
+    },
+    {
+      "start": 108.49253731343283,
+      "end": 109,
+      "text": "spreadsheet."
+    },
+    {
+      "start": 109,
+      "end": 116.43478260869566,
+      "text": "What comes back to me is a plan for both: the cups, the bread, what each will cost, and"
+    },
+    {
+      "start": 116.43478260869566,
+      "end": 123.47826086956522,
+      "text": "when each can arrive. If one leaves us short, I need to know. Otherwise, I can review the"
+    },
+    {
+      "start": 123.47826086956522,
+      "end": 127,
+      "text": "terms and let the buyer get on with it."
+    },
+    {
+      "start": 127,
+      "end": 134.90697674418604,
+      "text": "Once I approve, the buyer places the cup order online and sends the bread order to the"
+    },
+    {
+      "start": 134.90697674418604,
+      "end": 141.41860465116278,
+      "text": "bakery. It checks the store’s order confirmation and the bakery’s email reply against what"
+    },
+    {
+      "start": 141.41860465116278,
+      "end": 147,
+      "text": "we agreed. If either comes back different, that still needs sorting out."
+    },
+    {
+      "start": 147,
+      "end": 154.36666666666667,
+      "text": "And if something changes, I tell the same buyer: ‘The bread needs to go to our other"
+    },
+    {
+      "start": 154.36666666666667,
+      "end": 160,
+      "text": "location.’ It already has the order and the bakery conversation to work from."
+    },
+    {
+      "start": 160,
+      "end": 166,
+      "text": "I handled those emergency supplies and got back to our customers. Meanwhile, the buyer"
+    },
+    {
+      "start": 166,
+      "end": 172,
+      "text": "took care of the replacement orders. That’s the relationship I’m building with BUY HARD."
+    },
+    {
+      "start": 172,
+      "end": 180,
+      "text": "You handle the business. Your buyer handles the buying. Purchasing. Handled."
+    }
+  ]
+}

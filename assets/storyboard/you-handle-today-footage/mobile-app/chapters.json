@@ -1,0 +1,42 @@
+{
+  "duration": 90,
+  "fps": 24,
+  "width": 1080,
+  "height": 2340,
+  "viewport": {
+    "width": 360,
+    "height": 780
+  },
+  "chapters": [
+    {
+      "name": "Handoff",
+      "start": 0,
+      "end": 24
+    },
+    {
+      "name": "Cups online",
+      "start": 24,
+      "end": 32
+    },
+    {
+      "name": "Bakery email",
+      "start": 32,
+      "end": 53
+    },
+    {
+      "name": "Review terms",
+      "start": 53,
+      "end": 68
+    },
+    {
+      "name": "Confirmations",
+      "start": 68,
+      "end": 78
+    },
+    {
+      "name": "Later change",
+      "start": 78,
+      "end": 90
+    }
+  ]
+}

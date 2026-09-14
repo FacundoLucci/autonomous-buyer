@@ -1,0 +1,12 @@
+{
+  "mode": "built-in image_gen",
+  "revision": 3,
+  "target": "start-with-a-link-v2.png",
+  "references": [
+    "meet-your-buyer-v2.png",
+    "just-say-whats-left-v2.png"
+  ],
+  "output": "start-with-a-link-v3.png",
+  "prompt": "Use case: precise-object-edit. Asset type: BUY HARD social campaign card. Image 1 is the ONLY EDIT TARGET, the Firecrawl 'Start with a link.' card. Images 2 and 3 are TYPOGRAPHY REFERENCES ONLY, showing the approved 'Meet your buyer.' and 'Just say what's left.' cards. Correct only the large headline typography in Image 1: replace its visibly narrow condensed headline font with the same broad, extra-bold, non-condensed sans-serif letterforms used for the large headlines in images 2 and 3. Match the references' normal wide character proportions, heavy weight, clean grotesk shapes, and tight tracking. The exact headline remains 'Start with' on the first line and 'a link.' on the second line, left aligned in its current left-hand area. Fit it using an appropriate font size, NEVER by squeezing or condensing the letters; leave clear space before the product-page collage. Do not imitate Impact or any tall condensed display font. Preserve all other text and elements in Image 1: the BUY HARD masthead, supporting 'Product details, ready for review.', product-page and item-details paper collage, cups, link arrow, powered-by Firecrawl label, all four sponsor credits, WORKFLOW ILLUSTRATION text, pale lime background, black color, paper textures, shadows, horizontal rules, exact 1536x1024 framing. Do not add a post number, series title, new words, logos, or URLs. Output only the revised Image 1."
+}
+

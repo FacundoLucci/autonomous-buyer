@@ -1,0 +1,88 @@
+{
+  "checkedAt": "2026-09-14T03:03:28.091976+00:00",
+  "target": "Production for autonomous-buyer; selected explicitly with convex run --prod",
+  "method": "Read-only marketing:events and marketing:list; all pages; only aggregate data saved",
+  "complete": true,
+  "pages": {
+    "events": 1,
+    "leads": 1
+  },
+  "events": {
+    "visit": 61
+  },
+  "eventsByCampaign": {
+    "unattributed": {
+      "visit": 41
+    },
+    "buyhard_allgas_202609": {
+      "visit": 20
+    }
+  },
+  "eventsBySource": {
+    "direct_or_unattributed": {
+      "visit": 41
+    },
+    "linkedin": {
+      "visit": 18
+    },
+    "x": {
+      "visit": 2
+    }
+  },
+  "eventsByCampaignAndSource": {
+    "unattributed / direct_or_unattributed": {
+      "visit": 41
+    },
+    "buyhard_allgas_202609 / linkedin": {
+      "visit": 18
+    },
+    "buyhard_allgas_202609 / x": {
+      "visit": 2
+    }
+  },
+  "eventsByContent": {
+    "unattributed": {
+      "visit": 41
+    },
+    "p4_agentmail": {
+      "visit": 2
+    },
+    "one_item_walkthrough": {
+      "visit": 4
+    },
+    "approve_the_spend": {
+      "visit": 1
+    },
+    "what_if_inventory": {
+      "visit": 4
+    },
+    "p5_convex": {
+      "visit": 1
+    },
+    "p3_firecrawl": {
+      "visit": 2
+    },
+    "p2_openai": {
+      "visit": 1
+    },
+    "p1_intro": {
+      "visit": 5
+    }
+  },
+  "nonTestLeads": 0,
+  "leadStages": {},
+  "excludedLaunchCheckEvents": {
+    "demo_use": 4,
+    "visit": 3,
+    "booking_confirmed": 1,
+    "inquiry": 1
+  },
+  "excludedLaunchCheckLeads": 1,
+  "rawVisitorRecordsRetained": false,
+  "limitations": [
+    "Browser storage IDs are not verified people; own or automated visits may be included.",
+    "Demo-use tracking has a known gap; measured demo use is not a complete measure.",
+    "Inquiries and confirmed bookings are separate branches, not a required linear sequence.",
+    "Private social messages and offline conversations were not reviewed."
+  ]
+}

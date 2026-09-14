@@ -1,0 +1,74 @@
+{
+  "job_id": "08-returning-cleanup-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T18:09:07.702018+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "08-returning-cleanup-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/08-returning-cleanup.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "User correction: same original doorway and wreckage, delivery truck/driver gone, cleanup underway on the owner\u2019s return.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 408,
+      "prompt": "Single five-second locked-camera candid shot at normal 24 fps playback. Keep the exact exterior geography of the reference, including the original deli entrance at far right and broken piano in central foreground. The owner at far right carries emergency cups and bread in one grocery bag, takes two brisk steps into that same doorway and disappears inside. Meanwhile two cleanup workers at the LEFT of the piano calmly continue their work: one makes two short natural broom strokes gathering small loose debris, the other picks up a piece of cardboard and puts it into the refuse sack. Modest practical movements with believable weight and grips. The heavy piano stays fixed, the doorway never moves, and the owner passes on the clear right side. No delivery truck, delivery driver or hand truck returns. No shocked people, dramatic reactions, new vehicles, magically disappearing wreckage, slow motion, camera moves, dialogue, music or overlays. Natural street ambience, broom scrape, cardboard rustle and footsteps."
+    }
+  },
+  "input_sha256": "436dd5d830e78092aec4230fc3e64832e87fd54fe4c526fe747d3fc8de3e7b68",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bf5-6e6a-78b0-9678-4b9917965fc7",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T18:10:15.843111+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bf5-6e6a-78b0-9678-4b9917965fc7",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bf5-6e6a-78b0-9678-4b9917965fc7/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 7.0929999351501465
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a47/xUponc3h7byjtEPOsG5c8_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "xUponc3h7byjtEPOsG5c8_minimax-h3.mp4",
+      "file_size": 18004156
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: [Shot 1] This is a live-action, cinematic candid shot. The frame is held on a locked, static, eye-level wide view of a sun-dappled city sidewalk beneath the canopy of green trees. In the central foreground sits a shattered, broken wooden piano, its lid and sides completely bashed open, revealing jagged internal strings, spliced wood, and internal mechanisms. Scattered chaotically over the cracked sidewalk in front of it is a mix of broken white ceramic cups, flattened cardboard, and roughly a dozen brown loaves of bread. Heavy, thick natural textures dominate the debris. On the far left, two male cleanup workers in bright orange high-visibility striped vests, dark grey long-sleeve shirts, and baseball caps are tending to the wreck. On the far right, near a traditional red brick building facade with a potted plant, stands a middle-aged male shop owner wearing a dark olive shirt and a dark waist apron, holding a brown paper grocery bag tightly packed with white cups and bread. In the distance behind them, the street stretches out into soft, shallow bokeh. The camera maintains this exact wide composition and locked perspective for the full clip with entirely zero lens, pan, or tilt movement. At the beginning of the sequence, on the far right, the male owner takes two fast, hurried steps forward, pushing through the open glass double doors of the storefront into the dim interior, completely disappearing from view inside. Simultaneously, on the left side of the piano, the worker in the center holding a wooden broom with a bristle head makes two short, confident diagonal sweeping strokes across the pavement, briskly gathering small loose shards of wood into a slightly larger pile. The worker on the far left, standing next to a heavy black wheeled refuse bin and holding a large black plastic refuse sack filled with trash, bends down, firmly grasps a square piece of cardboard debris from the ground with both gloved hands, lifts it steadily into the open mouth of the sack, and lets it drop inside. Both workers remain completely calm, focused, and methodical, displaying natural, grounded, believable physical weight and sturdy grips on their heavy tools and bags. The massive block of destroyed piano stays completely and totally fixed in the center of the frame, and the brick storefront doorway remains entirely locked and unmoved. Throughout this process, no delivery trucks, hand trucks, drivers, shocked pedestrians, dramatic human reactions, or new vehicles return or appear on screen. Any wreckage remains exactly as placed. At the end of the sequence, the two workers stand perfectly still in place, the pile of debris on the sidewalk remains perfectly static, and the empty street corner is left entirely quiet.\n\noverall_soundscape: A natural, quiet urban street level ambient wash sits in the deep background. A distinct, sharp wooden broom bristle scrape is heard moving rhythmically and briefly across a concrete surface. A soft, dry cardboard rustle and a heavy, muted plastic thud occur as cardboard is dropped into a refuse sack. Sharp, heavy leather shoe footsteps crunch rapidly against the pavement on the far right before hitting a soft indoor echo as the doorway is entered.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.5252688308246434
+    }
+  },
+  "downloaded_at": "2026-09-13T18:13:18.328735+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/08-returning-cleanup-turbo.mp4",
+  "video_bytes": 18004156
+}

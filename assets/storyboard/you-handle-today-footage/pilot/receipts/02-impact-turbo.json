@@ -1,0 +1,73 @@
+{
+  "job_id": "02-impact-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T13:50:43.249843+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "02-impact-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/02-impact-start.png",
+    "last_frame": "frames/02-impact-end.png",
+    "usd_per_second": "0.02",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "quality",
+      "enable_safety_checker": true,
+      "seed": 102,
+      "prompt": "Locked camera, one continuous five-second shot with the provided intact delivery as the first frame and the provided crushed delivery as the last frame. During the first second the unattended delivery pile is still. A broad shadow crosses the cartons. Between seconds one and two, a single heavy dark wooden upright piano drops vertically from above the top of the frame onto the SAME central shipment, crushing the paper-cup cartons and bread crates together. The piano arrives from above at speed and lands heavily with realistic gravity; it never fades into existence. A short burst of cardboard dust, white paper cups and bread rolls scatter, then settle around the solid piano. The owner at the far-right doorway and worker by the far-left truck react with a restrained flinch, staying clear and unharmed. Both remain in their respective positions. The piano settles into the provided final position. One weighty impact and a brief discordant piano resonance, followed by street ambience. Photographic realism with dry absurdist humor. No explosion, injury, dialogue, music, text, camera cut, dissolves or morphing."
+    }
+  },
+  "input_sha256": "4e8feda86ffc943f5c7e15f780c57f00da3280cbab5c3a9ade9cde41c893d0be",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09b08-d9fa-7172-a752-36064a193693",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T13:51:34.336179+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09b08-d9fa-7172-a752-36064a193693",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b08-d9fa-7172-a752-36064a193693/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 48.8510000705719
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa443c/YKa_-iw9oguVcl4xsSSei_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "YKa_-iw9oguVcl4xsSSei_minimax-h3.mp4",
+      "file_size": 15432883
+    },
+    "expanded_prompt": "How the reference pictures align with the target video \u2014 Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 5.17-second mark of the target video.\n\nintegrated_multimodal_description: [Shot 1] This is a live-action, static cinematic shot. A delivery worker in a blue uniform stands by his truck on the left, and a deli owner in an apron stands by his shop door on the right, both looking at a neat stack of cardboard boxes and black bread crates on the sidewalk between them. The camera holds perfectly still. At 00:00.500 within the same shot, a broad, ominous shadow suddenly sweeps across the central pile of cartons. At 00:01.500 within the same shot, a heavy, dark wooden upright piano abruptly plummets vertically from beyond the top edge of the frame. At 00:02.000 within the same shot, a deafening, discordant crash is heard as the piano slams directly into the shipment, instantly crushing the cardboard boxes and black plastic bread crates beneath its immense weight. At 00:02.500 within the same shot, a short burst of cardboard dust erupts outward, and white paper cups alongside golden brown bread rolls forcefully scatter across the concrete pavement in all directions. At 00:03.500 within the same shot, reacting to the sudden impact, both the delivery worker and the deli owner execute a restrained, subtle flinch\u2014pulling their shoulders back slightly and widening their eyes\u2014but remain firmly planted in their respective positions, completely unharmed. At 00:04.500 within the same shot, the dust dissipates and the scattered items roll to a halt, leaving the solid piano settled perfectly atop the flattened debris.\n\noverall_soundscape: The soundscape begins with quiet urban street ambience, featuring faint, distant traffic and a light breeze. This calm is abruptly shattered by a loud, deafening crash as the heavy piano impacts the pavement, producing a distinct, chaotic, and discordant resonance of vibrating piano strings. Simultaneously, the sharp, pronounced cracking of plastic crates and the heavy crunching of flattened cardboard are clearly heard in the foreground. This is immediately followed by the light, hollow clattering of paper cups and the soft, rolling thuds of bread hitting the concrete. As the visual action concludes, the chaotic noise subsides, returning to the dry, continuous street ambience.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.779075655154884
+    }
+  },
+  "downloaded_at": "2026-09-13T13:51:35.567900+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo.mp4",
+  "video_bytes": 15432883
+}

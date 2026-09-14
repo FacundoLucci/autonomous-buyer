@@ -1,0 +1,37 @@
+{
+  "revision": 7,
+  "verifiedAt": "2026-09-11T18:58:56.763483+00:00",
+  "postId": "6aa3fe01f465f18b88c37f09",
+  "title": "Your buyer stays ahead.",
+  "status": "draft",
+  "scheduledAt": null,
+  "platforms": [
+    "linkedin",
+    "twitter"
+  ],
+  "change": "Added Now I have a buyer. to the X and LinkedIn captions.",
+  "method": "Saved the existing post in Draft mode and reopened its editor in the Codex in-app browser.",
+  "checks": {
+    "mainCaptionMatches": true,
+    "xCaptionMatches": true,
+    "firstCommentBlank": true,
+    "linkedinCustomCaptionBlank": true,
+    "allFourSponsorMentionsPreserved": true,
+    "campaignLinksPreserved": true,
+    "altTextMatches": true,
+    "imageDimensions": [
+      1536,
+      1024
+    ],
+    "linkedinSelected": true,
+    "xSelected": true,
+    "youtubeSelected": false,
+    "draftModeSelected": true,
+    "draftHelperVisible": true
+  },
+  "xWeightedCharacters": 234,
+  "image": "your-buyer-stays-ahead-html.png",
+  "imageSha256": "65ac390f27ca0c952d189925e56367c52a8751ff56cd5e9088a70c6d6887666c",
+  "otherPosts": "The post list still shows the introduction published and Firecrawl as a draft. Neither was edited in this update.",
+  "laterCopy": "Live free. Buy hard. added to the planned Convex post in docs/gtm-marketing-strategy.md; four other lines placed in future copy options."
+}

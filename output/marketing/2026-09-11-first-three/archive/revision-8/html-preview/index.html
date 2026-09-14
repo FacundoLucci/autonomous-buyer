@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BUY HARD — HTML campaign preview</title>
+  <style>
+    @font-face { font-family: Inter; src: url('./fonts/InterVariable.woff2') format('woff2'); font-weight: 100 900; font-display: block; }
+    @font-face { font-family: 'Share Tech Mono'; src: url('./fonts/ShareTechMono.woff2') format('woff2'); font-weight: 400; font-display: block; }
+    :root {
+      --lime: #dce985;
+      --ink: #171b12;
+      --paper: #fffef5;
+      --heading-font: Inter, sans-serif;
+      --body-font: Inter, sans-serif;
+      --mono-font: 'Share Tech Mono', monospace;
+      --headline-size: 146px;
+      color: var(--ink);
+      font-family: var(--body-font);
+      -webkit-font-smoothing: antialiased;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f2f1eb; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+    .toolbar {
+      padding: 22px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-bottom: 1px solid #d8d8ce;
+      background: #faf9f5;
+    }
+    .toolbar-brand { font-size: 18px; font-weight: 900; letter-spacing: -.7px; }
+    .toolbar-note { margin-left: 16px; font-size: 13px; font-weight: 450; color: #63665b; letter-spacing: 0; }
+    .view-switch { display: flex; gap: 5px; flex-wrap: wrap; }
+    .view-switch button { min-height: 44px; border: 1px solid transparent; background: transparent; padding: 10px 16px; border-radius: 5px; font-size: 13px; font-weight: 600; color: #555b48; }
+    .view-switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .gallery { padding: 30px 32px 64px; }
+    .preview { max-width: 1280px; margin: 0 auto 48px; }
+    body[data-selected-card]:not([data-selected-card="all"]) .preview { max-width: min(1280px, max(540px, calc((100vh - 240px) * 1.5))); margin-bottom: 20px; }
+    .preview[hidden] { display: none; }
+    .preview-label { display: flex; justify-content: space-between; align-items: baseline; gap: 15px; margin-bottom: 12px; }
+    .preview-label h2 { margin: 0; font-size: 14px; font-weight: 650; }
+    .preview-label span { font-family: var(--mono-font); font-size: 12px; color: #707366; }
+    .stage { width: 100%; aspect-ratio: 3 / 2; overflow: hidden; box-shadow: 0 1px 3px #171b1212, 0 0 0 1px #171b1212; }
+    .artboard { position: relative; isolation: isolate; width: 1536px; height: 1024px; overflow: hidden; background: var(--lime); transform: scale(var(--preview-scale, 1)); transform-origin: top left; }
+    .brand { position: absolute; left: 64px; top: 50px; font-family: var(--heading-font); font-size: 48px; line-height: 1; font-weight: 900; letter-spacing: -2.5px; }
+    .domain { position: absolute; right: 64px; top: 62px; font-family: var(--mono-font); font-size: 23px; line-height: 1.2; }
+    .headline { position: absolute; top: 180px; left: 64px; width: 940px; z-index: 2; margin: 0; font-family: var(--heading-font); font-size: var(--headline-size); font-weight: 900; font-optical-sizing: none; font-variation-settings: 'opsz' 32; line-height: .96; letter-spacing: -.055em; }
+    .headline span { display: block; white-space: nowrap; }
+    .support { position: absolute; left: 64px; top: 510px; z-index: 2; margin: 0; font-family: var(--body-font); font-size: 32px; font-weight: 450; line-height: 1.3; letter-spacing: -.9px; }
+    .photo { position: absolute; object-fit: contain; user-select: none; pointer-events: none; filter: drop-shadow(5px 15px 9px #171b1218); }
+    .supplies { width: 720px; height: 665px; right: 22px; top: 228px; }
+    .stock-check { position: absolute; z-index: 3; width: 68px; height: 68px; padding: 14px; border: 4px solid var(--paper); border-radius: 50%; background: #188343; color: #fff; box-shadow: 0 5px 10px #171b1226; }
+    .stock-check--cups { left: 932px; top: 600px; }
+    .stock-check--box { left: 1194px; top: 442px; }
+    .stock-check--labels { left: 1274px; top: 706px; }
+    .cups { width: 405px; height: 585px; right: 54px; top: 231px; }
+    .napkin { position: absolute; left: 68px; top: 492px; width: 900px; height: 328px; margin: 0; z-index: 2; transform: rotate(-2deg); isolation: isolate; }
+    .napkin-paper { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; filter: drop-shadow(3px 9px 7px #171b121c); }
+    .napkin .message { position: relative; margin: 0; padding: 28px 60px; font-family: var(--body-font); font-size: 88px; line-height: 1.02; font-weight: 750; letter-spacing: -4px; }
+    .napkin .message span { display: block; white-space: nowrap; }
+    .napkin .message .ho-ho-ho { margin-top: 12px; font-size: 51px; line-height: 1.1; letter-spacing: -2px; }
+    .openai .support { top: 860px; }
+    .powered { position: absolute; bottom: 134px; left: 64px; padding: 13px 20px; border: 2px solid var(--ink); font-family: var(--mono-font); font-size: 20px; line-height: 1.1; letter-spacing: 2px; white-space: nowrap; }
+    .openai .powered { left: auto; right: 64px; }
+    .firecrawl .headline { top: 223px; width: 790px; }
+    .firecrawl .support { top: 551px; font-size: 31px; }
+    .product-card { position: absolute; left: 872px; top: 160px; width: 372px; padding: 28px; background: var(--paper); border: 2px solid var(--ink); }
+    .card-label { margin: 0; padding-bottom: 17px; border-bottom: 1px solid var(--ink); font-family: var(--mono-font); font-size: 21px; line-height: 1.1; letter-spacing: 2.8px; }
+    .product-photo { display: flex; align-items: center; justify-content: center; width: 100%; height: 220px; margin-top: 18px; background: #f0f0e5; }
+    .product-photo img { width: 170px; height: 214px; object-fit: contain; }
+    .product-name { margin: 17px 0 14px; font-size: 27px; font-weight: 650; letter-spacing: -.9px; }
+    .cart-button { display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; min-height: 54px; padding: 10px 16px; border: 0; border-radius: 0; background: var(--ink); color: var(--paper); font-size: 24px; font-weight: 600; cursor: default; }
+    .cart-button svg { width: 25px; height: 25px; }
+    .flow-arrow { position: absolute; top: 405px; left: 1244px; width: 180px; height: 223px; overflow: visible; pointer-events: none; }
+    .details-card { position: absolute; top: 645px; right: 64px; width: 530px; padding: 26px 30px 30px; background: var(--paper); border: 2px solid var(--ink); box-shadow: 12px 12px 0 #171b1218; }
+    .agent-label { display: flex; align-items: center; gap: 12px; }
+    .agent-label svg { width: 25px; height: 25px; }
+    .purchase-message { margin: 22px 0 0; font-family: var(--body-font); font-size: 36px; font-weight: 550; line-height: 1.16; letter-spacing: -1.15px; }
+    .purchase-message strong { font-weight: 750; }
+    .footer { position: absolute; left: 64px; right: 64px; bottom: 44px; padding-top: 24px; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; gap: 24px; font-family: var(--mono-font); }
+    .credits { font-size: 22px; line-height: 1.2; white-space: nowrap; }
+    .evidence { font-size: 18px; letter-spacing: 1.8px; white-space: nowrap; }
+    .preview-footer { max-width: 1280px; margin: 0 auto; font-size: 13px; line-height: 1.65; color: #62665a; }
+    .preview-footer a { color: inherit; text-underline-offset: 3px; }
+    html[data-export="true"] body { width: 1536px; height: 1024px; overflow: hidden; background: var(--lime); }
+    html[data-export="true"] .toolbar, html[data-export="true"] .preview-label, html[data-export="true"] .preview-footer { display: none; }
+    html[data-export="true"] .gallery { padding: 0; }
+    html[data-export="true"] .preview, html[data-export="true"] body[data-selected-card] .preview { width: 1536px; max-width: none; margin: 0; }
+    html[data-export="true"] .stage { width: 1536px; height: 1024px; box-shadow: none; }
+    html[data-export="true"] .artboard { transform: none; }
+    @media (max-width: 620px) {
+      .toolbar { padding: 16px; }
+      .toolbar-note { display: block; margin: 5px 0 0; }
+      .view-switch { width: 100%; }
+      .view-switch button { padding: 10px 13px; }
+      .gallery { padding: 22px 16px 40px; }
+      .preview-label span { display: none; }
+      .preview { margin-bottom: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-brand">BUY HARD <span class="toolbar-note">HTML campaign preview</span></div>
+    <nav class="view-switch" aria-label="Choose a card">
+      <button type="button" data-view="all" aria-pressed="true">All cards</button>
+      <button type="button" data-view="buyer" aria-pressed="false">New buyer</button>
+      <button type="button" data-view="openai" aria-pressed="false">OpenAI</button>
+      <button type="button" data-view="firecrawl" aria-pressed="false">Firecrawl</button>
+    </nav>
+  </header>
+  <main class="gallery">
+    <section class="preview" data-card="buyer" aria-label="Meet your new buyer">
+      <div class="preview-label"><h2>Meet your new buyer.</h2><span>1536 × 1024 · HTML + PNG</span></div>
+      <div class="stage">
+        <article class="artboard buyer" aria-label="BUY HARD introduction card">
+          <div class="brand">BUY HARD</div>
+          <div class="domain">buyhard.app</div>
+          <h1 class="headline"><span>Meet your</span><span>new buyer.</span></h1>
+          <p class="support">Stay stocked. Skip the last-minute scramble.</p>
+          <img class="photo supplies" src="./assets/supplies.png" width="720" height="665" alt="Paper cups, a kraft carton, and a roll of plain labels">
+          <svg class="stock-check stock-check--cups" viewBox="0 0 24 24" role="img" aria-label="Paper cups ready"><path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="stock-check stock-check--box" viewBox="0 0 24 24" role="img" aria-label="Carton ready"><path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="stock-check stock-check--labels" viewBox="0 0 24 24" role="img" aria-label="Labels ready"><path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <footer class="footer"><span class="credits">Built with Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article>
+      </div>
+    </section>
+    <section class="preview" data-card="openai" aria-label="Your buyer stays ahead">
+      <div class="preview-label"><h2>Your buyer stays ahead.</h2><span>1536 × 1024 · HTML + PNG</span></div>
+      <div class="stage">
+        <article class="artboard openai" aria-label="BUY HARD OpenAI card">
+          <div class="brand">BUY HARD</div>
+          <div class="domain">buyhard.app</div>
+          <h1 class="headline"><span>Your buyer</span><span>stays ahead.</span></h1>
+          <img class="photo cups" src="./assets/cups.png" width="405" height="585" alt="A neat stack of plain white paper cups">
+          <blockquote class="napkin" aria-label="A napkin note: Now I have a machine buyer. Ho ho ho.">
+            <svg class="napkin-paper" viewBox="0 0 900 340" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <path id="napkin-edge" d="M4 5 143 3 286 5 439 2 595 4 754 2 894 5 896 106 894 201 897 319 878 334 729 333 579 336 431 333 281 335 130 331 3 333 5 216 2 112Z"/>
+                <clipPath id="napkin-clip"><use href="#napkin-edge"/></clipPath>
+                <linearGradient id="napkin-light" x1="0" y1="0" x2="0.8" y2="1">
+                  <stop stop-color="#fffef9"/>
+                  <stop offset=".55" stop-color="#f9f8ef"/>
+                  <stop offset="1" stop-color="#edece2"/>
+                </linearGradient>
+                <linearGradient id="napkin-crease">
+                  <stop stop-color="#b7b6a3" stop-opacity="0"/>
+                  <stop offset=".43" stop-color="#b7b6a3" stop-opacity=".02"/>
+                  <stop offset=".5" stop-color="#b7b6a3" stop-opacity=".2"/>
+                  <stop offset=".52" stop-color="#fff" stop-opacity=".9"/>
+                  <stop offset=".62" stop-color="#fff" stop-opacity=".05"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <pattern id="napkin-emboss" width="7" height="7" patternUnits="userSpaceOnUse">
+                  <circle cx="3" cy="3" r="1" fill="#c9c8ba" fill-opacity=".4"/>
+                  <circle cx="3" cy="4" r="1" fill="#fff" fill-opacity=".9"/>
+                </pattern>
+                <filter id="napkin-grain" x="0" y="0" width="100%" height="100%">
+                  <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="12" stitchTiles="stitch"/>
+                  <feColorMatrix type="saturate" values="0"/>
+                  <feComponentTransfer><feFuncA type="linear" slope=".085"/></feComponentTransfer>
+                </filter>
+              </defs>
+              <path d="M12 13 898 13 900 323 882 340 12 339Z" fill="#e0dfd2"/>
+              <use href="#napkin-edge" fill="url(#napkin-light)"/>
+              <g clip-path="url(#napkin-clip)">
+                <path d="M20 20H879V315H20Z M42 42V293H857V42Z" fill="url(#napkin-emboss)" fill-rule="evenodd"/>
+                <rect width="900" height="340" filter="url(#napkin-grain)" opacity=".8"/>
+                <path d="M444 0H489V340H444Z" fill="url(#napkin-crease)"/>
+                <path d="M875 312 897 319 878 334Z" fill="#fffef9"/>
+                <path d="m875 312 3 22" fill="none" stroke="#d3d2c4" stroke-width="1"/>
+              </g>
+            </svg>
+            <p class="message"><span>Now I have a</span> <span>machine buyer.</span> <span class="ho-ho-ho">Ho ho ho.</span></p>
+          </blockquote>
+          <p class="support">Stock watched. Reorders prepared.</p>
+          <div class="powered">POWERED BY OPENAI</div>
+          <footer class="footer"><span class="credits">Built with Convex · OpenAI · Firecrawl · AgentMail</span><span class="evidence">WORKFLOW ILLUSTRATION</span></footer>
+        </article>
+      </div>
+    </section>
+    <section class="preview" data-card="firecrawl" aria-label="Start with a link">
+      <div class="preview-label"><h2>Start with a link.</h2><span>1536 × 1024 · HTML + PNG</span></div>
+      <div class="stage">
+        <article class="artboard firecrawl" aria-label="BUY HARD Firecrawl card">
+          <div class="brand">BUY HARD</div>
+          <div class="domain">buyhard.app</div>
+          <h1 class="headline"><span>Start with</span><span>a link.</span></h1>
+          <p class="support">Automated buying.</p>
+          <div class="product-card">
+            <p class="card-label">PRODUCT PAGE</p>
+            <div class="product-photo"><img src="./assets/cups.png" width="170" height="214" alt="Plain white paper cups"></div>
+            <p class="product-name">Paper cups · 1,000 / case</p>
+            <button class="cart-button" type="button" aria-disabled="true" tabindex="-1" aria-label="Add to cart — illustrated product page">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h3l3 13h11l3-9H6"/><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
+              Add to cart
+            </button>
+          </div>
+          <svg class="flow-arrow" viewBox="0 0 180 223" aria-hidden="true">
+            <path d="M0 25H140V208" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="m130 199 10 15 10-15" fill="currentColor"/>
+            <rect x="55" y="0" width="52" height="52" rx="2" fill="currentColor"/>
+            <g stroke="var(--lime)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m81 22 4-4a6 6 0 0 1 8 8l-6 6a6 6 0 0 1-8 0"/>
+              <path d="m81 30-4 4a6 6 0 0 1-8-8l6-6a6 6 0 0 1 8 0"/>
+              <path d="m77 29 8-8"/>
+            </g>
+          </svg>
+          <div class="details-card">
+            <p class="card-label agent-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7 12 3 3 7-7"/></svg>YOUR BUYER</p>
+            <p class="purchase-message">I purchased <strong>20 cases of paper cups</strong> from <strong>WebstaurantStore.</strong></p>
+          </div>
+          <div class="powered">PRODUCT RESEARCH BY FIRECRAWL</div>
+          <footer class="footer"><span class="credits">Built with Convex · OpenAI · Firecrawl · AgentMail</span><span class="evidence">WORKFLOW ILLUSTRATION</span></footer>
+        </article>
+      </div>
+    </section>
+    <p class="preview-footer">All text is HTML. Every headline uses the same bundled Inter font. Product photos are separate PNGs; the product page and agent message are HTML.<br>The introduction is published. The other two posts are saved as Zernio drafts. The purchase confirmation is an example. <a href="../ready/README.md">Posting package</a> · <a href="./campaign-plan.md">Proposed post sequence</a></p>
+  </main>
+  <script>
+    // Generated source PNGs contain a neutral preview checkerboard. The HTML
+    // renderer isolates the largest product silhouette into a real RGBA PNG.
+    // This runs locally; lettering and layout never pass through image generation.
+    const cutoutCache = new Map();
+    function cutout(source) {
+      if (cutoutCache.has(source)) return cutoutCache.get(source);
+      const result = new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          const context = canvas.getContext('2d', { willReadFrequently: true });
+          context.drawImage(image, 0, 0);
+          const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+          const data = pixels.data;
+          const w = canvas.width, h = canvas.height, size = w * h;
+          const foreground = new Uint8Array(size);
+          for (let p = 0; p < size; p++) {
+            const i = p * 4, r = data[i], g = data[i + 1], b = data[i + 2];
+            const chroma = Math.max(r, g, b) - Math.min(r, g, b);
+            foreground[p] = chroma > 16 || (r + g + b) / 3 > 205 ? 1 : 0;
+          }
+          const labels = new Int32Array(size);
+          const queue = new Int32Array(size);
+          let label = 0, largestLabel = 0, largestSize = 0;
+          for (let p = 0; p < size; p++) {
+            if (!foreground[p] || labels[p]) continue;
+            label++;
+            let head = 0, tail = 1;
+            queue[0] = p;
+            labels[p] = label;
+            while (head < tail) {
+              const q = queue[head++], x = q % w;
+              for (const n of [x > 0 ? q - 1 : -1, x < w - 1 ? q + 1 : -1, q >= w ? q - w : -1, q < size - w ? q + w : -1]) {
+                if (n >= 0 && foreground[n] && !labels[n]) { labels[n] = label; queue[tail++] = n; }
+              }
+            }
+            if (tail > largestSize) { largestSize = tail; largestLabel = label; }
+          }
+          // Flood only the outside; keep dark folds and shadows inside the silhouette.
+          const outside = new Uint8Array(size);
+          let head = 0, tail = 0;
+          const enqueue = p => { if (labels[p] !== largestLabel && !outside[p]) { outside[p] = 1; queue[tail++] = p; } };
+          for (let x = 0; x < w; x++) { enqueue(x); enqueue(size - w + x); }
+          for (let y = 0; y < h; y++) { enqueue(y * w); enqueue(y * w + w - 1); }
+          while (head < tail) {
+            const q = queue[head++], x = q % w;
+            if (x > 0) enqueue(q - 1);
+            if (x < w - 1) enqueue(q + 1);
+            if (q >= w) enqueue(q - w);
+            if (q < size - w) enqueue(q + w);
+          }
+          // A paper cup is horizontally convex. Preserve the shaded paper between
+          // its two edges, even where its color resembles the neutral backdrop.
+          const cupRange = source.endsWith('/supplies.png') ? [50, 490] : [0, w - 1];
+          for (let y = 0; y < h; y++) {
+            let first = -1, last = -1;
+            for (let x = cupRange[0]; x <= cupRange[1]; x++) {
+              if (labels[y * w + x] === largestLabel) { if (first < 0) first = x; last = x; }
+            }
+            if (first >= 0) for (let x = first; x <= last; x++) outside[y * w + x] = 0;
+          }
+          for (let p = 0; p < size; p++) data[p * 4 + 3] = outside[p] ? 0 : 255;
+          context.putImageData(pixels, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        image.onerror = reject;
+        image.src = source;
+      });
+      cutoutCache.set(source, result);
+      return result;
+    }
+    window.cutoutsReady = Promise.all([...document.querySelectorAll('.artboard img')].map(async image => {
+      image.style.visibility = 'hidden';
+      image.src = await cutout(image.src);
+      await image.decode();
+      image.style.visibility = 'visible';
+    }));
+    const params = new URLSearchParams(location.search);
+    const isExport = params.get('export') === '1';
+    const availableCards = new Set(['all', 'buyer', 'openai', 'firecrawl']);
+    const initialCard = availableCards.has(params.get('card')) ? params.get('card') : 'all';
+    document.documentElement.dataset.export = String(isExport);
+    function chooseCard(card) {
+      document.body.dataset.selectedCard = card;
+      for (const section of document.querySelectorAll('.preview')) section.hidden = card !== 'all' && section.dataset.card !== card;
+      for (const button of document.querySelectorAll('[data-view]')) button.setAttribute('aria-pressed', String(button.dataset.view === card));
+      if (!isExport) {
+        const next = new URL(location.href);
+        card === 'all' ? next.searchParams.delete('card') : next.searchParams.set('card', card);
+        history.replaceState(null, '', next);
+      }
+      fitCards();
+    }
+    function fitCards() {
+      for (const stage of document.querySelectorAll('.stage')) {
+        if (stage.clientWidth) stage.style.setProperty('--preview-scale', isExport ? '1' : stage.clientWidth / 1536);
+      }
+    }
+    for (const button of document.querySelectorAll('[data-view]')) button.addEventListener('click', () => chooseCard(button.dataset.view));
+    const observer = new ResizeObserver(fitCards);
+    for (const stage of document.querySelectorAll('.stage')) observer.observe(stage);
+    chooseCard(isExport && initialCard === 'all' ? 'buyer' : initialCard);
+    document.fonts.ready.then(fitCards);
+  </script>
+</body>
+</html>

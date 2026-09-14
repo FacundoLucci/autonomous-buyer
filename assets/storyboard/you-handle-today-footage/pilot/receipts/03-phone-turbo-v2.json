@@ -1,0 +1,74 @@
+{
+  "job_id": "03-phone-turbo-v2",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:31:50.218401+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "03-phone-turbo-v2",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/03-phone-broken-v2.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Keep the shattered piano consistent in the next shot; natural-speed phone handoff.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 205,
+      "prompt": "Natural-speed candid live-action footage, normal 24 fps, fixed medium shot. The owner, now composed after the accident, briskly types a short message with his thumbs on the single phone held naturally in both hands at chest height, taps send once, briefly exhales and lowers the phone a little, ready to get on with the day. Ordinary practical movement at full speed, no slow motion or dramatic lingering. Preserve his identity, face, olive shirt, apron, realistic hands and phone shape. Only the back of the phone is visible; no phone call or spoken dialogue. The shattered piano and flattened delivery remain motionless and softly out of focus behind him. Keep the broken exposed string frame and scattered wooden panels broken, matching the image, throughout the shot. Nothing repairs itself, no moving debris or new objects. Natural street sound, faint cloth movement, no music, captions, generated interface or camera moves."
+    }
+  },
+  "input_sha256": "aae3eb791f2dff049704d047f2e6fe9eb077800f11399f01369fc8de6455cac2",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bd3-4a07-71e2-b039-cebec5acf6bf",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:32:54.673870+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bd3-4a07-71e2-b039-cebec5acf6bf",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd3-4a07-71e2-b039-cebec5acf6bf/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.039000034332275
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4980/QYPgG8oCfXFc-SnBe2SXj_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "QYPgG8oCfXFc-SnBe2SXj_minimax-h3.mp4",
+      "file_size": 12883280
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description:\n[Shot 1] Live-action, candid, cinematic still frame with natural daylight. The scene centers on (S1), a 40s male delivery shop owner with brown wavy hair, a trimmed beard, and a composed, forward-focused expression, wearing a green buttoned shirt and a heavy black apron. He stands in a medium close-up in the right mid-ground, holding a single black smartphone with both hands at chest height. Only the back of the device is visible, showing its glossy surface and triple-camera array. The subject's thumbs tap and glide briskly across the glass in a natural typing rhythm, ending with a single decisive tap to send a message. He performs a soft, natural outward breath, then steadily lowers the phone a few inches while gazing slightly downward, his posture remaining grounded and ready. \n\nThe environment is a sunlit urban sidewalk during the day. Behind him to the left, a smashed wooden piano frame and black plastic crates are flattened on the pavement, with scattered ceramic cups and baguettes remaining completely motionless and softly out of focus. To the right, an open storefront features a white window sign reading \"DELI\" and shelves holding glass jars of ingredients. In the deep street background, a white delivery van parked facing the alley is also softly defocused. The lighting is diffused, bright sunlight mixed with cool indoor shadows from the deli. The camera holds as a fixed Static Shot at eye level, capturing the subject\u2019s practical movement at normal 24fps natural speed.\n\noverall_soundscape: A quiet, realistic street environment featuring a faint, persistent rustling of fabric and apron straps as the owner moves naturally. A sharp, clean tapping sound of fingers hitting a smartphone screen is distinct, followed by a subtle, audible exhale as he lowers his hands. Faint, distant white noise of a typical city alley provides a low-level ambient baseline.\n\nnon_diegetic_music:\nN/A",
+    "timings": {
+      "inference": 2.7124128509894945
+    }
+  },
+  "downloaded_at": "2026-09-13T17:32:55.946674+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/03-phone-turbo-v2.mp4",
+  "video_bytes": 12883280
+}

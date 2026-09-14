@@ -1,74 +1,53 @@
-# BUY HARD — voiceover recording sheet
+# BUY HARD — narration recording sheet
 
-Film: **The $400 Decision** · first picture cut: **2:45**.
+Film: **You handle today.** Target: **3:00**, including end card.
 
-Watch `video/out/buy-hard-cues.mp4` to rehearse. Record these nine blocks
-separately, or make one clean take. Speak naturally; the final edit will follow
-your delivery. Do not rush to match the draft timecodes exactly.
+Facundo narrates in a Loom-style camera overlay. A piano ruins a shipment containing cups and bread. The owner handles emergency supplies; the buyer arranges cups through an online store and bread through the email-only bakery. The piano is one dry joke; the purchasing problem is serious.
 
-A phone recording in a quiet room is fine. Keep the phone still, about a hand's
-length from your mouth. Leave two seconds of silence before and after each take.
-Send the original audio files, not recordings played through another device.
-No music or noise-removal filter needed. WAV or the phone's original M4A is fine.
+This is the intended story, not a transcript of verified execution. Establish the behavior before presenting it as a working product demonstration; otherwise use a clearly labeled concept sequence. Keep production notes out of the spoken take.
 
-## 01 · The question · 0:00–0:12
+## 01 · An ordinary day · 0:00–0:17
 
-Why would I pay four hundred dollars more for deli lids? This is the cheaper
-quote. This is the one BUY HARD recommended. The difference matters when you
-have customers waiting.
+The best day with BUY HARD is a day you barely think about purchasing. The everyday supplies are being looked after, and you’re busy running the business. Then something happens that no forecast could have seen coming.
 
-## 02 · The owner · 0:12–0:27
+## 02 · The piano · 0:17–0:33
 
-I've run a deli. The food gets your attention. So do the customers. But ordinary
-things, like having enough containers and lids, have to keep working too.
+A piano lands on our shipment. Cups, bread—the whole delivery is ruined. Unlikely? Sure. But a damaged shipment, right before you need it? That happens. And the customers are still going to show up.
 
-## 03 · The shortage · 0:27–0:46
+## 03 · The handoff · 0:33–0:58
 
-Here's a recorded demo purchase. The starting stock was three thousand, two
-hundred forty lids, with average use of six hundred twelve a day. BUY HARD
-calculated the shortage and the deadline. Convex keeps the record and screens
-in sync.
+I know where to get enough to keep us going. So I tell my buyer: ‘The shipment’s ruined. I’m picking up emergency supplies for the next few days. Please arrange replacement cups and bread as quickly as possible. The cups can come from the online store. Our bakery takes orders by email.’
 
-## 04 · The search · 0:46–1:06
+## 04 · Cups from the online store · 0:58–1:15
 
-Firecrawl found real supplier pages. OpenAI helped assess the evidence and draft
-requests for quotes. AgentMail sent the emails. For this demonstration, supplier
-replies came through controlled test inboxes.
+The buyer takes it from there. For the cups, it checks the right product, the quantity, and the quickest delivery available from the online store. It gets the purchase ready for approval while I’m out handling the immediate problem.
 
-## 05 · The complication · 1:06–1:32
+## 05 · Bread through the bakery · 1:15–1:49
 
-One quote was incomplete. Freight and arrival were missing. Here is the
-clarification the agent actually sent. The next reply still left information
-unresolved, so it followed up again. By revision three, the requested terms were
-present. You can inspect that whole exchange in the app.
+The bread takes a different route. Our bakery works by email, so the buyer writes to them with what we need and asks how soon they can deliver. They reply with a price, but haven’t confirmed the delivery time. The buyer follows up, gets that detail, and puts the answer together. I haven’t had to call the bakery, chase the reply, or copy anything into a spreadsheet.
 
-## 06 · The answer · 1:32–1:55
+## 06 · A decision worth interrupting for · 1:49–2:07
 
-Now the cheaper quote makes sense. It arrives after the deadline: six projected
-days without stock. SupplyCo costs four hundred dollars more, but arrives in
-time. Stored purchase rules make that comparison. The trade-off is visible.
+What comes back to me is a plan for both: the cups, the bread, what each will cost, and when each can arrive. If one leaves us short, I need to know. Otherwise, I can review the terms and let the buyer get on with it.
 
-## 07 · The decision · 1:55–2:14
+## 07 · Two orders, followed through · 2:07–2:27
 
-Then it's my decision. This is the approval I recorded against the exact purchase
-terms. From here, I can inspect the purchase order and the quote revision behind it.
+Once I approve, the buyer places the cup order online and sends the bread order to the bakery. It checks the store’s order confirmation and the bakery’s email reply against what we agreed. If either comes back different, that still needs sorting out.
 
-## 08 · The result · 2:14–2:33
+## 08 · One conversation · 2:27–2:40
 
-AgentMail delivered the order once. OpenAI extracted the supplier's confirmation.
-The terms matched, and fifteen thousand incoming units were confirmed. The
-evidence stays attached to the purchase.
+And if something changes, I tell the same buyer: ‘The bread needs to go to our other location.’ It already has the order and the bakery conversation to work from.
 
-## 09 · Back to work · 2:33–2:45
+## 09 · The point · 2:40–2:52
 
-That's why I built BUY HARD. Less time chasing a purchase. More attention for
-the business in front of you. Keep the line moving.
+I still have to pick up those emergency supplies. There are customers waiting. But someone else is working on what happens after today. That’s BUY HARD.
+
+## 10 · Close · 2:52–3:00
+
+You handle the business. Your buyer handles the buying. Purchasing. Handled.
 
 ---
 
-Delivery notes: warm and matter-of-fact, with curiosity in the opening question.
-Pause briefly before “six projected days without stock.” Let the last line land.
+Record as one take or ten blocks with quiet space at either end. Pause after “A piano lands on our shipment.” The owner’s handoff is conversational, not a sequence of stock-entry commands.
 
-The first cut uses app footage in the owner scene. Existing deli footage can
-replace it once provided; no newly acted or AI-generated scene is needed.
-These timecodes and rehearsal cues are a draft, not final accessibility captions.
+Keep the buyer responsible for both purchasing routes. The owner reviews necessary terms, not every supplier exchange. Do not name technology providers or narrate screen navigation, demo mechanics or button labels. Planned emergency purchases are not yet received stock. Supplier replies and order confirmations in the final film must support the spoken outcome.

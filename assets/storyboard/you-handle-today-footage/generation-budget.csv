@@ -1,0 +1,19 @@
+Model and billing route,Scenario,Shots,Seconds per take,Takes per shot,Total generated seconds,USD per output second,Video generation USD,Rate source
+"H3 Max on fal, 1080p, regular rate",Few retakes,24,8,3,576,0.16,92.16,https://fal.ai/minimax-h3-max
+"H3 Max on fal, 1080p, regular rate",Working estimate,24,8,5,960,0.16,153.6,https://fal.ai/minimax-h3-max
+"H3 Max on fal, 1080p, regular rate",Heavy retakes,24,8,8,1536,0.16,245.76,https://fal.ai/minimax-h3-max
+"H3 Max on fal, 1080p, promotion through September 14",Few retakes,24,8,3,576,0.04,23.04,https://fal.ai/models/minimax/h3-max/image-to-video
+"H3 Max on fal, 1080p, promotion through September 14",Working estimate,24,8,5,960,0.04,38.4,https://fal.ai/models/minimax/h3-max/image-to-video
+"H3 Max on fal, 1080p, promotion through September 14",Heavy retakes,24,8,8,1536,0.04,61.44,https://fal.ai/models/minimax/h3-max/image-to-video
+"Runway Gen-4.5, standard MP4, API",Few retakes,24,8,3,576,0.12,69.12,https://docs.dev.runwayml.com/guides/pricing/
+"Runway Gen-4.5, standard MP4, API",Working estimate,24,8,5,960,0.12,115.2,https://docs.dev.runwayml.com/guides/pricing/
+"Runway Gen-4.5, standard MP4, API",Heavy retakes,24,8,8,1536,0.12,184.32,https://docs.dev.runwayml.com/guides/pricing/
+"Seedance 2.5 through Runway, 1080p, API, image inputs only",Few retakes,24,8,3,576,0.68,391.68,https://help.runwayml.com/hc/en-us/articles/53542207042323-Creating-with-Seedance-2-5
+"Seedance 2.5 through Runway, 1080p, API, image inputs only",Working estimate,24,8,5,960,0.68,652.8,https://help.runwayml.com/hc/en-us/articles/53542207042323-Creating-with-Seedance-2-5
+"Seedance 2.5 through Runway, 1080p, API, image inputs only",Heavy retakes,24,8,8,1536,0.68,1044.48,https://help.runwayml.com/hc/en-us/articles/53542207042323-Creating-with-Seedance-2-5
+"H3 Max Turbo on fal, 1080p, promotion through September 14",Few retakes,24,8,3,576,0.02,11.52,https://fal.ai/models/minimax/h3-max-turbo/image-to-video
+"H3 Max Turbo on fal, 1080p, promotion through September 14",Working estimate,24,8,5,960,0.02,19.20,https://fal.ai/models/minimax/h3-max-turbo/image-to-video
+"H3 Max Turbo on fal, 1080p, promotion through September 14",Heavy retakes,24,8,8,1536,0.02,30.72,https://fal.ai/models/minimax/h3-max-turbo/image-to-video
+"H3 Max Turbo on fal, 1080p, regular rate",Few retakes,24,8,3,576,0.08,46.08,https://fal.ai/models/minimax/h3-max-turbo/image-to-video
+"H3 Max Turbo on fal, 1080p, regular rate",Working estimate,24,8,5,960,0.08,76.80,https://fal.ai/models/minimax/h3-max-turbo/image-to-video
+"H3 Max Turbo on fal, 1080p, regular rate",Heavy retakes,24,8,8,1536,0.08,122.88,https://fal.ai/models/minimax/h3-max-turbo/image-to-video

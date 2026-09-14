@@ -1,0 +1,4 @@
+@import "../../src/styles/app.css";
+
+/* This standalone build must scan the same components as the application. */
+@source "../../src";

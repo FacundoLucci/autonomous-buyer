@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-09-14T03:10:12.767956+00:00",
+  "localUrl": "http://127.0.0.1:8796",
+  "publishedProductStories": 8,
+  "scheduledProductStories": 5,
+  "scheduledFounderStories": 4,
+  "heldDrafts": 1,
+  "queueCountMatchesLiveObservation": true,
+  "sourceLinksChecked": 17,
+  "desktopInAppReview": "passed",
+  "mobileInAppReview": {
+    "layoutWidth": 390,
+    "documentWidth": 390,
+    "visualViewportWidth": 390,
+    "visualScale": 1,
+    "searchInputFontSize": "16px"
+  },
+  "campaignFilter": "passed",
+  "statusAndSearchFilter": "passed",
+  "followupCreateEditReloadPersistence": "passed in isolated QA state",
+  "actionCheckmarkReloadPersistence": "passed in isolated QA state",
+  "staleSaveConflict": "409 as expected",
+  "crossOriginSave": "403 as expected",
+  "arbitraryFileRead": "404 as expected",
+  "productionRefreshScript": "passed; read-only; aggregates only",
+  "realFollowupStateEmpty": true,
+  "qaStateRemoved": true,
+  "temporaryViewportReset": true,
+  "externalWrites": false,
+  "productionDeploy": false
+}

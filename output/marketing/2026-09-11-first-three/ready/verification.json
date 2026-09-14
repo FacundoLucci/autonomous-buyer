@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-09-11T17:45:29.962595+00:00",
+  "method": "Reopened saved Zernio draft editors in the in-app browser; compared rendered form values with the final captions and alt text. Read image dimensions and selected-account/publishing-mode styling from the DOM.",
+  "drafts": [
+    {
+      "key": "buyer",
+      "postId": "6aa3fd1079b987e18ac8a2a8",
+      "mainCaptionMatches": true,
+      "xCaptionMatches": true,
+      "altMatches": true,
+      "image": "meet-your-new-buyer-html.png",
+      "imageLoaded": true,
+      "imageSize": [
+        1536,
+        1024
+      ],
+      "linkedinSelected": true,
+      "xSelected": true,
+      "youtubeSelected": false,
+      "draftMode": true
+    },
+    {
+      "key": "openai",
+      "postId": "6aa3fe01f465f18b88c37f09",
+      "mainCaptionMatches": true,
+      "xCaptionMatches": true,
+      "altMatches": true,
+      "image": "your-buyer-stays-ahead-html.png",
+      "imageLoaded": true,
+      "imageSize": [
+        1536,
+        1024
+      ],
+      "linkedinSelected": true,
+      "xSelected": true,
+      "youtubeSelected": false,
+      "draftMode": true
+    },
+    {
+      "key": "firecrawl",
+      "postId": "6aa3fe3b826fd8af227c45c4",
+      "mainCaptionMatches": true,
+      "xCaptionMatches": true,
+      "altMatches": true,
+      "image": "automated-buying-html.png",
+      "imageLoaded": true,
+      "imageSize": [
+        1536,
+        1024
+      ],
+      "linkedinSelected": true,
+      "xSelected": true,
+      "youtubeSelected": false,
+      "draftMode": true
+    }
+  ],
+  "publicLinks": {
+    "origin": "https://buyhard.app",
+    "checkedOn": "2026-09-11",
+    "observed": [
+      "Homepage with demo, walkthrough, and pilot interest form",
+      "Walkthrough calendar with selectable dates and available time slots",
+      "Public sample demo with approval decision and sample/no-supplier label",
+      "Post-specific campaign parameters preserved in demo and walkthrough links"
+    ],
+    "method": "Codex in-app browser",
+    "scope": "Read-only navigation; no lead or appointment submitted."
+  },
+  "publication": {
+    "postId": "6aa3fd1079b987e18ac8a2a8",
+    "title": "Meet your new buyer.",
+    "status": "published",
+    "platforms": [
+      "twitter",
+      "linkedin"
+    ],
+    "publishedOn": "2026-09-11",
+    "publishedTimeDisplay": "Sep 11, 2026, 01:34 PM CDT",
+    "verifiedAt": "2026-09-11T18:37:47.243619+00:00",
+    "urls": {
+      "twitter": "https://twitter.com/i/web/status/2098480454227698101",
+      "linkedin": "https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/"
+    },
+    "evidence": "After selecting Now and updating the existing draft, the refreshed Zernio All posts list displayed published, both platform URLs, and meet-your-new-buyer-html.png. The other two posts remain drafts."
+  },
+  "currentState": {
+    "revision": 9,
+    "introduction": "published",
+    "openai": "scheduled September 12 08:30 Chicago",
+    "firecrawl": "scheduled September 12 12:30 Chicago",
+    "napkin": "separate unscheduled draft, held until September 17 or later after two earlier references publish",
+    "weekendScheduleReceipt": "../../2026-09-12-daily-campaign/zernio-schedule-receipt.json",
+    "handwrittenNapkinReceipt": "handwritten-napkin-update-2026-09-11.json"
+  },
+  "captionUpdates": [
+    {
+      "revision": 7,
+      "checkedAt": "2026-09-11T18:58:56.763483+00:00",
+      "postId": "6aa3fe01f465f18b88c37f09",
+      "status": "draft",
+      "receipt": "caption-update-2026-09-11.json"
+    }
+  ],
+  "assetUpdates": [
+    {
+      "revision": 8,
+      "checkedAt": "2026-09-12T01:41:19.834863+00:00",
+      "postId": "6aa3fe01f465f18b88c37f09",
+      "status": "draft",
+      "receipt": "napkin-update-2026-09-11.json"
+    },
+    {
+      "revision": 9,
+      "receipt": "handwritten-napkin-update-2026-09-11.json"
+    }
+  ]
+}

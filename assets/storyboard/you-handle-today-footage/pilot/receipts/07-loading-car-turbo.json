@@ -1,0 +1,74 @@
+{
+  "job_id": "07-loading-car-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:54:42.010184+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "07-loading-car-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/07-loading-car.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 307,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner lowers the grocery bag a short distance onto the trunk floor, releases both hands only once it rests securely, then straightens and reaches up toward the open hatch. Keep the hatch open until the cut. Car stays parked, no phone. Bag contents retain shape, one continuous two-handed movement, normal speed and weight. Paper bag rustle, light street ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "831cf244ba1b385cbe727d9a535aeba5a32f1cb2020e9db25a9d5619cb61bd13",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09be8-3813-70e0-8863-01415afc7cee",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:55:34.803774+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09be8-3813-70e0-8863-01415afc7cee",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be8-3813-70e0-8863-01415afc7cee/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.631999969482422
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa49f0/mHvkIIkbaJeYD1iLUETrQ_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "mHvkIIkbaJeYD1iLUETrQ_minimax-h3.mp4",
+      "file_size": 14147013
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: <Picture 1> Cinematic, live-action candid shot. The scene opens on a man with dark curly hair and a short beard, wearing an olive-green button-down shirt and a charcoal-grey apron, standing at the open trunk of a dark grey SUV. He is holding a large brown paper grocery bag filled with bread, containers, and leafy greens. Another smaller bag already sits in the trunk. The background shows a sun-lit city street with a storefront and potted plants. [Shot 1] The camera remains static as the man performs a natural, continuous physical action at full speed. He lowers the heavy paper grocery bag a short distance onto the fabric floor of the trunk. The bag shows realistic weight, with the contents inside shifting slightly upon impact. Once the bag is resting securely, he quickly releases both hands simultaneously. He then straightens his posture and reaches both arms upward toward the interior edge of the open hatch as if to adjust it. The hatch remains fully open throughout the entire five seconds. The car remains parked, and the movement is fluid and realistic without any delay or slow motion.\n\noverall_soundscape: The crisp, dry rustle of heavy paper grocery bags as it is placed on the trunk floor is followed by the subtle city street ambience, including distant traffic, soft wind, and the faint rustle of the man's clothing as he moves.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.4451051643118262
+    }
+  },
+  "downloaded_at": "2026-09-13T17:55:35.937745+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/07-loading-car-turbo.mp4",
+  "video_bytes": 14147013
+}

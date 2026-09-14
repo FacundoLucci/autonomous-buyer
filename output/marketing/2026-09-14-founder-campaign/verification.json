@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-12T13:26:41.882391+00:00",
+  "result": "ready_for_review",
+  "posts": 4,
+  "images": 8,
+  "imageFormat": "1536x1024 PNG",
+  "fullSizeExportsVisuallyReviewed": true,
+  "sources": "Archived original UI, fresh actual sample screens, and previously reviewed supplies photo",
+  "inAppBrowser": {
+    "desktop": {
+      "allEightCardsChecked": true,
+      "textClipping": false,
+      "missingImages": 0,
+      "distortedScreenshotAspectRatios": 0,
+      "headlineFont": "Inter",
+      "publicYcMention": false,
+      "filtersAndCaptionToggle": "passed"
+    },
+    "mobile": {
+      "viewport": 390,
+      "horizontalOverflow": false,
+      "filterButtonHeight": 44,
+      "visibleCardsPerPost": 2
+    }
+  },
+  "captions": {
+    "publicYcMentions": 0,
+    "xWeightedCharacters": [
+      224,
+      251,
+      239,
+      246
+    ],
+    "sponsorTags": "present",
+    "campaign": "facundo_builder_202609",
+    "tone": "relaxed, positive and open"
+  },
+  "pngLinks": "8 HTTP 200 responses",
+  "providerWrites": 0,
+  "productionCodeChanges": false,
+  "schedulingVerification": {
+    "checkedAt": "2026-09-13T00:27:22.251448+00:00",
+    "status": "scheduled",
+    "approvedContentRevision": 2,
+    "posts": 4,
+    "platforms": [
+      "X",
+      "LinkedIn"
+    ],
+    "imagesPerPost": 2,
+    "captionsMatchApprovedCopy": true,
+    "mediaAndAltTextMatch": true,
+    "queueRecheckedAfterReload": true,
+    "receipt": "zernio-schedule-receipt.json"
+  }
+}

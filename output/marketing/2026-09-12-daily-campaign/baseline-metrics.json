@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-09-12T03:37:30.954844+00:00",
+  "target": "Production reliable-albatross-463",
+  "method": "Read-only paginated marketing:events query; first page is complete. Raw visitor records excluded from this report.",
+  "complete": true,
+  "events": {
+    "visit": 19
+  },
+  "eventsBySource": {
+    "linkedin": {
+      "visit": 4
+    },
+    "x": {
+      "visit": 1
+    },
+    "direct_or_unattributed": {
+      "visit": 14
+    }
+  },
+  "excludedLaunchCheckEvents": {
+    "booking_confirmed": 1,
+    "demo_use": 1,
+    "inquiry": 1,
+    "visit": 1
+  },
+  "interpretation": "Small early sample. Counts are recorded events, not verified operator interest or customer results. Missing later-stage events are not evidence about why visitors did not convert."
+}

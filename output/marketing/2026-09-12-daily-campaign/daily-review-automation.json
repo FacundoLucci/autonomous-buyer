@@ -1,0 +1,15 @@
+{
+  "id": "buy-hard-daily-marketing",
+  "name": "BUY HARD daily marketing",
+  "kind": "heartbeat",
+  "status": "ACTIVE",
+  "targetThreadId": "01a07452-771b-7d23-ae12-b53678cfec9f",
+  "reviewTimes": [
+    "07:30",
+    "15:30"
+  ],
+  "timezone": "America/Chicago",
+  "verifiedAt": "2026-09-12T04:03:06.889229+00:00",
+  "scope": "Coordinated product and separate founder campaigns; 3-4 total stories daily, next 48 hours reviewed, later themes flexible.",
+  "notificationPolicy": "Meaningful changes, scheduled batches, failures or required decisions."
+}

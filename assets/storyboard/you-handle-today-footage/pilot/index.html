@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BUY HARD — You handle today</title>
+  <style>
+    :root{--lime:#dce985;--ink:#15170f;--pale:#eef1d5;color-scheme:light}
+    *{box-sizing:border-box}body{margin:0;background:var(--lime);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    main{max-width:1280px;margin:0 auto;padding:32px 28px 48px}header{display:flex;justify-content:space-between;gap:20px;align-items:center;border-top:2px solid var(--ink);padding:14px 0}
+    .label{font:12px/1.4 monospace;text-transform:uppercase;letter-spacing:.06em}.wordmark{font-weight:900;letter-spacing:-.06em;font-size:29px;line-height:1}
+    h1{font-size:clamp(42px,7vw,84px);letter-spacing:-.07em;line-height:1;margin:34px 0 16px;font-weight:800}p{font-size:17px;line-height:1.5;max-width:740px;margin:10px 0 22px}
+    .hero{border:1px solid var(--ink);background:var(--ink)}video{width:100%;height:auto;aspect-ratio:16/9;display:block;background:var(--ink)}
+    .caption{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--ink)}a{color:inherit;text-underline-offset:4px}
+    section{margin-top:44px}h2{font-size:29px;letter-spacing:-.04em;font-weight:700;margin:0 0 10px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
+    button,.download{display:inline-block;border:1px solid var(--ink);background:var(--pale);padding:11px 16px;color:var(--ink);font:13px monospace;cursor:pointer;text-decoration:none}button:hover,.download:hover{background:var(--ink);color:var(--lime)}button:focus-visible,a:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{border:1px solid var(--ink);background:var(--pale)}.card-head{padding:13px 15px;display:flex;justify-content:space-between;gap:15px}.card p{padding:0 15px;margin:12px 0 16px;font-size:14px}.card a{font-size:13px}
+    .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:24px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}.notes p{font-size:15px;margin-bottom:0}.notes strong{font-size:18px;letter-spacing:-.02em}
+    footer{margin-top:32px;font:12px/1.5 monospace}.status{font-size:14px;max-width:none} .file-links{display:flex;flex-wrap:wrap;gap:16px;margin-top:22px}
+    @media(max-width:680px){main{padding:20px 16px 32px}header{align-items:flex-start}.grid,.notes{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}h1{margin-top:28px}.caption{font-size:11px}p{font-size:16px}}
+  </style>
+</head>
+<body>
+<main>
+  <header><a class="wordmark" href="./index.html" aria-label="BUY HARD footage review">BUY HARD</a><span class="label">You handle today<br>Footage test · September 13, 2026</span></header>
+  <h1>Life happens.<br>Keep going.</h1>
+  <p><a class="download" href="../assembly/index.html">Open the three-minute production review ↗</a></p>
+  <p>A normal delivery. A very unusual interruption. One quick handoff.</p>
+  <div class="hero"><video id="cut" controls playsinline preload="metadata" poster="frames/01-unload.png" src="pilot-cut-v2.mp4"></video></div>
+  <div class="caption label"><span>Revised opening · 14 seconds · Sound on</span><a href="pilot-cut-v2.mp4" download>Download the revised cut ↗</a></div>
+  <p class="status">This is the opening footage test. The full review now includes the emergency shopping sequence and illustrative buyer/email cards. Verified app captures and Facundo's camera recording are still pending.</p>
+  <section aria-labelledby="cleanup-title">
+    <h2 id="cleanup-title">Back to the same shop.</h2>
+    <p>The truck and driver have left. A cleanup crew works around the piano while the owner brings emergency supplies through the original doorway.</p>
+    <video controls playsinline preload="metadata" poster="frames/08-returning-cleanup.png" src="clips/08-returning-cleanup-turbo.mp4"></video>
+    <div class="caption label"><span>Selected return shot · Cleanup correction</span><a href="clips/08-returning-cleanup-turbo.mp4" download>Download ↗</a></div>
+  </section>
+  <section aria-labelledby="comparison-title">
+    <div class="section-head"><div><h2 id="comparison-title">A crash that catches you off guard.</h2><span class="label">Original vs. revised · Both made with Turbo</span></div><button id="compare">Play both · muted</button></div>
+    <div class="grid">
+      <article class="card"><div class="card-head label"><strong>Original</strong><span>5 seconds</span></div><video id="original" controls playsinline muted preload="metadata" poster="frames/02-impact-start.png" src="clips/02-impact-turbo.mp4"></video><p>The first take, preserved for comparison. <a href="clips/02-impact-turbo.mp4" download>Download ↗</a></p></article>
+      <article class="card"><div class="card-head label"><strong>Revised</strong><span>4 seconds</span></div><video id="revised" controls playsinline muted preload="metadata" poster="frames/02-impact-start.png" src="clips/02-impact-turbo-v4-edited.mp4"></video><p>New generation, with a faster fall, startled reactions and a broken piano. The impact is tightened in the edit. <a href="clips/02-impact-turbo-v4-edited.mp4" download>Download ↗</a></p></article>
+    </div>
+    <p class="status" id="comparison-status" aria-live="polite">Watch the piano's arrival, the weight of the impact and how the people react.</p>
+  </section>
+  <section class="notes" aria-label="What this pilot tests">
+    <div><strong>The wreckage stays.</strong><p>The phone shot now includes the broken piano. The owner moves on to arranging replacements.</p></div>
+    <div><strong>One problem to hand off.</strong><p>The shipment contains both cups and bread. The owner handles emergency supplies while the buyer arranges replacements.</p></div>
+    <div><strong>Room for the product.</strong><p>The next edit will show the app and bakery email exchange beside the owner's work.</p></div>
+  </section>
+  <div class="file-links"><a class="download" href="clips/01-unloading-turbo.mp4" download>Unloading ↗</a><a class="download" href="clips/03-phone-turbo-v2.mp4" download>Updated phone handoff ↗</a><a class="download" href="clips/02-impact-turbo-v4.mp4" download>Unedited new piano take ↗</a><a class="download" href="pilot-cut.mp4" download>Original opening ↗</a><a class="download" href="manifest.json">Prompts + settings ↗</a></div>
+  <footer>Seventeen generated video requests in total · estimated charges $1.80 ($0.90 for the continuation and cleanup correction).<br>Actual billing is unavailable to this key. Source frames were made with the built-in image tool.</footer>
+</main>
+<script>
+  document.getElementById('compare').addEventListener('click',async()=>{
+    document.getElementById('cut').pause();
+    const videos=['original','revised'].map(id=>document.getElementById(id));
+    videos.forEach(video=>{video.pause();video.muted=true;video.currentTime=0});
+    try{await Promise.all(videos.map(video=>video.play()));document.getElementById('comparison-status').textContent='Playing both takes from the beginning. Use either player for individual review.'}
+    catch{document.getElementById('comparison-status').textContent='Use each video’s play button to compare the takes.'}
+  });
+</script>
+</body>
+</html>

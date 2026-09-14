@@ -1,0 +1,17 @@
+{
+  "mode": "built-in image_gen, isolated product PNGs only",
+  "artwork": "All headlines, body copy, sponsor credits, layout, product panels and connecting arrow are native HTML/CSS/SVG.",
+  "assets": [
+    {
+      "id": "supplies-cutout",
+      "reference": "meet-your-buyer-v2.png",
+      "prompt": "Use case: background-extraction and precise-object-edit. Create a clean transparent PNG photographic asset for a web-designed BUY HARD marketing card from the supplied reference. Output ONLY the product still life: unbranded nested white paper cups, a closed kraft cardboard box behind them, and one roll of plain white rectangular adhesive labels with a short tail in front. Remove ALL typography, branding, credit lines, rules, and the entire lime background. The image must have a truly transparent alpha background, including around and between objects, with only a subtle natural contact shadow. Closely preserve the reference's photographic aesthetic, materials, lighting direction, arrangement, and camera viewpoint. Improve physical precision: each cup rim is a clean consistent ellipse, the nested cups are coaxial and regularly spaced, the carton has straight coherent edges and a believable folded top, and label perforations are straight, evenly spaced rectangles without warped or smeared detail. No text or symbols anywhere. Natural matte paper and cardboard, restrained studio photography, sharp clean edges, no painterly texture, no fake bokeh, no stylization. Fit the complete compact group within a roughly square PNG at high resolution with a little transparent padding; do not crop any object. This file will be layered onto an HTML lime background, so do not include any opaque background or the reference's words."
+    },
+    {
+      "id": "cups-cutout",
+      "reference": "just-say-whats-left-v2.png",
+      "prompt": "Use case: background-extraction and precise-object-edit. Create a clean transparent PNG product photograph for an HTML BUY HARD marketing card using the supplied reference. Output ONLY one upright stack of plain unbranded white paper cups, in the reference's same simple studio photographic style. Remove ALL words, badges, graphic elements and the lime background. The background must be genuinely transparent alpha including around the full silhouette. Use precise, believable cup geometry: a circular elliptical opening, symmetric tapered body, six consistently nested cup rims sharing the same axis and viewpoint, uniform smooth rolled rims with no fused edges, dents, warped ellipses, jagged repetition, or melted appearance. Matte white paper with a gentle warm light from upper left and a very soft natural contact shadow. No logo, texture artifact, writing, number, quotation or symbol. Keep the full product within the frame, centered with transparent padding, approximately portrait 4:5 composition at high resolution. This asset will be reused on a lime HTML card and inside a cream HTML product card."
+    }
+  ]
+}
+

@@ -1,0 +1,73 @@
+{
+  "job_id": "01-unloading-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T13:45:45.596683+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "01-unloading-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/01-unload.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "quality",
+      "enable_safety_checker": true,
+      "seed": 101,
+      "prompt": "One continuous five-second naturalistic shot. The delivery worker at the far left slowly bends and sets the carton he is holding onto the hand truck beside him, then straightens up with empty hands. The deli owner at the far-right doorway glances at the central delivery and stays by the door. All four central cup cartons and the two bread crates remain stationary and unchanged. Preserve the owner and worker identities, outfits, storefront and truck. Very subtle forward camera drift. Realistic hands, ordinary weight and deliberate movements. Quiet street ambience and a gentle cardboard rustle. No dialogue, music, text, overlays, cuts or new objects."
+    }
+  },
+  "input_sha256": "5e1034ea3916924e6d5b3fb4decb6efa7507d4f3fe10c02d051118e2915b6c74",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09b04-4fd0-7ae3-8b5a-415b6109a217",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 1
+  },
+  "last_checked_at": "2026-09-13T13:47:18.122743+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09b04-4fd0-7ae3-8b5a-415b6109a217",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09b04-4fd0-7ae3-8b5a-415b6109a217/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 60.62299990653992
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4420/-PUMtkJ4QJyWWkNNz8iKd_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "-PUMtkJ4QJyWWkNNz8iKd_minimax-h3.mp4",
+      "file_size": 21241267
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\nintegrated_multimodal_description: [Shot 1] This is a live-action, cinematic shot. Throughout the video, the camera executes a very subtle, slow push-in on a sunlit urban sidewalk dappled with sharp, distinct shadows from nearby leafy trees, maintaining a wide, naturalistic street composition. Early in the clip, the delivery worker on the far left, a man with a sturdy build dressed in a dark navy blue cap and a matching long-sleeved uniform, begins a deliberate, slow downward movement. Standing near the open back of a large white delivery truck filled with more stacked cargo, he conveys a realistic sense of ordinary weight as he bends his knees to lower the plain brown cardboard carton he securely holds. As he descends, the heavy fabric of his navy uniform shifts and folds naturally, and he carefully guides the carton toward the flat silver base of a metal hand truck equipped with thick black rubber tires, which is positioned right beside his legs. In the center of the frame, resting directly on the grey concrete pavement, a stationary cluster of delivered goods remains perfectly undisturbed: four brown cardboard boxes stacked tightly in a block, with the top-left box open to display neat, tall stacks of white disposable cups, sitting alongside two stacked black plastic crates brimming with round, golden-brown bread rolls. In the middle of the sequence, a gentle cardboard rustle and a soft thud are heard as the bottom of the worker's carton makes solid contact with the hand truck's metal base. The worker then smoothly releases his grip, his realistic hands pulling away cleanly from the rough cardboard surface without any hesitation. Toward the end of the clip, he straightens his legs and back, rising smoothly back to an upright standing position with his hands now completely empty and resting naturally at his sides. Simultaneously, on the far right, a deli owner framed by the open black-framed glass doorway of a classic red brick storefront makes a subtle observational movement. The owner, featuring dark hair, a short beard, an olive-green button-down shirt with rolled-up sleeves, and a dark grey apron tied around his waist, slightly turns his head. He casts a quiet, lingering glance toward the central pile of boxes and bread crates, but he stays firmly anchored by the door, maintaining his relaxed, stationary posture near a tall black planter containing a green shrub and beneath a dark wooden sign reading \"DELI\" in crisp white lettering. Throughout the entire sequence, the four central cup cartons and the two bread crates remain perfectly stationary and unchanged on the dappled sidewalk, completely unaffected by the worker's loading activity or the subtle camera drift.\n\noverall_soundscape: The overall soundscape begins with a quiet, naturalistic urban street ambience, featuring the faint, distant hum of city traffic and a gentle breeze rustling through the unseen trees overhead. As the delivery worker begins his deliberate downward movement, a subtle rustle of heavy cotton clothing is audible in the foreground. In the middle of the clip, the moment the carton touches the hand truck, a distinct, gentle cardboard rustle and a soft, dull thud are clearly heard, emphasizing the ordinary weight of the box. This is immediately followed by another soft fabric rustle as the worker straightens his posture and returns to a standing position. The quiet street ambience persists steadily in the background throughout the entire sequence, with no dialogue or vocalizations disrupting the calm, everyday atmosphere.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7692056949599646
+    }
+  },
+  "downloaded_at": "2026-09-13T13:47:19.773676+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/01-unloading-turbo.mp4",
+  "video_bytes": 21241267
+}

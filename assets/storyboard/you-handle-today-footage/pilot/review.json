@@ -1,0 +1,140 @@
+{
+  "created_at": "2026-09-13",
+  "jobs": [
+    {
+      "job": "01-unloading-turbo",
+      "status": "DOWNLOADED",
+      "request_id": "01a09b04-4fd0-7ae3-8b5a-415b6109a217",
+      "estimated_usd": "0.10",
+      "actual_billed_usd": null,
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1918,
+            "height": 1080,
+            "r_frame_rate": "24/1"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "r_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "5.184000",
+          "size": "21241267"
+        }
+      },
+      "decode_check": "passed"
+    },
+    {
+      "job": "02-impact-max",
+      "status": "DOWNLOADED",
+      "request_id": "01a09b08-e35c-7962-9e78-a31f6824f468",
+      "estimated_usd": "0.20",
+      "actual_billed_usd": null,
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1918,
+            "height": 1080,
+            "r_frame_rate": "24/1"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "r_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "5.184000",
+          "size": "15117028"
+        }
+      },
+      "decode_check": "passed"
+    },
+    {
+      "job": "02-impact-turbo",
+      "status": "DOWNLOADED",
+      "request_id": "01a09b08-d9fa-7172-a752-36064a193693",
+      "estimated_usd": "0.10",
+      "actual_billed_usd": null,
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1918,
+            "height": 1080,
+            "r_frame_rate": "24/1"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "r_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "5.184000",
+          "size": "15432883"
+        }
+      },
+      "decode_check": "passed"
+    },
+    {
+      "job": "03-phone-turbo",
+      "status": "DOWNLOADED",
+      "request_id": "01a09b08-dea8-7861-9847-3c1f8fcd3c5b",
+      "estimated_usd": "0.10",
+      "actual_billed_usd": null,
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1918,
+            "height": 1080,
+            "r_frame_rate": "24/1"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "r_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "5.184000",
+          "size": "13048115"
+        }
+      },
+      "decode_check": "passed"
+    }
+  ],
+  "estimated_total_usd": "0.50",
+  "actual_billed_total_usd": null,
+  "selected_impact": "02-impact-turbo",
+  "review": "Both impact takes depict the drop and keep people clear. Turbo is usable for this first cut; this single comparison does not establish equal quality for other shots. Phone-shot background packaging differs slightly from the wide aftermath and should be covered by the planned app panel or corrected for the final edit.",
+  "browser_checks": [
+    "15-second cut played through in the in-app browser",
+    "Play both button started both comparison players"
+  ],
+  "pending": [
+    "Final phone/app composition",
+    "Remaining emergency pickup and service footage",
+    "Actual app and supplier email captures",
+    "Founder camera recording and narration",
+    "Full three-minute assembly"
+  ]
+}

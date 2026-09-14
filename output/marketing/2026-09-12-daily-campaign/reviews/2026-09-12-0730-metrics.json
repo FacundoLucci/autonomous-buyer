@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-09-12T12:34:42.216230+00:00",
+  "target": "Production reliable-albatross-463",
+  "method": "Read-only paginated marketing:events query; only aggregate counts retained.",
+  "complete": true,
+  "events": {
+    "visit": 23
+  },
+  "eventsBySource": {
+    "direct_or_unattributed": {
+      "visit": 18
+    },
+    "linkedin": {
+      "visit": 4
+    },
+    "x": {
+      "visit": 1
+    }
+  },
+  "eventsByCampaign": {
+    "unattributed": {
+      "visit": 18
+    },
+    "buyhard_allgas_202609": {
+      "visit": 5
+    }
+  },
+  "excludedLaunchCheckEvents": {
+    "booking_confirmed": 1,
+    "demo_use": 1,
+    "inquiry": 1,
+    "visit": 1
+  },
+  "rawVisitorRecordsRetained": false
+}

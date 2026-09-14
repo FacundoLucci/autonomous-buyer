@@ -1,0 +1,27 @@
+{
+  "file": "you-handle-today-v2.mp4",
+  "duration": 180.053333,
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "frames": 4320,
+  "bytes": 46446498,
+  "sha256": "f464d33cd4d4deb413cca6cfff3fd6f262be45a53c8c58c1344e1a7b2337fdda",
+  "fullDecode": "passed",
+  "extractedFrameTimes": [
+    18.5,
+    46,
+    65,
+    88,
+    94,
+    106,
+    117,
+    144,
+    157,
+    175
+  ],
+  "story": "Approved owner footage plus actual mobile UI with staged story data.",
+  "cameraAndNarration": "Facundo's Loom recording remains to be added; the lower strip is reserved.",
+  "audio": "Original footage sound at reduced volume; no generated narrator or music.",
+  "paidGenerationCalls": 0
+}

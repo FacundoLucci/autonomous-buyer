@@ -1,0 +1,74 @@
+{
+  "job_id": "02-impact-turbo-v4",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:28:40.559430+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "02-impact-turbo-v4",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/02-impact-start.png",
+    "last_frame": "frames/02-impact-end-broken-v2.png",
+    "usd_per_second": "0.02",
+    "purpose": "Sudden gravity-driven impact startles both people and breaks the piano apart, as requested by the user.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 204,
+      "prompt": "Locked wide camera, candid real-time street footage, normal 24 fps playback. This accident is SUDDEN and startles both unsuspecting men. Begin exactly with the first image. They are looking at the delivery, relaxed; neither looks upward nor follows the falling object. After a brief quarter-second, a heavy walnut upright piano already falling at high speed flashes vertically through the top of frame and SLAMS into the central shipment. Its visible descent takes only a blink, approximately 0.25 seconds, with strong vertical motion blur. Gravity accelerates it straight DOWN, keyboard horizontal and facing the camera. No gentle landing. The hard collision is one immediate physical event: cup cartons and bread crates collapse as the PIANO ITSELF breaks apart under its weight. Its wooden cabinet buckles and splits, broad front and top panels tear loose, the keyboard snaps, a few keys and wooden splinters scatter, and its heavy internal frame collapses downward into the low wreckage shown by the last image. No explosion, no fire, no bouncing intact piano. At the instant of the loud CRASH, both men involuntarily jolt backward, duck their shoulders and throw their hands up in surprise. The worker recoils toward his truck; the owner flinches back into his doorway. They react to the impact rather than anticipating or tracking the fall. Both remain unharmed and clear of all debris. Cups, bread and small fragments scatter briefly, fall fast and stop; the main heavy wooden pieces drop close to the wreck. Finish all violent motion within the first 1.5 seconds, then let the stunned men slowly lower their hands and stare at the broken piano in disbelief. Final image is the settled aftermath, not a target to delay the crash until. Sound: one abrupt heavy crash exactly on impact, splintering timber and clattering broken piano keys, a short discordant clang, then street ambience. No music, dialogue, slow motion, hovering, suspended dust, camera movement or staged theatrical reaction."
+    }
+  },
+  "input_sha256": "803ec31181d3558478f5dcb3ac3abdb658349e1b946e14f5471bc97c52458599",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bd0-6806-7e92-8bc8-3ecc5dc474de",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:29:13.729644+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bd0-6806-7e92-8bc8-3ecc5dc474de",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bd0-6806-7e92-8bc8-3ecc5dc474de/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 7.911999940872192
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4954/BalCpoas5MHAKJ9_8H_8e_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "BalCpoas5MHAKJ9_8H_8e_minimax-h3.mp4",
+      "file_size": 16892595
+    },
+    "expanded_prompt": "How the reference pictures align with the target video \u2014 Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 5.00-second mark of the target video.\n\nintegrated_multimodal_description: [Shot 1] Cinematic, live-action street footage, locked wide camera shot at 24fps. The scene begins exactly with the first frame: a delivery worker (S1) in a blue uniform and cap stands by the back of a white truck, while a shop owner (S2) in a black apron stands in the doorway of a brick \"DELI\". Between them are stacked cardboard boxes and plastic crates filled with bread. Both men are relaxed, looking down at the delivery, oblivious. At 00:00.250, a heavy walnut upright piano falling at high speed flashes vertically through the top of the frame with strong vertical motion blur. It slams directly into the central shipment. The collision is instantaneous and violent: cup cartons and bread crates collapse instantly as the piano's wooden cabinet buckles and splits. The front and top panels tear loose, the keyboard snaps, sending wooden keys and splinters scattering across the pavement. At the exact moment of the loud crash, S1 and S2 involuntarily jolt backward, ducking their shoulders and throwing their hands up in a genuine, startled reaction. S1 recoils toward the truck while S2 flinches deep into the doorway. By 00:01.500, all violent motion ceases. The piano lies in a low wreckage of shattered wood and metal frame. For the remainder of the video, the two stunned men slowly lower their hands and stare down at the broken piano in silent disbelief, as shown in the final frame.\n\noverall_soundscape: A single, abrupt, heavy crash marks the impact, followed by the sharp sound of splintering timber and the chaotic clattering of broken piano keys hitting the ground. A short, discordant metallic clang rings out from the internal frame, settling into the quiet city street ambience of distant traffic and wind.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7486670641228557
+    }
+  },
+  "downloaded_at": "2026-09-13T17:29:14.913348+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4.mp4",
+  "video_bytes": 16892595
+}

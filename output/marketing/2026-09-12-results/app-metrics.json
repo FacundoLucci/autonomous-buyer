@@ -1,0 +1,134 @@
+{
+  "checkedAt": "2026-09-13T04:03:57.033908+00:00",
+  "timezone": "America/Chicago",
+  "target": "Production deployment selected by convex run --prod in buyer repo",
+  "method": "Read-only marketing:events and marketing:list queries, fully paginated; raw records used only in process memory.",
+  "complete": true,
+  "pages": {
+    "events": 1,
+    "leads": 1
+  },
+  "events": {
+    "visit": 38
+  },
+  "recordedVisitorIds": 38,
+  "eventsBySource": {
+    "direct_or_unattributed": {
+      "visit": 26
+    },
+    "linkedin": {
+      "visit": 11
+    },
+    "x": {
+      "visit": 1
+    }
+  },
+  "eventsByCampaign": {
+    "unattributed": {
+      "visit": 26
+    },
+    "buyhard_allgas_202609": {
+      "visit": 12
+    }
+  },
+  "eventsByContent": {
+    "unattributed": {
+      "visit": 26
+    },
+    "what_if_inventory": {
+      "visit": 3
+    },
+    "p5_convex": {
+      "visit": 1
+    },
+    "p3_firecrawl": {
+      "visit": 2
+    },
+    "p2_openai": {
+      "visit": 1
+    },
+    "p1_intro": {
+      "visit": 5
+    }
+  },
+  "eventsByCampaignAndSource": {
+    "unattributed / direct_or_unattributed": {
+      "visit": 26
+    },
+    "buyhard_allgas_202609 / linkedin": {
+      "visit": 11
+    },
+    "buyhard_allgas_202609 / x": {
+      "visit": 1
+    }
+  },
+  "eventsByDay": {
+    "2026-09-12": {
+      "visit": 19
+    },
+    "2026-09-11": {
+      "visit": 8
+    },
+    "2026-09-10": {
+      "visit": 11
+    }
+  },
+  "excludedLaunchCheckEvents": {
+    "demo_use": 4,
+    "visit": 3,
+    "booking_confirmed": 1,
+    "inquiry": 1
+  },
+  "nonTestLeads": 0,
+  "leadStages": {},
+  "excludedLaunchCheckLeads": 1,
+  "firstNonTestEventAt": "2026-09-11T03:21:50.957084+00:00",
+  "lastNonTestEventAt": "2026-09-13T02:31:28.930053+00:00",
+  "rawVisitorRecordsRetained": false,
+  "limitations": [
+    "Visit and demo_use events are deduplicated by visitor ID across the stored history, not counted as page views or sessions.",
+    "Visitor IDs identify browser storage, not verified people or operators; own visits or automated visits may be present.",
+    "Returning visitors following another post may not create a new visit event.",
+    "Known demo approval/receiving tracking gap may undercount activity until its frontend fix is released."
+  ],
+  "sinceFirstPublishedPost": {
+    "from": "2026-09-11T13:34:00-05:00",
+    "events": {
+      "visit": 24
+    },
+    "visitsBySource": {
+      "direct_or_unattributed": 12,
+      "linkedin": 11,
+      "x": 1
+    },
+    "note": "The launch boundary uses the first post time shown by Zernio, accurate to the minute."
+  },
+  "visitsByContentAndSource": {
+    "unattributed": {
+      "direct_or_unattributed": 26
+    },
+    "what_if_inventory": {
+      "linkedin": 3
+    },
+    "p5_convex": {
+      "linkedin": 1
+    },
+    "p3_firecrawl": {
+      "linkedin": 2
+    },
+    "p2_openai": {
+      "linkedin": 1
+    },
+    "p1_intro": {
+      "linkedin": 4,
+      "x": 1
+    }
+  },
+  "preLaunchVisitEvents": 14,
+  "changeSinceMorning": {
+    "comparedWith": "../2026-09-12-daily-campaign/reviews/2026-09-12-0730-metrics.json",
+    "additionalRecordedVisitors": 15,
+    "additionalLinkedInVisitors": 7,
+    "additionalXVisitors": 0
+  }
+}

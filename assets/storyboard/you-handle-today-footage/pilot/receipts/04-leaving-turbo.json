@@ -1,0 +1,74 @@
+{
+  "job_id": "04-leaving-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:51:45.450451+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "04-leaving-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/04-leaving.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 304,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner puts his keys into a pocket, then walks purposefully out to the right along the clear sidewalk, leaving the frame. Two or three ordinary brisk steps, no lingering. His phone stays put away. The broken piano stays broken and still in the background; the worker remains by the truck. Fixed camera, footsteps and street ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "bcbb79d01bb2f586b1669ca9182378522568a30d8afb88b3be402d7e60dbc72e",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09be5-8676-7a72-885b-5540c0d575a5",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:52:45.575346+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09be5-8676-7a72-885b-5540c0d575a5",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-8676-7a72-885b-5540c0d575a5/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 5.908999919891357
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa49de/gOahMBbm_CAXiVJwLV6bN_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "gOahMBbm_CAXiVJwLV6bN_minimax-h3.mp4",
+      "file_size": 15187016
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: [Shot 1] Cinematic, live-action, Static Shot. The scene opens on <Picture 1>, featuring a man with dark hair and a beard, wearing an olive-green polo shirt and a charcoal grey apron, standing on a sidewalk outside a brick \"DELI\" shop. In the background, a broken upright piano lies shattered on the sidewalk, its internal components and debris scattered around. To the left, a worker in a blue uniform stands by a white delivery truck with a dolly. The lighting is natural daylight, casting soft shadows on the pavement. The man (S1) moves with natural, brisk efficiency; he reaches down with his right hand, grabs a set of keys, and slides them into his apron pocket. After securing the keys, (S1) turns and walks purposefully toward the right of the frame. He takes two or three ordinary, brisk steps, maintaining a steady pace until he completely exits the frame. The broken piano remains static and untouched in the midground, and the worker remains stationary by the truck throughout the sequence. The camera remains completely fixed, capturing the five-second interaction.\n\noverall_soundscape: The soundscape is filled with the ambient noises of a city street, including distant traffic and city hum. A distinct metallic jingle of keys is heard as they are placed into the pocket, followed by the rhythmic, heavy thud of footsteps on the concrete sidewalk as he walks away.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.467832905706018
+    }
+  },
+  "downloaded_at": "2026-09-13T17:52:47.097880+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/04-leaving-turbo.mp4",
+  "video_bytes": 15187016
+}

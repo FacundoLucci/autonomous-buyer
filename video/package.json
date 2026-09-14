@@ -11,6 +11,7 @@
     "render:silent": "node scripts/render.mjs silent",
     "render:cues": "node scripts/render.mjs cues",
     "render:voice": "node scripts/render.mjs voice",
+    "render:complete": "node scripts/render-complete.mjs",
     "still": "remotion still src/index.ts BuyHardSilent out/frame.png --frame=180"
   },
   "dependencies": {

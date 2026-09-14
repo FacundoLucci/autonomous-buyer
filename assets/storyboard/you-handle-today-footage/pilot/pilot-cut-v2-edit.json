@@ -1,0 +1,37 @@
+{
+  "selected_takes": [
+    "01-unloading-turbo",
+    "02-impact-turbo-v4",
+    "03-phone-turbo-v2"
+  ],
+  "selected_files": [
+    "assets/storyboard/you-handle-today-footage/pilot/clips/01-unloading-turbo.mp4",
+    "assets/storyboard/you-handle-today-footage/pilot/clips/02-impact-turbo-v4-edited.mp4",
+    "assets/storyboard/you-handle-today-footage/pilot/clips/03-phone-turbo-v2.mp4"
+  ],
+  "file": "assets/storyboard/you-handle-today-footage/pilot/pilot-cut-v2.mp4",
+  "duration_seconds": 14,
+  "description": "Footage only; no app screen or founder recording is included.",
+  "media_probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "r_frame_rate": "24/1"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "r_frame_rate": "0/0"
+      }
+    ],
+    "format": {
+      "duration": "14.000000",
+      "size": "17837341"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "revision": 8,
+  "verifiedAt": "2026-09-12T01:41:19.834863+00:00",
+  "verifiedOn": "2026-09-11",
+  "postId": "6aa3fe01f465f18b88c37f09",
+  "title": "Your buyer stays ahead.",
+  "status": "draft",
+  "scheduledAt": null,
+  "platforms": [
+    "linkedin",
+    "twitter"
+  ],
+  "change": "Replaced the status-message panel with a folded napkin reading Now I have a machine buyer. Ho ho ho. Updated X and LinkedIn captions and image alt text to match.",
+  "method": "Rendered the existing editable HTML to PNG in a headless browser; inspected the exported image and refreshed in-app preview. Updated the existing Zernio draft, then reopened it and compared saved fields.",
+  "checks": {
+    "mainCaptionMatches": true,
+    "xCaptionMatches": true,
+    "altTextMatches": true,
+    "imageDimensions": [
+      1536,
+      1024
+    ],
+    "linkedinSelected": true,
+    "xSelected": true,
+    "youtubeSelected": false,
+    "draftModeSelected": true,
+    "sponsorMentionsPreserved": true,
+    "campaignLinksPreserved": true,
+    "exactNapkinText": "Now I have a machine buyer. Ho ho ho.",
+    "allHeadlineFonts": "Inter, sans-serif",
+    "previewHorizontalOverflow": false,
+    "previewImagesLoaded": true,
+    "previewNapkinToSupportGapPx": 9.767578125,
+    "previewSupportToFooterGapPx": 10.41326904296875
+  },
+  "image": "your-buyer-stays-ahead-napkin-html.png",
+  "imageBytes": 426005,
+  "imageSha256": "fd33983584a36c6f118424c0967939149ce5f21536999f081de01facd98d5fb3",
+  "xWeightedCharacters": 252,
+  "scope": "Only the OpenAI draft was edited. The introduction remains published and the Firecrawl post remains a draft. No scheduling or publication in this update."
+}

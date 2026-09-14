@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-09-13T20:49:58.602044+00:00",
+  "status": "visuals_and_schedules_verified",
+  "visuals": {
+    "count": 5,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "typography": "Bundled Inter and Share Tech Mono",
+    "method": "HTML/SVG with one existing actual sample screenshot; headless export and visual inspection",
+    "layoutIssuesObserved": 0,
+    "inAppHtmlReview": true
+  },
+  "claimChecks": {
+    "sampleApproval": "Released sample displayed cups, supplier, 20 cases, $400, approval and No, because controls.",
+    "sampleFeedback": "Selecting No, because opened the buyer conversation asking what needs to change.",
+    "salesIntegration": "Remains proposed. Caption asks about a future direction and visual says PRODUCT IDEA.",
+    "supplierInvitation": "Walkthrough invitation; no claim that any arbitrary supplier checkout is supported.",
+    "continuousDemo": "Held: updateCount/updateRules currently change sample workspace, not the preset purchase snapshot."
+  },
+  "schedulingReceipt": "zernio-schedule-receipt.json"
+}

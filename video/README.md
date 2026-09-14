@@ -1,3 +1,13 @@
+> **Latest edit:** [You handle today — version 02](../assets/storyboard/you-handle-today-footage/assembly/README-v2.md)
+> combines the approved owner footage and real mobile UI into a three-minute cut.
+> Run `npm run render:complete` to rebuild it. The story data is staged; Facundo's
+> Loom narration and camera are the remaining layer. The separate entry point is
+> `src/complete-index.tsx`. Both earlier film compositions remain intact.
+>
+> [Mobile recording source and rebuild instructions](mobile-app/README.md) cover
+> the 90-second Hyperframes recording and its six separate inserts. The instructions
+> below describe the older 2:45 cut.
+
 # BUY HARD — The $400 Decision
 
 An editable 2:45 film: 1920×1080, 30 fps, nine scenes. Every product image is an

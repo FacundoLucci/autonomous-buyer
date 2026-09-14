@@ -1,0 +1,74 @@
+{
+  "job_id": "11-back-to-business-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T18:01:32.007168+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "11-back-to-business-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/11-back-to-business.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 311,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner finishes arranging two bread rolls in the shallow basket, sets the basket squarely on the counter and looks up toward a customer with a small welcoming nod. Background customers move naturally and subtly. Phone stays away. Ordinary real-time deli work, no posing or exaggerated smiles. Warm quiet cafe ambience, fixed eye-level camera. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "3e58c06ffd8b09bce9c1bfa0bed09f3eb38946893c2d0029243f2ee17820ccb2",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bee-79ab-7341-84b3-0245923eb589",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T18:03:03.988342+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bee-79ab-7341-84b3-0245923eb589",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-79ab-7341-84b3-0245923eb589/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.694000005722046
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a19/-njV34UX_mJ9hvXpy5s-k_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "-njV34UX_mJ9hvXpy5s-k_minimax-h3.mp4",
+      "file_size": 15259303
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\n[Shot 1] This is a candid live-action, cinematic shot at normal 24 fps playback, no slow motion. The scene opens on a man in his thirties (S1) with short, disheveled dark brown hair, a full dark beard, and visible stubble. He wears an olive green, long-sleeved button-up shirt with the sleeves rolled up to his elbows, and a charcoal grey canvas apron tied tightly at the waist. S1 stands behind a massive, polished, light-colored wood counter in a warm, sunlit cafe. In the right foreground, a glass display case rests atop a pile of pastries. S1\u2019s hands are positioned directly over a shallow, dark brown wicker basket, gently adjusting a single rustic bread roll with a visible top crust seed coating. His head is down, his dark eyes focused on the bread, and the tip of his nose points down at a sharp 45-degree angle. In the background, to the left, a large bay window reveals a sun-drenched street with bright bokeh, green tree leaves, and a parked dark car. A female customer with long brown hair sits at a wooden table in the mid-left background, her back partially to the camera. Behind her, exposed red brick and a large black chalkboard menu are visible. Under a hanging black dome pendant light, wooden wall shelves are densely packed with olive oil bottles, glass jars, and brown paper bags. Over the five-second duration, S1 lifts the single bread roll slightly, adjusts the angle, and sets it into its precise final position on the edge of the basket. He uses his right hand to gently press the bread downward, tucking it snugly between the other rolls. He then releases the bread and pushes the entire wicker basket forward several inches, placing it squarely on the wood counter. He immediately looks up from the bread, turning his head to his right. He makes a small, smooth, natural welcoming nod toward an unseen off-screen customer. While S1 shifts his gaze forward, the background female customer subtly shifts her weight in her chair and adjusts the position of a thin glass cup on her table. Finally, S1\u2019s head remains facing to the right; his eyes are level, his eyes soft and slightly narrowed in a subtle, warm smile. His expression is natural, real-time, and conversational, holding the soft, pleasant gaze steadily at the camera's level until the end of the entire sequence. No dialogue, no music, no captions, no visible generated user interface, no logos, no camera cuts, no camera shake, and no hovering motion.\n\noverall_soundscape: A soft, warm ambient cafe room tone is continuously present, punctuated by the low, muffled clatter of cups and gentle background chatter originating in the mid-ground left background. The distinct, dry, tactile sound of a wicker basket dragging and settling on a wooden counter surface occurs, followed by the faint crumbly friction of a bread roll being pressed into the wicker weave.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7801428139791824
+    }
+  },
+  "downloaded_at": "2026-09-13T18:03:05.749938+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/11-back-to-business-turbo.mp4",
+  "video_bytes": 15259303
+}

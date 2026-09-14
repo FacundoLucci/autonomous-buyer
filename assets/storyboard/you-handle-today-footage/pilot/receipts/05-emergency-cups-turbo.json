@@ -1,0 +1,74 @@
+{
+  "job_id": "05-emergency-cups-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T17:51:46.268066+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "05-emergency-cups-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/05-emergency-cups.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 305,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner pulls the single sleeve of paper cups free of the shelf with his right hand, lowers it and places it firmly into the wire basket held in his left hand. He glances toward the end of the aisle, ready to go. Complete the movement in about three seconds at ordinary shopping speed. One sleeve moves continuously; no multiplying cups, twisting fingers or changing basket. Camera fixed; soft packaging rustle, quiet store ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "a36e03bb378afa822e31a518f228324f97a487c3cd66ad1f917a8ac28066394b",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09be5-899b-7163-802f-22c818f83089",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T17:52:42.113065+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09be5-899b-7163-802f-22c818f83089",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09be5-899b-7163-802f-22c818f83089/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.0249998569488525
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa49de/ja6ZlbzATHp1o5LtJ9YzY_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "ja6ZlbzATHp1o5LtJ9YzY_minimax-h3.mp4",
+      "file_size": 13401819
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: <Picture 1> Cinematic, live-action, Static Shot. The scene opens on a man (S1) with dark wavy hair and a beard, wearing an olive-green button-down shirt and a charcoal apron, standing in a grocery store aisle. He is positioned in front of shelves stocked with various white food containers and boxes. In his left hand, he holds a wire shopping basket, while his right hand is extended, gripping a sleeve of white paper cups resting on the middle shelf. The lighting is soft and natural, typical of a commercial store. S1 moves with natural, practical human speed; using his right hand, he pulls the single sleeve of paper cups firmly free from the shelf. The movement is fluid and continuous without any hesitation or delay. He lowers his arm steadily and places the sleeve of cups securely into the wire basket held in his left hand, causing the basket to shift under the weight. At 00:03.000, S1 shifts his weight and glances toward the end of the aisle with a focused expression, preparing to continue his shopping. The camera remains completely fixed throughout the five-second duration, preserving the exact identity of the subject and the arrangement of the surrounding environment.\n\noverall_soundscape: The sound environment features the soft, dry rustle of plastic-wrapped paper cups as they are pulled from the shelf. A distinct metallic clink occurs as the cups land in the wire basket. In the background, a quiet, ambient store atmosphere is present with faint muffled hums and the subtle sounds of a.\n\nnon_diegetic_music: N/A",
+    "timings": {
+      "inference": 2.7083322840044275
+    }
+  },
+  "downloaded_at": "2026-09-13T17:52:43.413910+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/05-emergency-cups-turbo.mp4",
+  "video_bytes": 13401819
+}

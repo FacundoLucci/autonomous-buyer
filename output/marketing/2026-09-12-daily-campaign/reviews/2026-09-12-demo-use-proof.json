@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-09-12T12:49:03.868336+00:00",
+  "preview": "http://127.0.0.1:3178",
+  "measurementBackend": "Production reliable-albatross-463",
+  "compiledPublicEndpoints": [
+    "https://reliable-albatross-463.convex.cloud",
+    "https://placeholder.convex.cloud"
+  ],
+  "campaign": "marketing_demo_use",
+  "source": "launch-check",
+  "events": {
+    "demo_use": 1,
+    "visit": 1
+  },
+  "complete": true,
+  "scope": "Local sample approval and receiving only. The released backend recorded one visit and one demo_use despite several sample changes. QA source launch-check is excluded from campaign totals. No supplier contacted; no inquiry or booking submitted.",
+  "result": "passed",
+  "walkthroughPromptAfterApproval": true,
+  "dismissalPreservedAfterReceiving": true,
+  "attributionPreserved": true
+}

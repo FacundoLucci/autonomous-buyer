@@ -1,0 +1,74 @@
+{
+  "job_id": "10-serving-turbo",
+  "endpoint": "minimax/h3-max-turbo/image-to-video",
+  "submitted_at": "2026-09-13T18:01:30.126626+00:00",
+  "estimated_usd": "0.10",
+  "actual_billed_usd": null,
+  "price_lookup": {
+    "prices": [
+      {
+        "endpoint_id": "minimax/h3-max-turbo/image-to-video",
+        "unit_price": 0.00625,
+        "unit": "seconds",
+        "currency": "USD"
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+  "status": "DOWNLOADED",
+  "job": {
+    "id": "10-serving-turbo",
+    "endpoint": "minimax/h3-max-turbo/image-to-video",
+    "first_frame": "frames/10-serving.png",
+    "last_frame": null,
+    "usd_per_second": "0.02",
+    "purpose": "Approved continuation of the natural-speed footage style.",
+    "input": {
+      "duration": 5,
+      "resolution": "1080P",
+      "prompt_expansion_mode": "balanced",
+      "enable_safety_checker": true,
+      "seed": 310,
+      "prompt": "Single continuous five-second candid live-action shot. Natural, practical human motion at full speed, normal 24 fps playback, no slow motion, no hovering or delayed reactions. Preserve the reference owner's exact identity, olive shirt, charcoal apron and all object positions except the described action. The owner smoothly slides the paper cup a few centimeters across the wooden counter and releases it. The customer's hand comes in only after release and takes the cup out to the right. The owner gives a brief natural smile and turns back to work. Keep the cup stable and upright, no spilling, merging hands or cups. Normal service speed. Soft cup movement and quiet cafe ambience. No dialogue, music, captions, visible generated interface, logos or camera cuts."
+    }
+  },
+  "input_sha256": "f0d9a0e5ddbec2b73f6ba73e04384f97774a06441e475716aaafdcf22ff6d040",
+  "queue": {
+    "status": "IN_QUEUE",
+    "request_id": "01a09bee-7271-7e50-8985-81e46c946376",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376/cancel",
+    "logs": null,
+    "metrics": {},
+    "queue_position": 0
+  },
+  "last_checked_at": "2026-09-13T18:03:04.009390+00:00",
+  "provider_status": {
+    "status": "COMPLETED",
+    "request_id": "01a09bee-7271-7e50-8985-81e46c946376",
+    "response_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376",
+    "status_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376/status",
+    "cancel_url": "https://queue.fal.run/minimax/h3-max-turbo/requests/01a09bee-7271-7e50-8985-81e46c946376/cancel",
+    "logs": null,
+    "metrics": {
+      "inference_time": 6.040999889373779
+    }
+  },
+  "result": {
+    "video": {
+      "url": "https://v3b.fal.media/files/b/0aaa4a19/0clG3x4XRzGJC5UITO4pp_minimax-h3.mp4",
+      "content_type": "video/mp4",
+      "file_name": "0clG3x4XRzGJC5UITO4pp_minimax-h3.mp4",
+      "file_size": 12390669
+    },
+    "expanded_prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: [Shot 1] This is a candid, live-action shot at normal 24 fps speed. The scene opens on a bustling coffee shop from a customer\u2019s over-the-shoulder perspective. The foreground is occupied by the blurred shoulder of a customer, while the mid-ground features a man with a dark beard, an olive shirt, and a dark charcoal apron standing behind a wooden counter. The background is populated with shelves of glass jars and warm, atmospheric lighting. Early on, the camera remains completely static, holding an exact medium close-up composition. The man slowly extends his arm forward, his hand carefully and smoothly sliding a white paper coffee cup a few centimeters across the wooden counter toward the viewer. He releases the cup, allowing it to rest in a completely stable, upright position. Shortly after, the customer\u2019s hand enters from the bottom right of the frame, gently grips the side of the cup, and moves it steadily out of view to the right. In a natural, continuous follow-up motion, the man offers a subtle, warm smile, then turns his head and body back toward the left to resume his work behind the counter.\n\noverall_soundscape: A low, continuous hum of quiet cafe ambient noise, including subtle background clinking and distant room chatter, fills the space. A clear, soft sliding sound of a paper cup moving across a textured wooden surface serves as the primary foreground audio event, followed by the faint frictional noise of a hand naturally gripping the cup.\n\nnon_diegetic_music: N/A.",
+    "timings": {
+      "inference": 2.4796579838730395
+    }
+  },
+  "downloaded_at": "2026-09-13T18:03:05.626646+00:00",
+  "local_video": "assets/storyboard/you-handle-today-footage/pilot/clips/10-serving-turbo.mp4",
+  "video_bytes": 12390669
+}

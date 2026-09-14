@@ -1,0 +1,13 @@
+{
+  "name": "buy-hard-mobile-film",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs",
+    "finish": "node finish.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "hyperframes": "0.8.37"
+  }
+}

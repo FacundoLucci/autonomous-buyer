@@ -1,0 +1,51 @@
+{
+  "file": "assets/storyboard/you-handle-today-footage/assembly/footage-sequence-v1.mp4",
+  "selected_takes": [
+    [
+      "01-unloading-turbo",
+      5
+    ],
+    [
+      "02-impact-turbo-v4-edited",
+      4
+    ],
+    [
+      "03-phone-turbo-v2",
+      5
+    ],
+    [
+      "04-leaving-turbo",
+      5
+    ],
+    [
+      "05-emergency-cups-turbo",
+      5
+    ],
+    [
+      "06-emergency-bread-turbo",
+      5
+    ],
+    [
+      "07-loading-car-turbo",
+      5
+    ],
+    [
+      "08-returning-cleanup-turbo",
+      5
+    ],
+    [
+      "09-review-turbo",
+      5
+    ],
+    [
+      "10-serving-turbo",
+      5
+    ],
+    [
+      "11-back-to-business-turbo",
+      5
+    ]
+  ],
+  "duration_seconds": 54,
+  "description": "Footage only; source shots at normal speed except the approved tightened piano impact."
+}

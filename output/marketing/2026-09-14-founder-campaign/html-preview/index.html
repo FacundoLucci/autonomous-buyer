@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Facundo × BUY HARD — founder campaign</title>
+  <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face{font-family:Inter;src:url('fonts/InterVariable.woff2') format('woff2');font-weight:100 900;font-display:block}
+    @font-face{font-family:Caveat;src:url('fonts/CaveatVariable.ttf') format('truetype');font-weight:400 700;font-display:block}
+    @font-face{font-family:Mono;src:url('fonts/ShareTechMono.woff2') format('woff2');font-display:block}
+    :root{--ink:#171b12;--lime:#dce985;--paper:#f8f6ee;--muted:#68705c;--orange:#bc4d31;--green:#226943;--ui:#e2eb95;color:var(--ink);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0;background:#ecece4}button,a{font:inherit;-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-underline-offset:3px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+    .toolbar{position:sticky;top:0;z-index:10;padding:18px 28px;background:#faf9f2;border-bottom:1px solid #d2d5c5;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}.toolbar-title{font-weight:800;letter-spacing:-.6px}.toolbar-title small{display:block;margin-top:4px;font-size:12px;font-weight:450;letter-spacing:0;color:var(--muted)}.filters{display:flex;gap:5px;flex-wrap:wrap}.filters button{border:0;background:transparent;border-radius:5px;padding:11px 15px;min-height:44px;font-size:13px;font-weight:600;color:var(--muted)}.filters button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+    .gallery{max-width:1344px;margin:auto;padding:30px 32px 64px}.post{margin-bottom:68px;scroll-margin-top:130px}.post[hidden],.preview[hidden]{display:none}.post-heading{display:flex;justify-content:space-between;gap:20px;align-items:baseline;margin:0 0 12px}.post-heading h2{font-size:21px;font-weight:650;letter-spacing:-.6px;margin:0}.post-heading span{font:12px Mono,monospace;color:var(--muted)}.copy{background:#faf9f2;border:1px solid #d2d5c5;margin-bottom:26px;padding:0 18px}.copy summary{min-height:46px;cursor:pointer;padding:14px 0;font-size:13px;font-weight:600}.copy-columns{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding-bottom:18px}.copy h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}.copy p{font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+    .preview{margin:0 0 28px}.preview-label{display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:13px;margin:10px 0}.preview-label span{color:var(--muted)}.preview-label a{min-height:44px;display:flex;align-items:center}.stage{width:100%;aspect-ratio:3/2;overflow:hidden;box-shadow:0 1px 3px #171b1215,0 0 0 1px #171b1218}.artboard{position:relative;isolation:isolate;width:1536px;height:1024px;overflow:hidden;background:var(--paper);transform:scale(var(--scale,1));transform-origin:top left;user-select:none}.artboard.lime{background:var(--lime)}
+    .mast{position:absolute;left:64px;right:64px;top:48px;display:flex;align-items:center;justify-content:space-between}.wordmark{font-size:39px;line-height:1;font-weight:900;letter-spacing:-1.7px}.byline{font:21px Mono,monospace;letter-spacing:.2px;margin-left:24px;vertical-align:middle}.domain{font:24px Mono,monospace}.title{position:absolute;left:64px;top:128px;margin:0;max-width:1408px;font-size:104px;line-height:1.02;letter-spacing:-5px;font-weight:850;font-optical-sizing:none;font-variation-settings:'opsz' 32}.title span{display:block}.deck{position:absolute;left:64px;margin:0;font-size:30px;line-height:1.4;letter-spacing:-.7px}.foot{position:absolute;left:64px;right:64px;bottom:34px;border-top:1.5px solid #171b1280;padding-top:19px;display:flex;align-items:center;justify-content:space-between;gap:20px;font:20px Mono,monospace}.foot .evidence{color:#4b5340;white-space:nowrap}.foot .sponsors{white-space:nowrap}
+    .artboard img{height:auto}.screen{position:absolute;overflow:hidden;box-shadow:0 0 0 1px #171b1260,7px 9px 0 #171b1212;background:var(--ui)}.screen img{display:block;width:100%;height:auto}.screen-caption{position:absolute;left:64px;top:221px;font:19px Mono,monospace;color:#535d45;letter-spacing:1px}.hand{font-family:Caveat,cursive;font-weight:650;font-size:45px;line-height:1.03;letter-spacing:-.7px;position:absolute;margin:0}.markings{position:absolute;inset:0;width:1536px;height:1024px;pointer-events:none;overflow:visible}.markings path,.markings rect,.markings ellipse{vector-effect:non-scaling-stroke}.old .screen,.new .screen,.feedback .screen{left:64px;top:266px;width:1000px}.old .screen{height:660px}.new .screen,.feedback .screen{height:660px}.new .screen,.new .screen img{width:950px}.feedback .screen img{width:1000px}.old .hand{color:var(--orange)}.new .hand,.feedback .hand{color:var(--green)}
+    .old-note-a,.new-note-a{left:1130px;top:325px;width:340px}.old-note-b,.new-note-b{left:1130px;top:536px;width:340px}.old-note-c,.new-note-c{left:1130px;top:765px;width:340px}.old .screen-caption,.new .screen-caption{top:232px}
+    .handoff .title{top:205px;font-size:111px;max-width:690px;line-height:1.01}.handoff .deck{top:467px;max-width:630px;font-size:32px}.handoff .conversation{left:846px;top:174px;width:600px;height:719px;box-shadow:11px 12px 0 #171b1220}.handoff .hand{left:102px;top:809px;width:580px;font-size:48px;transform:rotate(-3deg)}.job-steps{position:absolute;top:641px;left:64px;width:740px;display:flex;gap:10px;align-items:center}.job-steps span{font-size:23px;font-weight:600;padding:16px 14px;border:1.5px solid #171b1255;white-space:nowrap}.job-steps i{font:25px Inter;font-style:normal}.handoff .tiny-note{position:absolute;left:64px;top:729px;width:610px;font-size:23px;line-height:1.5;color:#505c35}
+    .approval .title{font-size:101px;top:136px}.approval .deck{top:259px}.approval .screen{left:64px;top:329px;width:1408px;height:490px}.approval .screen img{position:absolute;top:-180px;width:1408px}.approval .hand{left:171px;top:858px;font-size:46px;transform:rotate(-2deg)}
+    .building .title{font-size:92px;top:131px;letter-spacing:-4.5px}.building .desktop{left:64px;top:278px;width:940px;height:653px}.building .phone{left:1140px;top:250px;width:292.5px;height:633px;box-shadow:0 0 0 7px var(--ink),14px 14px 0 #171b1222;border-radius:6px}.building .hand{left:1000px;top:884px;width:420px;font-size:43px;transform:rotate(-4deg)}
+    .details .title{top:137px;font-size:102px}.details .deck{top:260px}.details .decision-crop{position:absolute;left:64px;top:348px;width:1408px;height:294px;overflow:hidden;background:var(--ui);box-shadow:0 0 0 1px #171b1260}.details .decision-crop img{position:absolute;width:3024px;left:-134.4px;top:-869.4px}.details .hand-a{left:955px;top:670px;font-size:48px;transform:rotate(-3deg)}.details .dock-crop{position:absolute;left:64px;top:776px;width:1408px;height:98px;overflow:hidden;box-shadow:0 0 0 1px #171b1240}.details .dock-crop img{position:absolute;left:0;top:-880px;width:1408px}.details .hand-b{left:86px;top:895px;font-size:40px}
+    .vision .title{top:259px;font-size:108px;line-height:1.0;width:795px;letter-spacing:-5px}.vision .deck{top:172px;font-size:31px}.vision .supplies{position:absolute;left:828px;top:261px;width:654px;height:625px;object-fit:contain;visibility:hidden;filter:drop-shadow(4px 15px 8px #171b121c)}.vision .hand{left:87px;top:759px;font-size:51px;transform:rotate(-3deg);width:640px}.vision .loop{position:absolute;left:1010px;top:221px;width:430px;height:115px}
+    .feedback .title{font-size:92px;top:136px;letter-spacing:-4px}.feedback .screen{top:285px;height:621px}.feedback .screen img{position:absolute;top:-80px}.feedback .screen-caption{top:246px}.feedback .hand{left:1130px;width:350px;font-size:43px}.feedback .question-a{top:359px}.feedback .question-b{top:559px}.feedback .question-c{top:753px}.review-footer{font-size:13px;color:var(--muted);line-height:1.6}.review-footer a{margin-right:20px}
+    html[data-export=true] body{width:1536px;height:1024px;overflow:hidden;background:var(--paper)}html[data-export=true] .toolbar,html[data-export=true] .post-heading,html[data-export=true] .copy,html[data-export=true] .preview-label,html[data-export=true] .review-footer{display:none}html[data-export=true] .gallery,html[data-export=true] .post,html[data-export=true] .preview{padding:0;margin:0;max-width:none}html[data-export=true] .stage{width:1536px;height:1024px;box-shadow:none}html[data-export=true] .artboard{transform:none}
+    @media(max-width:720px){.toolbar{padding:14px 16px;gap:12px}.toolbar-title small{max-width:260px}.filters{width:100%;gap:2px}.filters button{padding:10px 11px}.gallery{padding:22px 16px 44px}.post-heading{display:block}.post-heading h2{font-size:19px;margin-bottom:7px}.copy-columns{grid-template-columns:1fr;gap:14px}.preview-label{font-size:12px}.post{margin-bottom:38px}.preview-label span{max-width:240px}.byline{white-space:nowrap}}
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-title">Facundo × BUY HARD<small>Four posts · two images each · scheduled on X + LinkedIn</small></div>
+    <nav class="filters" aria-label="Choose a post">
+      <button data-post="all" aria-pressed="true">All posts</button>
+      <button data-post="simpler_frontend" aria-pressed="false">Old → current UI</button>
+      <button data-post="give_agent_a_job" aria-pressed="false">The handoff</button>
+      <button data-post="build_useful_ai" aria-pressed="false">Building</button>
+      <button data-post="ordinary_supplies_big_ambition" aria-pressed="false">What’s next</button>
+    </nav>
+  </header>
+  <main class="gallery">
+    <section class="post" data-post="simpler_frontend">
+      <header class="post-heading"><h2>I’ve been simplifying things.</h2><span>SEP 14 · 20:00 CHICAGO · SCHEDULED</span></header>
+      <details class="copy"><summary>Read the revised captions</summary><div class="copy-columns"></div></details>
+      <div class="preview" data-card="old-ui">
+        <div class="preview-label"><span>Earlier interface, with notes</span><a href="../ready/old-ui-annotated.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard old" aria-label="Earlier BUY HARD UI with annotations showing competing metrics, detail panels and a separate update area">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">Before: a lot going on.</h1>
+          <div class="screen-caption">EARLIER INTERFACE · ARCHIVED SCREENSHOT</div>
+          <div class="screen"><img src="assets/old-dashboard.png" alt="Original dark BUY HARD interface with four metrics, a buy list, confirmation details and activity feed" width="1440" height="950"></div>
+          <p class="hand old-note-a">Lots of things<br>to scan.</p><p class="hand old-note-b">Where’s the<br>next step?</p><p class="hand old-note-c">Updates live<br>down here, too.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#bc4d31" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M92 374 Q509 367 1026 374 L1031 433 Q535 441 91 433 Z"/><path d="M1117 373 Q1088 370 1042 399 m13-11-13 11 17 3"/>
+            <path d="M635 476 Q821 465 1019 480 L1022 777 Q824 785 626 775 Z"/><path d="M1110 585 Q1066 593 1015 632 m5-17-5 17 18-2"/>
+            <path d="M88 800 Q247 789 432 799 L434 868 Q248 875 91 871 Z"/><path d="M1110 826 C911 942 657 965 447 856 m10 17-10-17 19 1"/>
+          </svg>
+          <footer class="foot"><span class="evidence">Actual earlier UI · recorded demo</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+      <div class="preview" data-card="current-ui">
+        <div class="preview-label"><span>Current interface, with the changes marked</span><a href="../ready/current-ui-annotated.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard new" aria-label="Current BUY HARD UI with a clear summary, a direct purchase decision and a persistent buyer conversation">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">Now: room to breathe.</h1>
+          <div class="screen-caption">CURRENT INTERFACE · SAMPLE WORKSPACE</div>
+          <div class="screen"><img src="assets/current-dashboard.png" alt="Current lime BUY HARD dashboard with stock summary, a paper cups approval and buyer conversation dock" width="1440" height="1000"></div>
+          <p class="hand new-note-a">A clear<br>starting point.</p><p class="hand new-note-b">The decision,<br>right up front.</p><p class="hand new-note-c">Your buyer<br>stays close.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M102 428 Q338 420 582 431 L584 513 Q341 521 104 514 Z"/><path d="M1110 385 C1014 374 820 390 591 461 m14-14-14 14 22 0"/>
+            <path d="M102 583 Q509 575 981 582 L984 632 Q515 640 101 633 Z"/><path d="M1110 577 Q1060 578 992 604 m8-18-8 18 20-4"/>
+            <path d="M88 861 Q291 851 610 862 L611 918 Q286 926 91 919 Z"/><path d="M1110 811 C942 810 802 842 624 889 m14-17-14 17 24-1"/>
+          </svg>
+          <footer class="foot"><span class="evidence">Actual current UI · sample data</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+    </section>
+
+    <section class="post" data-post="give_agent_a_job">
+      <header class="post-heading"><h2>Figuring out the handoff.</h2><span>SEP 16 · 20:00 CHICAGO · SCHEDULED</span></header>
+      <details class="copy"><summary>Read the revised captions</summary><div class="copy-columns"></div></details>
+      <div class="preview" data-card="buyer-conversation">
+        <div class="preview-label"><span>The real conversation and its purchase context</span><a href="../ready/buyer-conversation.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard lime handoff" aria-label="A real sample buyer conversation next to notes about connecting stock, research and purchase approval">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title"><span>Figuring out</span><span>the handoff.</span></h1>
+          <p class="deck">I’m connecting stock, research<br>and buying in one conversation.</p>
+          <div class="job-steps"><span>Watch stock</span><i>→</i><span>Prepare the buy</span><i>→</i><span>Ask for approval</span></div>
+          <div class="screen conversation"><img src="assets/current-buyer-conversation.png" width="551" height="660" alt="The sample buyer answers a paper cups status question and presents the supplier, quantity, delivery details and a $400 approval"></div>
+          <p class="hand">The work comes with the answer.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M619 838 C745 848 786 784 863 704 m-17 7 17-7-2 18"/></svg>
+          <footer class="foot"><span class="evidence">Actual sample conversation</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+      <div class="preview" data-card="purchase-decision">
+        <div class="preview-label"><span>Where the buyer asks for the owner’s decision</span><a href="../ready/purchase-decision.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard approval" aria-label="The current sample purchase approval screen, with quantity, supplier and total visible before the decision">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">When should it ask?</h1><p class="deck">Right here, before the purchase.</p>
+          <div class="screen"><img src="assets/current-approval.png" width="1440" height="1000" alt="An actual BUY HARD sample screen asking approval for 20 cases of paper cups from WebstaurantStore for $400"></div>
+          <p class="hand">The details and the decision, together.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M109 577 Q413 566 628 579 L630 689 Q373 699 112 689 Z"/><path d="M835 879 Q911 776 639 661 m14-4-14 4 9 14"/></svg>
+          <footer class="foot"><span class="evidence">Actual current UI · sample data</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+    </section>
+
+    <section class="post" data-post="build_useful_ai">
+      <header class="post-heading"><h2>I’d love to build more of this.</h2><span>SEP 18 · 20:00 CHICAGO · SCHEDULED</span></header>
+      <details class="copy"><summary>Read the revised captions</summary><div class="copy-columns"></div></details>
+      <div class="preview" data-card="building-buyhard">
+        <div class="preview-label"><span>Current desktop and mobile UI</span><a href="../ready/building-buyhard.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard lime building" aria-label="Current BUY HARD dashboard and mobile purchase decision, showing the product Facundo is building">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">Really enjoying building this.</h1>
+          <div class="screen desktop"><img src="assets/current-dashboard.png" width="1440" height="1000" alt="The current desktop BUY HARD dashboard"></div>
+          <div class="screen phone"><img src="assets/current-approval-mobile.png" width="390" height="844" alt="The same product’s current purchase approval screen on mobile"></div>
+          <p class="hand">In your pocket, too.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1056 880 Q1032 819 1130 778 m-19-1 19 1-7 16"/></svg>
+          <footer class="foot"><span class="evidence">Actual desktop + mobile · sample data</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+      <div class="preview" data-card="small-details">
+        <div class="preview-label"><span>A closer look at two small design decisions</span><a href="../ready/small-details.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard details" aria-label="Enlarged actual UI details showing the option to disagree with a purchase and the persistent buyer conversation dock">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">The little details matter.</h1><p class="deck">A way to change the plan. A buyer that stays close.</p>
+          <div class="decision-crop"><img src="assets/current-approval-2x.png" width="1440" height="1000" alt="Close-up of the actual $400 purchase question, Approve and order, and No, because buttons"></div>
+          <p class="hand hand-a">Room for a different answer.</p>
+          <div class="dock-crop"><img src="assets/current-dashboard.png" width="1440" height="1000" alt="Close-up of the actual buyer dock with its latest update and message input"></div>
+          <p class="hand hand-b">Always within reach.</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M941 697 Q750 702 598 609 m9 15-9-15 19 0"/><path d="M451 911 Q519 910 576 865 m-17 4 17-4-6 16"/></svg>
+          <footer class="foot"><span class="evidence">Enlarged crops of the current sample UI</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+    </section>
+
+    <section class="post" data-post="ordinary_supplies_big_ambition">
+      <header class="post-heading"><h2>What would you hand off first?</h2><span>SEP 21 · 20:00 CHICAGO · SCHEDULED</span></header>
+      <details class="copy"><summary>Read the revised captions</summary><div class="copy-columns"></div></details>
+      <div class="preview" data-card="stay-stocked">
+        <div class="preview-label"><span>The idea, framed as a question</span><a href="../ready/what-if-stay-stocked.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard lime vision" aria-label="An aspirational question about keeping everyday supplies stocked, next to cups, a box and a roll of labels">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <p class="deck">I keep coming back to this:</p><h1 class="title"><span>What if</span><span>supplies just</span><span>stayed stocked?</span></h1>
+          <img class="supplies" src="assets/supplies.png" width="1254" height="1254" alt="Paper cups, a cardboard box and a roll of shipping labels">
+          <p class="hand">The stuff you need.<br>One less thing to think about.</p>
+          <svg class="loop" viewBox="0 0 430 115" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M27 92 C-4 30 115 5 230 8 S429 25 398 83 M397 59l1 24 21-9"/></svg>
+          <footer class="foot"><span class="evidence">An idea I’m exploring with BUY HARD</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+      <div class="preview" data-card="what-next">
+        <div class="preview-label"><span>The current app, with an invitation for feedback</span><a href="../ready/what-would-you-hand-off.png">PNG ↗</a></div>
+        <div class="stage"><article class="artboard feedback" aria-label="The current inventory screen alongside questions about remembering stock, chasing orders and setting buying rules">
+          <div class="mast"><div><span class="wordmark">BUY HARD</span><span class="byline">with Facundo</span></div><span class="domain">buyhard.app</span></div>
+          <h1 class="title">What would you hand off first?</h1><div class="screen-caption">HERE’S WHERE THE SAMPLE APP IS TODAY</div>
+          <div class="screen"><img src="assets/current-inventory.png" width="1440" height="1000" alt="The current sample inventory screen showing remaining paper cups, usage, replenishment and buying rules"></div>
+          <p class="hand question-a">Remembering<br>what’s low?</p><p class="hand question-b">Chasing the<br>next order?</p><p class="hand question-c">Setting the<br>buying rules?</p>
+          <svg class="markings" viewBox="0 0 1536 1024" fill="none" stroke="#226943" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1112 421 Q1081 400 1028 400 m17-9-17 9 16 8"/><path d="M1112 619 Q1069 613 1022 607 m16-9-16 9 15 9"/><path d="M1112 814 Q1074 827 1028 813 m15-7-15 7 9 13"/></svg>
+          <footer class="foot"><span class="evidence">Actual current UI · sample data</span><span class="sponsors">Convex · OpenAI · Firecrawl · AgentMail</span></footer>
+        </article></div>
+      </div>
+    </section>
+    <footer class="review-footer">All captions and annotations are editable HTML. The earlier UI is an archived screenshot; current UI images were captured from buyhard.app’s sample workspace. The supplies photo is reused from the approved product campaign.<br><a href="../posts.md">Caption document</a><a href="../ready/founder-visuals.zip">Download eight PNGs</a><a href="../visuals.json">Image manifest and source records</a><a href="../../2026-09-11-first-three/html-preview/">Product campaign</a></footer>
+  </main>
+  <script src="campaign-data.js"></script>
+  <script src="cutout.js"></script>
+  <script>
+    const params=new URLSearchParams(location.search);
+    document.documentElement.dataset.export=params.get('export')==='1';
+    const card=params.get('card');
+    function select(post){
+      document.querySelectorAll('.post').forEach(section=>section.hidden=post!=='all'&&section.dataset.post!==post);
+      document.querySelectorAll('.filters button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.post===post)));
+      if(!card){const url=new URL(location.href);post==='all'?url.searchParams.delete('post'):url.searchParams.set('post',post);history.replaceState(null,'',url)}
+      fit();
+    }
+    function fit(){document.querySelectorAll('.stage').forEach(stage=>{if(stage.clientWidth)stage.style.setProperty('--scale',stage.clientWidth/1536)})}
+    document.querySelectorAll('.filters button').forEach(button=>button.addEventListener('click',()=>{select(button.dataset.post);window.scrollTo(0,0)}));
+    for(const post of window.FOUNDER_POSTS.posts){const area=document.querySelector(`.post[data-post="${post.key}"] .copy-columns`);for(const [name,key] of [['X','x'],['LinkedIn','linkedin']]){const col=document.createElement('div');const heading=document.createElement('h3');heading.textContent=name;const text=document.createElement('p');text.textContent=post[key];col.append(heading,text);area.append(col)}}
+    if(card){const chosen=document.querySelector(`.preview[data-card="${card}"]`);if(chosen){select(chosen.closest('.post').dataset.post);document.querySelectorAll('.preview').forEach(preview=>preview.hidden=preview!==chosen)}}else select(params.get('post')||'all');
+    new ResizeObserver(fit).observe(document.querySelector('.gallery'));document.fonts.ready.then(fit);fit();
+  </script>
+</body>
+</html>
