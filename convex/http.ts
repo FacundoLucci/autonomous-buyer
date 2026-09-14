@@ -4,6 +4,8 @@ import { appPaths, publicPaths } from "../shared/seo";
 import { webhook as marketingWebhook } from "./marketingWebhook";
 import { AgentMail } from "@agentmail/convex";
 import { httpRouter } from "convex/server";
+import { callback as salesCallback } from "./salesAuth";
+import { receive as salesWebhook } from "./salesWebhook";
 
 import { components, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
@@ -17,6 +19,10 @@ const agentmail = new AgentMail(components.agentmail, {
 });
 const http = httpRouter();
 http.route({ path: "/api/marketing/cal", method: "POST", handler: marketingWebhook });
+http.route({ path: "/api/sales/square/callback", method: "GET", handler: salesCallback });
+http.route({ path: "/api/sales/shopify/callback", method: "GET", handler: salesCallback });
+http.route({ path: "/api/sales/square/events", method: "POST", handler: salesWebhook });
+http.route({ pathPrefix: "/api/sales/shopify/events/", method: "POST", handler: salesWebhook });
 
 auth.addHttpRoutes(http);
 http.route({ path: "/api/browser/authorize", method: "POST", handler: authorizeCommitHttp });

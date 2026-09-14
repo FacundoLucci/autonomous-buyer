@@ -1,0 +1,194 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BUY HARD · Sales walkthrough</title>
+<style>
+@font-face{font-family:Arimo;src:url("assets/fonts/arimo.woff2") format("woff2");font-weight:100 900}
+*{box-sizing:border-box}body{margin:0;background:#f1f1e7;color:#172015;font-family:Arimo,sans-serif}
+header,main{width:min(1500px,100%);margin:auto;padding:24px}header{display:flex;justify-content:space-between;gap:20px;align-items:center}header strong{font-size:21px;letter-spacing:-1px}header a{color:inherit;font-size:14px}
+h1{margin:0;font-size:clamp(25px,4vw,40px);letter-spacing:-1px}main>p{line-height:1.6;color:#4c5845;font-size:15px}
+#stage{position:relative;width:100%;aspect-ratio:16/9;border:1px solid #bdc9ac;overflow:hidden;background:#fffef7}
+#canvas{position:absolute;width:1920px;height:1080px;transform-origin:0 0}
+#frame-01-square,#frame-02-shopify{position:absolute!important;left:0;top:0}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}
+button{font:inherit;min-height:44px;padding:10px 18px;border-radius:5px;background:#fffef7;border:1px solid #bdc9ac;color:#172015;cursor:pointer}
+button.primary{background:#172015;color:#fffef7;border-color:#172015}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #37723b;outline-offset:3px}
+input[type=range]{flex:1;min-width:150px;accent-color:#37723b;min-height:44px}
+#time{font-variant-numeric:tabular-nums;font-size:13px;min-width:85px}
+.note{font-size:13px!important}.chapter[aria-pressed=true]{background:#dcec8a;border-color:#738c3e}
+@media(max-width:600px){main,header{padding:16px}.controls{gap:8px}input[type=range]{min-width:100%;order:2}.note{font-size:12px!important}}
+</style><style>
+@font-face{font-family:Arimo;src:url("assets/fonts/arimo.woff2") format("woff2");font-weight:100 900}
+@font-face{font-family:"Share Tech Mono";src:url("assets/fonts/share-tech-mono.woff2") format("woff2")}
+#frame-01-square{width:1920px;height:1080px;position:relative;overflow:hidden;color:#172015;font-family:Arimo,sans-serif}
+.clip{position:absolute;inset:0;width:1920px;height:1080px}.hf-01-square-ground{background:#fffef7}
+.hf-01-square-chrome{position:absolute;left:96px;right:96px;top:52px;display:flex;align-items:center;justify-content:space-between}
+.hf-01-square-brand{font-size:36px;font-weight:800;letter-spacing:-2px}.hf-01-square-meta{font:23px "Share Tech Mono",monospace;letter-spacing:1px}
+.hf-01-square-title{position:absolute;left:96px;top:140px;margin:0;font-size:88px;font-weight:700;line-height:1.05;letter-spacing:-4px}
+.hf-01-square-source{position:absolute;left:96px;top:285px;width:640px;height:555px;background:#fffef7;border:2px solid #bdc9ac;border-radius:12px;overflow:hidden;box-sizing:border-box}
+.hf-01-square-window{height:55px;padding:0 28px;border-bottom:1px solid #bdc9ac;display:flex;align-items:center;justify-content:space-between;font:20px "Share Tech Mono",monospace}
+.hf-01-square-body{padding:34px 36px}.hf-01-square-name{font-size:31px;font-weight:700;margin-bottom:28px}
+.hf-01-square-label{font:22px "Share Tech Mono",monospace;text-transform:uppercase;letter-spacing:1px}
+.hf-01-square-quantity{font-size:114px;line-height:1.06;letter-spacing:-6px;font-weight:700;margin-top:14px}
+.hf-01-square-line{font-size:27px;margin-top:4px}.hf-01-square-mapping{border-top:1px solid #bdc9ac;padding-top:24px;margin-top:30px;font-size:25px}
+.hf-01-square-event{margin-top:26px;display:flex;align-items:center;gap:11px;font-size:23px;color:#37723b}
+.hf-01-square-dot{width:11px;height:11px;border-radius:50%;background:#37723b}
+.hf-01-square-link{position:absolute;left:754px;top:514px;width:96px;height:76px;overflow:visible}
+.hf-01-square-buyer{position:absolute;left:870px;top:285px;width:954px;height:555px;box-sizing:border-box;background:#dcec8a;border:2px solid #b3c379;border-radius:12px;padding:32px 38px}
+.hf-01-square-top{display:flex;justify-content:space-between;align-items:center}.hf-01-square-small-brand{font-size:30px;font-weight:800;letter-spacing:-1.5px}
+.hf-01-square-state{position:relative;width:320px;height:26px;font-size:22px;text-align:right}.hf-01-square-state>span{position:absolute;right:0;top:0}
+.hf-01-square-stock{position:absolute;left:38px;top:106px;width:386px}.hf-01-square-item{font-size:28px;margin:0}
+.hf-01-square-stack{position:relative;height:116px;margin-top:6px}.hf-01-square-number{position:absolute;left:0;top:0;font-size:94px;font-weight:700;letter-spacing:-4px;line-height:1.12}
+.hf-01-square-number small{font-size:24px;font-weight:400;letter-spacing:0;margin-left:12px}
+.hf-01-square-track{width:370px;height:10px;background:#b4c566;overflow:hidden;border-radius:5px}.hf-01-square-fill{height:10px;background:#37723b;transform-origin:0 50%;border-radius:5px}
+.hf-01-square-cover{position:relative;height:46px;margin-top:15px;font-size:24px}.hf-01-square-cover>span{position:absolute;top:0;left:0}
+.hf-01-square-timing{position:absolute;left:474px;top:110px;width:402px}.hf-01-square-timing-value{position:relative;height:80px;margin-top:18px}
+.hf-01-square-timing-value>strong{position:absolute;left:0;top:0;font-size:62px;letter-spacing:-2px;line-height:1}
+.hf-01-square-why{font-size:23px;line-height:1.5;margin:5px 0}
+.hf-01-square-message{position:absolute;left:38px;right:38px;top:327px;height:186px;box-sizing:border-box;background:#fffef7;border:1px solid #afc075;border-radius:8px;padding:25px 28px}
+.hf-01-square-author{font:20px "Share Tech Mono",monospace}.hf-01-square-message p{font-size:31px;font-weight:700;letter-spacing:-.7px;margin:13px 0}
+.hf-01-square-buy-row{display:flex;justify-content:space-between;align-items:center;font-size:24px}.hf-01-square-pill{font-size:20px;background:#edf3e7;border:1px solid #b6caa7;border-radius:5px;padding:8px 13px}
+.hf-01-square-watching{position:absolute;left:38px;right:38px;top:345px;font-size:31px;line-height:1.4}
+.hf-01-square-foot{position:absolute;left:96px;right:96px;top:874px;display:flex;align-items:center;justify-content:space-between;font-size:25px}
+.hf-01-square-disclaimer{position:absolute;left:96px;top:956px;font:20px "Share Tech Mono",monospace;color:#54634b}
+
+
+@font-face{font-family:Arimo;src:url("assets/fonts/arimo.woff2") format("woff2");font-weight:100 900}
+@font-face{font-family:"Share Tech Mono";src:url("assets/fonts/share-tech-mono.woff2") format("woff2")}
+#frame-02-shopify{width:1920px;height:1080px;position:relative;overflow:hidden;color:#172015;font-family:Arimo,sans-serif}
+.clip{position:absolute;inset:0;width:1920px;height:1080px}.hf-02-shopify-ground{background:#fffef7}
+.hf-02-shopify-chrome{position:absolute;left:96px;right:96px;top:52px;display:flex;align-items:center;justify-content:space-between}
+.hf-02-shopify-brand{font-size:36px;font-weight:800;letter-spacing:-2px}.hf-02-shopify-meta{font:23px "Share Tech Mono",monospace;letter-spacing:1px}
+.hf-02-shopify-title{position:absolute;left:96px;top:140px;margin:0;font-size:88px;font-weight:700;line-height:1.05;letter-spacing:-4px}
+.hf-02-shopify-source{position:absolute;left:96px;top:285px;width:640px;height:555px;background:#fffef7;border:2px solid #bdc9ac;border-radius:12px;overflow:hidden;box-sizing:border-box}
+.hf-02-shopify-window{height:55px;padding:0 28px;border-bottom:1px solid #bdc9ac;display:flex;align-items:center;justify-content:space-between;font:20px "Share Tech Mono",monospace}
+.hf-02-shopify-body{padding:34px 36px}.hf-02-shopify-name{font-size:31px;font-weight:700;margin-bottom:28px}
+.hf-02-shopify-label{font:22px "Share Tech Mono",monospace;text-transform:uppercase;letter-spacing:1px}
+.hf-02-shopify-quantity{font-size:114px;line-height:1.06;letter-spacing:-6px;font-weight:700;margin-top:14px}
+.hf-02-shopify-line{font-size:27px;margin-top:4px}.hf-02-shopify-mapping{border-top:1px solid #bdc9ac;padding-top:24px;margin-top:30px;font-size:25px}
+.hf-02-shopify-event{margin-top:26px;display:flex;align-items:center;gap:11px;font-size:23px;color:#37723b}
+.hf-02-shopify-dot{width:11px;height:11px;border-radius:50%;background:#37723b}
+.hf-02-shopify-link{position:absolute;left:754px;top:514px;width:96px;height:76px;overflow:visible}
+.hf-02-shopify-buyer{position:absolute;left:870px;top:285px;width:954px;height:555px;box-sizing:border-box;background:#dcec8a;border:2px solid #b3c379;border-radius:12px;padding:32px 38px}
+.hf-02-shopify-top{display:flex;justify-content:space-between;align-items:center}.hf-02-shopify-small-brand{font-size:30px;font-weight:800;letter-spacing:-1.5px}
+.hf-02-shopify-state{position:relative;width:320px;height:26px;font-size:22px;text-align:right}.hf-02-shopify-state>span{position:absolute;right:0;top:0}
+.hf-02-shopify-stock{position:absolute;left:38px;top:106px;width:386px}.hf-02-shopify-item{font-size:28px;margin:0}
+.hf-02-shopify-stack{position:relative;height:116px;margin-top:6px}.hf-02-shopify-number{position:absolute;left:0;top:0;font-size:94px;font-weight:700;letter-spacing:-4px;line-height:1.12}
+.hf-02-shopify-number small{font-size:24px;font-weight:400;letter-spacing:0;margin-left:12px}
+.hf-02-shopify-track{width:370px;height:10px;background:#b4c566;overflow:hidden;border-radius:5px}.hf-02-shopify-fill{height:10px;background:#37723b;transform-origin:0 50%;border-radius:5px}
+.hf-02-shopify-cover{position:relative;height:46px;margin-top:15px;font-size:24px}.hf-02-shopify-cover>span{position:absolute;top:0;left:0}
+.hf-02-shopify-timing{position:absolute;left:474px;top:110px;width:402px}.hf-02-shopify-timing-value{position:relative;height:80px;margin-top:18px}
+.hf-02-shopify-timing-value>strong{position:absolute;left:0;top:0;font-size:62px;letter-spacing:-2px;line-height:1}
+.hf-02-shopify-why{font-size:23px;line-height:1.5;margin:5px 0}
+.hf-02-shopify-message{position:absolute;left:38px;right:38px;top:327px;height:186px;box-sizing:border-box;background:#fffef7;border:1px solid #afc075;border-radius:8px;padding:25px 28px}
+.hf-02-shopify-author{font:20px "Share Tech Mono",monospace}.hf-02-shopify-message p{font-size:31px;font-weight:700;letter-spacing:-.7px;margin:13px 0}
+.hf-02-shopify-buy-row{display:flex;justify-content:space-between;align-items:center;font-size:24px}.hf-02-shopify-pill{font-size:20px;background:#edf3e7;border:1px solid #b6caa7;border-radius:5px;padding:8px 13px}
+.hf-02-shopify-watching{position:absolute;left:38px;right:38px;top:345px;font-size:31px;line-height:1.4}
+.hf-02-shopify-foot{position:absolute;left:96px;right:96px;top:874px;display:flex;align-items:center;justify-content:space-between;font-size:25px}
+.hf-02-shopify-disclaimer{position:absolute;left:96px;top:956px;font:20px "Share Tech Mono",monospace;color:#54634b}
+</style></head><body>
+<header><strong>BUY HARD</strong><a href="/?demo=true&page=connections">Back to the interactive demo</a></header>
+<main><h1>Sales change. Your buyer keeps up.</h1><p>A 24-second walkthrough of Square sales and Shopify orders changing the next buy.</p>
+<div id="stage" role="img" aria-label="Animated sample showing sales bringing a supply reorder forward"><div id="canvas">
+<div id="frame-01-square" data-composition-id="01-square" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+<div id="scene-01-square-ground" class="clip hf-01-square-ground" data-start="0" data-duration="12" data-track-index="0"></div>
+<div id="scene-01-square-content" class="clip hf-01-square-content" data-start="0" data-duration="12" data-track-index="1">
+<div class="hf-01-square-chrome"><strong class="hf-01-square-brand">BUY HARD</strong><span class="hf-01-square-meta">SAMPLE SCENARIO · Square</span></div>
+<h1 class="hf-01-square-title">Busy day. Stock handled.</h1>
+<section class="hf-01-square-source"><div class="hf-01-square-window"><span>Square / sample store</span><span>10:42</span></div>
+<div class="hf-01-square-body"><div class="hf-01-square-name">Northside Coffee</div><div class="hf-01-square-label">Completed coffee sales</div>
+<div class="hf-01-square-sales"><div class="hf-01-square-quantity">300</div><div class="hf-01-square-line">Takeaway coffee sold</div></div>
+<div class="hf-01-square-mapping">1 coffee uses 1 cup</div><div class="hf-01-square-event"><span class="hf-01-square-dot"></span>Sales update received</div></div></section>
+<svg class="hf-01-square-link" viewBox="0 0 96 76" fill="none" aria-hidden="true"><path class="hf-01-square-arrow" d="M4 38H88M72 22L88 38L72 54" stroke="#37723b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<section class="hf-01-square-buyer"><div class="hf-01-square-top"><strong class="hf-01-square-small-brand">BUY HARD</strong><div class="hf-01-square-state"><span class="hf-01-square-before">Watching your stock</span><span class="hf-01-square-after">Reorder brought forward</span></div></div>
+<div class="hf-01-square-stock"><p class="hf-01-square-item">Cups</p><div class="hf-01-square-stack"><div class="hf-01-square-number hf-01-square-before">800<small>cups left</small></div><div class="hf-01-square-number hf-01-square-after">500<small>cups left</small></div></div><div class="hf-01-square-track"><div class="hf-01-square-fill"></div></div><div class="hf-01-square-cover"><span class="hf-01-square-before">8 days of cover</span><span class="hf-01-square-after">5 days of cover</span></div></div>
+<div class="hf-01-square-timing"><div class="hf-01-square-label">Next buy</div><div class="hf-01-square-timing-value"><strong class="hf-01-square-before">In 3 days</strong><strong class="hf-01-square-after">Today</strong></div><p class="hf-01-square-why">3d delivery + 1d preparation<br>+ 1d reserve</p></div>
+<div class="hf-01-square-watching">You’re stocked for now.<br>I’ll keep an eye on what changes.</div>
+<div class="hf-01-square-message"><div class="hf-01-square-author">YOUR BUYER · SAMPLE</div><p>Busy lunch? Cups are covered.</p><div class="hf-01-square-buy-row"><strong>600 cups · 6 packs</strong><span class="hf-01-square-pill">For your review</span></div></div></section>
+<div class="hf-01-square-foot"><span class="hf-01-square-payoff">Your sales change. Your buying plan follows.</span><strong>buyhard.app</strong></div>
+<div class="hf-01-square-disclaimer">Illustrative sales and purchase draft · No order has been placed</div>
+</div></div>
+
+
+
+<div id="frame-02-shopify" data-composition-id="02-shopify" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+<div id="scene-02-shopify-ground" class="clip hf-02-shopify-ground" data-start="0" data-duration="12" data-track-index="0"></div>
+<div id="scene-02-shopify-content" class="clip hf-02-shopify-content" data-start="0" data-duration="12" data-track-index="1">
+<div class="hf-02-shopify-chrome"><strong class="hf-02-shopify-brand">BUY HARD</strong><span class="hf-02-shopify-meta">SAMPLE SCENARIO · Shopify</span></div>
+<h1 class="hf-02-shopify-title">More orders. Boxes ready.</h1>
+<section class="hf-02-shopify-source"><div class="hf-02-shopify-window"><span>Shopify / sample store</span><span>10:42</span></div>
+<div class="hf-02-shopify-body"><div class="hf-02-shopify-name">Morrow Goods</div><div class="hf-02-shopify-label">Paid gift-set orders</div>
+<div class="hf-02-shopify-sales"><div class="hf-02-shopify-quantity">60</div><div class="hf-02-shopify-line">Gift set sold</div></div>
+<div class="hf-02-shopify-mapping">1 gift set uses 1 box</div><div class="hf-02-shopify-event"><span class="hf-02-shopify-dot"></span>Sales update received</div></div></section>
+<svg class="hf-02-shopify-link" viewBox="0 0 96 76" fill="none" aria-hidden="true"><path class="hf-02-shopify-arrow" d="M4 38H88M72 22L88 38L72 54" stroke="#37723b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<section class="hf-02-shopify-buyer"><div class="hf-02-shopify-top"><strong class="hf-02-shopify-small-brand">BUY HARD</strong><div class="hf-02-shopify-state"><span class="hf-02-shopify-before">Watching your stock</span><span class="hf-02-shopify-after">Reorder brought forward</span></div></div>
+<div class="hf-02-shopify-stock"><p class="hf-02-shopify-item">Shipping boxes</p><div class="hf-02-shopify-stack"><div class="hf-02-shopify-number hf-02-shopify-before">140<small>boxes left</small></div><div class="hf-02-shopify-number hf-02-shopify-after">80<small>boxes left</small></div></div><div class="hf-02-shopify-track"><div class="hf-02-shopify-fill"></div></div><div class="hf-02-shopify-cover"><span class="hf-02-shopify-before">7 days of cover</span><span class="hf-02-shopify-after">4 days of cover</span></div></div>
+<div class="hf-02-shopify-timing"><div class="hf-02-shopify-label">Next buy</div><div class="hf-02-shopify-timing-value"><strong class="hf-02-shopify-before">In 3 days</strong><strong class="hf-02-shopify-after">Today</strong></div><p class="hf-02-shopify-why">2d delivery + 1d preparation<br>+ 1d reserve</p></div>
+<div class="hf-02-shopify-watching">You’re stocked for now.<br>I’ll keep an eye on what changes.</div>
+<div class="hf-02-shopify-message"><div class="hf-02-shopify-author">YOUR BUYER · SAMPLE</div><p>A good launch. A ready buyer.</p><div class="hf-02-shopify-buy-row"><strong>125 boxes · 5 packs</strong><span class="hf-02-shopify-pill">For your review</span></div></div></section>
+<div class="hf-02-shopify-foot"><span class="hf-02-shopify-payoff">Stay stocked. Keep doing your thing.</span><strong>buyhard.app</strong></div>
+<div class="hf-02-shopify-disclaimer">Illustrative sales and purchase draft · No order has been placed</div>
+</div></div>
+
+</div></div>
+<div class="controls"><button class="primary" id="play">Play</button><button id="restart">Replay</button><input id="seek" type="range" min="0" max="24" step="0.05" value="0" aria-label="Animation position"><output id="time" aria-live="off">0:00 / 0:24</output><button class="chapter" id="square" aria-pressed="true">Square</button><button class="chapter" id="shopify" aria-pressed="false">Shopify</button></div>
+<p class="note">Sample businesses and events. Figures come from the app’s buying calculator. Purchases are drafts for review. The animation does not connect a store or place an order.</p>
+</main><script src="assets/gsap.min.js"></script><script>
+(function(){
+ const scope=document.querySelector('[data-composition-id="01-square"]');
+ const q=s=>scope.querySelectorAll(s);
+ const tl=gsap.timeline({paused:true,defaults:{ease:"power3.out"}});
+ tl.fromTo(q(".hf-01-square-title"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},0);
+ tl.fromTo(q(".hf-01-square-sales"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.5},2);
+ tl.fromTo(q(".hf-01-square-event"),{y:8,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},3.1);
+ tl.fromTo(q(".hf-01-square-arrow"),{strokeDasharray:140,strokeDashoffset:140},{strokeDashoffset:0,duration:.65},3.65);
+ tl.set(q(".hf-01-square-before"),{autoAlpha:0},4.5);
+ tl.fromTo(q(".hf-01-square-after"),{y:9,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},4.5);
+ tl.fromTo(q(".hf-01-square-fill"),{scaleX:1},{scaleX:0.625,duration:.65},4.5);
+ tl.to(q(".hf-01-square-watching"),{autoAlpha:0,duration:.15},6.85);
+ tl.fromTo(q(".hf-01-square-message"),{y:12,autoAlpha:0},{y:0,autoAlpha:1,duration:.55},7);
+ tl.fromTo(q(".hf-01-square-why"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},8.4);
+ tl.fromTo(q(".hf-01-square-payoff"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},9.5);
+ tl.to({},{duration:12},0);
+ window.__timelines=window.__timelines||{};
+ window.__timelines["01-square"]=tl;
+})();
+
+
+(function(){
+ const scope=document.querySelector('[data-composition-id="02-shopify"]');
+ const q=s=>scope.querySelectorAll(s);
+ const tl=gsap.timeline({paused:true,defaults:{ease:"power3.out"}});
+ tl.fromTo(q(".hf-02-shopify-title"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},0);
+ tl.fromTo(q(".hf-02-shopify-sales"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.5},2);
+ tl.fromTo(q(".hf-02-shopify-event"),{y:8,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},3.1);
+ tl.fromTo(q(".hf-02-shopify-arrow"),{strokeDasharray:140,strokeDashoffset:140},{strokeDashoffset:0,duration:.65},3.65);
+ tl.set(q(".hf-02-shopify-before"),{autoAlpha:0},4.5);
+ tl.fromTo(q(".hf-02-shopify-after"),{y:9,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},4.5);
+ tl.fromTo(q(".hf-02-shopify-fill"),{scaleX:1},{scaleX:0.5714285714285714,duration:.65},4.5);
+ tl.to(q(".hf-02-shopify-watching"),{autoAlpha:0,duration:.15},6.85);
+ tl.fromTo(q(".hf-02-shopify-message"),{y:12,autoAlpha:0},{y:0,autoAlpha:1,duration:.55},7);
+ tl.fromTo(q(".hf-02-shopify-why"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},8.4);
+ tl.fromTo(q(".hf-02-shopify-payoff"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},9.5);
+ tl.to({},{duration:12},0);
+ window.__timelines=window.__timelines||{};
+ window.__timelines["02-shopify"]=tl;
+})();
+</script><script>
+const master=gsap.timeline({paused:true});
+master.add(window.__timelines["01-square"].paused(false),0);
+master.add(window.__timelines["02-shopify"].paused(false),12);
+master.set("#frame-02-shopify",{autoAlpha:0},0);
+master.set("#frame-01-square",{autoAlpha:1},0);
+master.set("#frame-01-square",{autoAlpha:0},12);
+master.set("#frame-02-shopify",{autoAlpha:1},12);
+master.to({},{duration:24},0);
+master.pause(0);
+const play=document.querySelector("#play"),seek=document.querySelector("#seek"),time=document.querySelector("#time");
+function update(){const t=master.time();seek.value=t;time.textContent="0:"+Math.floor(t).toString().padStart(2,"0")+" / 0:24";play.textContent=master.paused()||t>=24?"Play":"Pause";document.querySelector("#square").setAttribute("aria-pressed",String(t<12));document.querySelector("#shopify").setAttribute("aria-pressed",String(t>=12));}
+master.eventCallback("onUpdate",update);master.eventCallback("onComplete",()=>{master.pause();update();});
+play.onclick=()=>{if(master.time()>=24)master.restart();else if(master.paused())master.play();else master.pause();update();};
+document.querySelector("#restart").onclick=()=>{master.restart();update();};
+seek.oninput=()=>{master.pause(Number(seek.value));update();};
+document.querySelector("#square").onclick=()=>{master.pause(0);update();};
+document.querySelector("#shopify").onclick=()=>{master.pause(12);update();};
+function resize(){document.querySelector("#canvas").style.transform="scale("+(document.querySelector("#stage").clientWidth/1920)+")";}
+new ResizeObserver(resize).observe(document.querySelector("#stage"));resize();update();
+</script></body></html>

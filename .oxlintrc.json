@@ -23,6 +23,8 @@
     ".claude/**",
     ".cursor/**",
     ".output/**",
+    "output/**",
+    "assets/storyboard/**/site/assets/**",
     "src/components/ui/**",
     "src/components/legacy-ui/**",
     "src/routeTree.gen.ts",

@@ -1,5 +1,7 @@
 import { VisitTracker } from "./marketing";
 import { DemoSupplierDirectory } from "./suppliers";
+import { SalesDemo } from "./sales-demo";
+import { SampleSalesConnections } from "./sales-connections";
 import { useState, type FormEvent } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -592,6 +594,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
     >
       <VisitTracker />
       <WorkspaceScreen
+        connections={<SalesDemo />}
         workspace={workspace}
         snapshot={snapshot}
         search={search}
@@ -603,6 +606,7 @@ export function DemoDesk({ search, navigate }: { search: SearchState; navigate: 
         audit={<AuditLog entries={auditEntries} />}
         settings={
           <>
+            <SampleSalesConnections />
             <DemoSupplierDirectory />
             <p className="desk-muted">Notification delivery is available in your own workspace.</p>
           </>

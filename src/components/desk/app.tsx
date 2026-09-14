@@ -36,6 +36,7 @@ import { TaskChat } from "./chat";
 import { LiveBuyer } from "./agent-live";
 import { useBuyer } from "./agent";
 import { DemoDesk } from "./demo";
+import { SalesConnections } from "./sales-connections";
 import { PurchasingInbox } from "./mail";
 import { SupplierDirectory } from "./suppliers";
 import { LiveAuditLog } from "./audit";
@@ -56,9 +57,10 @@ import {
 } from "./model";
 export type SearchState = {
   demo: boolean;
-  page: "dashboard" | "inventory" | "buys" | "settings" | "audit";
+  page: "dashboard" | "inventory" | "buys" | "settings" | "audit" | "connections";
   item?: string;
   buy?: string;
+  sales?: "connected" | "retry";
 };
 export type Navigation = (next: SearchState) => void;
 export function DeskHome({ search, navigate }: { search: SearchState; navigate: Navigation }) {
@@ -185,6 +187,9 @@ function LiveWorkspace({
   };
   const settings = (
     <>
+      <a className="desk-inline-link" href="/?page=connections">
+        Connect sales & inventory <ArrowUpRight size={16} />
+      </a>
       <SupplierDirectory />
       <PurchasingInbox email={workspace.inbox?.email} />
       <Alerts />
@@ -201,6 +206,7 @@ function LiveWorkspace({
       settings={settings}
     >
       <WorkspaceScreen
+        connections={<SalesConnections items={workspace.items} result={search.sales} />}
         workspace={workspace}
         snapshot={snapshot}
         search={search}
@@ -266,6 +272,7 @@ function LiveWorkspace({
   );
 }
 export type WorkspaceScreenProps = {
+  connections?: ReactNode;
   workspace: Workspace;
   snapshot: Snapshot | undefined;
   search: SearchState;
@@ -283,6 +290,7 @@ export type WorkspaceScreenProps = {
   audit?: ReactNode;
 };
 export function WorkspaceScreen({
+  connections,
   workspace,
   snapshot,
   search,
@@ -470,6 +478,9 @@ export function WorkspaceScreen({
             <ChevronDown size={15} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => view("connections")}>
+              Sales & inventory
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => view("settings")}>Settings</DropdownMenuItem>
             <DropdownMenuItem onClick={() => view("audit")}>Audit log</DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>
@@ -479,7 +490,9 @@ export function WorkspaceScreen({
         </DropdownMenu>
       </header>
       <main id="main" className="desk-main">
-        {search.item ? (
+        {search.page === "connections" ? (
+          connections
+        ) : search.item ? (
           item ? (
             <>
               <h1 className="sr-only">{item.name}</h1>

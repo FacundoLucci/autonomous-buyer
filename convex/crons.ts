@@ -1,6 +1,14 @@
 import { cronJobs } from "convex/server";
 import { internal } from "./_generated/api";
 const crons = cronJobs();
+crons.interval(
+  "Reconcile connected sales and inventory",
+  { minutes: 15 },
+  internal.salesProvider.sweep,
+  {
+    paginationOpts: { numItems: 20, cursor: null },
+  },
+);
 crons.interval("Check company stock and deliveries", { hours: 1 }, internal.companyAlerts.sweep, {
   paginationOpts: { numItems: 25, cursor: null },
 });

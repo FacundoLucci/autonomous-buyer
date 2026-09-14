@@ -1,0 +1,171 @@
+{
+  "checkedAt": "2026-09-14T03:20:26.896261+00:00",
+  "environment": "Local Convex and Shopify development store only",
+  "connection": {
+    "_creationTime": 1789355869479.99,
+    "_id": "qn79qzke5r1fdy09bzrryfhcbn8ec5bv",
+    "accountId": "quickstart-93217b41.myshopify.com",
+    "createdAt": 1789355869479,
+    "lastSyncAt": 1789355869569,
+    "name": "quickstart-93217b41.myshopify.com",
+    "organizationId": "p572b21v8apy79b3b61h30m2qh8ed92n",
+    "provider": "shopify",
+    "sandbox": false,
+    "status": "connected"
+  },
+  "catalog": {
+    "cursor": null,
+    "locations": [
+      {
+        "id": "all",
+        "name": "All paid orders (sales only)"
+      },
+      {
+        "id": "gid://shopify/Location/77456933104",
+        "name": "My Custom Location"
+      },
+      {
+        "id": "gid://shopify/Location/77456867568",
+        "name": "Shop location"
+      }
+    ],
+    "products": [
+      {
+        "id": "gid://shopify/ProductVariant/46252981190896",
+        "inventoryId": "gid://shopify/InventoryItem/48350176739568",
+        "name": "The Minimal Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981223664",
+        "inventoryId": "gid://shopify/InventoryItem/48350176772336",
+        "name": "The Videographer Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981256432",
+        "inventoryId": "gid://shopify/InventoryItem/48350176805104",
+        "name": "The Collection Snowboard: Hydrogen - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981289200",
+        "inventoryId": "gid://shopify/InventoryItem/48350176837872",
+        "name": "The Hidden Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981321968",
+        "inventoryId": "gid://shopify/InventoryItem/48350176870640",
+        "name": "The Out of Stock Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981354736",
+        "inventoryId": "gid://shopify/InventoryItem/48350176936176",
+        "name": "The Complete Snowboard - Ice"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981387504",
+        "inventoryId": "gid://shopify/InventoryItem/48350176968944",
+        "name": "The Complete Snowboard - Dawn"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981420272",
+        "inventoryId": "gid://shopify/InventoryItem/48350177001712",
+        "name": "The Complete Snowboard - Powder"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981453040",
+        "inventoryId": "gid://shopify/InventoryItem/48350176903408",
+        "name": "The Draft Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981485808",
+        "inventoryId": "gid://shopify/InventoryItem/48350177034480",
+        "name": "The Complete Snowboard - Electric"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981518576",
+        "inventoryId": "gid://shopify/InventoryItem/48350177067248",
+        "name": "The Complete Snowboard - Sunset"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981551344",
+        "inventoryId": "gid://shopify/InventoryItem/48350177100016",
+        "name": "The Archived Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981584112",
+        "inventoryId": "gid://shopify/InventoryItem/48350177132784",
+        "name": "Gift Card - $10"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981616880",
+        "inventoryId": "gid://shopify/InventoryItem/48350177165552",
+        "name": "Gift Card - $25"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981649648",
+        "inventoryId": "gid://shopify/InventoryItem/48350177198320",
+        "name": "Gift Card - $50"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981682416",
+        "inventoryId": "gid://shopify/InventoryItem/48350177231088",
+        "name": "Gift Card - $100"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981747952",
+        "inventoryId": "gid://shopify/InventoryItem/48350177263856",
+        "name": "The Compare at Price Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981780720",
+        "inventoryId": "gid://shopify/InventoryItem/48350177329392",
+        "name": "The Multi-location Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981813488",
+        "inventoryId": "gid://shopify/InventoryItem/48350177362160",
+        "name": "The Inventory Not Tracked Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981846256",
+        "inventoryId": "gid://shopify/InventoryItem/48350177394928",
+        "name": "The 3p Fulfilled Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981879024",
+        "inventoryId": "gid://shopify/InventoryItem/48350177427696",
+        "name": "The Multi-managed Snowboard - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981911792",
+        "inventoryId": "gid://shopify/InventoryItem/48350177460464",
+        "name": "The Collection Snowboard: Oxygen - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981944560",
+        "inventoryId": "gid://shopify/InventoryItem/48350177493232",
+        "name": "Selling Plans Ski Wax - Selling Plans Ski Wax"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252981977328",
+        "inventoryId": "gid://shopify/InventoryItem/48350177526000",
+        "name": "Selling Plans Ski Wax - Special Selling Plans Ski Wax"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252982010096",
+        "inventoryId": "gid://shopify/InventoryItem/48350177558768",
+        "name": "Selling Plans Ski Wax - Sample Selling Plans Ski Wax"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/46252982042864",
+        "inventoryId": "gid://shopify/InventoryItem/48350177591536",
+        "name": "The Collection Snowboard: Liquid - Default Title"
+      },
+      {
+        "id": "gid://shopify/ProductVariant/50173099180272",
+        "inventoryId": "gid://shopify/InventoryItem/52289076035824",
+        "name": "Studio Surface Wipes \u2014 Demo 4-Pack - Default Title"
+      }
+    ]
+  },
+  "scope": "OAuth connection and catalog read verified; no live Shopify order-to-stock test yet."
+}

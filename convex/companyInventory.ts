@@ -100,6 +100,14 @@ export async function writeStockCount(
   );
   await ctx.db.patch("inventoryItems", item._id, {
     quantityOnHand: count,
+    ...(item.salesConnectionId
+      ? {
+          salesBaselineAt: Date.now(),
+          salesBaselineQuantity: count,
+          salesConsumed: 0,
+          salesObservedThrough: Date.now(),
+        }
+      : {}),
     estimatedQuantity: count,
     stockCountKnown: true,
     stockCountedAt: Date.now(),

@@ -1,0 +1,1 @@
+No external images. The new app UI supplies the layout and text. scenarios.json supplies all displayed quantities, calculated from the app's planner. Rebuild these UI components as crisp HTML for animation; this is a requested mock, not a recording of connected provider accounts.

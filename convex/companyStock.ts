@@ -101,6 +101,11 @@ export async function applyStockReceipt(
     throw new ConvexError("Enter a positive delivery quantity.");
   await ctx.db.patch("inventoryItems", item._id, {
     forecastQuantity: projected + quantity,
+    ...(item.salesConnectionId && item.salesBaselineQuantity !== undefined
+      ? {
+          salesBaselineQuantity: item.salesBaselineQuantity + quantity,
+        }
+      : {}),
     forecastAt: now,
     estimatedQuantity: projected + quantity,
   });

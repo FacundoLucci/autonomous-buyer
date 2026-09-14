@@ -1,0 +1,75 @@
+<template><style>
+@font-face{font-family:Arimo;src:url("assets/fonts/arimo.woff2") format("woff2");font-weight:100 900}
+@font-face{font-family:"Share Tech Mono";src:url("assets/fonts/share-tech-mono.woff2") format("woff2")}
+#root{width:1920px;height:1080px;position:relative;overflow:hidden;color:#172015;font-family:Arimo,sans-serif}
+.clip{position:absolute;inset:0;width:1920px;height:1080px}.hf-01-square-ground{background:#fffef7}
+.hf-01-square-chrome{position:absolute;left:96px;right:96px;top:52px;display:flex;align-items:center;justify-content:space-between}
+.hf-01-square-brand{font-size:36px;font-weight:800;letter-spacing:-2px}.hf-01-square-meta{font:23px "Share Tech Mono",monospace;letter-spacing:1px}
+.hf-01-square-title{position:absolute;left:96px;top:140px;margin:0;font-size:88px;font-weight:700;line-height:1.05;letter-spacing:-4px}
+.hf-01-square-source{position:absolute;left:96px;top:285px;width:640px;height:555px;background:#fffef7;border:2px solid #bdc9ac;border-radius:12px;overflow:hidden;box-sizing:border-box}
+.hf-01-square-window{height:55px;padding:0 28px;border-bottom:1px solid #bdc9ac;display:flex;align-items:center;justify-content:space-between;font:20px "Share Tech Mono",monospace}
+.hf-01-square-body{padding:34px 36px}.hf-01-square-name{font-size:31px;font-weight:700;margin-bottom:28px}
+.hf-01-square-label{font:22px "Share Tech Mono",monospace;text-transform:uppercase;letter-spacing:1px}
+.hf-01-square-quantity{font-size:114px;line-height:1.06;letter-spacing:-6px;font-weight:700;margin-top:14px}
+.hf-01-square-line{font-size:27px;margin-top:4px}.hf-01-square-mapping{border-top:1px solid #bdc9ac;padding-top:24px;margin-top:30px;font-size:25px}
+.hf-01-square-event{margin-top:26px;display:flex;align-items:center;gap:11px;font-size:23px;color:#37723b}
+.hf-01-square-dot{width:11px;height:11px;border-radius:50%;background:#37723b}
+.hf-01-square-link{position:absolute;left:754px;top:514px;width:96px;height:76px;overflow:visible}
+.hf-01-square-buyer{position:absolute;left:870px;top:285px;width:954px;height:555px;box-sizing:border-box;background:#dcec8a;border:2px solid #b3c379;border-radius:12px;padding:32px 38px}
+.hf-01-square-top{display:flex;justify-content:space-between;align-items:center}.hf-01-square-small-brand{font-size:30px;font-weight:800;letter-spacing:-1.5px}
+.hf-01-square-state{position:relative;width:320px;height:26px;font-size:22px;text-align:right}.hf-01-square-state>span{position:absolute;right:0;top:0}
+.hf-01-square-stock{position:absolute;left:38px;top:106px;width:386px}.hf-01-square-item{font-size:28px;margin:0}
+.hf-01-square-stack{position:relative;height:116px;margin-top:6px}.hf-01-square-number{position:absolute;left:0;top:0;font-size:94px;font-weight:700;letter-spacing:-4px;line-height:1.12}
+.hf-01-square-number small{font-size:24px;font-weight:400;letter-spacing:0;margin-left:12px}
+.hf-01-square-track{width:370px;height:10px;background:#b4c566;overflow:hidden;border-radius:5px}.hf-01-square-fill{height:10px;background:#37723b;transform-origin:0 50%;border-radius:5px}
+.hf-01-square-cover{position:relative;height:46px;margin-top:15px;font-size:24px}.hf-01-square-cover>span{position:absolute;top:0;left:0}
+.hf-01-square-timing{position:absolute;left:474px;top:110px;width:402px}.hf-01-square-timing-value{position:relative;height:80px;margin-top:18px}
+.hf-01-square-timing-value>strong{position:absolute;left:0;top:0;font-size:62px;letter-spacing:-2px;line-height:1}
+.hf-01-square-why{font-size:23px;line-height:1.5;margin:5px 0}
+.hf-01-square-message{position:absolute;left:38px;right:38px;top:327px;height:186px;box-sizing:border-box;background:#fffef7;border:1px solid #afc075;border-radius:8px;padding:25px 28px}
+.hf-01-square-author{font:20px "Share Tech Mono",monospace}.hf-01-square-message p{font-size:31px;font-weight:700;letter-spacing:-.7px;margin:13px 0}
+.hf-01-square-buy-row{display:flex;justify-content:space-between;align-items:center;font-size:24px}.hf-01-square-pill{font-size:20px;background:#edf3e7;border:1px solid #b6caa7;border-radius:5px;padding:8px 13px}
+.hf-01-square-watching{position:absolute;left:38px;right:38px;top:345px;font-size:31px;line-height:1.4}
+.hf-01-square-foot{position:absolute;left:96px;right:96px;top:874px;display:flex;align-items:center;justify-content:space-between;font-size:25px}
+.hf-01-square-disclaimer{position:absolute;left:96px;top:956px;font:20px "Share Tech Mono",monospace;color:#54634b}
+</style>
+<div data-hf-id="hf-l1id" id="root" data-composition-id="01-square" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+<div data-hf-id="hf-t9sz" id="scene-01-square-ground" class="clip hf-01-square-ground" data-start="0" data-duration="12" data-track-index="0"></div>
+<div data-hf-id="hf-nnmu" id="scene-01-square-content" class="clip hf-01-square-content" data-start="0" data-duration="12" data-track-index="1">
+<div data-hf-id="hf-odt9" class="hf-01-square-chrome"><strong data-hf-id="hf-rbq9" class="hf-01-square-brand">BUY HARD</strong><span data-hf-id="hf-qe47" class="hf-01-square-meta">SAMPLE SCENARIO · Square</span></div>
+<h1 data-hf-id="hf-54pu" class="hf-01-square-title">Busy day. Stock handled.</h1>
+<section data-hf-id="hf-4eg8" class="hf-01-square-source"><div data-hf-id="hf-5o9v" class="hf-01-square-window"><span data-hf-id="hf-iysq">Square / sample store</span><span data-hf-id="hf-9wtw">10:42</span></div>
+<div data-hf-id="hf-nigr" class="hf-01-square-body"><div data-hf-id="hf-0k0a" class="hf-01-square-name">Northside Coffee</div><div data-hf-id="hf-mwsw" class="hf-01-square-label">Completed coffee sales</div>
+<div data-hf-id="hf-05i9" class="hf-01-square-sales"><div data-hf-id="hf-gn1h" class="hf-01-square-quantity">300</div><div data-hf-id="hf-t8ri" class="hf-01-square-line">Takeaway coffee sold</div></div>
+<div data-hf-id="hf-or09" class="hf-01-square-mapping">1 coffee uses 1 cup</div><div data-hf-id="hf-30ar" class="hf-01-square-event"><span data-hf-id="hf-2qnx" class="hf-01-square-dot"></span>Sales update received</div></div></section>
+<svg data-hf-id="hf-nwt8" class="hf-01-square-link" viewBox="0 0 96 76" fill="none" aria-hidden="true"><path data-hf-id="hf-0uwx" class="hf-01-square-arrow" d="M4 38H88M72 22L88 38L72 54" stroke="#37723b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+<section data-hf-id="hf-rsag" class="hf-01-square-buyer"><div data-hf-id="hf-0gls" class="hf-01-square-top"><strong data-hf-id="hf-cv7b" class="hf-01-square-small-brand">BUY HARD</strong><div data-hf-id="hf-8wxa" class="hf-01-square-state"><span data-hf-id="hf-iawd" class="hf-01-square-before">Watching your stock</span><span data-hf-id="hf-e76x" class="hf-01-square-after">Reorder brought forward</span></div></div>
+<div data-hf-id="hf-tx3v" class="hf-01-square-stock"><p data-hf-id="hf-etbi" class="hf-01-square-item">Cups</p><div data-hf-id="hf-v56x" class="hf-01-square-stack"><div data-hf-id="hf-32im" class="hf-01-square-number hf-01-square-before">800<small data-hf-id="hf-e236">cups left</small></div><div data-hf-id="hf-7p16" class="hf-01-square-number hf-01-square-after">500<small data-hf-id="hf-4aja">cups left</small></div></div><div data-hf-id="hf-wlg0" class="hf-01-square-track"><div data-hf-id="hf-uvkc" class="hf-01-square-fill"></div></div><div data-hf-id="hf-y32c" class="hf-01-square-cover"><span data-hf-id="hf-rw1o" class="hf-01-square-before">8 days of cover</span><span data-hf-id="hf-2sny" class="hf-01-square-after">5 days of cover</span></div></div>
+<div data-hf-id="hf-9c2p" class="hf-01-square-timing"><div data-hf-id="hf-ioby" class="hf-01-square-label">Next buy</div><div data-hf-id="hf-8dp5" class="hf-01-square-timing-value"><strong data-hf-id="hf-81gp" class="hf-01-square-before">In 3 days</strong><strong data-hf-id="hf-pmg2" class="hf-01-square-after">Today</strong></div><p data-hf-id="hf-080q" class="hf-01-square-why">3d delivery + 1d preparation<br data-hf-id="hf-x5px">+ 1d reserve</p></div>
+<div data-hf-id="hf-mc9u" class="hf-01-square-watching">You’re stocked for now.<br data-hf-id="hf-rsrt">I’ll keep an eye on what changes.</div>
+<div data-hf-id="hf-79zs" class="hf-01-square-message"><div data-hf-id="hf-uws3" class="hf-01-square-author">YOUR BUYER · SAMPLE</div><p data-hf-id="hf-txf2">Busy lunch? Cups are covered.</p><div data-hf-id="hf-1b7a" class="hf-01-square-buy-row"><strong data-hf-id="hf-e4aw">600 cups · 6 packs</strong><span data-hf-id="hf-f0pt" class="hf-01-square-pill">For your review</span></div></div></section>
+<div data-hf-id="hf-yb9r" class="hf-01-square-foot"><span data-hf-id="hf-ai5k" class="hf-01-square-payoff">Your sales change. Your buying plan follows.</span><strong data-hf-id="hf-cilu">buyhard.app</strong></div>
+<div data-hf-id="hf-quia" class="hf-01-square-disclaimer">Illustrative sales and purchase draft · No order has been placed</div>
+</div></div>
+<script src="assets/gsap.min.js"></script>
+<script>
+(function(){
+ const scope=document.querySelector('[data-composition-id="01-square"]');
+ const q=s=>scope.querySelectorAll(s);
+ const tl=gsap.timeline({paused:true,defaults:{ease:"power3.out"}});
+ tl.fromTo(q(".hf-01-square-title"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},0);
+ tl.fromTo(q(".hf-01-square-sales"),{y:14,autoAlpha:0},{y:0,autoAlpha:1,duration:.5},2);
+ tl.fromTo(q(".hf-01-square-event"),{y:8,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},3.1);
+ tl.fromTo(q(".hf-01-square-arrow"),{strokeDasharray:140,strokeDashoffset:140},{strokeDashoffset:0,duration:.65},3.65);
+ tl.set(q(".hf-01-square-before"),{autoAlpha:0},4.5);
+ tl.fromTo(q(".hf-01-square-after"),{y:9,autoAlpha:0},{y:0,autoAlpha:1,duration:.45},4.5);
+ tl.fromTo(q(".hf-01-square-fill"),{scaleX:1},{scaleX:0.625,duration:.65},4.5);
+ tl.to(q(".hf-01-square-watching"),{autoAlpha:0,duration:.15},6.85);
+ tl.fromTo(q(".hf-01-square-message"),{y:12,autoAlpha:0},{y:0,autoAlpha:1,duration:.55},7);
+ tl.fromTo(q(".hf-01-square-why"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},8.4);
+ tl.fromTo(q(".hf-01-square-payoff"),{y:6,autoAlpha:0},{y:0,autoAlpha:1,duration:.4},9.5);
+ tl.to({},{duration:12},0);
+ window.__timelines=window.__timelines||{};
+ window.__timelines["01-square"]=tl;
+})();
+</script></template>

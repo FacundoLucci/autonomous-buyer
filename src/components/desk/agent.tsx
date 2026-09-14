@@ -178,7 +178,11 @@ export function AgentSurface({
     <BuyerContext.Provider value={(request) => void begin(request)}>
       <div className="desk-with-agent">
         <div className="desk-agent-page">{children}</div>
-        <div className="desk-agent" ref={keyboard}>
+        <div
+          className="desk-agent"
+          ref={keyboard}
+          style={demo && search.page === "connections" ? { display: "none" } : undefined}
+        >
           {open && (
             <section className="desk-agent-panel" aria-label="Your buyer conversation">
               <div className="desk-agent-top">

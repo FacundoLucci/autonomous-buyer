@@ -192,7 +192,8 @@ function render() {
     filter.value = campaign;
     filter.addEventListener("change", (e) => {
       campaign = e.target.value;
-      page === "calendar" ? renderPosts() : renderConversations();
+      if (page === "calendar") renderPosts();
+      else renderConversations();
     });
   }
   if (page === "calendar") {

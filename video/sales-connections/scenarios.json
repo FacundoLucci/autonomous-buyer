@@ -1,0 +1,118 @@
+{
+  "square": {
+    "provider": "Square",
+    "business": "Northside Coffee",
+    "product": "Takeaway coffee",
+    "item": "12 oz paper cups",
+    "unit": "cups",
+    "sourceId": "SQ-DEMO-1042",
+    "location": "Northside café",
+    "stock": 800,
+    "dailyUsage": 100,
+    "leadTimeDays": 3,
+    "saleQuantity": 300,
+    "pack": 100,
+    "event": "A busy lunch",
+    "sourceLabel": "Completed coffee sales",
+    "supplier": "Sample packaging supplier",
+    "before": {
+      "stock": 800,
+      "consumed": 0,
+      "daysLeft": 8,
+      "plan": {
+        "state": "watching",
+        "note": "Stock is covered until 2026-09-21.",
+        "quantity": 0,
+        "requiredBy": "2026-09-21",
+        "nextAt": 1789659720000
+      },
+      "orderPacks": 0,
+      "reorderInDays": 3
+    },
+    "after": {
+      "stock": 500,
+      "consumed": 300,
+      "daysLeft": 5,
+      "plan": {
+        "state": "buying",
+        "note": "Preparing 600 units, needed by 2026-09-18.",
+        "quantity": 600,
+        "requiredBy": "2026-09-18"
+      },
+      "orderPacks": 6,
+      "reorderInDays": 0
+    },
+    "received": {
+      "stock": 1100,
+      "consumed": 300,
+      "daysLeft": 11,
+      "plan": {
+        "state": "watching",
+        "note": "Stock is covered until 2026-09-24.",
+        "quantity": 0,
+        "requiredBy": "2026-09-24",
+        "nextAt": 1789918920000
+      },
+      "orderPacks": 0,
+      "reorderInDays": 6
+    }
+  },
+  "shopify": {
+    "provider": "Shopify",
+    "business": "Morrow Goods",
+    "product": "Gift set",
+    "item": "Small shipping boxes",
+    "unit": "boxes",
+    "sourceId": "SHOP-DEMO-1042",
+    "location": "Online store",
+    "stock": 140,
+    "dailyUsage": 20,
+    "leadTimeDays": 2,
+    "saleQuantity": 60,
+    "pack": 25,
+    "event": "A launch-day rush",
+    "sourceLabel": "Paid gift-set orders",
+    "supplier": "Sample packaging supplier",
+    "before": {
+      "stock": 140,
+      "consumed": 0,
+      "daysLeft": 7,
+      "plan": {
+        "state": "watching",
+        "note": "Stock is covered until 2026-09-20.",
+        "quantity": 0,
+        "requiredBy": "2026-09-20",
+        "nextAt": 1789659720000
+      },
+      "orderPacks": 0,
+      "reorderInDays": 3
+    },
+    "after": {
+      "stock": 80,
+      "consumed": 60,
+      "daysLeft": 4,
+      "plan": {
+        "state": "buying",
+        "note": "Preparing 125 units, needed by 2026-09-17.",
+        "quantity": 125,
+        "requiredBy": "2026-09-17"
+      },
+      "orderPacks": 5,
+      "reorderInDays": 0
+    },
+    "received": {
+      "stock": 205,
+      "consumed": 60,
+      "daysLeft": 10.25,
+      "plan": {
+        "state": "watching",
+        "note": "Stock is covered until 2026-09-23.",
+        "quantity": 0,
+        "requiredBy": "2026-09-23",
+        "nextAt": 1789940520000
+      },
+      "orderPacks": 0,
+      "reorderInDays": 6
+    }
+  }
+}
