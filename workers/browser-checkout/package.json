@@ -7,6 +7,8 @@
     "test": "node --test *.test.mjs"
   },
   "dependencies": {
+    "@stripe/link-cli": "0.19.2",
+    "@stripe/link-sdk": "0.4.2",
     "ipaddr.js": "^2.5.0",
     "playwright": "1.58.2"
   }

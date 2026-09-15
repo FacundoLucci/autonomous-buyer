@@ -1,4 +1,6 @@
 node_modules
 data
-suppliers.json
 .env*
+*.test.mjs
+README.md
+*.log

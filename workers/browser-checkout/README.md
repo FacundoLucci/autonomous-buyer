@@ -8,6 +8,14 @@ Convex owns purchase approval. The worker compares product, quantity, unit, addr
 
 The agent uses the OpenAI Responses API with screenshot and visible-page input (`gpt-5.4`, configurable). Each job is bounded to 60 actions and eight minutes, with individual network and browser timeouts. Final terms need visible evidence and a second model review. This is general browser operation, not a guarantee that every merchant works. CAPTCHAs, unavailable products, unsupported payment flows and ambiguous delivery dates require help. Merchant-specific automation defenses can still prevent ordering.
 
+The browser keeps the live cart through supplier help, Link payment approval, and final purchase approval. A bounded action history helps it avoid loops and duplicate cart additions. Temporary model/page failures recover in place. Receipt checks can wait for a slow confirmation without clicking Buy again.
+
+## Payment
+
+Use **Settings → Pay for purchases → Connect Link**. Link hosts card entry and issues a virtual card for the approved merchant and amount; raw card data stays outside the model, Convex, and job journal. The trusted worker fills supported merchant/payment-provider card fields. See [Link integration and current limits](../../docs/link-agent-payments.md).
+
+Some stores need a card before showing final delivery/tax. The buyer can ask for a Link spending approval at that step, then finish preparing the actual order for approval in BUY HARD. Supplying payment details does not grant the final purchase click.
+
 Navigation rejects recognizable final-purchase controls and request patterns. These checks supplement model review; they cannot classify every possible merchant action. Browser traffic passes through a local HTTPS proxy which resolves and pins public IP addresses, rejecting private networks and cloud metadata. Service workers and WebSockets are disabled. Popup flows require help.
 
 ## Railway deployment
@@ -22,19 +30,23 @@ Required variables:
 - `CONVEX_SITE_URL`: the matching Convex deployment's HTTPS site URL.
 - `PUBLIC_URL`: Railway's HTTPS worker URL for temporary supplier help sessions.
 - `DATA_DIR=/data`, `PORT=8080`.
+- `LINK_PAYMENT_MODE=test` for development (default); `live` for an approved live rollout.
+- `RELEASE_SHA`: the deployed source revision, returned by `/health`.
 
 Configure `BROWSER_WORKER_URL` and the matching secret in that same Convex deployment. Do not point multiple deployments at a worker with a different approval callback.
 
-Supplier browser storage is isolated by company and supplier origin and encrypted using AES-256-GCM. Job journals contain commercial terms; protect the volume accordingly. Screenshots are not saved. Human sign-in and payment setup use an expiring help link while the agent is stopped. The help view blocks recognizable purchase buttons and Enter submissions; users should complete setup and return to BUY HARD for purchase approval. Help links expire after ten minutes and idle sessions close after fifteen minutes.
+Supplier browser storage is isolated by company, payment owner, and supplier origin and encrypted using AES-256-GCM. Job journals contain commercial terms; protect the volume accordingly. Screenshots are not saved. Human sign-in uses an expiring help link while the agent is stopped. Finishing help retains the page and revokes human access until a fresh handoff. Help links expire after ten minutes and idle sessions close after fifteen minutes. A worker restart retains encrypted supplier access and the submission journal; it cannot preserve a live page across a process restart.
+
+The Docker entrypoint holds an exclusive file lock on the volume so a second process cannot submit the same purchase. Dependency install scripts are disabled: the pinned Link CLI is used only for its official authentication flow.
 
 ## Verification
 
 ```
-npm ci
+npm ci --ignore-scripts
 npx playwright install chromium
 npm test
 ```
 
-Tests use real Chromium and ordinary checkout HTML, with no supplier adapter. They cover preparation, approved submission, changed terms, revoked approval, premature purchase, missing evidence, uncertain receipts and public-network filtering. Set `BUYER_LIVE_MODEL_TEST=1` with `OPENAI_API_KEY` to run the additional live-model checkout against the controlled local store. This creates only a local test order, not a real merchant purchase.
+Tests use headless Chromium and ordinary checkout HTML, with no supplier adapter. They cover preparation, approved submission, changed terms, revoked approval, payment handoff, wallet isolation, live-cart transfer, temporary outages, uncertain receipts and public-network filtering. Set `BUYER_LIVE_MODEL_TEST=1` with `OPENAI_API_KEY` to run live-model checkouts against controlled stores, including a store that requests payment before delivery terms. These create local test orders, not real merchant purchases.
 
 A real merchant is counted as tested only after a confirmed app-placed order. Hosting, a prepared cart and controlled test purchases do not increment that public metric.
