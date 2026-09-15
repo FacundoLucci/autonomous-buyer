@@ -186,6 +186,7 @@ export async function modelDecision(page, job, state, mode = "act", candidate, o
       "expectedOn",
       "name",
       "productName",
+      "itemName",
       "supplierName",
     ]
       .filter((key) => job.order[key] !== undefined)

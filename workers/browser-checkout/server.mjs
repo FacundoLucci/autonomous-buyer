@@ -188,6 +188,10 @@ export async function createCheckoutService({
         state: "needs_payment",
         error: "Connect your Link wallet in BUY HARD, then continue checkout.",
       };
+    // Once a protected card is requested, final authorization must continue to
+    // require that card until a replacement has actually been injected.
+    job.paymentRequired = true;
+    await save(job);
     const result = await broker.requestPayment(job, {
       ...quote,
       merchantUrl: job.order.buyUrl,
@@ -201,6 +205,8 @@ export async function createCheckoutService({
         return { state: "needs_help", error: "Purchase approval changed. Review it in BUY HARD." };
       const injected = await broker.injectPayment({ page, job, requestId: job.payment.requestId });
       if (injected.payment) job.payment = injected.payment;
+      if (injected.continue === true && injected.payment?.status === "filled")
+        job.paymentRequired = false;
       await save(job);
       return injected;
     }
@@ -229,16 +235,25 @@ export async function createCheckoutService({
           // address, merchant and amount. An exact approved successor keeps the
           // same pending/approved payment and live form, never a new charge.
           if (prepared.job.payment) {
-            const paymentState = await broker.status({ ...job, payment: prepared.job.payment });
+            // Keep the funding obligation durable even if the provider check
+            // fails or the process stops before this live page is transferred.
+            job.payment = prepared.job.payment;
+            job.paymentRequired = true;
+            await save(job);
+            const paymentState = await broker.status(job);
             if (["succeeded", "failed"].includes(paymentState.status))
               throw Error("The live cart payment needs checking in Link before purchasing.");
-            job.payment = prepared.job.payment;
+            job.paymentRequired = Boolean(prepared.job.paymentRequired);
           }
+          if (prepared.job.paymentRequired) job.paymentRequired = true;
           if (prepared.job.navigation) job.navigation = prepared.job.navigation;
+          // Retiring the source must never precede persistence of the complete
+          // successor, including the card binding and any reinjection gate.
+          await save(job);
+          await save({ ...prepared.job, supersededBy: job.id });
+          prepared.job.supersededBy = job.id;
           clearTimeout(prepared.timer);
           revoke(preparedJobId);
-          prepared.job.supersededBy = job.id;
-          await save(prepared.job);
           active.delete(preparedJobId);
           prepared.job = job;
           active.set(job.id, prepared);
@@ -256,6 +271,22 @@ export async function createCheckoutService({
       sessions.set(key, job.id);
       let context;
       try {
+        if (job.payment) {
+          // Storage state can retain a merchant payment token, but it cannot
+          // prove which card the rebuilt checkout currently uses.
+          job.paymentRequired = true;
+          job.navigation ||= { steps: 0, history: [] };
+          job.navigation.history = [
+            ...(job.navigation.history || []),
+            {
+              type: "payment",
+              result: "setup_required",
+              label:
+                "The supplier browser restarted. Open change payment and request protected payment setup again before final review.",
+            },
+          ].slice(-16);
+          await save(job);
+        }
         context = await browser.newContext({
           viewport: { width: 1280, height: 900 },
           storageState: await readSession(key),
@@ -291,6 +322,7 @@ export async function createCheckoutService({
         },
         authorize: async () => {
           if (!(await valid(job))) return false;
+          if (job.paymentRequired) return false;
           if (job.payment) {
             const paymentState = broker && (await broker.status(job));
             if (
@@ -394,6 +426,16 @@ export async function createCheckoutService({
           entry = grant && active.get(grant.id);
         if (!grant || grant.expires < Date.now() || !entry || running.has(grant.id))
           return reply(res, 403, { error: "Session expired. Open supplier help from BUY HARD." });
+        if (!(await valid(entry.job))) {
+          revoke(grant.id);
+          return reply(res, 403, {
+            error: "This purchase changed. Open its current checkout in BUY HARD.",
+          });
+        }
+        if (running.has(grant.id) || active.get(grant.id) !== entry)
+          return reply(res, 403, {
+            error: "Checkout resumed. Open supplier help again when it pauses.",
+          });
         if (req.method === "GET" && url.pathname.endsWith("/screen")) {
           if (entry.humanBusy) return reply(res, 409, { error: "An action is still finishing." });
           const mask = entry.page
@@ -549,6 +591,28 @@ export async function createCheckoutService({
                 throw Error("Finish supplier setup before starting another checkout.");
               if (input.preparedJobId && previousId && input.preparedJobId !== previousId)
                 throw Error("This prepared checkout has been replaced.");
+              if (input.preparedJobId && (!previous || previous.id !== input.preparedJobId))
+                throw Error(
+                  "The prepared checkout journal is unavailable. Prepare the purchase again.",
+                );
+              if (
+                input.preparedJobId &&
+                !canTransferPrepared(previous, job) &&
+                (previous.order.organizationId !== job.order.organizationId ||
+                  previous.order._id !== job.order._id ||
+                  previous.order.paymentOwnerId === job.order.paymentOwnerId)
+              )
+                throw Error("The prepared cart differs from the approved purchase.");
+              if (input.preparedJobId && previous && canTransferPrepared(previous, job)) {
+                // A restart may have removed the live source page. Inherit
+                // funding from its journal before publishing the successor.
+                if (previous.payment) {
+                  job.payment = previous.payment;
+                  job.paymentRequired = true;
+                }
+                if (previous.paymentRequired) job.paymentRequired = true;
+                if (previous.navigation) job.navigation = previous.navigation;
+              }
               await save(job);
               await setLatest(job);
               if (previousId) revoke(previousId);
@@ -597,10 +661,51 @@ export async function createCheckoutService({
             if (!(await valid(job)))
               return reply(res, 409, { error: "Approval changed. Review the buy in BUY HARD." });
             if (job.payment && broker) {
-              const paymentState = await broker.status(job);
-              if (["denied", "expired", "canceled"].includes(paymentState.status)) {
-                await broker.renewPayment(job);
-                delete job.payment;
+              const paymentState = job.paymentRequired ? job.payment : await broker.status(job);
+              if (
+                job.paymentRequired ||
+                ["denied", "expired", "canceled"].includes(paymentState.status)
+              ) {
+                // Persist the blocking marker before renewing the provider
+                // record. The merchant may still hold the expired card/token,
+                // and a crash or provider timeout must never erase that fact.
+                job.paymentRequired = true;
+                await save(job);
+                const quote = {
+                  amountCents:
+                    job.phase === "submit" ? job.snapshot.totalCents : job.payment.amountCents,
+                  currency: job.phase === "submit" ? job.snapshot.currency : job.payment.currency,
+                  merchantUrl: job.order.buyUrl,
+                  merchantName: job.order.supplier || new URL(job.order.buyUrl).hostname,
+                };
+                // Re-read/create by the broker's durable quote key first. This
+                // also recovers a renewal that finished before a lost response.
+                let replacement = await broker.requestPayment(job, quote);
+                if (["denied", "expired", "canceled"].includes(replacement.payment?.status)) {
+                  job.payment = replacement.payment;
+                  await save(job);
+                  await broker.renewPayment(job);
+                  replacement = await broker.requestPayment(job, quote);
+                }
+                if (replacement.payment) job.payment = replacement.payment;
+                if (job.payment?.status !== "approved") {
+                  job.state = replacement.state || "needs_payment";
+                  job.error =
+                    replacement.error || "Approve the replacement payment in Link, then continue.";
+                  await save(job);
+                  if (active.has(job.id)) retain(active.get(job.id));
+                  return reply(res, 200, publicJob(job));
+                }
+                job.navigation ||= { steps: 0, history: [] };
+                job.navigation.history = [
+                  ...(job.navigation.history || []),
+                  {
+                    type: "payment",
+                    result: "setup_required",
+                    label:
+                      "The replacement payment is approved. Open the supplier change payment controls and request payment setup to replace the old card before final review.",
+                  },
+                ].slice(-16);
               }
             }
             job.state = "running";
@@ -643,6 +748,10 @@ export async function createCheckoutService({
           )
             return reply(res, 409, {
               error: "No active help session. Continue checkout in BUY HARD.",
+            });
+          if (!(await valid(job)))
+            return reply(res, 409, {
+              error: "This purchase changed. Open its current checkout in BUY HARD.",
             });
           revoke(job.id);
           const token = randomBytes(32).toString("hex");

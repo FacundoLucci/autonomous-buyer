@@ -350,7 +350,10 @@ test("model text and image request redact card and credential fields across fram
   };
   await modelDecision(
     f.page,
-    { ...f.job, order: { ...f.job.order, cardNumber: "DO-NOT-SEND" } },
+    {
+      ...f.job,
+      order: { ...f.job.order, itemName: "School science gloves", cardNumber: "DO-NOT-SEND" },
+    },
     state,
     "act",
     undefined,
@@ -369,6 +372,7 @@ test("model text and image request redact card and credential fields across fram
     },
   );
   const inputText = sent.input[0].content[0].text;
+  assert.match(inputText, /School science gloves/);
   assert.doesNotMatch(inputText, /4242424242424242|5555555555554444|top-secret-login|DO-NOT-SEND/);
 });
 
