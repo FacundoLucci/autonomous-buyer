@@ -7,7 +7,8 @@ for a checkout total, and fill a provider-issued virtual card into a merchant's
 card form. The model never receives the card object. Final order submission still
 uses BUY HARD's separate approval and receipt checks.
 
-This integration is running against BUY HARD's development backend in test mode.
+This integration is running in production with live Link payments enabled and
+against BUY HARD's development backend in test mode.
 The app-to-worker connection flow was checked in the in-app browser: Link returned
 its hosted URL and verification phrase, and the URL opened Link's own login page.
 No wallet was connected. Funding, merchant acceptance and a real order receipt

@@ -13,8 +13,36 @@ Checked September 14, 2026 (America/Chicago).
 - Worker health readback: release `197a577`, callback
   `https://festive-coyote-483.convex.site`, adaptive browser, Link, test mode.
 - Final frontend upload: `11b171b7-a65e-445e-a483-52a78262ee34`.
-- Production app/backend and `browser-worker-prod` were not released in this run.
+- At the September 14 development closeout, production had not yet been released.
 - Commits are local; they were not pushed.
+
+## Production release — September 15
+
+The user explicitly approved publishing the verified release and enabling real
+Link payments. Application release: `3a69b7c93aa38326a10cc09933fc57afa7db9821`.
+
+- Production Convex deployment completed: `reliable-albatross-463`.
+- Production app: https://reliable-albatross-463.convex.site
+- Production worker: https://browser-worker-prod-production.up.railway.app
+- Railway deployment `af2b22e0-dd9b-4ea8-b4d9-7956eaa0fab4`: `SUCCESS`.
+- Worker health readback: `release: 3a69b7c`, `mode: adaptive`, `paymentMode: live`,
+  `payments: link`, and callback `https://reliable-albatross-463.convex.site`.
+- Frontend production upload: `9fec775f-8b5a-467c-b100-4db15d09fc0a`.
+- Production build and type checking passed. All 28 served HTML asset references
+  matched the production build. Entry, route and style asset bytes matched. The
+  client contains the production backend URL and no development backend URL.
+- Production approval validation rejects unauthenticated requests and returns
+  false for unknown orders. The wallet action rejects unauthenticated callers.
+- A synthetic live-mode connection probe returned Link's hosted device setup URL
+  and verification phrase. It stopped before account login, then removed its
+  pending connection state. No wallet, card or spend was created.
+- Development worker readback remains test mode against `festive-coyote-483`.
+
+No data migration was needed: all five added order fields are optional, and
+existing approval keys are unchanged when the pending-terms flag is absent.
+Production public/sign-in pages were checked in the in-app browser. An owner
+was not signed in during production verification; authenticated payment UI was
+previously checked in development.
 
 ## Checked behavior
 
@@ -56,7 +84,7 @@ request, subject to provider account/daily limits. Ordinary supported card forms
 can use the issued card. Login challenges, unsupported forms or unavailable terms
 can still require help. This is not proof of universal merchant support.
 
-After approving a production release, connect Link directly in the app and pilot
-one specified item, merchant and maximum total. Verify both the merchant receipt
+Production is now enabled. Connect Link directly in the app and pilot one
+specified item, merchant and maximum total. Verify both the merchant receipt
 and Link outcome before claiming that merchant as successfully tested. See
 [Link integration and setup](./link-agent-payments.md).
