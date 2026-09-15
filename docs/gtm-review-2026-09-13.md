@@ -67,3 +67,12 @@ This review did not publish, reschedule, send outreach, change the marketing aut
 Facundo requested short iPhone recordings mixed with the existing images, slides and Hyperframes videos. The [recording plan](founder-recording-plan.md) now gives four founder scripts, delivery targets, an optional sales/cups clip and a main-film narration handoff. The GTM desk has a [Recordings page](http://127.0.0.1:8796/#recordings), and publishing rows show the corresponding recording deadlines. Both strategies and the existing twice-daily marketing review now include this handoff.
 
 Start with F01 by September 14 at noon for the existing 20:00 post. Codex handles the edit and captions. The four founder image schedules were confirmed again; they remain the fallback until a finished video is ready at least two hours before posting. Video-copy drafts are prepared separately. No raw recording, rendered short, paid fal job or live post replacement exists from this update. [Verification](../output/marketing/2026-09-14-founder-recordings/verification.json). The earlier assessment above remains dated; the old recording-section drift has now been corrected in the strategy.
+
+
+## September 14 — first founder video completed
+
+Facundo supplied IMG_6980.MOV. Codex edited the 88-second take into a 37.9-second Hyperframes video with actual archived/current screens, real founder footage and timed captions. Square and vertical captioned versions, a clean square version, SRT and cover are exported. fal Whisper supplied word timings and helped verify a corrected audio join.
+
+The square video replaced the two images on existing post `6aa5ebc2f75a3d18d84801e6`. A fresh Zernio editor readback confirmed one SAVED video, 1080×1080, 37.916667 seconds, both platform captions, sponsor tags, founder tracking, and September 14 at 20:00 America/Chicago in Schedule mode. This is scheduled, not published. [Receipt](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json) · [Edit verification](../output/marketing/2026-09-14-founder-recordings/f01-verification.json).
+
+F02 is the next recording, due September 15 at 18:00. The other three founder image schedules remain the fallback. The original review above is retained as dated evidence.

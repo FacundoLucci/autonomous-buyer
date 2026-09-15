@@ -1,8 +1,6 @@
 {
   "checkedAt": "2026-09-14T20:39:51.779217+00:00",
-  "completeQueue": true,
-  "source": "Authenticated Zernio posts table read in the Codex in-app browser",
-  "scope": "21 campaign stories: 10 published, 10 scheduled, 1 held draft. Two pages checked.",
+  "source": "Zernio combined post rows",
   "posts": [
     {
       "key": "p1_intro",
@@ -163,82 +161,15 @@
         "https://www.linkedin.com/feed/update/urn:li:share:7505317111196557312/",
         "https://twitter.com/i/web/status/2099551415236497532"
       ]
-    },
-    {
-      "key": "good_day_sample",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-14T17:30:00-05:00",
-      "campaign": "buyhard_allgas_202609"
-    },
-    {
-      "key": "simpler_frontend",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-14T20:00:00-05:00",
-      "campaign": "facundo_builder_202609",
-      "mediaType": "video",
-      "media": "f01-simpler-ui-square-captioned.mp4"
-    },
-    {
-      "key": "your_existing_supplier",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-15T08:30:00-05:00",
-      "campaign": "buyhard_allgas_202609"
-    },
-    {
-      "key": "no_because",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-15T12:30:00-05:00",
-      "campaign": "buyhard_allgas_202609"
-    },
-    {
-      "key": "give_agent_a_job",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-16T20:00:00-05:00",
-      "campaign": "facundo_builder_202609"
-    },
-    {
-      "key": "build_useful_ai",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-18T20:00:00-05:00",
-      "campaign": "facundo_builder_202609"
-    },
-    {
-      "key": "ordinary_supplies_big_ambition",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-21T20:00:00-05:00",
-      "campaign": "facundo_builder_202609"
-    },
-    {
-      "key": "napkin_machine_buyer",
-      "campaign": "buyhard_allgas_202609",
-      "status": "draft",
-      "scheduledAt": null
-    },
-    {
-      "key": "square_test_result",
-      "campaign": "buyhard_allgas_202609",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-15T17:30:00-05:00",
-      "zernioPostId": "6aa85aa9699a1408118db216"
-    },
-    {
-      "key": "delivery_delay_idea",
-      "campaign": "buyhard_allgas_202609",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-16T08:30:00-05:00",
-      "zernioPostId": "6aa85af337545f68eb54355f"
-    },
-    {
-      "key": "partial_delivery",
-      "campaign": "buyhard_allgas_202609",
-      "status": "scheduled",
-      "scheduledAt": "2026-09-16T12:30:00-05:00",
-      "zernioPostId": "6aa85b291e9d258508db2226"
     }
   ],
   "limitations": [
-    "Zernio metrics are combined row figures; unavailable counters remain null.",
-    "Scheduled date passing does not establish successful publication.",
-    "Comment counts may include author replies; these counts do not identify prospects."
+    "Platform contributions unavailable; null counters are unavailable, not zero.",
+    "Posts have different ages; no format winner inferred.",
+    "No founder post published yet; video versus image comparison not available."
+  ],
+  "audience": [
+    "Public LinkedIn still exposes the stock-trigger question and the four-sponsor comment. Facundo reported replying to both; guest view does not expose the full reply threads.",
+    "No private messages inspected or sent."
   ]
 }

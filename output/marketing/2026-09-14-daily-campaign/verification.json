@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-09-14T20:39:51.779217+00:00",
+  "images": "Three HTML-rendered 1536x1024 PNGs visually checked in the in-app browser; a clipped draft export was corrected before upload.",
+  "claims": [
+    "Square local sandbox source: artifacts/sales-connections/square-readback.json",
+    "Shopify connection/catalog only: artifacts/sales-connections/shopify-install-readback.json",
+    "Partial receiving: convex/company.test.ts partial receipts test and docs/gtm-marketing-strategy.md",
+    "Delivery-delay backup workflow explicitly future idea"
+  ],
+  "newApplicationCode": false,
+  "productionDeployment": false,
+  "founderMutation": false,
+  "inbox": "Manifest inbox directory does not exist; F01 recorded and scheduled in its separate task; F02 pending. No repeated recording request."
+}

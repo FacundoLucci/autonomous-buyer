@@ -1,0 +1,1238 @@
+{
+  "duration": 37.916668,
+  "words": [
+    {
+      "text": "And",
+      "start": 0.048,
+      "end": 0.228,
+      "scene": "intro"
+    },
+    {
+      "text": "it",
+      "start": 0.228,
+      "end": 0.828,
+      "scene": "intro"
+    },
+    {
+      "text": "was",
+      "start": 0.828,
+      "end": 1.068,
+      "scene": "intro"
+    },
+    {
+      "text": "cool,",
+      "start": 1.068,
+      "end": 1.448,
+      "scene": "intro"
+    },
+    {
+      "text": "but",
+      "start": 1.448,
+      "end": 1.748,
+      "scene": "intro"
+    },
+    {
+      "text": "became",
+      "start": 1.748,
+      "end": 2.248,
+      "scene": "intro"
+    },
+    {
+      "text": "quickly",
+      "start": 2.248,
+      "end": 2.728,
+      "scene": "intro"
+    },
+    {
+      "text": "unusable.",
+      "start": 2.728,
+      "end": 3.748,
+      "scene": "intro"
+    },
+    {
+      "text": "I",
+      "start": 4.092,
+      "end": 4.212,
+      "scene": "archive"
+    },
+    {
+      "text": "built",
+      "start": 4.212,
+      "end": 4.617,
+      "scene": "archive"
+    },
+    {
+      "text": "a",
+      "start": 4.617,
+      "end": 4.817,
+      "scene": "archive"
+    },
+    {
+      "text": "interface",
+      "start": 4.817,
+      "end": 5.977,
+      "scene": "archive"
+    },
+    {
+      "text": "that's",
+      "start": 5.977,
+      "end": 6.897,
+      "scene": "archive"
+    },
+    {
+      "text": "hyper-realistic",
+      "start": 6.897,
+      "end": 8.077,
+      "scene": "archive"
+    },
+    {
+      "text": "and",
+      "start": 8.077,
+      "end": 8.557,
+      "scene": "archive"
+    },
+    {
+      "text": "metallic",
+      "start": 8.557,
+      "end": 9.405,
+      "scene": "archive"
+    },
+    {
+      "text": "finish",
+      "start": 9.405,
+      "end": 9.805,
+      "scene": "archive"
+    },
+    {
+      "text": "with",
+      "start": 9.805,
+      "end": 10.465,
+      "scene": "archive"
+    },
+    {
+      "text": "painted",
+      "start": 10.465,
+      "end": 11.685,
+      "scene": "archive"
+    },
+    {
+      "text": "on",
+      "start": 11.685,
+      "end": 12.045,
+      "scene": "archive"
+    },
+    {
+      "text": "labels,",
+      "start": 12.045,
+      "end": 12.965,
+      "scene": "archive"
+    },
+    {
+      "text": "like",
+      "start": 12.965,
+      "end": 13.525,
+      "scene": "archive"
+    },
+    {
+      "text": "vintage",
+      "start": 13.525,
+      "end": 13.965,
+      "scene": "archive"
+    },
+    {
+      "text": "audio",
+      "start": 13.965,
+      "end": 14.285,
+      "scene": "archive"
+    },
+    {
+      "text": "gear",
+      "start": 14.285,
+      "end": 14.685,
+      "scene": "archive"
+    },
+    {
+      "text": "or",
+      "start": 14.685,
+      "end": 14.845,
+      "scene": "archive"
+    },
+    {
+      "text": "something.",
+      "start": 14.845,
+      "end": 15.325,
+      "scene": "archive"
+    },
+    {
+      "text": "what",
+      "start": 15.488,
+      "end": 15.548,
+      "scene": "current"
+    },
+    {
+      "text": "you",
+      "start": 15.548,
+      "end": 15.688,
+      "scene": "current"
+    },
+    {
+      "text": "see",
+      "start": 15.688,
+      "end": 15.828,
+      "scene": "current"
+    },
+    {
+      "text": "today,",
+      "start": 15.828,
+      "end": 16.208,
+      "scene": "current"
+    },
+    {
+      "text": "this",
+      "start": 16.208,
+      "end": 16.368,
+      "scene": "current"
+    },
+    {
+      "text": "green",
+      "start": 16.368,
+      "end": 16.768,
+      "scene": "current"
+    },
+    {
+      "text": "lime",
+      "start": 16.768,
+      "end": 17.828,
+      "scene": "current"
+    },
+    {
+      "text": "color,",
+      "start": 17.828,
+      "end": 18.348,
+      "scene": "current"
+    },
+    {
+      "text": "is",
+      "start": 19.073,
+      "end": 19.133,
+      "scene": "current"
+    },
+    {
+      "text": "the",
+      "start": 19.133,
+      "end": 19.493,
+      "scene": "current"
+    },
+    {
+      "text": "refined",
+      "start": 19.493,
+      "end": 20.707,
+      "scene": "current"
+    },
+    {
+      "text": "version.",
+      "start": 20.707,
+      "end": 21.467,
+      "scene": "current"
+    },
+    {
+      "text": "Just",
+      "start": 21.805,
+      "end": 22.045,
+      "scene": "simple"
+    },
+    {
+      "text": "make",
+      "start": 22.045,
+      "end": 22.365,
+      "scene": "simple"
+    },
+    {
+      "text": "it",
+      "start": 22.365,
+      "end": 22.505,
+      "scene": "simple"
+    },
+    {
+      "text": "simple,",
+      "start": 22.505,
+      "end": 22.845,
+      "scene": "simple"
+    },
+    {
+      "text": "keep",
+      "start": 22.845,
+      "end": 22.965,
+      "scene": "simple"
+    },
+    {
+      "text": "it",
+      "start": 22.965,
+      "end": 23.165,
+      "scene": "simple"
+    },
+    {
+      "text": "simple.",
+      "start": 23.165,
+      "end": 23.705,
+      "scene": "simple"
+    },
+    {
+      "text": "Like",
+      "start": 23.985,
+      "end": 24.105,
+      "scene": "conversation"
+    },
+    {
+      "text": "everything",
+      "start": 24.105,
+      "end": 24.525,
+      "scene": "conversation"
+    },
+    {
+      "text": "is",
+      "start": 24.525,
+      "end": 24.705,
+      "scene": "conversation"
+    },
+    {
+      "text": "just",
+      "start": 24.705,
+      "end": 25.025,
+      "scene": "conversation"
+    },
+    {
+      "text": "natural",
+      "start": 25.025,
+      "end": 26.322,
+      "scene": "conversation"
+    },
+    {
+      "text": "language,",
+      "start": 26.322,
+      "end": 27.202,
+      "scene": "conversation"
+    },
+    {
+      "text": "you",
+      "start": 27.202,
+      "end": 27.362,
+      "scene": "conversation"
+    },
+    {
+      "text": "know?",
+      "start": 27.362,
+      "end": 27.522,
+      "scene": "conversation"
+    },
+    {
+      "text": "So",
+      "start": 27.627,
+      "end": 27.747,
+      "scene": "conversation"
+    },
+    {
+      "text": "the",
+      "start": 27.747,
+      "end": 28.853,
+      "scene": "conversation"
+    },
+    {
+      "text": "UI",
+      "start": 28.853,
+      "end": 29.673,
+      "scene": "conversation"
+    },
+    {
+      "text": "should",
+      "start": 29.673,
+      "end": 30.113,
+      "scene": "conversation"
+    },
+    {
+      "text": "basically",
+      "start": 30.113,
+      "end": 30.533,
+      "scene": "conversation"
+    },
+    {
+      "text": "be",
+      "start": 30.533,
+      "end": 30.713,
+      "scene": "conversation"
+    },
+    {
+      "text": "talking",
+      "start": 30.713,
+      "end": 31.013,
+      "scene": "conversation"
+    },
+    {
+      "text": "to",
+      "start": 31.013,
+      "end": 31.113,
+      "scene": "conversation"
+    },
+    {
+      "text": "us",
+      "start": 31.113,
+      "end": 31.253,
+      "scene": "conversation"
+    },
+    {
+      "text": "just",
+      "start": 31.293,
+      "end": 31.353,
+      "scene": "conversation"
+    },
+    {
+      "text": "like",
+      "start": 31.353,
+      "end": 31.513,
+      "scene": "conversation"
+    },
+    {
+      "text": "we're",
+      "start": 31.513,
+      "end": 31.673,
+      "scene": "conversation"
+    },
+    {
+      "text": "used",
+      "start": 31.673,
+      "end": 31.793,
+      "scene": "conversation"
+    },
+    {
+      "text": "to",
+      "start": 31.793,
+      "end": 31.873,
+      "scene": "conversation"
+    },
+    {
+      "text": "talking",
+      "start": 31.873,
+      "end": 32.093,
+      "scene": "conversation"
+    },
+    {
+      "text": "with",
+      "start": 32.093,
+      "end": 32.233,
+      "scene": "conversation"
+    },
+    {
+      "text": "agents.",
+      "start": 32.233,
+      "end": 32.693,
+      "scene": "conversation"
+    },
+    {
+      "text": "That's",
+      "start": 32.867,
+      "end": 33.147,
+      "scene": "outro"
+    },
+    {
+      "text": "sort",
+      "start": 33.147,
+      "end": 33.247,
+      "scene": "outro"
+    },
+    {
+      "text": "of",
+      "start": 33.247,
+      "end": 33.347,
+      "scene": "outro"
+    },
+    {
+      "text": "the",
+      "start": 33.347,
+      "end": 33.627,
+      "scene": "outro"
+    },
+    {
+      "text": "ethos",
+      "start": 33.627,
+      "end": 35.317,
+      "scene": "outro"
+    },
+    {
+      "text": "I",
+      "start": 35.317,
+      "end": 35.417,
+      "scene": "outro"
+    },
+    {
+      "text": "had",
+      "start": 35.417,
+      "end": 35.597,
+      "scene": "outro"
+    },
+    {
+      "text": "for",
+      "start": 35.597,
+      "end": 35.837,
+      "scene": "outro"
+    },
+    {
+      "text": "the",
+      "start": 35.837,
+      "end": 35.977,
+      "scene": "outro"
+    },
+    {
+      "text": "new",
+      "start": 35.977,
+      "end": 36.097,
+      "scene": "outro"
+    },
+    {
+      "text": "design.",
+      "start": 36.097,
+      "end": 36.477,
+      "scene": "outro"
+    },
+    {
+      "text": "Let",
+      "start": 36.635,
+      "end": 36.715,
+      "scene": "outro"
+    },
+    {
+      "text": "me",
+      "start": 36.715,
+      "end": 36.735,
+      "scene": "outro"
+    },
+    {
+      "text": "know",
+      "start": 36.735,
+      "end": 36.815,
+      "scene": "outro"
+    },
+    {
+      "text": "what",
+      "start": 36.815,
+      "end": 36.835,
+      "scene": "outro"
+    },
+    {
+      "text": "you",
+      "start": 36.835,
+      "end": 36.915,
+      "scene": "outro"
+    },
+    {
+      "text": "think.",
+      "start": 36.915,
+      "end": 37.135,
+      "scene": "outro"
+    }
+  ],
+  "groups": [
+    {
+      "words": [
+        {
+          "text": "And",
+          "start": 0.048,
+          "end": 0.228,
+          "scene": "intro"
+        },
+        {
+          "text": "it",
+          "start": 0.228,
+          "end": 0.828,
+          "scene": "intro"
+        },
+        {
+          "text": "was",
+          "start": 0.828,
+          "end": 1.068,
+          "scene": "intro"
+        },
+        {
+          "text": "cool,",
+          "start": 1.068,
+          "end": 1.448,
+          "scene": "intro"
+        }
+      ],
+      "start": 0.048,
+      "end": 1.448,
+      "displayEnd": 1.448
+    },
+    {
+      "words": [
+        {
+          "text": "but",
+          "start": 1.448,
+          "end": 1.748,
+          "scene": "intro"
+        },
+        {
+          "text": "became",
+          "start": 1.748,
+          "end": 2.248,
+          "scene": "intro"
+        },
+        {
+          "text": "quickly",
+          "start": 2.248,
+          "end": 2.728,
+          "scene": "intro"
+        },
+        {
+          "text": "unusable.",
+          "start": 2.728,
+          "end": 3.748,
+          "scene": "intro"
+        }
+      ],
+      "start": 1.448,
+      "end": 3.748,
+      "displayEnd": 3.998
+    },
+    {
+      "words": [
+        {
+          "text": "I",
+          "start": 4.092,
+          "end": 4.212,
+          "scene": "archive"
+        },
+        {
+          "text": "built",
+          "start": 4.212,
+          "end": 4.617,
+          "scene": "archive"
+        },
+        {
+          "text": "a",
+          "start": 4.617,
+          "end": 4.817,
+          "scene": "archive"
+        },
+        {
+          "text": "interface",
+          "start": 4.817,
+          "end": 5.977,
+          "scene": "archive"
+        }
+      ],
+      "start": 4.092,
+      "end": 5.977,
+      "displayEnd": 5.977
+    },
+    {
+      "words": [
+        {
+          "text": "that's",
+          "start": 5.977,
+          "end": 6.897,
+          "scene": "archive"
+        },
+        {
+          "text": "hyper-realistic",
+          "start": 6.897,
+          "end": 8.077,
+          "scene": "archive"
+        },
+        {
+          "text": "and",
+          "start": 8.077,
+          "end": 8.557,
+          "scene": "archive"
+        },
+        {
+          "text": "metallic",
+          "start": 8.557,
+          "end": 9.405,
+          "scene": "archive"
+        }
+      ],
+      "start": 5.977,
+      "end": 9.405,
+      "displayEnd": 9.405
+    },
+    {
+      "words": [
+        {
+          "text": "finish",
+          "start": 9.405,
+          "end": 9.805,
+          "scene": "archive"
+        },
+        {
+          "text": "with",
+          "start": 9.805,
+          "end": 10.465,
+          "scene": "archive"
+        },
+        {
+          "text": "painted",
+          "start": 10.465,
+          "end": 11.685,
+          "scene": "archive"
+        },
+        {
+          "text": "on",
+          "start": 11.685,
+          "end": 12.045,
+          "scene": "archive"
+        }
+      ],
+      "start": 9.405,
+      "end": 12.045,
+      "displayEnd": 12.045
+    },
+    {
+      "words": [
+        {
+          "text": "labels,",
+          "start": 12.045,
+          "end": 12.965,
+          "scene": "archive"
+        }
+      ],
+      "start": 12.045,
+      "end": 12.965,
+      "displayEnd": 12.965
+    },
+    {
+      "words": [
+        {
+          "text": "like",
+          "start": 12.965,
+          "end": 13.525,
+          "scene": "archive"
+        },
+        {
+          "text": "vintage",
+          "start": 13.525,
+          "end": 13.965,
+          "scene": "archive"
+        },
+        {
+          "text": "audio",
+          "start": 13.965,
+          "end": 14.285,
+          "scene": "archive"
+        },
+        {
+          "text": "gear",
+          "start": 14.285,
+          "end": 14.685,
+          "scene": "archive"
+        }
+      ],
+      "start": 12.965,
+      "end": 14.685,
+      "displayEnd": 14.685
+    },
+    {
+      "words": [
+        {
+          "text": "or",
+          "start": 14.685,
+          "end": 14.845,
+          "scene": "archive"
+        },
+        {
+          "text": "something.",
+          "start": 14.845,
+          "end": 15.325,
+          "scene": "archive"
+        }
+      ],
+      "start": 14.685,
+      "end": 15.325,
+      "displayEnd": 15.488
+    },
+    {
+      "words": [
+        {
+          "text": "what",
+          "start": 15.488,
+          "end": 15.548,
+          "scene": "current"
+        },
+        {
+          "text": "you",
+          "start": 15.548,
+          "end": 15.688,
+          "scene": "current"
+        },
+        {
+          "text": "see",
+          "start": 15.688,
+          "end": 15.828,
+          "scene": "current"
+        },
+        {
+          "text": "today,",
+          "start": 15.828,
+          "end": 16.208,
+          "scene": "current"
+        }
+      ],
+      "start": 15.488,
+      "end": 16.208,
+      "displayEnd": 16.208
+    },
+    {
+      "words": [
+        {
+          "text": "this",
+          "start": 16.208,
+          "end": 16.368,
+          "scene": "current"
+        },
+        {
+          "text": "green",
+          "start": 16.368,
+          "end": 16.768,
+          "scene": "current"
+        },
+        {
+          "text": "lime",
+          "start": 16.768,
+          "end": 17.828,
+          "scene": "current"
+        },
+        {
+          "text": "color,",
+          "start": 17.828,
+          "end": 18.348,
+          "scene": "current"
+        }
+      ],
+      "start": 16.208,
+      "end": 18.348,
+      "displayEnd": 18.598
+    },
+    {
+      "words": [
+        {
+          "text": "is",
+          "start": 19.073,
+          "end": 19.133,
+          "scene": "current"
+        },
+        {
+          "text": "the",
+          "start": 19.133,
+          "end": 19.493,
+          "scene": "current"
+        },
+        {
+          "text": "refined",
+          "start": 19.493,
+          "end": 20.707,
+          "scene": "current"
+        },
+        {
+          "text": "version.",
+          "start": 20.707,
+          "end": 21.467,
+          "scene": "current"
+        }
+      ],
+      "start": 19.073,
+      "end": 21.467,
+      "displayEnd": 21.717
+    },
+    {
+      "words": [
+        {
+          "text": "Just",
+          "start": 21.805,
+          "end": 22.045,
+          "scene": "simple"
+        },
+        {
+          "text": "make",
+          "start": 22.045,
+          "end": 22.365,
+          "scene": "simple"
+        },
+        {
+          "text": "it",
+          "start": 22.365,
+          "end": 22.505,
+          "scene": "simple"
+        },
+        {
+          "text": "simple,",
+          "start": 22.505,
+          "end": 22.845,
+          "scene": "simple"
+        }
+      ],
+      "start": 21.805,
+      "end": 22.845,
+      "displayEnd": 22.845
+    },
+    {
+      "words": [
+        {
+          "text": "keep",
+          "start": 22.845,
+          "end": 22.965,
+          "scene": "simple"
+        },
+        {
+          "text": "it",
+          "start": 22.965,
+          "end": 23.165,
+          "scene": "simple"
+        },
+        {
+          "text": "simple.",
+          "start": 23.165,
+          "end": 23.705,
+          "scene": "simple"
+        }
+      ],
+      "start": 22.845,
+      "end": 23.705,
+      "displayEnd": 23.955
+    },
+    {
+      "words": [
+        {
+          "text": "Like",
+          "start": 23.985,
+          "end": 24.105,
+          "scene": "conversation"
+        },
+        {
+          "text": "everything",
+          "start": 24.105,
+          "end": 24.525,
+          "scene": "conversation"
+        },
+        {
+          "text": "is",
+          "start": 24.525,
+          "end": 24.705,
+          "scene": "conversation"
+        },
+        {
+          "text": "just",
+          "start": 24.705,
+          "end": 25.025,
+          "scene": "conversation"
+        }
+      ],
+      "start": 23.985,
+      "end": 25.025,
+      "displayEnd": 25.025
+    },
+    {
+      "words": [
+        {
+          "text": "natural",
+          "start": 25.025,
+          "end": 26.322,
+          "scene": "conversation"
+        },
+        {
+          "text": "language,",
+          "start": 26.322,
+          "end": 27.202,
+          "scene": "conversation"
+        }
+      ],
+      "start": 25.025,
+      "end": 27.202,
+      "displayEnd": 27.202
+    },
+    {
+      "words": [
+        {
+          "text": "you",
+          "start": 27.202,
+          "end": 27.362,
+          "scene": "conversation"
+        },
+        {
+          "text": "know?",
+          "start": 27.362,
+          "end": 27.522,
+          "scene": "conversation"
+        }
+      ],
+      "start": 27.202,
+      "end": 27.522,
+      "displayEnd": 27.627
+    },
+    {
+      "words": [
+        {
+          "text": "So",
+          "start": 27.627,
+          "end": 27.747,
+          "scene": "conversation"
+        },
+        {
+          "text": "the",
+          "start": 27.747,
+          "end": 28.853,
+          "scene": "conversation"
+        },
+        {
+          "text": "UI",
+          "start": 28.853,
+          "end": 29.673,
+          "scene": "conversation"
+        },
+        {
+          "text": "should",
+          "start": 29.673,
+          "end": 30.113,
+          "scene": "conversation"
+        }
+      ],
+      "start": 27.627,
+      "end": 30.113,
+      "displayEnd": 30.113
+    },
+    {
+      "words": [
+        {
+          "text": "basically",
+          "start": 30.113,
+          "end": 30.533,
+          "scene": "conversation"
+        },
+        {
+          "text": "be",
+          "start": 30.533,
+          "end": 30.713,
+          "scene": "conversation"
+        },
+        {
+          "text": "talking",
+          "start": 30.713,
+          "end": 31.013,
+          "scene": "conversation"
+        },
+        {
+          "text": "to",
+          "start": 31.013,
+          "end": 31.113,
+          "scene": "conversation"
+        }
+      ],
+      "start": 30.113,
+      "end": 31.113,
+      "displayEnd": 31.113
+    },
+    {
+      "words": [
+        {
+          "text": "us",
+          "start": 31.113,
+          "end": 31.253,
+          "scene": "conversation"
+        },
+        {
+          "text": "just",
+          "start": 31.293,
+          "end": 31.353,
+          "scene": "conversation"
+        },
+        {
+          "text": "like",
+          "start": 31.353,
+          "end": 31.513,
+          "scene": "conversation"
+        },
+        {
+          "text": "we're",
+          "start": 31.513,
+          "end": 31.673,
+          "scene": "conversation"
+        }
+      ],
+      "start": 31.113,
+      "end": 31.673,
+      "displayEnd": 31.673
+    },
+    {
+      "words": [
+        {
+          "text": "used",
+          "start": 31.673,
+          "end": 31.793,
+          "scene": "conversation"
+        },
+        {
+          "text": "to",
+          "start": 31.793,
+          "end": 31.873,
+          "scene": "conversation"
+        },
+        {
+          "text": "talking",
+          "start": 31.873,
+          "end": 32.093,
+          "scene": "conversation"
+        },
+        {
+          "text": "with",
+          "start": 32.093,
+          "end": 32.233,
+          "scene": "conversation"
+        }
+      ],
+      "start": 31.673,
+      "end": 32.233,
+      "displayEnd": 32.233
+    },
+    {
+      "words": [
+        {
+          "text": "agents.",
+          "start": 32.233,
+          "end": 32.693,
+          "scene": "conversation"
+        }
+      ],
+      "start": 32.233,
+      "end": 32.693,
+      "displayEnd": 32.867
+    },
+    {
+      "words": [
+        {
+          "text": "That's",
+          "start": 32.867,
+          "end": 33.147,
+          "scene": "outro"
+        },
+        {
+          "text": "sort",
+          "start": 33.147,
+          "end": 33.247,
+          "scene": "outro"
+        },
+        {
+          "text": "of",
+          "start": 33.247,
+          "end": 33.347,
+          "scene": "outro"
+        },
+        {
+          "text": "the",
+          "start": 33.347,
+          "end": 33.627,
+          "scene": "outro"
+        }
+      ],
+      "start": 32.867,
+      "end": 33.627,
+      "displayEnd": 33.627
+    },
+    {
+      "words": [
+        {
+          "text": "ethos",
+          "start": 33.627,
+          "end": 35.317,
+          "scene": "outro"
+        },
+        {
+          "text": "I",
+          "start": 35.317,
+          "end": 35.417,
+          "scene": "outro"
+        },
+        {
+          "text": "had",
+          "start": 35.417,
+          "end": 35.597,
+          "scene": "outro"
+        },
+        {
+          "text": "for",
+          "start": 35.597,
+          "end": 35.837,
+          "scene": "outro"
+        }
+      ],
+      "start": 33.627,
+      "end": 35.837,
+      "displayEnd": 35.837
+    },
+    {
+      "words": [
+        {
+          "text": "the",
+          "start": 35.837,
+          "end": 35.977,
+          "scene": "outro"
+        },
+        {
+          "text": "new",
+          "start": 35.977,
+          "end": 36.097,
+          "scene": "outro"
+        },
+        {
+          "text": "design.",
+          "start": 36.097,
+          "end": 36.477,
+          "scene": "outro"
+        }
+      ],
+      "start": 35.837,
+      "end": 36.477,
+      "displayEnd": 36.635
+    },
+    {
+      "words": [
+        {
+          "text": "Let",
+          "start": 36.635,
+          "end": 36.715,
+          "scene": "outro"
+        },
+        {
+          "text": "me",
+          "start": 36.715,
+          "end": 36.735,
+          "scene": "outro"
+        },
+        {
+          "text": "know",
+          "start": 36.735,
+          "end": 36.815,
+          "scene": "outro"
+        },
+        {
+          "text": "what",
+          "start": 36.815,
+          "end": 36.835,
+          "scene": "outro"
+        },
+        {
+          "text": "you",
+          "start": 36.835,
+          "end": 36.915,
+          "scene": "outro"
+        },
+        {
+          "text": "think.",
+          "start": 36.915,
+          "end": 37.135,
+          "scene": "outro"
+        }
+      ],
+      "start": 36.635,
+      "end": 37.135,
+      "displayEnd": 37.385
+    }
+  ]
+}

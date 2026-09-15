@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-14T03:48:13.325900+00:00",
-  "status": "Local drafts; not saved to Zernio",
+  "updatedAt": "2026-09-14T17:24:58.971832+00:00",
+  "status": "F01 saved to the existing Zernio schedule; other entries remain local drafts awaiting footage",
   "note": "Only use when the described video exists and matches the actual recording. Read back X validation and both platform versions after saving.",
   "drafts": [
     {
       "key": "simpler_frontend",
       "campaign": "facundo_builder_202609",
-      "status": "draft_awaiting_video",
+      "status": "scheduled",
       "zernioPostId": "6aa5ebc2f75a3d18d84801e6",
       "targetAt": "2026-09-14T20:00:00-05:00",
-      "x": "The first BUY HARD UI had a lot going on. I’ve been simplifying it.\n\nA quick look at the old and current sample screens. Curious what you think.\n\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\n@convex @OpenAI @firecrawl @agentmail",
-      "linkedinTagged": "BUY HARD’s first UI had a lot going on.\n\nIn this short video, I walk through what I’ve been simplifying: fewer panels, a clearer buying decision, and the buyer close by when you need it.\n\nThe old and current screens use sample data. This is a look at the design decisions.\n\nCurious what you think.\n\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
-      "xCharactersWithUrlsAs23": 208,
-      "media": null
+      "x": "I made BUY HARD’s first UI look like vintage audio gear. It looked cool, but got in the way.\n\nHere’s why I simplified it. Old/current sample screens.\n\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "I went a little too hard on BUY HARD’s first interface.\n\nMetallic finishes, painted labels, vintage audio gear. I liked the look, but it quickly became hard to use.\n\nThis is the short version of how I got from that to the simpler lime interface: fewer distractions, clearer language, and a buyer you can talk to.\n\nThe archived and current screens use different sample scenarios. This is a look at my design decisions.\n\nLet me know what you think.\n\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xCharactersWithUrlsAs23": 213,
+      "media": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-captioned.mp4"
     },
     {
       "key": "give_agent_a_job",

@@ -1,8 +1,10 @@
-# Record one short clip
+# Founder recording plan
 
-September 13, 2026 · All deadlines and posting times are Chicago time.
+Updated September 14, 2026 · All deadlines and posting times are Chicago time.
 
-Start with **F01 only**. Send the original iPhone recording here by **Monday, September 14 at noon** to target the existing 8 p.m. founder post. A rough take is enough to start editing. Read one sentence, pause, and read the next. Change any wording that does not sound like you.
+**F01 is finished and scheduled.** Your iPhone take became a 37.9-second edit with your real voice, archived/current product screens and lime captions. The square version replaced the two images in the original September 14, 8 p.m. X/LinkedIn post. [Watch both versions](http://127.0.0.1:60692/) · [Saved schedule](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json).
+
+**Next: F02, the handoff.** Send it by **Tuesday, September 15 at 6 p.m.** for Wednesday’s existing 8 p.m. slot. Its script is below. Read one sentence, pause, and read the next; change anything that does not sound like you.
 
 ## Your first recording — F01
 
@@ -34,11 +36,11 @@ Codex handles selecting takes, trimming pauses, matching visuals, sound cleanup,
 
 ## Recording and publishing schedule
 
-These are edit targets. The four founder **image posts remain scheduled in Zernio** until a finished replacement is ready. Their existing IDs, channels and time slots stay together. [Live queue observation](../output/marketing/2026-09-14-founder-recordings/queue-readback.json) · [Recording status](../output/marketing/2026-09-14-founder-recordings/recording-plan.json).
+These are edit targets. F01 is now a **video scheduled in Zernio**. F02–F04 keep their approved image posts until each finished replacement is ready. Their existing IDs, channels and time slots stay together. [Live queue observation](../output/marketing/2026-09-14-founder-recordings/queue-readback.json) · [Recording status](../output/marketing/2026-09-14-founder-recordings/recording-plan.json).
 
 | Clip | Send the raw recording by | Target post | What we combine it with |
 | --- | --- | --- | --- |
-| **F01 — Simpler frontend** | Mon Sep 14, noon | Mon Sep 14, 8 p.m. · already scheduled | Approved old/current annotated images |
+| **F01 — Simpler frontend · complete** | Received Mon Sep 14 | Mon Sep 14, 8 p.m. · video verified in schedule | Real founder, old/current UI, conversation and captions |
 | **F02 — The handoff** | Tue Sep 15, 6 p.m. | Wed Sep 16, 8 p.m. · already scheduled | Buyer conversation and purchase decision |
 | **P01 — Sales into supplies** · optional | Wed Sep 16, noon | Thu Sep 17, 12:30 p.m. · flexible theme, not scheduled | Existing Square/Shopify Hyperframes preview |
 | **F03 — More of this work** | Thu Sep 17, 6 p.m. | Fri Sep 18, 8 p.m. · already scheduled | Desktop/mobile sample and small design details |
@@ -120,7 +122,7 @@ fal provides specific ingredients; it does not decide the edit:
 | Remove the basement background | [Bria video background removal](https://fal.ai/models/bria/video/background-removal/api) | Optional five-second test. It accepts clips shorter than 30 seconds and dimensions below 4000×4000. Use transparent VP9 output, inspect hair/hands in motion, and process only the selected short sections. The normal camera frame is the fallback. |
 | Extra scene footage | [H3 Max Turbo](https://fal.ai/models/minimax/h3-max-turbo/image-to-video/api) | Reuse existing approved footage first. Generate a short illustrative insert only when a specific visual gap remains. Product screens stay real captures. |
 
-No avatar, cloned voice, altered lip movement or generated founder performance is part of this plan. Simple reframing, measured exposure correction and a camera frame are usually enough. No paid job was submitted for this planning work. Recheck prices against the actual input lengths before the first paid pass; earlier H3 promotional prices are not a standing rate or an unlimited spending authorization.
+No avatar, cloned voice, altered lip movement or generated founder performance is part of this plan. Simple reframing, measured exposure correction and a camera frame are usually enough. The original planning pass submitted no paid jobs. The September 14 F01 edit used three Whisper requests: source transcription, edited-audio verification, and a short corrected-join check. No background-removal or generative-video job was needed. Recheck prices against the actual input lengths before the first paid pass; earlier H3 promotional prices are not a standing rate or an unlimited spending authorization.
 
 The existing main film keeps its working compositor. Add your recording to that edit and finish around **2:45–2:55**, with final runtime strictly below three minutes. Its current assembled runtime is slightly over 180 seconds; a new narrated export and playback check are still needed. Do not migrate the whole film just to make the social shorts.
 

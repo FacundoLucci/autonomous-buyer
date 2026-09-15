@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-09-14T17:24:58.971832+00:00",
+  "status": "exported_and_scheduled",
+  "duration": 37.916667,
+  "exports": [
+    {
+      "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-captioned.mp4",
+      "bytes": 11563630,
+      "sha256": "9460edce46b7b033d98cb3708849dd2c8ce4e47c4d1b1c15f5488a93e89c7e87",
+      "duration": 37.916667,
+      "width": 1080,
+      "height": 1080,
+      "fps": "24/1",
+      "videoCodec": "h264",
+      "pixelFormat": "yuv420p",
+      "audioCodec": "aac",
+      "sampleRate": "48000"
+    },
+    {
+      "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-clean.mp4",
+      "bytes": 11673690,
+      "sha256": "ae5a630b61e8305c5ae251f749b0ae13dc6b3690bd3e11bcb9b1eb8442c0756d",
+      "duration": 37.916667,
+      "width": 1080,
+      "height": 1080,
+      "fps": "24/1",
+      "videoCodec": "h264",
+      "pixelFormat": "yuv420p",
+      "audioCodec": "aac",
+      "sampleRate": "48000"
+    },
+    {
+      "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-vertical-captioned.mp4",
+      "bytes": 17259771,
+      "sha256": "d56054fa1478aee7026c459689a8849b89bcc9d4f913ad76ee13a1181dcd7e26",
+      "duration": 37.916667,
+      "width": 1080,
+      "height": 1920,
+      "fps": "24/1",
+      "videoCodec": "h264",
+      "pixelFormat": "yuv420p",
+      "audioCodec": "aac",
+      "sampleRate": "48000"
+    }
+  ],
+  "visualReview": {
+    "squareSceneMidpoints": true,
+    "verticalSceneMidpoints": true,
+    "encodedSquareContactSheet": true,
+    "firstAndLastEncodedSquareFrames": true,
+    "cleanCoverFrame": true,
+    "sampleLabelsPresent": true,
+    "currentDashboardTextCropCorrected": true,
+    "conversationEnlargedForReadability": true,
+    "inAppStudioPlayback": true,
+    "encodedVerticalContactSheet": true,
+    "firstAndLastEncodedVerticalFrames": true,
+    "inAppFinalGalleryPlayback": {
+      "url": "http://127.0.0.1:60692/",
+      "feedTimeAdvancedTo": 11.146951,
+      "verticalTimeAdvancedTo": 15.358121,
+      "mediaErrors": null,
+      "duration": 37.916667,
+      "audioListeningClaim": false,
+      "note": "Native video-control automation crashed the first preview tab. Added accessible page play/pause controls; fresh-tab feed and vertical playback both advanced without media errors."
+    }
+  },
+  "checks": {
+    "square": true,
+    "vertical": true,
+    "lintWarningsReviewed": "Two closing-video offsets are intentionally local to the outro scene. Animation-map repeated selector warnings refer to separate scoped scenes; visual motion verified.",
+    "audioIntegratedLUFS": -15.97,
+    "audioTruePeakDbTP": -1.52,
+    "audioReview": "Original speech, edited-audio ASR and corrected-join ASR plus technical loudness/stream checks. No claim of listening-based review.",
+    "captions": "Original fal word timings mapped through the retained source intervals; final invitation held as one phrase.",
+    "gtmDeskBrowser": {
+      "url": "http://127.0.0.1:8796/#recordings",
+      "f01Status": "Video scheduled",
+      "nextRecording": "F02",
+      "recordBy": "2026-09-15T18:00:00-05:00",
+      "nextTarget": "2026-09-16T20:00:00-05:00",
+      "finishedEditLinkVerified": true,
+      "fallbackCopyCorrected": true
+    }
+  },
+  "fal": {
+    "jobs": 3,
+    "models": [
+      "fal-ai/whisper"
+    ],
+    "generationUsed": false,
+    "backgroundRemovalUsed": false,
+    "voiceCloningUsed": false,
+    "billedCost": null,
+    "billingNote": "Live rate was verified before the first job; Whisper is billed by compute time, not source duration. No final billing readback available.",
+    "receiptsDirectory": "/Users/facundo/.local/share/buyhard-founder-recordings/F01"
+  },
+  "sourcePreserved": "/Users/facundo/.local/share/buyhard-founder-recordings/F01/source/IMG_6980.MOV",
+  "compositionDirectory": "/Users/facundo/.local/share/buyhard-founder-recordings/F01/composition",
+  "scheduleReceipt": "zernio-schedule-receipt.json",
+  "published": false,
+  "reviewCompletedAt": "2026-09-14T17:30:33.160500+00:00"
+}

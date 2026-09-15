@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-09-14T17:24:58.971832+00:00",
+  "source": "Zernio in-app browser; post reopened after saving",
+  "completeQueue": false,
+  "scope": "Existing F01 founder post only",
+  "action": "Replace two saved images with one captioned square video and adapt both captions",
+  "posts": [
+    {
+      "key": "simpler_frontend",
+      "campaign": "facundo_builder_202609",
+      "title": "I overdid the UI.",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-14T20:00:00-05:00",
+      "zernioPostId": "6aa5ebc2f75a3d18d84801e6",
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ],
+      "x": "I made BUY HARD’s first UI look like vintage audio gear. It looked cool, but got in the way.\n\nHere’s why I simplified it. Old/current sample screens.\n\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "I went a little too hard on BUY HARD’s first interface.\n\nMetallic finishes, painted labels, vintage audio gear. I liked the look, but it quickly became hard to use.\n\nThis is the short version of how I got from that to the simpler lime interface: fewer distractions, clearer language, and a buyer you can talk to.\n\nThe archived and current screens use different sample scenarios. This is a look at my design decisions.\n\nLet me know what you think.\n\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "media": [
+        "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-captioned.mp4"
+      ],
+      "mediaType": "video",
+      "duration": 37.916667
+    }
+  ],
+  "verification": {
+    "freshEditorReadback": true,
+    "overviewStatus": "scheduled",
+    "mediaStatus": "SAVED",
+    "mediaCount": 1,
+    "fileName": "f01-simpler-ui-square-captioned.mp4",
+    "mediaHost": "media.zernio.com",
+    "duration": 37.916667,
+    "dimensions": [
+      1080,
+      1080
+    ],
+    "videoReadyState": 4,
+    "videoErrors": null,
+    "linkedInCharacters": 802,
+    "xWeightedCharacters": 213,
+    "accounts": [
+      "Facundo Lucci / LinkedIn",
+      "FacundoLucci / X"
+    ],
+    "publishingMode": "Schedule",
+    "localDateTime": "2026-09-14T20:00",
+    "timezone": "America/Chicago (CDT)",
+    "captionsMatchLocalCopy": true,
+    "campaignAndSponsorMentionsPreserved": true,
+    "existingPostIdPreserved": true,
+    "replacementBeforeCutoff": true
+  },
+  "uploadedLocalSha256": "9460edce46b7b033d98cb3708849dd2c8ce4e47c4d1b1c15f5488a93e89c7e87",
+  "originalReceipt": "output/marketing/2026-09-14-founder-campaign/zernio-schedule-receipt.json",
+  "published": false,
+  "publicationReceipt": null
+}

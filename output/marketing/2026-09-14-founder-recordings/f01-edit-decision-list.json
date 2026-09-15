@@ -1,0 +1,207 @@
+{
+  "fps": 24,
+  "duration": 37.916668,
+  "source": "IMG_6980.MOV",
+  "color": "HLG to Rec709: zscale npl=400, Hable desat=2",
+  "pauseRule": "Silence >=0.55s shortened to 0.25s; no speed changes",
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "I overdid<br>the UI.",
+      "start": 0.0,
+      "duration": 4.041667,
+      "sourceRanges": [
+        [
+          18.78,
+          22.82
+        ]
+      ]
+    },
+    {
+      "id": "archive",
+      "title": "The first interface",
+      "start": 4.041667,
+      "duration": 11.416667,
+      "sourceRanges": [
+        [
+          6.27,
+          18.34
+        ]
+      ]
+    },
+    {
+      "id": "current",
+      "title": "The current version",
+      "start": 15.458334,
+      "duration": 6.125001,
+      "sourceRanges": [
+        [
+          24.49,
+          28.01
+        ],
+        [
+          30.87,
+          34.16
+        ]
+      ]
+    },
+    {
+      "id": "simple",
+      "title": "Keep it<br>simple.",
+      "start": 21.583335,
+      "duration": 2.333333,
+      "sourceRanges": [
+        [
+          34.19,
+          36.53
+        ]
+      ]
+    },
+    {
+      "id": "conversation",
+      "title": "Talk to your buyer",
+      "start": 23.916668,
+      "duration": 8.875,
+      "sourceRanges": [
+        [
+          53.53,
+          57.79
+        ],
+        [
+          71.68,
+          77.22
+        ]
+      ]
+    },
+    {
+      "id": "outro",
+      "title": "What do<br>you think?",
+      "start": 32.791668,
+      "duration": 5.125,
+      "sourceRanges": [
+        [
+          77.86,
+          82.43
+        ],
+        [
+          84.95,
+          86.3
+        ]
+      ]
+    }
+  ],
+  "ranges": [
+    {
+      "scene": "intro",
+      "sourceStart": 18.791666666666668,
+      "sourceEnd": 22.833333333333332,
+      "start": 0.0,
+      "duration": 4.041667
+    },
+    {
+      "scene": "archive",
+      "sourceStart": 6.25,
+      "sourceEnd": 6.625,
+      "start": 4.041667,
+      "duration": 0.375
+    },
+    {
+      "scene": "archive",
+      "sourceStart": 7.0,
+      "sourceEnd": 11.625,
+      "start": 4.416667,
+      "duration": 4.625
+    },
+    {
+      "scene": "archive",
+      "sourceStart": 11.916666666666666,
+      "sourceEnd": 18.333333333333332,
+      "start": 9.041667,
+      "duration": 6.416667
+    },
+    {
+      "scene": "current",
+      "sourceStart": 24.5,
+      "sourceEnd": 28.0,
+      "start": 15.458334,
+      "duration": 3.5
+    },
+    {
+      "scene": "current",
+      "sourceStart": 30.875,
+      "sourceEnd": 31.791666666666668,
+      "start": 18.958334,
+      "duration": 0.916667
+    },
+    {
+      "scene": "current",
+      "sourceStart": 32.166666666666664,
+      "sourceEnd": 32.708333333333336,
+      "start": 19.875001,
+      "duration": 0.541667
+    },
+    {
+      "scene": "current",
+      "sourceStart": 33.0,
+      "sourceEnd": 34.166666666666664,
+      "start": 20.416668,
+      "duration": 1.166667
+    },
+    {
+      "scene": "simple",
+      "sourceStart": 34.208333333333336,
+      "sourceEnd": 36.541666666666664,
+      "start": 21.583335,
+      "duration": 2.333333
+    },
+    {
+      "scene": "conversation",
+      "sourceStart": 53.541666666666664,
+      "sourceEnd": 55.0,
+      "start": 23.916668,
+      "duration": 1.458333
+    },
+    {
+      "scene": "conversation",
+      "sourceStart": 55.583333333333336,
+      "sourceEnd": 57.791666666666664,
+      "start": 25.375001,
+      "duration": 2.208333
+    },
+    {
+      "scene": "conversation",
+      "sourceStart": 71.66666666666667,
+      "sourceEnd": 72.83333333333333,
+      "start": 27.583334,
+      "duration": 1.166667
+    },
+    {
+      "scene": "conversation",
+      "sourceStart": 73.16666666666667,
+      "sourceEnd": 77.20833333333333,
+      "start": 28.750001,
+      "duration": 4.041667
+    },
+    {
+      "scene": "outro",
+      "sourceStart": 77.875,
+      "sourceEnd": 79.625,
+      "start": 32.791668,
+      "duration": 1.75
+    },
+    {
+      "scene": "outro",
+      "sourceStart": 80.375,
+      "sourceEnd": 82.41666666666667,
+      "start": 34.541668,
+      "duration": 2.041667
+    },
+    {
+      "scene": "outro",
+      "sourceStart": 84.95833333333333,
+      "sourceEnd": 86.29166666666667,
+      "start": 36.583335,
+      "duration": 1.333333
+    }
+  ]
+}

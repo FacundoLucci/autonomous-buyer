@@ -1,0 +1,85 @@
+{
+  "posts": [
+    {
+      "key": "square_test_result",
+      "title": "Sales changed the buy.",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-15T17:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "x": "A sale should change the supply plan.\n\nBUY HARD passed a local Square Sandbox test: 60 gift sets sold, 60 boxes consumed, a 125-box buy planned. No supplier purchase.\nhttps://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=square_test_result\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "A small working step toward staying stocked.\n\nIn a local Square Sandbox test, a completed test order for 60 gift sets reduced projected shipping-box stock by 60 and produced a plan to buy 125 boxes.\n\nWhen Square sent the order notifications again, BUY HARD recognized the already-counted sale. One sale, one stock change.\n\nThis was a development test, not a customer order or a supplier purchase. Shopify is connected to a development store too; its order-to-stock test is still ahead.\n\nThe goal: the sales you already record should help your buyer keep supplies ready. Bring one recurring item to a walkthrough:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=square_test_result\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 229,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-14-daily-campaign/ready/square_test_result.png",
+          "altText": "Sales changed the buy. A local Square Sandbox test: 60 gift sets sold, 60 boxes consumed, 125-box buy planned. No supplier purchase. buyhard.app. Convex, OpenAI, Firecrawl, AgentMail.",
+          "type": "image",
+          "sha256": "b6a0b38e2c258a1010585b70662a126f89d5c7a6eed01d52d928e47844554ec0",
+          "bytes": 80346,
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "zernioPostId": "6aa85aa9699a1408118db216",
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ]
+    },
+    {
+      "key": "delivery_delay_idea",
+      "title": "What if late never meant too late?",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-16T08:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "x": "What if a late delivery triggered a backup plan before you ran out?\n\nThat's a direction for BUY HARD: notice the delay, check stock, find an option.\n\nWhich supply can't wait?\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=delivery_delay_idea\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "The supplier says Thursday. You needed it Tuesday.\n\nWhat if your buyer caught that delay, checked how long your remaining stock would last, and brought you another option?\n\nThat's a direction for BUY HARD. Fewer last-minute calls. A clearer decision before the shelf is empty.\n\nThis card illustrates a future workflow; it isn't a report of an automated rescue.\n\nWhich recurring supply would cause the most trouble if it arrived two days late? Explore the current sample:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=delivery_delay_idea\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 237,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-14-daily-campaign/ready/delivery_delay_idea.png",
+          "altText": "What if late never meant too late? A delayed delivery, changed stock outlook and another option found. Future product idea, illustrated. buyhard.app. Convex, OpenAI, Firecrawl, AgentMail.",
+          "type": "image",
+          "sha256": "1b2c13bf43a9d373724c4c9975673d88c13f19680615dd05029eb7562401750e",
+          "bytes": 82463,
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "zernioPostId": "6aa85af337545f68eb54355f",
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ]
+    },
+    {
+      "key": "partial_delivery",
+      "title": "Delivered. But not all of it.",
+      "campaign": "buyhard_allgas_202609",
+      "scheduledAt": "2026-09-16T12:30:00-05:00",
+      "timezone": "America/Chicago",
+      "status": "scheduled",
+      "x": "20 cases ordered. 12 arrive. The other 8 still matter.\n\nBUY HARD supports partial receiving, so the purchase keeps track of what's outstanding. Illustrated example.\n\nBring your process:\nhttps://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=partial_delivery\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "A delivery doesn't always arrive all at once.\n\nYou ordered 20 cases. Twelve arrive today; eight are still outstanding.\n\nBUY HARD supports recording a partial delivery against the purchase, keeping the remaining quantity in view. The next buying decision should account for what arrived and what's still expected.\n\nThe numbers on this card are illustrative, not a customer shipment.\n\nBring one recurring item to a walkthrough and we'll look at how you handle split deliveries:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=partial_delivery\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "xWeightedCharacters": 248,
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-14-daily-campaign/ready/partial_delivery.png",
+          "altText": "Delivered. But not all of it. Count what arrived and keep the rest in view: 20 cases ordered, 12 received, 8 outstanding. Illustrative example. buyhard.app. Convex, OpenAI, Firecrawl, AgentMail.",
+          "type": "image",
+          "sha256": "446b010dbfd3acc591ad9b9b09de131066f16c9158ce0bce7c02e441725576ee",
+          "bytes": 72550,
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "zernioPostId": "6aa85b291e9d258508db2226",
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-captioned.mp4",
+    "bytes": 11563630,
+    "sha256": "9460edce46b7b033d98cb3708849dd2c8ce4e47c4d1b1c15f5488a93e89c7e87",
+    "duration": 37.916667,
+    "width": 1080,
+    "height": 1080,
+    "fps": "24/1",
+    "videoCodec": "h264",
+    "pixelFormat": "yuv420p",
+    "audioCodec": "aac",
+    "sampleRate": "48000"
+  },
+  {
+    "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-square-clean.mp4",
+    "bytes": 11673690,
+    "sha256": "ae5a630b61e8305c5ae251f749b0ae13dc6b3690bd3e11bcb9b1eb8442c0756d",
+    "duration": 37.916667,
+    "width": 1080,
+    "height": 1080,
+    "fps": "24/1",
+    "videoCodec": "h264",
+    "pixelFormat": "yuv420p",
+    "audioCodec": "aac",
+    "sampleRate": "48000"
+  },
+  {
+    "file": "output/marketing/2026-09-14-founder-recordings/ready/f01-simpler-ui-vertical-captioned.mp4",
+    "bytes": 17259771,
+    "sha256": "d56054fa1478aee7026c459689a8849b89bcc9d4f913ad76ee13a1181dcd7e26",
+    "duration": 37.916667,
+    "width": 1080,
+    "height": 1920,
+    "fps": "24/1",
+    "videoCodec": "h264",
+    "pixelFormat": "yuv420p",
+    "audioCodec": "aac",
+    "sampleRate": "48000"
+  }
+]

@@ -1,0 +1,99 @@
+1
+00:00:00,048 --> 00:00:01,448
+And it was cool,
+
+2
+00:00:01,448 --> 00:00:03,998
+but became quickly unusable.
+
+3
+00:00:04,092 --> 00:00:05,977
+I built a interface
+
+4
+00:00:05,977 --> 00:00:09,405
+that's hyper-realistic and metallic
+
+5
+00:00:09,405 --> 00:00:12,045
+finish with painted on
+
+6
+00:00:12,045 --> 00:00:12,965
+labels,
+
+7
+00:00:12,965 --> 00:00:14,685
+like vintage audio gear
+
+8
+00:00:14,685 --> 00:00:15,488
+or something.
+
+9
+00:00:15,488 --> 00:00:16,208
+what you see today,
+
+10
+00:00:16,208 --> 00:00:18,598
+this green lime color,
+
+11
+00:00:19,073 --> 00:00:21,717
+is the refined version.
+
+12
+00:00:21,805 --> 00:00:22,845
+Just make it simple,
+
+13
+00:00:22,845 --> 00:00:23,955
+keep it simple.
+
+14
+00:00:23,985 --> 00:00:25,025
+Like everything is just
+
+15
+00:00:25,025 --> 00:00:27,202
+natural language,
+
+16
+00:00:27,202 --> 00:00:27,627
+you know?
+
+17
+00:00:27,627 --> 00:00:30,113
+So the UI should
+
+18
+00:00:30,113 --> 00:00:31,113
+basically be talking to
+
+19
+00:00:31,113 --> 00:00:31,673
+us just like we're
+
+20
+00:00:31,673 --> 00:00:32,233
+used to talking with
+
+21
+00:00:32,233 --> 00:00:32,867
+agents.
+
+22
+00:00:32,867 --> 00:00:33,627
+That's sort of the
+
+23
+00:00:33,627 --> 00:00:35,837
+ethos I had for
+
+24
+00:00:35,837 --> 00:00:36,635
+the new design.
+
+25
+00:00:36,635 --> 00:00:37,385
+Let me know what you think.

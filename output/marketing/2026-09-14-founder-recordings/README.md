@@ -1,11 +1,17 @@
-# Facundo recording handoff
+# First founder video
 
-Start with [F01 and the recording guide](../../../docs/founder-recording-plan.md).
+F01 is edited and scheduled on the original X/LinkedIn post for **September 14, 8 p.m. Chicago**. It has not published yet.
 
-- `recording-plan.json`: six recording entries, delivery targets, cutoffs and readiness fields.
-- `video-copy-drafts.json`: four founder replacements and an optional product draft. These are not current scheduled captions.
-- `queue-readback.json`: live overview readback of the existing image schedules. No video was uploaded or scheduled.
+[Watch square and vertical versions](http://127.0.0.1:60692/) · [Recording guide and F02 script](../../../docs/founder-recording-plan.md)
 
-Raw recordings belong in `/Users/facundo/.local/share/buyhard-founder-recordings/inbox/` when received; retain originals and put their paths in the manifest. Store derived private working files beside that inbox and only copy intended public exports into a campaign ready folder. No raw recording is present yet.
+- `ready/`: captioned square and vertical MP4s, clean square MP4, SRT subtitles, cover and review page. All videos are 37.916667 seconds.
+- `zernio-schedule-receipt.json`: fresh post readback after the replacement. Original image receipts are preserved in the founder-campaign folder.
+- `f01-verification.json` and `exports-readback.json`: render, media, audio and schedule evidence.
+- `f01-edit-decision-list.json` and `f01-edited-transcript.json`: retained source intervals and timed captions.
+- `recording-plan.json`: F01 completed; F02 is next, due September 15 at 6 p.m.
+- `posts.json`: current saved F01 copy. `video-copy-drafts.json` also contains the unscheduled replacement drafts for later recordings.
+- `queue-readback.json` and `verification.json`: original planning-pass evidence, retained as dated records.
 
-At receipt, update the clip's source path and status. Before scheduling, populate the finished export path and verify playback, actual captions and claim labels. After saving, retain a new provider receipt without overwriting the original image receipt. Record publication separately. Use the existing twice-daily marketing review and original post IDs.
+The original is preserved privately at `/Users/facundo/.local/share/buyhard-founder-recordings/F01/source/IMG_6980.MOV`. The editable Hyperframes project is `/Users/facundo/.local/share/buyhard-founder-recordings/F01/composition/`; `build.py` and the source intervals reproduce the edit. The local review server serves only the ready folder; its port/PID are recorded in the private F01 directory.
+
+Next: record F02 using the handoff script. Existing twice-daily reviews should read the manifest, verify publication separately, and avoid re-uploading or duplicating F01.

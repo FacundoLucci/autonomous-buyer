@@ -2,7 +2,7 @@
 
 September 12, 2026 · Separate from the [BUY HARD product campaign](gtm-marketing-strategy.md)
 
-Updated September 13: Facundo will record short iPhone clips; Codex will edit them into selected posts with product visuals and captions. [Start with the first script](founder-recording-plan.md). These are conditional video replacements for the existing image schedules, not additional daily posts.
+Updated September 14: the first iPhone recording is edited and scheduled for 8 p.m. on X and LinkedIn. Codex combined Facundo’s real voice and camera with product screens and captions. [Start with the first script](founder-recording-plan.md). These are conditional video replacements for the existing image schedules, not additional daily posts.
 
 **Internal goal:** Turn hackathon attention into a strong job opportunity or progress toward a place at Y Combinator. BUY HARD is the work people can inspect; Facundo is the person this campaign introduces. YC is an internal aim, not a public hook or named audience in the posts.
 
@@ -57,7 +57,7 @@ Start with a 25–40 second short: Facundo opens on camera, continues speaking o
 | Sep 18, 20:00 · F03, more of this work | Sep 17, 18:00 | Sep 18, 18:00 | Approved desktop/mobile and details pair |
 | Sep 21, 20:00 · F04, what to hand off | Sep 20, noon | Sep 21, 18:00 | Approved ambition/inventory pair |
 
-The [recording packet](founder-recording-plan.md) gives each exact script and edit sequence. The [manifest](../output/marketing/2026-09-14-founder-recordings/recording-plan.json) tracks receipt and readiness; [video-copy drafts](../output/marketing/2026-09-14-founder-recordings/video-copy-drafts.json) adapt the image captions for the future edits. No recording or video replacement exists yet. The original approved images continue unless a reviewed export is ready before the cutoff. When replacing, use the existing Zernio ID and preserve its time, both accounts, founder tracking and sponsor mentions. Read back the saved result and retain a new receipt. Footage arriving after publication can support a later story with a fresh angle.
+The [recording packet](founder-recording-plan.md) gives each exact script and edit sequence. The [manifest](../output/marketing/2026-09-14-founder-recordings/recording-plan.json) tracks receipt and readiness; [video-copy drafts](../output/marketing/2026-09-14-founder-recordings/video-copy-drafts.json) adapt the image captions for the future edits. F01 is now a 37.9-second video saved on the original September 14 post ID. [Verified replacement](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json). F02–F04 still use their approved images. The original approved images continue unless a reviewed export is ready before the cutoff. When replacing, use the existing Zernio ID and preserve its time, both accounts, founder tracking and sponsor mentions. Read back the saved result and retain a new receipt. Footage arriving after publication can support a later story with a fresh angle.
 
 Keep all four sponsor mentions before the hackathon deadline, and credit the contribution when discussing a specific tool. Use buyhard.app with `utm_campaign=facundo_builder_202609`. Product posts keep `buyhard_allgas_202609`.
 
@@ -79,13 +79,13 @@ At the existing 07:30 and 15:30 reviews, look at both campaigns separately. Reco
 
 ## Approved visuals and next assets
 
-Eight PNGs and their editable HTML are approved, assigned in order to the four posts. The images are uploaded and attached to the verified schedules. The founder posts have not published yet. See the [caption and image document](../output/marketing/2026-09-14-founder-campaign/posts.md). The source manifest distinguishes archived UI, current sample UI and the reused product photo.
+Eight PNGs and their editable HTML remain the approved fallbacks. F01 has been replaced by the captioned founder video; the other three schedules still use their two-image sets. The founder posts have not published yet. See the [caption and image document](../output/marketing/2026-09-14-founder-campaign/posts.md). The source manifest distinguishes archived UI, current sample UI and the reused product photo.
 
 Next assets:
 
 - A short walkthrough of the current app with Facundo explaining one product decision.
-- A short narrated version of the annotated frontend comparison.
+- Completed: the 38-second narrated frontend comparison, with square and vertical exports.
 - A compact explanation of how the buyer connects stock, research, supplier messages and approval.
 - A founder introduction in Facundo's own voice, plus the strongest public work links.
 
-The recording work now has specific scripts and handoff dates. Start with F01 only, due September 14 at noon for that evening's post. The current saved publishing package is still the four approved captions and their two-image sets.
+F01 is complete. Next is F02, due September 15 at 6 p.m. for September 16’s 8 p.m. slot. [Watch the first edit](http://127.0.0.1:60692/). Publication and engagement results still need their own readbacks.

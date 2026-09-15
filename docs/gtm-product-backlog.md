@@ -52,9 +52,9 @@ The campaign should help choose what BUY HARD needs to do next. Define the usefu
 
 **Local improvement:** Sample changes now trigger the existing demo-use event after an actual change is saved. Direct approval shows the walkthrough suggestion with campaign tags preserved. Desktop and mobile checks passed; dismissing the suggestion stays respected after receiving. The released analytics backend recorded one excluded QA visit and one demo-use event across multiple sample actions. No supplier was contacted. Typecheck, build, focused lint and both attribution tests passed.
 
-The change is committed as `59277a1` on isolated branch `codex/marketing-demo-engagement`, based on the marketing release `68718f1`. It is not pushed or deployed. [Review and deployment scope](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-engagement-fix.md) · [QA event readback](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-use-proof.json).
+The change was committed as `59277a1` on isolated branch `codex/marketing-demo-engagement`. It is now merged into pushed `main` through `c456877`. This marketing review has not established a production release or refreshed the live demo-use check. [Review and deployment scope](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-engagement-fix.md) · [QA event readback](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-use-proof.json).
 
-**Target story:** Ongoing daily reviews. Status: a concrete local handoff fix is ready; released behavior remains unchanged until deployment.
+**Target story:** Ongoing daily reviews. Status: merged and pushed; production behavior needs a release readback before using demo conversion to judge the campaign.
 
 ## GTM-05 — Let sales and inventory data bring the next buy forward
 
@@ -62,9 +62,9 @@ The change is committed as `59277a1` on isolated branch `codex/marketing-demo-en
 
 **Audience signal:** The public LinkedIn question asks whether proactive checks are scheduled or triggered by inventory events. Facundo wants the answer to include the intention to use daily sales and inventory integrations, supported by an impressive working demonstration.
 
-**Current state:** Source review on September 13 confirms immediate rechecks after recorded stock/rule changes, per-item scheduled evaluations, and an hourly sweep. No external sales or inventory connector was established by this review. The detailed design remains a proposal. [Build and demonstration scope](sales-driven-replenishment-proposal.md)
+**Current state — September 14:** Square and Shopify implementations are merged into pushed `main` through `b0bdaec`. A local Square Sandbox order for 60 test gift sets consumed 60 shipping boxes and produced a 125-box buying plan. The recovery sync applied the order; later signed provider notifications recognized the existing consumption without duplicating it. Shopify installation and its development-store catalog read succeeded. No Shopify order-to-stock run or production integration release is established. [Implementation and limits](sales-connections.md) · [Square result](../artifacts/sales-connections/square-readback.json) · [Shopify connection](../artifacts/sales-connections/shopify-install-readback.json)
 
-**Smallest next change:** Connect one cafe location and one recurring supply through a shared event-processing path. Start with an itemized sales import for repeatable development, then deliver the complete Square test-account flow. Confirm the sales-to-supply conversion; reconcile observed consumption with estimates so the same use is never subtracted twice. Pass the resulting facts into the existing planner and retain a structured source-to-decision history.
+**Next work:** Finish one Shopify paid-order mapping and verify provider delivery, duplicate safety and the resulting plan in the authorized development store. Then verify a concrete hosted candidate before release. Current mappings permit one source product per supply; multiple coffee variants consuming the same cup and automatically learned daily usage remain gaps. Show the actual source-to-decision history rather than implying seasonal learning.
 
 **Frontend:** Add source setup to the existing item flow, a buyer update when a plan materially changes, and a “Why now?” explanation. Preserve the simple frontend and existing spending approval.
 
@@ -72,9 +72,19 @@ The change is committed as `59277a1` on isolated branch `codex/marketing-demo-en
 
 **Owner:** Product implementation in an isolated checkout, coordinated through this campaign thread.
 
-**Target story:** A follow-up to the LinkedIn conversation with the working test-account demonstration. Status: proposed; no connector implementation or release claimed. Promote the external-data benefit as an intended capability until verified.
+**Target story:** A follow-up to the LinkedIn conversation with the working test-account demonstration. Status: Square local provider test verified, Shopify connection verified, production release unverified. The September 15 evening post reports the specific Square test; broader live-store availability remains unclaimed.
 
 **September 13 campaign action:** The September 14 12:30 product post asks which sales or inventory app should connect to BUY HARD. Both platform captions and the visual identify an intended capability. The original LinkedIn question remains the only visible technical comment in this review; it does not establish demand for Square or a particular integration. Use specific operator responses to choose the first live connection. [Scheduled question](../output/marketing/2026-09-13-daily-campaign/posts.md).
+
+## GTM-06 — A useful backup when a delivery slips
+
+**Story:** A changed supplier date prompts a stock check and an alternative before supplies run out.
+
+**Status:** An aspirational question scheduled for September 16 morning, not a completed automated-rescue claim. No operator has yet requested this exact feature in the public evidence reviewed.
+
+**Next work:** Inspect the existing supplier-message and expected-delivery update path first. Use a controlled delayed-delivery event to determine whether the same recurring-item plan is rechecked and whether an alternative can be proposed without a duplicate order. Prioritize this after the Shopify proof if operator replies support it.
+
+**Acceptance:** A dated supplier update changes the item's explanation and proposed response; spending still requires its existing approval. No automatic cancellation, purchase or supplier message is authorized by this story. Preserve the source date, remaining stock, incoming quantity and one buying decision. Production release and real supplier proof are separate.
 
 ## How work moves
 

@@ -90,6 +90,8 @@ For provider spotlights, a logo or scripted sample reply alone does not prove a 
 
 ## 4. Daily publishing and adjustment
 
+**September 14 afternoon review:** Ten product stories are published; six product stories and four founder stories are scheduled. The next 48 hours now include the Square Sandbox result (Tuesday 17:30), a delivery-delay what-if question (Wednesday 08:30), and partial receiving (Wednesday 12:30). Wednesday evening remains flexible for the next review. F01 is a saved video for tonight at 20:00; F02–F04 keep their image fallbacks. The napkin remains a draft because the second earlier reference is still scheduled, not published. [New batch and receipts](../output/marketing/2026-09-14-daily-campaign/posts.md).
+
 **Three core stories a day, every day.** Start at **08:30, 12:30, and 17:30 America/Chicago**. Keep **20:00** for a fourth post when a bold product question, a useful reply, a verified improvement, or a result warrants it. Saturday starts with “What if you could make inventory magically regenerate?” The initial channels remain X and LinkedIn, with copy adapted to each. Schedule the next 48 hours, then adjust the following slots from evidence. These times are a starting experiment, not a claim about optimal reach.
 
 - Morning: an operator's problem and the BUY HARD benefit.
@@ -116,6 +118,8 @@ Keep the next **48 hours** concrete. Prepare the following days as themes so pro
 | Tue Sep 22 | Product demo and public app | Final pre-deadline product recap | Verified submission update or the next product improvement |
 
 Every row also has the conditional 20:00 slot. After September 22, retain the same daily rhythm around operator problems, product demonstrations, and verified improvements. The hackathon submission deadline remains **September 22, noon Pacific / 14:00 Chicago**; finish the submission assets on September 21. Keep buyhard.app in marketing and an accepted convex.site or chatgpt.site app address for the submission. [Official event requirements](https://www.convex.dev/hackathons/all-gas).
+
+**September 14 progress:** F01 is now edited and saved in its original 8 p.m. X/LinkedIn slot. The package includes square and vertical captioned videos, a clean square video, subtitles and a cover. [Watch](http://127.0.0.1:60692/) · [Verification](../output/marketing/2026-09-14-founder-recordings/f01-verification.json). F02 is next, due September 15 at 6 p.m.
 
 **Add Facundo's voice to selected existing slots.** The four founder posts can become 25–40 second narrated videos using their current images and actual sample screens. Start with the September 14 frontend comparison; raw recording target is noon that day. The [recording packet](founder-recording-plan.md) includes exact scripts, asset matches and deadlines. The optional sales/cups narration can use the existing Hyperframes sample in September 17's midday slot; that slot is a flexible theme, not a saved schedule. Retain “sample” and “idea being explored” wording unless release and provider proof support stronger claims. Keep the total cadence unchanged.
 
@@ -333,7 +337,8 @@ After September 22, shift toward customer problems, lessons, and verified pilot 
 - [x] Confirm seven weekend posts in Zernio; [saved schedule receipts](../output/marketing/2026-09-12-daily-campaign/zernio-schedule-receipt.json) are separate from later publication.
 - [x] Activate reviews at 07:30 and 15:30 Chicago time. At each run, record material evidence, content decisions and product work.
 - [x] Add iPhone recording scripts, edit ownership, conditional replacements and image fallbacks to both campaign plans and the GTM desk.
-- [ ] Receive F01, edit the first captioned clip and verify its replacement schedule if ready in time.
+- [x] Receive F01, edit the first captioned clip and verify its replacement schedule if ready in time. Completed September 14: 37.9-second square video saved on the original X/LinkedIn post for 8 p.m. [Receipt](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json).
+- [ ] Receive F02 by September 15 at 6 p.m. for the September 16 founder slot.
 - [ ] Complete the continuous reorder demo and supplier proof tasks before their stronger claims run.
 - [ ] By September 21, finish and verify the narrated main demo, replace [VIDEO_URL], and assemble the app, repository, build log, video, and social links for the [submission form](https://vibeapps.dev/judging/convex-all-gas-hackathon-openai/submit?utm_source=luma).
 
