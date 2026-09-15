@@ -215,15 +215,17 @@ export function AgentWork({
               onHelp={() => beginTask({ task: "buy", contextId: buy.id })}
             />
           )}
-        {buy.order?.status === "draft" && !buy.order.reviewRequired && (
-          <ApprovalPrompt
-            key={approvalKey(buy.order)}
-            buy={buy}
-            busy={disabled}
-            onYes={() => run(() => action("approve", buy, undefined, approvalKey(buy.order!)))}
-            onNo={() => beginTask({ task: "buy", contextId: buy.id, revision: true })}
-          />
-        )}
+        {buy.order?.status === "draft" &&
+          !buy.order.reviewRequired &&
+          !buy.order.browserTermsPending && (
+            <ApprovalPrompt
+              key={approvalKey(buy.order)}
+              buy={buy}
+              busy={disabled}
+              onYes={() => run(() => action("approve", buy, undefined, approvalKey(buy.order!)))}
+              onNo={() => beginTask({ task: "buy", contextId: buy.id, revision: true })}
+            />
+          )}
         {buy.order?.reviewRequired &&
           !buy.automatic &&
           !buy.purchasingState &&
@@ -307,7 +309,9 @@ export function AgentWork({
         {buy.order && (
           <details className="desk-disclosure">
             <summary>Purchase details</summary>
-            {buy.order.reviewRequired ? (
+            {buy.order.browserTermsPending ? (
+              <Sentence>Checking checkout total and delivery.</Sentence>
+            ) : buy.order.reviewRequired ? (
               <Sentence>Final price and delivery are being checked.</Sentence>
             ) : (
               <Sentence>

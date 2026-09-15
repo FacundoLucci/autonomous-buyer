@@ -40,6 +40,7 @@ import { DemoDesk } from "./demo";
 import { SalesConnections } from "./sales-connections";
 import { PurchasingInbox } from "./mail";
 import { SupplierDirectory } from "./suppliers";
+import { PurchasingPayments } from "./payments";
 import { LiveAuditLog } from "./audit";
 import { Fact, Sentence, BuySentence, Decision, ApprovalPrompt, units } from "./sentences";
 import { approvalKey } from "@/lib/buy-review";
@@ -98,13 +99,15 @@ function LiveWorkspace({
 }) {
   const snapshot = useQuery(api.desk.snapshot, {});
   const [supplierSession, setSupplierSession] = useState<{
-    url: string;
+    url?: string;
     orderId: Id<"companyOrders">;
+    payment: boolean;
   } | null>(null);
   const [sessionBusy, setSessionBusy] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const { signOut } = useAuthActions();
   const helpSession = useAction(api.browserCheckout.helpSession);
+  const paymentSession = useAction(api.browserPayments.approvalSession);
   const retryBrowser = useAction(api.browserCheckout.retry);
   const retryExecution = useMutation(api.companyOrders.retryExecution);
   const retryResearch = useMutation(api.companyPurchasing.retry);
@@ -163,10 +166,21 @@ function LiveWorkspace({
     }
     if (kind === "resolve_order") {
       if (buy.order.orderingMethod === "website" && buy.order.browserJobId) {
-        const url = await helpSession({ orderId });
-        if (new URL(url).protocol !== "https:") throw new Error("Invalid supplier session.");
+        const payment = buy.order.browserHelpKind === "payment";
         setSessionError(null);
-        setSupplierSession({ url, orderId });
+        if (payment) {
+          try {
+            const url = await paymentSession({ orderId });
+            setSupplierSession({ url, orderId, payment });
+          } catch (error) {
+            setSupplierSession({ orderId, payment });
+            setSessionError(errorText(error));
+          }
+        } else {
+          const url = await helpSession({ orderId });
+          if (new URL(url).protocol !== "https:") throw new Error("Invalid supplier session.");
+          setSupplierSession({ url, orderId, payment });
+        }
       } else {
         await begin({ task: "buy", contextId: buy.id });
       }
@@ -197,6 +211,7 @@ function LiveWorkspace({
         Connect sales & inventory <ArrowUpRight size={16} />
       </a>
       <SupplierDirectory />
+      <PurchasingPayments />
       <PurchasingInbox email={workspace.inbox?.email} />
       <Alerts />
     </>
@@ -243,12 +258,20 @@ function LiveWorkspace({
         }}
       >
         <DialogContent>
-          <DialogTitle>Help with supplier checkout</DialogTitle>
+          <DialogTitle>
+            {supplierSession?.payment ? "Approve payment with Link" : "Help with supplier checkout"}
+          </DialogTitle>
           <DialogDescription>
-            Open the supplier session to complete the requested login or account step. The agent
-            will check the purchase terms again before ordering.
+            {supplierSession?.payment
+              ? "Review the store and spending limit on Link, then return here. The buyer will check the final purchase terms before ordering."
+              : "Complete the supplier’s requested sign-in or account step, then return here. The buyer will continue from the same checkout."}
           </DialogDescription>
-          {supplierSession && <OutLink href={supplierSession.url}>Open supplier session</OutLink>}
+          {supplierSession?.payment && !supplierSession.url && <PurchasingPayments />}
+          {supplierSession?.url && (
+            <OutLink href={supplierSession.url}>
+              {supplierSession.payment ? "Open Link approval" : "Open supplier session"}
+            </OutLink>
+          )}
           <Button
             disabled={sessionBusy}
             onClick={async () => {
@@ -401,12 +424,16 @@ export function WorkspaceScreen({
   );
   const rowBuy = (b: Buy) => {
     const approvalAlert =
-      search.page === "dashboard" && b.order?.status === "draft" && !b.order.reviewRequired;
-    const AlertIcon = b.order?.reviewRequired
-      ? RefreshCw
-      : b.order?.status === "send_failed"
-        ? TriangleAlert
-        : ClipboardCheck;
+      search.page === "dashboard" &&
+      b.order?.status === "draft" &&
+      !b.order.reviewRequired &&
+      !b.order.browserTermsPending;
+    const AlertIcon =
+      b.order?.reviewRequired || b.order?.browserTermsPending
+        ? RefreshCw
+        : b.order?.status === "send_failed"
+          ? TriangleAlert
+          : ClipboardCheck;
     return (
       <button
         key={b.id}
@@ -439,13 +466,15 @@ export function WorkspaceScreen({
           </span>
           {!approvalAlert && (
             <small>
-              {b.order?.reviewRequired
-                ? "Price and delivery are being checked."
-                : b.order?.status === "draft"
-                  ? `Ready for you to approve ${money(b.order.totalCents, b.order.currency)}.`
-                  : b.order?.expectedOn && isOpen(b)
-                    ? `Expected by ${dateLabel(b.order.expectedOn)}.`
-                    : (b.purchasingNote ?? buyStatus(b) + ".")}
+              {b.order?.browserTermsPending
+                ? "Checking checkout total and delivery."
+                : b.order?.reviewRequired
+                  ? "Price and delivery are being checked."
+                  : b.order?.status === "draft"
+                    ? `Ready for you to approve ${money(b.order.totalCents, b.order.currency)}.`
+                    : b.order?.expectedOn && isOpen(b)
+                      ? `Expected by ${dateLabel(b.order.expectedOn)}.`
+                      : (b.purchasingNote ?? buyStatus(b) + ".")}
             </small>
           )}
         </span>
@@ -639,6 +668,7 @@ export function WorkspaceScreen({
               <BuySentence buy={buy} large />
               {buy.order?.quotedArrival &&
                 buy.order.quotedArrival > buy.order.requiredBy &&
+                !buy.order.browserTermsPending &&
                 !buy.order.reviewRequired && (
                   <Sentence>
                     That’s after your <Fact>{dateLabel(buy.order.requiredBy)}</Fact> deadline.
@@ -668,6 +698,7 @@ export function WorkspaceScreen({
                 )}
               {buy.order?.status === "draft" &&
                 !buy.order.reviewRequired &&
+                !buy.order.browserTermsPending &&
                 chat?.task !== "buy" && (
                   <ApprovalPrompt
                     key={approvalKey(buy.order)}
@@ -754,7 +785,9 @@ export function WorkspaceScreen({
                   <summary>Purchase details</summary>
                   <Sentence>
                     This is order <Fact>{buy.order.number}</Fact>.{" "}
-                    {buy.order.reviewRequired ? (
+                    {buy.order.browserTermsPending ? (
+                      "Checking checkout total and delivery."
+                    ) : buy.order.reviewRequired ? (
                       "Its earlier price and delivery terms are being checked."
                     ) : (
                       <>
@@ -1119,6 +1152,7 @@ function confirmedDeliveries(itemId: string, buys: Buy[]) {
     .filter(
       (b) =>
         b.itemId === itemId &&
+        !b.order?.browserTermsPending &&
         (b.order?.status === "placed" || b.order?.status === "part_received"),
     )
     .map((b) => ({
@@ -1173,7 +1207,7 @@ function spending(buys: Buy[]) {
   const totals = new Map<string, number>();
   for (const b of buys) {
     const o = b.order;
-    if (o?.placedAt && o.placedAt >= start && o.status !== "cancelled")
+    if (o?.placedAt && !o.browserTermsPending && o.placedAt >= start && o.status !== "cancelled")
       totals.set(o.currency, (totals.get(o.currency) ?? 0) + o.totalCents);
   }
   return totals.size ? [...totals].map(([c, n]) => money(n, c)).join(" / ") : money(0);

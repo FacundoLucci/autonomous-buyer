@@ -22,6 +22,9 @@ export function money(cents: number, currency = "USD") {
   }).format(cents / 100);
 }
 export function buyStatus(buy: Buy) {
+  if (buy.order?.browserHelpKind === "payment") return "Payment approval needed";
+  if (buy.order?.executionState === "needs_attention") return "Needs attention";
+  if (buy.order?.browserTermsPending) return "Checking checkout total";
   if (buy.order?.reviewRequired) return "Checking changes";
   if (!buy.order) {
     if (buy.closed) return "Cancelled";
@@ -31,7 +34,6 @@ export function buyStatus(buy: Buy) {
     return buy.automatic || buy.purchasingState === "researching" ? "Finding supply" : "Started";
   }
   if (buy.order.executionState === "outcome_unknown") return "Checking order outcome";
-  if (buy.order.executionState === "needs_attention") return "Needs attention";
   return {
     draft: "Needs approval",
     approved: "Completing order",

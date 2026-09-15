@@ -62,6 +62,7 @@ const fields = {
     "purchasingState",
   ],
   companyOrders: [
+    "browserTermsPending",
     "reviewRequired",
     "requestedQuantity",
     "quotedArrival",
@@ -152,6 +153,21 @@ function wrap<Visibility extends "public" | "internal">(
                 : undefined;
           if (!organizationId) continue;
           const value = (doc: BusinessDoc | null, key: string) => {
+            if (
+              doc &&
+              "browserTermsPending" in doc &&
+              doc.browserTermsPending &&
+              [
+                "unitPriceCents",
+                "freightCents",
+                "taxCents",
+                "totalCents",
+                "currency",
+                "expectedOn",
+                "quotedArrival",
+              ].includes(key)
+            )
+              return null;
             const entry = doc && (doc as Record<string, unknown>)[key];
             return entry === undefined || entry === null
               ? null

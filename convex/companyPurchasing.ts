@@ -8,7 +8,8 @@ import { components, internal } from "./_generated/api";
 import { internalQuery, type MutationCtx } from "./_generated/server";
 import { mutation, internalMutation } from "./audited";
 import { ownedCompany } from "./onboarding";
-import { orderTotal, validDate } from "./companyRules";
+import { orderTotal, validDate, quantity, boundedText } from "./companyRules";
+import type { Doc, Id } from "./_generated/dataModel";
 import { productUrl } from "./inventorySources";
 import { orderEvent } from "./companyOrders";
 import { stockFacts } from "./companyStock";
@@ -159,6 +160,251 @@ const offer = v.object({
   expectedOn: v.string(),
   evidence: v.string(),
 });
+const websiteProduct = {
+  supplier: v.string(),
+  url: v.string(),
+  supplierSku: v.string(),
+  evidence: v.string(),
+};
+type WebsiteProduct = { supplier: string; url: string; supplierSku: string; evidence: string };
+
+async function createWebsiteDraft(
+  ctx: MutationCtx,
+  buy: Doc<"companyBuys">,
+  selected: WebsiteProduct,
+  actorId?: Id<"users">,
+) {
+  const item = await ctx.db.get("inventoryItems", buy.itemId);
+  const company = await ctx.db.get("organizations", buy.organizationId);
+  if (
+    !item ||
+    item.archived ||
+    !company?.shippingAddress ||
+    (buy.automatic && !item.replenishmentEnabled)
+  )
+    throw new ConvexError("Choose an active item and a delivery address before checkout.");
+  const url = productUrl(selected.url);
+  if (!(await supplierAllowed(ctx, buy.organizationId, url)))
+    throw new ConvexError("This supplier is paused in your supplier directory.");
+  const count = quantity(buy.quantity ?? 0, item.unit ?? "units");
+  if (buy.requiredBy) validDate(buy.requiredBy);
+  const supplier = boundedText(selected.supplier, "a supplier", 200);
+  const supplierSku = boundedText(selected.supplierSku, "the supplier product code", 200);
+  const evidence = boundedText(selected.evidence, "the product evidence", 22000);
+  let identity: { skuEvidence?: string; productEvidence?: string; unitEvidence?: string };
+  try {
+    identity = JSON.parse(evidence);
+  } catch {
+    throw new ConvexError("Verify the supplier product and stock unit before checkout.");
+  }
+  if (
+    !identity ||
+    typeof identity.skuEvidence !== "string" ||
+    typeof identity.productEvidence !== "string" ||
+    typeof identity.unitEvidence !== "string" ||
+    !identity.skuEvidence.includes(supplierSku) ||
+    !identity.unitEvidence.toLowerCase().includes((item.unit ?? "units").toLowerCase()) ||
+    ((!item.buyUrl || productUrl(item.buyUrl) !== url) &&
+      !identity.productEvidence.toLowerCase().includes(item.name.toLowerCase()))
+  )
+    throw new ConvexError("Verify the selected inventory product and stock unit before checkout.");
+  if (item.supplierSku && item.supplierSku !== supplierSku)
+    throw new ConvexError("Choose the exact saved supplier product.");
+  const existing = buy.orderId ? await ctx.db.get("companyOrders", buy.orderId) : null;
+  if (
+    existing &&
+    (existing.organizationId !== buy.organizationId ||
+      !existing.isOpen ||
+      existing.status !== "draft" ||
+      existing.browserCommitAuthorizedAt ||
+      existing.providerOutboundId)
+  )
+    throw new ConvexError("Only an open, unapproved purchase can enter checkout.");
+  if (
+    existing?.browserTermsPending &&
+    existing.buyUrl === url &&
+    existing.quantity === count &&
+    existing.supplierSku === supplierSku &&
+    existing.shipTo === company.shippingAddress &&
+    existing.requiredBy === (buy.requiredBy ?? "")
+  )
+    return existing._id;
+  const users = actorId
+    ? [await ctx.db.get("users", actorId)]
+    : await ctx.db
+        .query("users")
+        .withIndex("by_org", (q) => q.eq("organizationId", buy.organizationId))
+        .take(100);
+  const responsible = users.find(
+    (user) =>
+      user?.organizationId === buy.organizationId &&
+      user.isActive &&
+      !user.isAnonymous &&
+      ["buyer", "admin"].includes(user.role ?? ""),
+  );
+  if (!responsible) throw new ConvexError("No purchasing member is available.");
+  const terms = {
+    itemName: item.name,
+    sku: item.sku,
+    supplierSku,
+    unit: item.unit ?? "units",
+    quantity: count,
+    supplier,
+    sourceUrl: url,
+    buyUrl: url,
+    supplierEmail: undefined,
+    shipTo: company.shippingAddress,
+    requiredBy: buy.requiredBy ?? "",
+    notes: buy.notes,
+    // Legacy storage fields remain numeric. This flag means none are a quote;
+    // approval and user-facing totals stay unavailable until browser readback.
+    unitPriceCents: 0,
+    freightCents: 0,
+    taxCents: 0,
+    totalCents: 0,
+    currency: "USD",
+    browserTermsPending: true,
+    reviewRequired: true,
+    termsEvidence: evidence,
+    orderingMethod: "website" as const,
+    supplierPoVerified: false,
+    quotedArrival: undefined,
+    expectedOn: undefined,
+    requestedQuantity: undefined,
+    approvedAt: undefined,
+    approvedBy: undefined,
+    approvedTermsKey: undefined,
+    browserPreparedKey: undefined,
+    browserPreparedJobId: undefined,
+    browserJobId: undefined,
+    browserJobIntent: undefined,
+    browserPhase: undefined,
+    browserHelpKind: undefined,
+    browserProgress: "Checking the supplier checkout for final terms.",
+    browserPollCount: 0,
+    browserPollFailures: 0,
+    executionState: undefined,
+    error: undefined,
+    updatedAt: Date.now(),
+  };
+  const id =
+    existing?._id ??
+    (await ctx.db.insert("companyOrders", {
+      organizationId: buy.organizationId,
+      inventoryItemId: item._id,
+      createdBy: responsible._id,
+      number: "Pending",
+      receivedQuantity: 0,
+      status: "draft",
+      isOpen: true,
+      createdAt: Date.now(),
+      ...terms,
+    }));
+  if (existing) await ctx.db.patch("companyOrders", id, terms);
+  else await ctx.db.patch("companyOrders", id, { number: `BH-${id.slice(-10).toUpperCase()}` });
+  await ctx.db.patch("companyBuys", buy._id, {
+    orderId: id,
+    purchasingState: "ready",
+    purchasingNote: "Checking the supplier checkout for price, tax, delivery and the final total.",
+  });
+  await orderEvent(
+    ctx,
+    (await ctx.db.get("companyOrders", id))!,
+    "draft",
+    `Opening ${supplier}'s checkout to verify the selected product and final terms. No purchase is approved.`,
+  );
+  await ctx.scheduler.runAfter(0, internal.browserCheckout.prepare, { orderId: id });
+  return id;
+}
+
+export const prepareWebsite = internalMutation({
+  args: { ...job, ...websiteProduct },
+  returns: v.union(v.id("companyOrders"), v.null()),
+  handler: async (ctx, args) => {
+    const buy = await ctx.db.get("companyBuys", args.buyId);
+    if (
+      !buy ||
+      buy.closed ||
+      (buy.planVersion ?? 0) !== args.planVersion ||
+      buy.purchasingState !== "researching"
+    )
+      return null;
+    return await createWebsiteDraft(ctx, buy, args);
+  },
+});
+
+export const prepareWebsiteFromChat = internalMutation({
+  args: { chatId: v.id("taskChats"), messageId: v.string(), ...websiteProduct },
+  returns: v.id("companyOrders"),
+  handler: async (ctx, args) => {
+    const chat = await ctx.db.get("taskChats", args.chatId);
+    if (!chat || chat.task !== "buy" || chat.currentMessageId !== args.messageId)
+      throw new ConvexError("This buying request changed.");
+    if (chat.savedAt && chat.resultId) {
+      const priorId = ctx.db.normalizeId("companyBuys", chat.resultId);
+      const prior = priorId ? await ctx.db.get("companyBuys", priorId) : null;
+      if (prior?.orderId) return prior.orderId;
+    }
+    if (
+      !chat.busy ||
+      chat.savedAt ||
+      !chat.contextId ||
+      !chat.researchUrls?.includes(productUrl(args.url))
+    )
+      throw new ConvexError(
+        "Read the selected product page in this request before opening checkout.",
+      );
+    const buyId = ctx.db.normalizeId("companyBuys", chat.contextId);
+    const buy = buyId ? await ctx.db.get("companyBuys", buyId) : null;
+    if (!buy || buy.closed || buy.organizationId !== chat.organizationId)
+      throw new ConvexError("Choose an open buy in this company.");
+    const user = await ctx.db.get("users", chat.userId);
+    if (
+      !user?.isActive ||
+      user.isAnonymous ||
+      user.organizationId !== buy.organizationId ||
+      !["admin", "buyer"].includes(user.role ?? "")
+    )
+      throw new ConvexError("Account unavailable.");
+    if (chat.draft.itemId && chat.draft.itemId !== buy.itemId)
+      throw new ConvexError("Keep the selected inventory item.");
+    const revised = {
+      ...buy,
+      quantity: chat.draft.quantity ?? buy.quantity,
+      requiredBy: chat.draft.requiredBy ?? buy.requiredBy,
+      notes: chat.draft.notes ?? buy.notes,
+      planVersion: (buy.planVersion ?? 0) + 1,
+    };
+    const id = await createWebsiteDraft(ctx, revised, args, user._id);
+    await ctx.db.patch("companyBuys", buy._id, {
+      quantity: revised.quantity,
+      requiredBy: revised.requiredBy,
+      notes: revised.notes,
+      planVersion: revised.planVersion,
+    });
+    await ctx.db.patch("taskChats", chat._id, {
+      savedAt: Date.now(),
+      resultId: buy._id,
+      toolUsed: true,
+      question: undefined,
+      resultSummary:
+        "Opening the supplier checkout to check the final price and delivery. You approve the purchase after those terms are verified.",
+      draft: {
+        ...chat.draft,
+        unitPriceCents: undefined,
+        freightCents: undefined,
+        taxCents: undefined,
+        currency: undefined,
+        expectedOn: undefined,
+      },
+      reviewedDraftKey: undefined,
+      comparison: undefined,
+      updatedAt: Date.now(),
+    });
+    return id;
+  },
+});
+
 export const saveOffers = internalMutation({
   args: { ...job, offers: v.array(offer) },
   returns: v.union(v.id("companyOrders"), v.null()),
@@ -257,6 +503,7 @@ export const saveOffers = internalMutation({
       orderingMethod: chosen.poVerified ? ("purchase_order" as const) : ("website" as const),
       supplierPoVerified: chosen.poVerified,
       reviewRequired: !chosen.poVerified,
+      browserTermsPending: undefined,
       approvedAt: undefined,
       approvedBy: undefined,
       approvedTermsKey: undefined,

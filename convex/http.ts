@@ -10,7 +10,7 @@ import { receive as salesWebhook } from "./salesWebhook";
 import { components, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 import { auth } from "./auth";
-import { authorizeCommitHttp } from "./browserCheckout";
+import { authorizeCommitHttp, validateJobHttp } from "./browserCheckout";
 import { upload, options } from "./inventoryUpload";
 
 const agentmail = new AgentMail(components.agentmail, {
@@ -26,6 +26,7 @@ http.route({ pathPrefix: "/api/sales/shopify/events/", method: "POST", handler: 
 
 auth.addHttpRoutes(http);
 http.route({ path: "/api/browser/authorize", method: "POST", handler: authorizeCommitHttp });
+http.route({ path: "/api/browser/validate", method: "POST", handler: validateJobHttp });
 http.route({ path: "/api/inventory/invoice", method: "POST", handler: upload });
 http.route({ path: "/api/inventory/invoice", method: "OPTIONS", handler: options });
 

@@ -29,6 +29,7 @@ export function approvalKey(
     shipTo: string;
     totalCents: number;
     reviewRequired?: boolean;
+    browserTermsPending?: boolean;
     requestedQuantity?: number;
     quotedArrival?: string;
     orderingMethod?: "purchase_order" | "website";
@@ -52,5 +53,6 @@ export function approvalKey(
     order.unit,
     order.itemName,
     order.supplierSku,
+    ...(order.browserTermsPending ? ["browser_terms_pending"] : []),
   ]);
 }

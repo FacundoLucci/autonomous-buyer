@@ -35,6 +35,7 @@ const labels: Record<string, string> = {
   freightCents: "Shipping",
   taxCents: "Tax",
   totalCents: "Total",
+  browserTermsPending: "Checkout terms still being checked",
   receivedQuantity: "Received",
   expectedOn: "Arrival",
   requiredBy: "Needed by",

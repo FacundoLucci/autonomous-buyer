@@ -7,9 +7,11 @@ for a checkout total, and fill a provider-issued virtual card into a merchant's
 card form. The model never receives the card object. Final order submission still
 uses BUY HARD's separate approval and receipt checks.
 
-This integration is implemented locally. Live connection, provider approval,
-funding, merchant acceptance and a real order receipt require an observed pilot;
-the automated tests do not establish those outcomes.
+This integration is running against BUY HARD's development backend in test mode.
+The app-to-worker connection flow was checked in the in-app browser: Link returned
+its hosted URL and verification phrase, and the URL opened Link's own login page.
+No wallet was connected. Funding, merchant acceptance and a real order receipt
+still require an observed pilot; automated tests do not establish those outcomes.
 
 ## Why Link
 
@@ -105,3 +107,27 @@ card or purchase is required for these checks. A separate live device-authorizat
 probe confirmed that the pinned CLI returns Link's hosted verification URL and
 matching phrase. It used a synthetic local scope and stopped before login; its
 temporary state was deleted. No wallet was connected and no spend was requested.
+
+The browser runtime also has opt-in live-model tests against a controlled store.
+They cover both a normal checkout and a store requiring payment before showing
+delivery details. These test the actual model and headless browser, with simulated
+payment and order endpoints. They are not purchases from a real merchant.
+
+## Purchase flow
+
+1. Ask the buyer for an item and quantity. Set the delivery address in the company.
+2. The buyer researches the exact product and opens the store checkout. It can
+   begin before the store reveals tax, shipping or delivery dates.
+3. Unverified terms appear as "Checking checkout total and delivery" and cannot
+   be approved. The browser checks the actual cart before presenting a price.
+4. If payment is needed, connect Link in Settings and approve its merchant and
+   amount request. A payment-first store may require this before final review.
+5. Approve the verified purchase in BUY HARD. The worker resumes the retained cart,
+   verifies the terms again, submits once and looks for the merchant receipt.
+6. Login or other interruptions return a short-lived browser handoff. A missing
+   receipt remains uncertain; it is not automatically submitted again.
+
+Production Convex and the production worker are separate from development. A
+live pilot requires the approved application release and `LINK_PAYMENT_MODE=live`
+on `browser-worker-prod`, which calls `reliable-albatross-463`. Development uses
+`browser-worker`, calls `festive-coyote-483`, and must remain in test mode.

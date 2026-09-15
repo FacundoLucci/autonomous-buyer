@@ -21,7 +21,9 @@ export function units(count: number, unit: string) {
 export function BuySentence({ buy, large = false }: { buy: Buy; large?: boolean }) {
   const order = buy.order,
     count = order?.requestedQuantity ?? order?.quantity ?? buy.quantity;
-  const arrival = order?.expectedOn ?? (!order?.reviewRequired ? order?.quotedArrival : undefined);
+  const arrival = order?.browserTermsPending
+    ? undefined
+    : (order?.expectedOn ?? (!order?.reviewRequired ? order?.quotedArrival : undefined));
   return (
     <Sentence large={large}>
       {count !== null ? (
@@ -123,6 +125,8 @@ export function ApprovalPrompt({
   onNo: () => void;
 }) {
   const order = buy.order!;
+  if (order.browserTermsPending)
+    return <Sentence>Checking checkout total and delivery before asking for approval.</Sentence>;
   return (
     <Decision
       busy={busy}

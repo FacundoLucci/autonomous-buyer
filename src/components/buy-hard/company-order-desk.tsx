@@ -369,7 +369,11 @@ export function CompanyOrderDesk({
                 </small>
               </span>
               <span>
-                <strong>{money(order.totalCents, order.currency)}</strong>
+                <strong>
+                  {order.browserTermsPending
+                    ? "Checking checkout total"
+                    : money(order.totalCents, order.currency)}
+                </strong>
                 <small>{orderLabels[order.status]}</small>
               </span>
             </button>
@@ -441,9 +445,15 @@ function OrderDetail({ order }: { order: Doc<"companyOrders"> }) {
       `BUY HARD · ${order.number}`,
       orderLabels[order.status],
       `${order.itemName} (${order.sku})`,
-      `${order.quantity} ${order.unit} × ${money(order.unitPriceCents, order.currency)}`,
-      `Delivery ${money(order.freightCents, order.currency)} · Tax ${money(order.taxCents, order.currency)}`,
-      `Total ${money(order.totalCents, order.currency)}`,
+      order.browserTermsPending
+        ? `${order.quantity} ${order.unit} · Checking checkout total and delivery`
+        : `${order.quantity} ${order.unit} × ${money(order.unitPriceCents, order.currency)}`,
+      ...(!order.browserTermsPending
+        ? [
+            `Delivery ${money(order.freightCents, order.currency)} · Tax ${money(order.taxCents, order.currency)}`,
+            `Total ${money(order.totalCents, order.currency)}`,
+          ]
+        : []),
       `Supplier: ${order.supplier}`,
       `Deliver to: ${order.shipTo}`,
       `Required by: ${order.requiredBy}`,
@@ -464,7 +474,7 @@ function OrderDetail({ order }: { order: Doc<"companyOrders"> }) {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-  if (editing && order.status === "draft")
+  if (editing && order.status === "draft" && !order.browserTermsPending)
     return (
       <PurchaseForm
         item={{
@@ -502,19 +512,33 @@ function OrderDetail({ order }: { order: Doc<"companyOrders"> }) {
         <div>
           <dt>Quantity</dt>
           <dd>
-            {order.quantity} {order.unit} at {money(order.unitPriceCents, order.currency)} each
+            {order.quantity} {order.unit}
+            {!order.browserTermsPending && (
+              <> at {money(order.unitPriceCents, order.currency)} each</>
+            )}
           </dd>
         </div>
         <div>
           <dt>Delivery / tax</dt>
           <dd>
-            {money(order.freightCents, order.currency)} / {money(order.taxCents, order.currency)}
+            {order.browserTermsPending ? (
+              "Being checked at checkout"
+            ) : (
+              <>
+                {money(order.freightCents, order.currency)} /{" "}
+                {money(order.taxCents, order.currency)}
+              </>
+            )}
           </dd>
         </div>
         <div>
           <dt>Total to approve</dt>
           <dd>
-            <strong>{money(order.totalCents, order.currency)}</strong>
+            <strong>
+              {order.browserTermsPending
+                ? "Checking checkout total"
+                : money(order.totalCents, order.currency)}
+            </strong>
           </dd>
         </div>
         <div>
@@ -527,7 +551,10 @@ function OrderDetail({ order }: { order: Doc<"companyOrders"> }) {
         </div>
       </dl>
       {order.notes ? <p className="company-preserve-lines">{order.notes}</p> : null}
-      {order.status === "draft" ? (
+      {order.browserTermsPending ? (
+        <p>Checking checkout total and delivery before asking for approval.</p>
+      ) : null}
+      {order.status === "draft" && !order.browserTermsPending ? (
         <>
           <p>Review the quantity, unit, total, and delivery address. Approval saves these terms.</p>
           <button disabled={busy} onClick={() => setEditing(true)}>

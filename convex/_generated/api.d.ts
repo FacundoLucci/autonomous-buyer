@@ -18,6 +18,8 @@ import type * as auth from "../auth.js";
 import type * as authData from "../authData.js";
 import type * as authz from "../authz.js";
 import type * as browserCheckout from "../browserCheckout.js";
+import type * as browserPayments from "../browserPayments.js";
+import type * as browserWorker from "../browserWorker.js";
 import type * as buyer from "../buyer.js";
 import type * as buyerAgent from "../buyerAgent.js";
 import type * as buyerFields from "../buyerFields.js";
@@ -105,6 +107,8 @@ declare const fullApi: ApiFromModules<{
   authData: typeof authData;
   authz: typeof authz;
   browserCheckout: typeof browserCheckout;
+  browserPayments: typeof browserPayments;
+  browserWorker: typeof browserWorker;
   buyer: typeof buyer;
   buyerAgent: typeof buyerAgent;
   buyerFields: typeof buyerFields;

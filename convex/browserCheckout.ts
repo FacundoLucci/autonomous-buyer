@@ -1,3 +1,4 @@
+import { browserWorker as worker } from "./browserWorker";
 import { recordMerchantOrder } from "./merchantMetrics";
 import { supplierAllowed } from "./companySuppliers";
 import { ConvexError, v } from "convex/values";
@@ -37,30 +38,10 @@ const result = v.object({
   snapshot: v.optional(snapshot),
   confirmation: v.optional(v.string()),
   error: v.optional(v.string()),
+  progress: v.optional(v.object({ steps: v.number(), summary: v.string() })),
+  helpKind: v.optional(v.union(v.literal("supplier"), v.literal("payment"))),
 });
 
-async function worker(path: string, body?: unknown): Promise<unknown> {
-  if (!env.BROWSER_WORKER_URL || !env.BROWSER_WORKER_SECRET)
-    throw new Error("Website ordering needs the hosted browser worker to be configured.");
-  const base = new URL(env.BROWSER_WORKER_URL);
-  if (base.protocol !== "https:") throw new Error("The browser worker must use HTTPS.");
-  const response = await fetch(new URL(path, base), {
-    method: body ? "POST" : "GET",
-    headers: {
-      Authorization: `Bearer ${env.BROWSER_WORKER_SECRET}`,
-      "Content-Type": "application/json",
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!response.ok)
-    throw new Error(
-      response.status === 422
-        ? "The browser agent could not start this checkout. Review the website address and try again."
-        : "The browser worker could not complete this request.",
-    );
-  return await response.json();
-}
 export const read = internalQuery({
   args: orderArgs,
   returns: v.union(schema.doc("companyOrders"), v.null()),
@@ -97,7 +78,10 @@ export const reserve = internalMutation({
     await ctx.db.patch("companyOrders", order._id, {
       browserPhase: args.phase,
       browserPollCount: 0,
+      browserPollFailures: 0,
       error: undefined,
+      browserHelpKind: undefined,
+      browserProgress: "Opening supplier checkout…",
       ...(args.phase === "submit" ? { executionState: "submitting" as const } : {}),
       updatedAt: Date.now(),
     });
@@ -168,9 +152,13 @@ async function dispatch(ctx: ActionCtx, order: Doc<"companyOrders">, mode: "prep
     const response = await worker("/jobs", {
       phase: mode,
       intent,
+      ...(mode === "submit" && order.browserPreparedJobId
+        ? { preparedJobId: order.browserPreparedJobId }
+        : {}),
       order: {
         _id: order._id,
         organizationId: order.organizationId,
+        paymentOwnerId: mode === "submit" ? (order.approvedBy ?? order.createdBy) : order.createdBy,
         buyUrl: order.buyUrl,
         sku: order.supplierSku ?? order.sku,
         itemName: order.itemName,
@@ -248,7 +236,14 @@ export const apply = internalMutation({
     if (output.state === "running") {
       const count = (order.browserPollCount || 0) + 1;
       if (count < 60) {
-        await ctx.db.patch("companyOrders", order._id, { browserPollCount: count });
+        await ctx.db.patch("companyOrders", order._id, {
+          browserPollCount: count,
+          browserPollFailures: 0,
+          browserHelpKind: undefined,
+          executionState: order.browserPhase === "submit" ? "submitting" : undefined,
+          error: undefined,
+          ...(output.progress ? { browserProgress: output.progress.summary.slice(0, 300) } : {}),
+        });
         await ctx.scheduler.runAfter(10000, internal.browserCheckout.poll, {
           orderId: order._id,
           jobId: args.jobId,
@@ -285,6 +280,7 @@ export const apply = internalMutation({
         currency: s.currency,
         quotedArrival: s.expectedOn,
         reviewRequired: false,
+        browserTermsPending: false,
       };
       await ctx.db.patch("companyOrders", order._id, {
         ...terms,
@@ -296,6 +292,9 @@ export const apply = internalMutation({
         browserJobIntent: undefined,
         browserPhase: undefined,
         browserPreparedKey: approvalKey({ ...order, ...terms }),
+        browserPreparedJobId: args.jobId,
+        browserHelpKind: undefined,
+        browserProgress: undefined,
         executionState: undefined,
         error: undefined,
         updatedAt: Date.now(),
@@ -331,6 +330,8 @@ export const apply = internalMutation({
         status: "placed",
         executionState: "confirmed",
         confirmation: output.confirmation,
+        browserHelpKind: undefined,
+        browserProgress: undefined,
         expectedOn: s.expectedOn,
         placedAt: Date.now(),
         error: undefined,
@@ -355,6 +356,9 @@ export const apply = internalMutation({
         output.state === "running"
           ? "outcome_unknown"
           : "needs_attention",
+      browserHelpKind:
+        output.state === "needs_payment" ? "payment" : (output.helpKind ?? "supplier"),
+      browserProgress: undefined,
       error: output.error || "Website checkout needs your help.",
       updatedAt: Date.now(),
     });
@@ -378,13 +382,33 @@ export const poll = internalAction({
         result: response as typeof result.type,
       });
     } catch {
-      await ctx.runMutation(internal.browserCheckout.fail, {
-        orderId: args.orderId,
-        jobId: args.jobId,
-        message:
-          "Cannot verify website checkout. Check the supplier order history before retrying.",
-        uncertain: true,
+      await ctx.runMutation(internal.browserCheckout.pollError, args);
+    }
+    return null;
+  },
+});
+
+export const pollError = internalMutation({
+  args: { ...orderArgs, jobId: v.string(), intent: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const order = await ctx.db.get("companyOrders", args.orderId);
+    if (!order?.isOpen || order.browserJobId !== args.jobId || order.executionState === "confirmed")
+      return null;
+    const failures = (order.browserPollFailures ?? 0) + 1;
+    await ctx.db.patch("companyOrders", order._id, { browserPollFailures: failures });
+    if (failures < 3) {
+      await ctx.scheduler.runAfter(failures * 5000, internal.browserCheckout.poll, args);
+    } else {
+      const message = order.browserCommitAuthorizedAt
+        ? "The supplier may have received the order. Check its order history before another attempt."
+        : "The browser connection was interrupted. Continue checkout to reconnect.";
+      await ctx.db.patch("companyOrders", order._id, {
+        executionState: order.browserCommitAuthorizedAt ? "outcome_unknown" : "needs_attention",
+        browserProgress: undefined,
+        error: message,
       });
+      await orderEvent(ctx, order, "browser_attention", message);
     }
     return null;
   },
@@ -393,11 +417,34 @@ export const helpSession = action({
   args: orderArgs,
   returns: v.string(),
   handler: async (ctx, args) => {
-    const order: Doc<"companyOrders"> | null = await ctx.runQuery(api.companyOrders.get, {
-      orderId: args.orderId,
+    const [scope, order]: [
+      { organizationId: string; paymentOwnerId: string },
+      Doc<"companyOrders"> | null,
+    ] = await Promise.all([
+      ctx.runQuery(internal.browserPayments.owner, {}),
+      ctx.runQuery(api.companyOrders.get, { orderId: args.orderId }),
+    ]);
+    if (
+      !order?.isOpen ||
+      !order.browserJobId ||
+      !order.browserPhase ||
+      !order.browserJobIntent ||
+      order.browserCommitAuthorizedAt ||
+      (order.browserPhase === "submit" ? order.approvedBy : order.createdBy) !==
+        scope.paymentOwnerId
+    )
+      throw new ConvexError("The person funding this purchase must open its supplier session.");
+    const current = await ctx.runQuery(internal.browserCheckout.validateJob, {
+      orderId: order._id,
+      jobId: order.browserJobId,
+      intent: order.browserJobIntent,
+      phase: order.browserPhase,
     });
-    if (!order?.browserJobId) throw new ConvexError("No supplier session is available yet.");
-    const response = await worker(`/jobs/${encodeURIComponent(order.browserJobId)}/takeover`, {});
+    if (!current) throw new ConvexError("This checkout changed. Review the purchase first.");
+    const response = await worker(`/jobs/${encodeURIComponent(order.browserJobId)}/takeover`, {
+      ...scope,
+      intent: order.browserJobIntent,
+    });
     if (
       typeof response !== "object" ||
       response === null ||
@@ -435,19 +482,63 @@ export const retry = action({
       await ctx.runAction(internal.browserCheckout.prepare, args);
       return null;
     }
-    const path =
-      order.browserPhase === "submit" && order.browserCommitAuthorizedAt ? "reconcile" : "retry";
-    if (path === "retry")
-      await ctx.runMutation(internal.browserCheckout.resume, { orderId: order._id });
-    await worker(`/jobs/${encodeURIComponent(order.browserJobId)}/${path}`, {});
-    await ctx.runAction(internal.browserCheckout.poll, {
+    const pollArgs = {
       orderId: order._id,
       jobId: order.browserJobId,
       intent:
         order.browserCommitAuthorizedAt && order.approvedTermsKey
           ? order.approvedTermsKey
-          : approvalKey(order),
+          : (order.browserJobIntent ?? approvalKey(order)),
+    };
+    // A lost poll does not mean the browser paused. Recover its existing cart
+    // or receipt before sending any instruction to continue.
+    let output: typeof result.type;
+    try {
+      output = (await worker(
+        `/jobs/${encodeURIComponent(order.browserJobId)}`,
+      )) as typeof result.type;
+      await ctx.runMutation(internal.browserCheckout.apply, { ...pollArgs, result: output });
+    } catch (error) {
+      await ctx.runMutation(internal.browserCheckout.pollError, pollArgs);
+      throw error;
+    }
+    if (order.browserCommitAuthorizedAt) {
+      if (output.state === "confirmed" || output.state === "running") return null;
+      // This endpoint may only reconcile an existing submission. Never send a
+      // retry or create another job once the one-time purchase grant was used.
+      try {
+        await worker(`/jobs/${encodeURIComponent(order.browserJobId)}/reconcile`, {
+          intent: pollArgs.intent,
+        });
+      } catch {
+        // Receipt recovery can finish despite a lost or rejected response.
+      }
+      await ctx.runAction(internal.browserCheckout.poll, pollArgs);
+      return null;
+    }
+    if (!["needs_help", "needs_payment"].includes(output.state)) return null;
+    const current: Doc<"companyOrders"> | null = await ctx.runQuery(internal.browserCheckout.read, {
+      orderId: order._id,
     });
+    if (
+      !current?.isOpen ||
+      current.browserJobId !== pollArgs.jobId ||
+      current.browserCommitAuthorizedAt ||
+      approvalKey(current) !== pollArgs.intent
+    )
+      return null;
+    await ctx.runMutation(internal.browserCheckout.resume, { orderId: order._id });
+    try {
+      await worker(`/jobs/${encodeURIComponent(order.browserJobId)}/retry`, {
+        intent: pollArgs.intent,
+      });
+    } catch {
+      // Another request may already have resumed or finished this job. Read
+      // it back even when admission fails, and preserve a real pause/error.
+      await ctx.runAction(internal.browserCheckout.poll, pollArgs);
+      return null;
+    }
+    await ctx.runAction(internal.browserCheckout.poll, pollArgs);
     return null;
   },
 });
@@ -510,12 +601,79 @@ export const authorizeCommitHttp = httpAction(async (ctx, request) => {
   }
 });
 
+// This checks whether browsing/payment setup may continue. It never grants a purchase.
+export const validateJob = internalQuery({
+  args: { orderId: v.string(), jobId: v.string(), intent: v.string(), phase },
+  returns: v.boolean(),
+  handler: async (ctx, args) => {
+    const id = ctx.db.normalizeId("companyOrders", args.orderId);
+    const order = id ? await ctx.db.get("companyOrders", id) : null;
+    if (
+      !order?.isOpen ||
+      order.browserCommitAuthorizedAt ||
+      order.providerOutboundId ||
+      order.browserJobId !== args.jobId ||
+      order.browserPhase !== args.phase ||
+      order.browserJobIntent !== args.intent ||
+      approvalKey(order) !== args.intent
+    )
+      return false;
+    if (args.phase === "prepare" && order.status !== "draft") return false;
+    if (
+      args.phase === "submit" &&
+      (order.status !== "approved" ||
+        order.approvedTermsKey !== args.intent ||
+        order.browserPreparedKey !== args.intent ||
+        order.reviewRequired)
+    )
+      return false;
+    return await supplierAllowed(ctx, order.organizationId, order.buyUrl ?? order.sourceUrl);
+  },
+});
+
+export const validateJobHttp = httpAction(async (ctx, request) => {
+  if (
+    !env.BROWSER_WORKER_SECRET ||
+    request.headers.get("Authorization") !== `Bearer ${env.BROWSER_WORKER_SECRET}`
+  )
+    return new Response("Unauthorized", { status: 401 });
+  try {
+    const input: unknown = await request.json();
+    if (
+      !input ||
+      typeof input !== "object" ||
+      !("orderId" in input) ||
+      typeof input.orderId !== "string" ||
+      !("jobId" in input) ||
+      typeof input.jobId !== "string" ||
+      !("intent" in input) ||
+      typeof input.intent !== "string" ||
+      !("phase" in input) ||
+      (input.phase !== "prepare" && input.phase !== "submit")
+    )
+      return new Response("Invalid request", { status: 400 });
+    const valid: boolean = await ctx.runQuery(internal.browserCheckout.validateJob, {
+      orderId: input.orderId,
+      jobId: input.jobId,
+      intent: input.intent,
+      phase: input.phase,
+    });
+    return Response.json({ valid }, { headers: { "Cache-Control": "no-store" } });
+  } catch {
+    return new Response("Invalid request", { status: 400 });
+  }
+});
+
 export const resume = internalMutation({
   args: orderArgs,
   returns: v.null(),
   handler: async (ctx, { orderId }) => {
     const order = await ctx.db.get("companyOrders", orderId);
-    if (!order || order.browserCommitAuthorizedAt)
+    if (
+      !order?.isOpen ||
+      order.browserCommitAuthorizedAt ||
+      (order.browserPhase === "prepare" && order.browserJobIntent !== approvalKey(order))
+    )
       throw new ConvexError("Reconcile the supplier before retrying.");
     if (order.browserPhase === "submit") {
       if (
@@ -528,6 +686,18 @@ export const resume = internalMutation({
         executionState: "submitting",
         error: undefined,
         browserPollCount: 0,
+        browserPollFailures: 0,
+        browserHelpKind: undefined,
+        browserProgress: "Continuing supplier checkout…",
+      });
+    } else if (order.status === "draft") {
+      await ctx.db.patch("companyOrders", orderId, {
+        executionState: undefined,
+        error: undefined,
+        browserPollCount: 0,
+        browserPollFailures: 0,
+        browserHelpKind: undefined,
+        browserProgress: "Continuing supplier checkout…",
       });
     }
     return null;

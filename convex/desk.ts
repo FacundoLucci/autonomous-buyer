@@ -172,11 +172,15 @@ export function initialDraft(c: Awaited<ReturnType<typeof context>>): Draft {
           supplier: c.order.supplier,
           buyUrl: c.order.buyUrl,
           supplierEmail: c.order.supplierEmail,
-          unitPriceCents: c.order.unitPriceCents,
-          freightCents: c.order.freightCents,
-          taxCents: c.order.taxCents,
-          currency: c.order.currency,
-          expectedOn: c.order.quotedArrival,
+          ...(!c.order.browserTermsPending
+            ? {
+                unitPriceCents: c.order.unitPriceCents,
+                freightCents: c.order.freightCents,
+                taxCents: c.order.taxCents,
+                currency: c.order.currency,
+                expectedOn: c.order.quotedArrival,
+              }
+            : {}),
           requiredBy: c.order.requiredBy,
           notes: c.order.notes,
         }

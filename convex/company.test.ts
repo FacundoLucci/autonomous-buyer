@@ -7,6 +7,7 @@ import { queueAlert } from "./companyAlerts";
 import { productUrl } from "./inventorySources";
 import { receiveQuoteReply } from "./companyPurchasing";
 import { receiveSupplierReply } from "./companyOrders";
+import { approvalKey, quoteKey } from "../src/lib/buy-review";
 const modules = import.meta.glob("./**/*.ts");
 beforeEach(() => {
   vi.useFakeTimers();
@@ -126,6 +127,49 @@ test("repeat order submissions return the existing open purchase", async () => {
   const second = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
   expect(first).toBe(second);
   expect(await a.query(api.companyOrders.list, {})).toHaveLength(1);
+});
+test("website placeholders cannot be approved even if review flags or prior keys look ready", async () => {
+  const { t, a, item } = await fixture();
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, {
+      orderingMethod: "website",
+      browserTermsPending: true,
+      reviewRequired: false,
+      unitPriceCents: 0,
+      freightCents: 0,
+      taxCents: 0,
+      totalCents: 0,
+    });
+    const order = (await ctx.db.get("companyOrders", orderId))!;
+    await ctx.db.patch("companyOrders", orderId, { browserPreparedKey: approvalKey(order) });
+  });
+  await expect(a.mutation(api.companyOrders.approve, { orderId })).rejects.toThrow(
+    /checkout total and delivery/,
+  );
+  const order = (await a.query(api.companyOrders.get, { orderId }))!;
+  expect(order.status).toBe("draft");
+  expect(order.approvedAt).toBeUndefined();
+});
+test("pending checkout changes approval identity without invalidating existing verified keys", () => {
+  const order = { ...terms, shipTo: "1 School Street", totalCents: 6235 };
+  const previousKey = JSON.stringify([
+    quoteKey(order),
+    order.shipTo,
+    order.totalCents,
+    false,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ]);
+  expect(approvalKey(order)).toBe(previousKey);
+  expect(approvalKey({ ...order, browserTermsPending: false })).toBe(previousKey);
+  expect(approvalKey({ ...order, browserTermsPending: true })).not.toBe(previousKey);
 });
 test("partial receipts update inventory once and reject excess delivery", async () => {
   const { a, b, item } = await fixture();

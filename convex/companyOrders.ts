@@ -192,6 +192,8 @@ export const approve = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const { order, user } = await ownOrder(ctx, args.orderId);
+    if (order.browserTermsPending)
+      throw new ConvexError("Check the supplier checkout total and delivery before approving.");
     if (!(await supplierAllowed(ctx, order.organizationId, order.buyUrl ?? order.sourceUrl)))
       throw new ConvexError("This supplier is paused in your supplier directory.");
     if (order.quotedArrival && Date.parse(`${order.quotedArrival}T23:59:59.999Z`) < Date.now())

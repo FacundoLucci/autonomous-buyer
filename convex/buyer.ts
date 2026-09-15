@@ -320,7 +320,7 @@ export const show = internalMutation({
         cancelled: "cancelled",
         send_failed: "email delivery needs checking",
       };
-      text = `${c.item?.name ?? c.order?.itemName}: ${c.order ? (c.order.reviewRequired ? "price and delivery need checking" : labels[c.order.status]) : "buy started"}${c.order?.expectedOn ? `, expected ${c.order.expectedOn}` : ""}.`;
+      text = `${c.item?.name ?? c.order?.itemName}: ${c.order ? (c.order.browserTermsPending ? "checking checkout total and delivery" : c.order.reviewRequired ? "price and delivery need checking" : labels[c.order.status]) : "buy started"}${!c.order?.browserTermsPending && c.order?.expectedOn ? `, expected ${c.order.expectedOn}` : ""}.`;
     } else if (args.focus.page === "settings")
       text = "You can update your company, purchasing inbox, and notifications here.";
     else if (args.focus.page === "inventory")

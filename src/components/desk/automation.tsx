@@ -93,7 +93,9 @@ export function OrderProgress({
 }) {
   const order = buy.order;
   const preparingWebsite =
-    order?.status === "draft" && order.orderingMethod === "website" && order.reviewRequired;
+    order?.status === "draft" &&
+    order.orderingMethod === "website" &&
+    (order.reviewRequired || order.browserTermsPending);
   if (
     !order ||
     (!preparingWebsite && !["approved", "sending", "sent", "send_failed"].includes(order.status))
@@ -107,6 +109,7 @@ export function OrderProgress({
       <Sentence>
         {execution.executionNote ??
           order.error ??
+          order.browserProgress ??
           (unknown
             ? "I’m checking whether the supplier received your order before another attempt."
             : help
@@ -122,11 +125,11 @@ export function OrderProgress({
       {(unknown || help || order.status === "send_failed") && (
         <div className="desk-answer-actions">
           <Button variant="outline" disabled={busy} onClick={() => void onCheck()}>
-            Check order
+            {help && order.orderingMethod === "website" ? "Continue checkout" : "Check order"}
           </Button>
           {help && (
             <Button variant="outline" disabled={busy} onClick={() => void onHelp()}>
-              Resolve this
+              {order.browserHelpKind === "payment" ? "Approve payment with Link" : "Resolve this"}
             </Button>
           )}
         </div>
