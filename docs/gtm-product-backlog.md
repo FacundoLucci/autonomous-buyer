@@ -26,6 +26,8 @@ The campaign should help choose what BUY HARD needs to do next. Define the usefu
 
 **Target story:** The next supplier-proof slot after verification. Status: requires a concrete approved real-order scenario; no purchase is authorized by the marketing calendar alone.
 
+**September 15 release evidence:** The separate purchasing task recorded production release `3a69b7c`: verified checkout terms, retained-cart recovery and live-mode Link wiring. Controlled-store/model checks passed; no real wallet/card or real merchant order was completed. The next step remains one specifically approved merchant pilot. [Release and evidence limits](purchasing-runtime-verification.md)
+
 ## GTM-03 — Make one recurring item easy to start
 
 **Story:** Bring the supplier link or invoice you already have; get one recurring item ready for your buyer.
@@ -52,7 +54,7 @@ The campaign should help choose what BUY HARD needs to do next. Define the usefu
 
 **Local improvement:** Sample changes now trigger the existing demo-use event after an actual change is saved. Direct approval shows the walkthrough suggestion with campaign tags preserved. Desktop and mobile checks passed; dismissing the suggestion stays respected after receiving. The released analytics backend recorded one excluded QA visit and one demo-use event across multiple sample actions. No supplier was contacted. Typecheck, build, focused lint and both attribution tests passed.
 
-The change was committed as `59277a1` on isolated branch `codex/marketing-demo-engagement`. It is now merged into pushed `main` through `c456877`. This marketing review has not established a production release or refreshed the live demo-use check. [Review and deployment scope](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-engagement-fix.md) · [QA event readback](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-use-proof.json).
+The change was committed as `59277a1` on isolated branch `codex/marketing-demo-engagement`. It is now merged into pushed `main` through `c456877`. The September 15 release record establishes a production rollout containing this ancestor change. A fresh authenticated demo-use and attribution check is still needed. [Review and deployment scope](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-engagement-fix.md) · [QA event readback](../output/marketing/2026-09-12-daily-campaign/reviews/2026-09-12-demo-use-proof.json).
 
 **Target story:** Ongoing daily reviews. Status: merged and pushed; production behavior needs a release readback before using demo conversion to judge the campaign.
 
@@ -86,8 +88,30 @@ The change was committed as `59277a1` on isolated branch `codex/marketing-demo-e
 
 **Acceptance:** A dated supplier update changes the item's explanation and proposed response; spending still requires its existing approval. No automatic cancellation, purchase or supplier message is authorized by this story. Preserve the source date, remaining stock, incoming quantity and one buying decision. Production release and real supplier proof are separate.
 
+## GTM-07 — Make the buyer's email a complete product story
+
+**Story:** Your buyer has its own email address: it requests quotes, follows up and keeps supplier replies with the purchase.
+
+**Implementation update:** Email review, HTML handling, attachment extraction, conversations/search, draft review and access/domain configuration support are implemented. Backend is deployed to development; 193 tests pass. Production activation and a real provider conversation remain separate. [Verification](agentmail-implementation-2026-09-15.md)
+
+**State:** Current company code implements these email jobs. September 15 source review found gaps in HTML-only mail, handling unauthenticated messages, attachment intake and searchable conversation history. Live account settings and a fresh provider run remain unverified. [Full review](agentmail-review-2026-09-15.md)
+
+**Next work, in order:** Handle HTML-only replies and route unauthenticated mail to review; prove one connected controlled supplier conversation; add emailed PDF quote/invoice intake; add full threads/search and reviewable reply drafts where useful. Verify the live custom-domain and scoped-key setup before deciding changes.
+
+**Acceptance:** A reply matches the right company, supplier and buy; repeated delivery causes no duplicate action. Unauthenticated mail cannot confirm or cancel an order automatically. HTML-only and attached terms retain their source and go to review when uncertain. Quote, approved order, email delivery, supplier confirmation and goods received stay distinct. Capture the provider message IDs and resulting app state for the spotlight.
+
+**Target story:** The next AgentMail spotlight with a verified conversation or clearly labeled preview. Product and founder draft copy are in their campaign plans. This task does not authorize supplier contact, a purchase or production configuration changes.
+
 ## How work moves
 
 Each task needs an owner, current state, smallest next change, acceptance check, and the post it unlocks. Use an isolated checkout when a change overlaps existing work. Complete local implementation and focused checks before requesting approval for a concrete production release. Recheck the released user flow before changing a claim from planned to available.
 
 When a task is incomplete, turn the idea into an aspirational question or show current progress. Keep building toward the stronger story. Do not make an unbuilt capability sound already available.
+
+## September 16 review — validate the invitation and proof
+
+GTM-04: 100 non-test visit events, 33 product-tagged and two founder-tagged, with no recorded inquiries, bookings or leads. These are browser records, not verified people. Offer “Help shape your buyer”: understand the operator's buying process and show current testing. Check the landing and booking text against that promise before promoting a proven walkthrough. The existing /walkthrough URL remains for working routing and attribution.
+
+GTM-07: concurrent AgentMail work is present and development validation is documented; do not duplicate it or describe it as a proven production supplier conversation. The next evidence remains a controlled provider thread and a separately approved release. GTM-02 still needs a specifically authorized real merchant pilot. No production changes or purchases were performed by this review.
+
+The Square post's one visible new comment promotes another product. It is not an operator requirement or buying lead. No product expansion is justified by that comment. Delivery-delay question published before today's hold; it remains an aspiration, not a completed capability.

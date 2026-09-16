@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-09-16T14:17:06.249062+00:00",
+  "source": "Zernio published rows and both platform links; Square native LinkedIn page additionally inspected",
+  "posts": [
+    {
+      "key": "delivery_delay_idea",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-16T08:30:00-05:00",
+      "zernioPostId": "6aa85af337545f68eb54355f",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505981610521972736/",
+        "https://twitter.com/i/web/status/2100215901404483917"
+      ],
+      "metrics": {
+        "impressions": 5,
+        "reach": 3,
+        "likes": null,
+        "comments": null,
+        "views": null
+      }
+    },
+    {
+      "key": "square_test_result",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-15T17:30:00-05:00",
+      "zernioPostId": "6aa85aa9699a1408118db216",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505755061659127808/",
+        "https://twitter.com/i/web/status/2099989350037508277"
+      ],
+      "metrics": {
+        "impressions": 57,
+        "reach": 35,
+        "likes": 1,
+        "comments": 1,
+        "views": null
+      }
+    },
+    {
+      "key": "no_because",
+      "status": "published",
+      "scheduledAt": "2026-09-15T12:30:00-05:00",
+      "campaign": "buyhard_allgas_202609",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505679728922767360/",
+        "https://twitter.com/i/web/status/2099913866335416792"
+      ],
+      "metrics": {
+        "impressions": 28,
+        "reach": 14,
+        "likes": null,
+        "comments": null,
+        "views": null
+      }
+    },
+    {
+      "key": "your_existing_supplier",
+      "status": "published",
+      "scheduledAt": "2026-09-15T08:30:00-05:00",
+      "campaign": "buyhard_allgas_202609",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505619291925295104/",
+        "https://twitter.com/i/web/status/2099853589745177031"
+      ],
+      "metrics": {
+        "impressions": 26,
+        "reach": 13,
+        "likes": null,
+        "comments": null,
+        "views": null
+      }
+    }
+  ]
+}

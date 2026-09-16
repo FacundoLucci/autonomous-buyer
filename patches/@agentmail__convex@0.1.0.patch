@@ -18,7 +18,7 @@ index 3d15ed6b9a71d4f2e29f846cd61b4d85531ff13a..ebe67b450fe3ea8cc37f70f63f5f56b6
  component.use(workpool, { name: "callbackPool" });
  export default component;
 diff --git a/dist/component/eventLogic.js b/dist/component/eventLogic.js
-index af84fa750defb684c213ad4607dc3fc517500548..4af8a0d398451183a2b7600f6fe516d5b09b6d6a 100644
+index af84fa750defb684c213ad4607dc3fc517500548..825b917eda5d8e78207528cab005adaee170a419 100644
 --- a/dist/component/eventLogic.js
 +++ b/dist/component/eventLogic.js
 @@ -57,6 +57,7 @@ export function mapEventToOutboundStatus(eventType) {
@@ -30,7 +30,7 @@ index af84fa750defb684c213ad4607dc3fc517500548..4af8a0d398451183a2b7600f6fe516d5
              return undefined;
      }
 diff --git a/dist/component/lib.js b/dist/component/lib.js
-index c245802ccb5cd51a38444b50c0310f65cc5cf285..4ff6bbd37d83d2112495387c7349a18920f6145e 100644
+index c245802ccb5cd51a38444b50c0310f65cc5cf285..4e8487466547655f011fe5debee40da42ab35487 100644
 --- a/dist/component/lib.js
 +++ b/dist/component/lib.js
 @@ -1,5 +1,5 @@
@@ -101,18 +101,24 @@ index c245802ccb5cd51a38444b50c0310f65cc5cf285..4ff6bbd37d83d2112495387c7349a189
      args: { inboxId: v.string(), messageId: v.string() },
      handler: async (_ctx, args) => {
          return await agentmailFetch(`/inboxes/${args.inboxId}/messages/${args.messageId}`, { method: "GET" });
-@@ -386,7 +386,9 @@ export const handleEvent = mutation({
+@@ -386,8 +386,14 @@ export const handleEvent = mutation({
              receivedAt: Date.now(),
              raw: event,
          });
 -        if (event.event_type === "message.received" && event.message) {
+-            const m = event.message;
 +        if ((event.event_type === "message.received" ||
 +            event.event_type === "message.received.unauthenticated") &&
 +            event.message) {
-             const m = event.message;
++            // Preserve the provider's trust classification even if labels were omitted.
++        if (event.event_type === "message.received.unauthenticated") {
++            event.message = { ...event.message, labels: [...(Array.isArray(event.message.labels) ? event.message.labels : []), "unauthenticated"] };
++        }
++        const m = event.message;
              await ctx.db.insert("inboundMessages", {
                  inboxId: m.inbox_id,
-@@ -417,7 +419,8 @@ export const handleEvent = mutation({
+                 threadId: m.thread_id,
+@@ -417,7 +423,8 @@ export const handleEvent = mutation({
              await callbackPool.enqueueMutation(ctx, handle, { event });
          }
          if (args.config.onMessageReceived &&
@@ -122,8 +128,35 @@ index c245802ccb5cd51a38444b50c0310f65cc5cf285..4ff6bbd37d83d2112495387c7349a189
              const handle = args.config.onMessageReceived
                  .fnHandle;
              await callbackPool.enqueueMutation(ctx, handle, {
+diff --git a/dist/component/shared.d.ts b/dist/component/shared.d.ts
+index 4a2e87760fe7624eee74d5c78f67e7a4fd12b55f..d5aa7e69f3a89f0a2c3a77a232f6c0c09d6076c8 100644
+--- a/dist/component/shared.d.ts
++++ b/dist/component/shared.d.ts
+@@ -56,7 +56,7 @@ export declare const vSendPayload: import("convex/values").VObject<{
+     reply_all: import("convex/values").VBoolean<boolean | undefined, "optional">;
+ }, "required", "reply_all" | "labels" | "reply_to" | "to" | "cc" | "bcc" | "subject" | "text" | "html" | "attachments" | "headers" | `headers.${string}`>;
+ export type SendPayload = Infer<typeof vSendPayload>;
+-export declare const vEventType: import("convex/values").VUnion<"message.received" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified", [import("convex/values").VLiteral<"message.received", "required">, import("convex/values").VLiteral<"message.sent", "required">, import("convex/values").VLiteral<"message.delivered", "required">, import("convex/values").VLiteral<"message.bounced", "required">, import("convex/values").VLiteral<"message.complained", "required">, import("convex/values").VLiteral<"message.rejected", "required">, import("convex/values").VLiteral<"domain.verified", "required">], "required", never>;
++export declare const vEventType: import("convex/values").VUnion<"message.received" | "message.received.unauthenticated" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified", [import("convex/values").VLiteral<"message.received", "required">, import("convex/values").VLiteral<"message.received.unauthenticated", "required">, import("convex/values").VLiteral<"message.sent", "required">, import("convex/values").VLiteral<"message.delivered", "required">, import("convex/values").VLiteral<"message.bounced", "required">, import("convex/values").VLiteral<"message.complained", "required">, import("convex/values").VLiteral<"message.rejected", "required">, import("convex/values").VLiteral<"domain.verified", "required">], "required", never>;
+ export type EventType = Infer<typeof vEventType>;
+ export declare const vEvent: import("convex/values").VObject<{
+     send?: any;
+@@ -68,11 +68,11 @@ export declare const vEvent: import("convex/values").VObject<{
+     reject?: any;
+     domain?: any;
+     type: "event";
+-    event_type: "message.received" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified";
++    event_type: "message.received" | "message.received.unauthenticated" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified";
+     event_id: string;
+ }, {
+     type: import("convex/values").VLiteral<"event", "required">;
+-    event_type: import("convex/values").VUnion<"message.received" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified", [import("convex/values").VLiteral<"message.received", "required">, import("convex/values").VLiteral<"message.sent", "required">, import("convex/values").VLiteral<"message.delivered", "required">, import("convex/values").VLiteral<"message.bounced", "required">, import("convex/values").VLiteral<"message.complained", "required">, import("convex/values").VLiteral<"message.rejected", "required">, import("convex/values").VLiteral<"domain.verified", "required">], "required", never>;
++    event_type: import("convex/values").VUnion<"message.received" | "message.received.unauthenticated" | "message.sent" | "message.delivered" | "message.bounced" | "message.complained" | "message.rejected" | "domain.verified", [import("convex/values").VLiteral<"message.received", "required">, import("convex/values").VLiteral<"message.received.unauthenticated", "required">, import("convex/values").VLiteral<"message.sent", "required">, import("convex/values").VLiteral<"message.delivered", "required">, import("convex/values").VLiteral<"message.bounced", "required">, import("convex/values").VLiteral<"message.complained", "required">, import("convex/values").VLiteral<"message.rejected", "required">, import("convex/values").VLiteral<"domain.verified", "required">], "required", never>;
+     event_id: import("convex/values").VString<string, "required">;
+     message: import("convex/values").VAny<any, "optional", string>;
+     thread: import("convex/values").VAny<any, "optional", string>;
 diff --git a/dist/component/shared.js b/dist/component/shared.js
-index 1586218fe83098ed1121dcc2642881590ccea9e4..a5a00a6b26d9c564f3dc22d0d84bb875d0653b03 100644
+index 1586218fe83098ed1121dcc2642881590ccea9e4..f4a25da6b538ee791d409f0861148adef0eeb779 100644
 --- a/dist/component/shared.js
 +++ b/dist/component/shared.js
 @@ -20,7 +20,7 @@ export const vSendPayload = v.object({
@@ -168,7 +201,7 @@ index 00c5328e76071b5bc335065da77b4454be207ccc..43207e81b81f23ccb752309e10e4b6a0
        return undefined;
    }
 diff --git a/src/component/lib.ts b/src/component/lib.ts
-index 121dd580ef3d608ca8c76b7d685fa5e1cb6d402b..06ff848b5abe9946a85de21c4925de595b6603ee 100644
+index 121dd580ef3d608ca8c76b7d685fa5e1cb6d402b..c4bbefe6a6a4f9773d5fbcbf85648ddab21fdbb8 100644
 --- a/src/component/lib.ts
 +++ b/src/component/lib.ts
 @@ -1,5 +1,6 @@
@@ -241,7 +274,7 @@ index 121dd580ef3d608ca8c76b7d685fa5e1cb6d402b..06ff848b5abe9946a85de21c4925de59
    args: { inboxId: v.string(), messageId: v.string() },
    handler: async (_ctx, args) => {
      return await agentmailFetch(
-@@ -452,7 +453,11 @@ export const handleEvent = mutation({
+@@ -452,7 +453,15 @@ export const handleEvent = mutation({
        raw: event,
      });
  
@@ -251,10 +284,14 @@ index 121dd580ef3d608ca8c76b7d685fa5e1cb6d402b..06ff848b5abe9946a85de21c4925de59
 +        event.event_type === "message.received.unauthenticated") &&
 +      event.message
 +    ) {
++      if (event.event_type === "message.received.unauthenticated") {
++        const message = event.message as InboundMessagePayload;
++        event.message = { ...message, labels: [...(Array.isArray(message.labels) ? message.labels : []), "unauthenticated"] };
++      }
        const m = event.message as InboundMessagePayload;
        await ctx.db.insert("inboundMessages", {
          inboxId: m.inbox_id,
-@@ -489,7 +494,8 @@ export const handleEvent = mutation({
+@@ -489,7 +498,8 @@ export const handleEvent = mutation({
      }
      if (
        args.config.onMessageReceived &&

@@ -32,6 +32,8 @@ const app = defineApp({
     OPENROUTER_API_KEY: v.optional(v.string()),
     FIRECRAWL_API_KEY: v.string(),
     FIRECRAWL_WEBHOOK_SECRET: v.optional(v.string()),
+    AGENTMAIL_CREDENTIAL_KEY: v.optional(v.string()),
+    AGENTMAIL_DOMAIN: v.optional(v.string()),
     AGENTMAIL_API_KEY: v.optional(v.string()),
     AGENTMAIL_WEBHOOK_SECRET: v.optional(v.string()),
     AGENTMAIL_BASE_URL: v.optional(v.string()),

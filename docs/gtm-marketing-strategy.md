@@ -1,5 +1,14 @@
 # BUY HARD — GTM and social plan
 
+## September 16 current publishing direction
+
+Every new post includes Facundo speaking on camera with his real voice. No image-only fallback. Five remaining image schedules were saved as drafts today; assets, IDs, captions and original slots are preserved. The standalone napkin also stays a draft until narrated or explicitly excepted. Older calendar entries below are historical, not current publishing instructions.
+
+The two finished product videos remain scheduled: **Talk to your buyer like a teammate — September 17, 08:30**, and **Help shape your buyer — September 18, 12:30**, Chicago time. The invitation now offers a conversation about the operator's process and what Facundo is testing. Avoid implying a proven end-to-end walkthrough. Conversational-agent framing replaces “you can say no.”
+
+Aim for 3–4 daily stories only when matching recordings are ready; do not fill gaps with images. No repeated request for the outstanding founder recordings. [Current queue and hold receipts](../output/marketing/2026-09-16-daily-campaign/README.md).
+
+
 Revised September 13, 2026 · Owner: Facundo · Campaign started September 11
 
 This remains the **product campaign**. A separate [Facundo founder campaign](facundo-founder-campaign.md) supports hiring opportunities and YC connections through the work behind BUY HARD. Keep their copy, tracking and outcomes distinct; coordinate the shared daily posting slots.
@@ -9,6 +18,14 @@ This remains the **product campaign**. A separate [Facundo founder campaign](fac
 Introduce BUY HARD through the work it takes off an operator's plate: keeping supplies stocked, preparing reorders, and handling approved purchases. The buyer starts the routine work; the owner approves spending and handles deliveries or exceptions. Before the hackathon deadline, tag **Convex, OpenAI, Firecrawl, and AgentMail** and explain the work each enables.
 
 The introduction is published: [X](https://twitter.com/i/web/status/2098480454227698101) · [LinkedIn](https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/). The campaign now targets **three product posts every day, including weekends, plus a fourth responsive post when useful**. The [weekend batch](../output/marketing/2026-09-12-daily-campaign/weekend-posts.md) contains the next seven posts. The [editable gallery](../output/marketing/2026-09-11-first-three/html-preview/index.html) keeps the product cards separate from the later handwritten napkin. Publishing mode and actual queue receipts are recorded in the daily campaign folder; proposed times are not proof of scheduling.
+
+### September 15 selfie posts
+
+Two finished founder-led **product** videos are saved on X and LinkedIn in existing open product slots: “Talk to your buyer like a teammate” on September 17 at 08:30, then “Help shape your buyer” on September 18 at 12:30 (America/Chicago). These fit the three-product-post cadence.
+
+Use the first to invite a recurring-purchase story and the second to invite an operator walkthrough. Both use `buyhard_allgas_202609`, platform-specific tracking and all four sponsor mentions. The founder’s restaurant experience supports the invitation; sample screens remain labeled. Keep hiring/builder campaign outcomes separate.
+
+[Video package and copy](../output/marketing/2026-09-15-selfie-posts/README.md) · [Saved schedule evidence](../output/marketing/2026-09-15-selfie-posts/zernio-schedule-receipt.json). The daily review should verify publication after each time and avoid scheduling another story into either occupied slot.
 
 ## 1. The story we should tell
 
@@ -23,7 +40,7 @@ Our first audience remains owners and purchasing leads at small food businesses:
 Three messages should carry the campaign:
 
 - **Stay ahead of shortages.** The buyer watches projected stock and starts replenishment when needed.
-- **Delegate the buying work.** Supplier research, a prepared reorder, and approved purchasing belong to the buyer.
+- **Delegate the buying work.** Supplier research, quote requests, supplier follow-ups, a prepared reorder, and approved purchasing belong to the buyer. Its own purchasing inbox, powered by AgentMail, keeps the supplier conversation with the buy.
 - **Keep control of decisions.** The owner approves spending, records deliveries, and deals with exceptions.
 
 Use the current lime background, black type, large headlines, and consistent Inter typography in the campaign cards. Use the current frontend and persistent **Your buyer** dock in app clips. Keep captions short and readable on a phone. Introduce BUY HARD as new to the audience; a redesign post can explain the build process later.
@@ -81,14 +98,24 @@ Every main pre-deadline post includes all four tags: **@convex @OpenAI @firecraw
 | --------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------- |
 | OpenAI    | Helps the buyer research options and prepare purchases within the buying rules       | An agent-prepared reorder with its research; verified run or labeled illustration     | “Your buyer stays ahead.”                       |
 | Firecrawl | Reads product and supplier pages for research                                         | A source link beside the extracted item or supplier details                          | “Start with the product link you already have.” |
-| AgentMail | Gives the buyer a purchasing inbox and linked supplier conversations                  | A verified purchase email and matching reply in the current interface                | “Keep the supplier conversation with the buy.”  |
+| AgentMail | Gives the buyer its own inbox for quote requests, follow-ups, approved purchase orders and supplier replies | A verified quote request, matching reply and resulting purchase in the current interface | “Your buyer has its own email address.” |
 | Convex    | Stores stock, approvals, and scheduled purchasing work; updates the workspace        | Background replenishment and saved progress, with the actual evidence level shown    | “Your buyer keeps working between visits.”      |
 
 The current [agent dock](../src/components/desk/agent.tsx) already names all four sponsors. [Task results](../src/components/desk/agent-work.tsx) and [activity messages](../src/components/desk/agent-live.tsx) also support credits beside the relevant work. Keep those credits readable in clips. The earlier six-stop demo's placement instructions no longer describe the main frontend.
 
 For provider spotlights, a logo or scripted sample reply alone does not prove a provider call. Capture the actual result when available. Otherwise use the preview wording in the copy bank and label the asset accordingly. Purchase emails belong to AgentMail; the separate low-stock alert sender should not be credited to it. BUY HARD's rules handle stock and money calculations, and the user approves spending.
 
+### AgentMail is part of the product story
+
+Lead with **“Your buyer has its own email address.”** Supporting copy: “BUY HARD gives your buyer a purchasing inbox powered by AgentMail. It can request quotes, follow up on missing details and send approved purchase orders to suppliers that accept them. Replies stay linked to the purchase. You approve the spend.”
+
+Make this a recurring example of delegated buying, alongside stock monitoring and purchase approval. Show one connected conversation instead of an isolated email notification. The current company flow implements these jobs; a live claim still needs the matching provider evidence. AgentMail handles email; OpenAI and BUY HARD interpret the terms and prepare the buying decision.
+
+The next AgentMail spotlight should show a quote request, an incomplete reply, a follow-up and the completed terms ready for review. Keep sample labels visible. Emailed PDF intake and automatic responses to changed delivery dates remain future stories until implemented and verified. [Feature review and next work](agentmail-review-2026-09-15.md)
+
 ## 4. Daily publishing and adjustment
+
+**September 15 morning:** F01 and “A good day to buy hard” are published on both platforms. Wednesday 17:30 now covers verified checkout terms, based on the recorded production release and controlled-store checks. Thursday remains flexible. The napkin has its two earlier published references but remains held until September 17 or later. [Current batch](../output/marketing/2026-09-15-daily-campaign/README.md).
 
 **September 14 afternoon review:** Ten product stories are published; six product stories and four founder stories are scheduled. The next 48 hours now include the Square Sandbox result (Tuesday 17:30), a delivery-delay what-if question (Wednesday 08:30), and partial receiving (Wednesday 12:30). Wednesday evening remains flexible for the next review. F01 is a saved video for tonight at 20:00; F02–F04 keep their image fallbacks. The napkin remains a draft because the second earlier reference is still scheduled, not published. [New batch and receipts](../output/marketing/2026-09-14-daily-campaign/posts.md).
 
@@ -181,11 +208,11 @@ Use buyhard.app for all public campaign links. Post numbers and planning labels 
 
 ### P4 — AgentMail · X
 
-> Supplier replies belong with the purchase.
+> Your buyer has its own email address.
 >
-> AgentMail gives BUY HARD's buyer an inbox for quote requests, replies, and order messages.
+> Quotes, follow-ups and approved orders through AgentMail. You approve the spend.
 >
-> Explore the sample experience: https://buyhard.app/?demo=true
+> Try the sample: https://buyhard.app/?demo=true
 >
 > @convex @OpenAI @firecrawl @agentmail
 

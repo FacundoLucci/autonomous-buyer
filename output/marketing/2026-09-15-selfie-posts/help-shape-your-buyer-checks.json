@@ -1,0 +1,30 @@
+[
+  {
+    "aspect": "square",
+    "ok": true,
+    "samples": [
+      3,
+      9,
+      17,
+      24,
+      29
+    ],
+    "runtimeErrors": 0,
+    "layoutErrors": 0,
+    "contrastErrors": 0
+  },
+  {
+    "aspect": "vertical",
+    "ok": true,
+    "samples": [
+      3,
+      9,
+      17,
+      24,
+      29
+    ],
+    "runtimeErrors": 0,
+    "layoutErrors": 0,
+    "contrastErrors": 0
+  }
+]

@@ -1,3 +1,5 @@
+import { conversationInbox } from "./mailIdentity";
+import { mailBody, mailRisk } from "./mailContent";
 import schema from "./schema";
 import { supplierAllowed } from "./companySuppliers";
 import { ConvexError, v } from "convex/values";
@@ -613,6 +615,7 @@ export const requestQuote = internalMutation({
       email,
       url: args.url,
       providerOutboundId: outboundId,
+      providerInboxId: inbox.inboxId,
       followups: 0,
       state: "sending",
       createdAt: Date.now(),
@@ -695,12 +698,7 @@ export const followup = internalMutation({
       });
       return null;
     }
-    const inbox = await ctx.db
-      .query("purchasingInboxes")
-      .withIndex("by_organization_and_provider", (q) =>
-        q.eq("organizationId", request.organizationId).eq("provider", "agentmail"),
-      )
-      .unique();
+    const inbox = await conversationInbox(ctx, request.organizationId, request.providerInboxId);
     const status = await mail.status(ctx, request.providerOutboundId as OutboundId);
     if (!inbox || !status?.agentmailMessageId) return null;
     await mail.replyToMessage(ctx, inbox.inboxId, status.agentmailMessageId, {
@@ -722,18 +720,15 @@ export async function receiveQuoteReply(
   message: Record<string, unknown>,
   _eventId: string,
 ) {
+  if (mailRisk(message)) return true;
+  message = { ...message, extracted_text: mailBody(message) };
   if (typeof message.thread_id !== "string") return false;
   const request = await ctx.db
     .query("companyQuoteRequests")
     .withIndex("by_providerThreadId", (q) => q.eq("providerThreadId", message.thread_id as string))
     .unique();
   if (!request) return false;
-  const inbox = await ctx.db
-    .query("purchasingInboxes")
-    .withIndex("by_organization_and_provider", (q) =>
-      q.eq("organizationId", request.organizationId).eq("provider", "agentmail"),
-    )
-    .unique();
+  const inbox = await conversationInbox(ctx, request.organizationId, request.providerInboxId);
   const from =
     typeof message.from === "string"
       ? (message.from.match(/<([^<>]+)>/)?.[1] ?? message.from).trim().toLowerCase()

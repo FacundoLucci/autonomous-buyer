@@ -1,0 +1,135 @@
+.desk-mail {
+  min-width: 0;
+}
+.desk-mail .desk-section-heading {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.desk-mail-tabs,
+.desk-mail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.desk-mail-search {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+.desk-mail input,
+.desk-mail textarea,
+.desk-mail select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d6d8cc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #171a12;
+  font: inherit;
+}
+.desk-mail textarea {
+  resize: vertical;
+}
+.desk-mail-search input {
+  flex: 1;
+}
+.desk-mail-message {
+  border-top: 1px solid #d6d8cc;
+  padding: 16px 0;
+  overflow-wrap: anywhere;
+}
+.desk-mail-message p,
+.desk-mail-message blockquote {
+  white-space: pre-wrap;
+}
+.desk-mail-row {
+  width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.desk-mail-row span {
+  font-size: 13px;
+  font-weight: 400;
+}
+.desk-mail-compose {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #9ca77a;
+  border-radius: 12px;
+}
+.desk-mail-settings {
+  margin-top: 24px;
+  font-size: 14px;
+}
+.desk-mail-settings summary {
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+.desk-mail-facts {
+  display: grid;
+  grid-template-columns: minmax(70px, 100px) 1fr;
+  gap: 6px 12px;
+}
+.desk-mail-facts dt {
+  color: #647044;
+}
+.desk-mail-facts dd {
+  margin: 0;
+}
+.desk-mail-line {
+  padding: 12px 0;
+}
+.desk-mail-line blockquote {
+  border-left: 2px solid #a8b68b;
+  margin: 8px 0;
+  padding-left: 12px;
+  font-size: 14px;
+}
+.desk-mail label {
+  display: block;
+  margin: 8px 0;
+}
+@media (max-width: 480px) {
+  .desk-mail-search {
+    flex-wrap: wrap;
+  }
+  .desk-mail-search input {
+    flex-basis: 100%;
+  }
+  .desk-mail-tabs button {
+    flex: 1 1 40%;
+  }
+}
+
+.desk-mail-domain form {
+  display: grid;
+  gap: 12px;
+  margin-block: 16px;
+}
+.desk-mail-dns {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--desk-line, #d8d9ca);
+  margin-block: 10px;
+}
+.desk-mail-dns label {
+  display: grid;
+  gap: 4px;
+}
+.desk-mail-dns code {
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.desk-mail-domain .desk-mail-domain-consent {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+.desk-mail-domain-consent input {
+  width: auto;
+  flex: none;
+  margin-top: 4px;
+}

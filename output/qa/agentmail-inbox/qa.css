@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@source "../../../src/components/desk/mail.tsx";
+@source "../../../src/components/ui/button.tsx";
+@theme { --color-primary: #181b11; --color-primary-foreground: #f2ffd1; --color-border: #bcc3ac; --color-muted: #e9eddc; }
+body { font-family: Inter, Arial, sans-serif; color: #1b2015; background: #f6f7ef; margin: 0; } button { cursor: pointer; } h2 {font-size: 24px;font-weight:600;} h3 {font-weight:600;} .desk-muted {color:#626952;} .desk-error {color:#a52e22;} .desk-section-heading {display:flex; justify-content:space-between; align-items:center;} a {text-decoration:underline;}

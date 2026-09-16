@@ -1,3 +1,7 @@
+import { findInbox } from "./mailIdentity";
+import { companyInbox, mailRequest } from "./mailProvider";
+import { configuredDomain } from "./mailSettings";
+import { mailBody } from "./mailContent";
 import schema from "./schema";
 import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
@@ -6,21 +10,25 @@ import { internalMutation } from "./audited";
 import { ownedCompany } from "./onboarding";
 
 export const context = internalQuery({
-  args: {},
+  args: { inboxId: v.optional(v.string()) },
   returns: v.object({
     organizationId: v.id("organizations"),
     name: v.string(),
     podId: v.union(v.string(), v.null()),
     email: v.union(v.string(), v.null()),
   }),
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const { organization } = await ownedCompany(ctx);
-    const inbox = await ctx.db
-      .query("purchasingInboxes")
-      .withIndex("by_organization_and_provider", (q) =>
-        q.eq("organizationId", organization._id).eq("provider", "agentmail"),
-      )
-      .unique();
+    const inbox = args.inboxId
+      ? await findInbox(ctx, args.inboxId)
+      : await ctx.db
+          .query("purchasingInboxes")
+          .withIndex("by_organization_and_provider", (q) =>
+            q.eq("organizationId", organization._id).eq("provider", "agentmail"),
+          )
+          .unique();
+    if (args.inboxId && inbox?.organizationId !== organization._id)
+      throw new ConvexError("Inbox not found.");
     return {
       organizationId: organization._id,
       name: organization.name,
@@ -126,6 +134,7 @@ export const provision = action({
       const inbox = await createResource(`/pods/${encodeURIComponent(podId)}/inboxes`, {
         client_id: `${clientId}-purchasing-v1`,
         display_name: `${company.name} Purchasing`,
+        ...(await configuredDomain()),
       });
       if (field(inbox, "pod_id") !== podId) throw new Error("Inbox is in the wrong Pod.");
       const inboxId = field(inbox, "inbox_id");
@@ -147,15 +156,8 @@ export const provision = action({
   },
 });
 
-async function readInbox(path: string): Promise<unknown> {
-  if (!env.AGENTMAIL_API_KEY) throw new ConvexError("Purchasing email is not configured.");
-  const base = (env.AGENTMAIL_BASE_URL ?? "https://api.agentmail.to/v0").replace(/\/$/, "");
-  const response = await fetch(`${base}${path}`, {
-    headers: { Authorization: `Bearer ${env.AGENTMAIL_API_KEY}` },
-    signal: AbortSignal.timeout(20_000),
-  });
-  if (!response.ok) throw new ConvexError("Could not read the purchasing inbox. Try again.");
-  return await response.json();
+async function readInbox(path: string, key?: string): Promise<unknown> {
+  return mailRequest(path, { key });
 }
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
@@ -179,10 +181,12 @@ export const messages = action({
   ): Promise<
     { id: string; from: string; subject: string; preview: string; timestamp: string }[]
   > => {
-    const company = await ctx.runQuery(internal.companyMail.context, {});
-    if (!company.email) return [];
+    const company = await companyInbox(ctx);
     const result = record(
-      await readInbox(`/inboxes/${encodeURIComponent(company.email)}/messages?limit=30`),
+      await readInbox(
+        `/inboxes/${encodeURIComponent(company.email)}/messages?limit=30`,
+        company.key,
+      ),
     );
     const messages = Array.isArray(result.messages) ? result.messages : [];
     return messages
@@ -204,18 +208,18 @@ export const readMessage = action({
   args: { messageId: v.string() },
   returns: v.object({ from: v.string(), subject: v.string(), text: v.string() }),
   handler: async (ctx, args): Promise<{ from: string; subject: string; text: string }> => {
-    const company = await ctx.runQuery(internal.companyMail.context, {});
-    if (!company.email || !args.messageId || args.messageId.length > 500)
-      throw new ConvexError("Message not found.");
+    const company = await companyInbox(ctx);
+    if (!args.messageId || args.messageId.length > 500) throw new ConvexError("Message not found.");
     const m = record(
       await readInbox(
         `/inboxes/${encodeURIComponent(company.email)}/messages/${encodeURIComponent(args.messageId)}`,
+        company.key,
       ),
     );
     return {
       from: text(m.from),
       subject: text(m.subject),
-      text: (text(m.extracted_text) || text(m.text) || text(m.preview)).slice(0, 30000),
+      text: mailBody(m),
     };
   },
 });
@@ -287,6 +291,7 @@ export const provisionForCompany = internalAction({
     const inbox = await createResource(`/pods/${encodeURIComponent(podId)}/inboxes`, {
       client_id: `${clientId}-purchasing-v1`,
       display_name: `${company.name} Purchasing`,
+      ...(await configuredDomain()),
     });
     if (field(inbox, "pod_id") !== podId) throw new Error("Inbox is in the wrong Pod.");
     const inboxId = field(inbox, "inbox_id");

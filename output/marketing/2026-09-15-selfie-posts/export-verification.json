@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-09-16T00:31:45.202313+00:00",
+  "files": [
+    {
+      "file": "help-shape-your-buyer-square-captioned.mp4",
+      "duration": 30.875,
+      "width": 1080,
+      "height": 1080,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 15758339,
+      "sha256": "a70709c6af161d3eca57929b5e1604d662dc5a4bb108c92faef351fd6f41659f",
+      "locationMetadata": false
+    },
+    {
+      "file": "help-shape-your-buyer-square-clean.mp4",
+      "duration": 30.875,
+      "width": 1080,
+      "height": 1080,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 16067407,
+      "sha256": "91a535d11257054a17f3f20923920885ea0deb7a20ffb3d0ea31e491f0829160",
+      "locationMetadata": false
+    },
+    {
+      "file": "help-shape-your-buyer-vertical-captioned.mp4",
+      "duration": 30.875,
+      "width": 1080,
+      "height": 1920,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 24519269,
+      "sha256": "bb1a8fe29b992f4cb5f7276ff9df9e88bb89244008b810b42e91221024cc908f",
+      "locationMetadata": false
+    },
+    {
+      "file": "talk-to-your-buyer-square-captioned.mp4",
+      "duration": 20.583333,
+      "width": 1080,
+      "height": 1080,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 10502400,
+      "sha256": "0bdbd5bfdce8a4a61d2bfedb73ecfc32d8cb2ebca1df5cdfd65520fc81a95465",
+      "locationMetadata": false
+    },
+    {
+      "file": "talk-to-your-buyer-square-clean.mp4",
+      "duration": 20.583333,
+      "width": 1080,
+      "height": 1080,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 10617431,
+      "sha256": "8599eb736784fb152a32fcef36f7d5440e6dc7876a7ca278b088b5d553ff12e7",
+      "locationMetadata": false
+    },
+    {
+      "file": "talk-to-your-buyer-vertical-captioned.mp4",
+      "duration": 20.583333,
+      "width": 1080,
+      "height": 1920,
+      "fps": 24,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "bytes": 16618217,
+      "sha256": "fc966e9495b2bd5a70f444fd6e6cb1d3dd5ee8d5c51a21268083de142bceb860",
+      "locationMetadata": false
+    }
+  ],
+  "review": "Visual snapshots and fal ASR verification; no subjective listening claim."
+}

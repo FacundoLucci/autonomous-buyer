@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-09-16T14:17:06.249062+00:00",
+  "source": "Zernio in-app browser; existing IDs edited to Draft, saved, then all-posts table read back",
+  "posts": [
+    {
+      "key": "partial_delivery",
+      "campaign": "buyhard_allgas_202609",
+      "status": "draft",
+      "scheduledAt": "2026-09-16T12:30:00-05:00",
+      "zernioPostId": "6aa85b291e9d258508db2226",
+      "originalScheduledAt": "2026-09-16T12:30:00-05:00",
+      "heldAt": "2026-09-16T14:17:06.249062+00:00",
+      "holdReason": "Await matching real-camera video; no image fallback"
+    },
+    {
+      "key": "whole_checkout_price",
+      "campaign": "buyhard_allgas_202609",
+      "status": "draft",
+      "scheduledAt": "2026-09-16T17:30:00-05:00",
+      "zernioPostId": "6aa93b784386c85db40488e2",
+      "originalScheduledAt": "2026-09-16T17:30:00-05:00",
+      "heldAt": "2026-09-16T14:17:06.249062+00:00",
+      "holdReason": "Await matching real-camera video; no image fallback"
+    },
+    {
+      "key": "give_agent_a_job",
+      "status": "draft",
+      "scheduledAt": "2026-09-16T20:00:00-05:00",
+      "campaign": "facundo_builder_202609",
+      "zernioPostId": "6aa5ec7320dac980f28780cf",
+      "originalScheduledAt": "2026-09-16T20:00:00-05:00",
+      "heldAt": "2026-09-16T14:17:06.249062+00:00",
+      "holdReason": "Await matching real-camera video; no image fallback"
+    },
+    {
+      "key": "build_useful_ai",
+      "status": "draft",
+      "scheduledAt": "2026-09-18T20:00:00-05:00",
+      "campaign": "facundo_builder_202609",
+      "zernioPostId": "6aa5ecda10074d9a4cda491e",
+      "originalScheduledAt": "2026-09-18T20:00:00-05:00",
+      "heldAt": "2026-09-16T14:17:06.249062+00:00",
+      "holdReason": "Await matching real-camera video; no image fallback"
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "status": "draft",
+      "scheduledAt": "2026-09-21T20:00:00-05:00",
+      "campaign": "facundo_builder_202609",
+      "zernioPostId": "6aa5ed36b2f850b20780fd12",
+      "originalScheduledAt": "2026-09-21T20:00:00-05:00",
+      "heldAt": "2026-09-16T14:17:06.249062+00:00",
+      "holdReason": "Await matching real-camera video; no image fallback"
+    }
+  ],
+  "preserved": "Original dates retained as reference only, assets, captions and both accounts; no deletion",
+  "scheduledQueueAfter": [
+    "talk_to_your_buyer",
+    "help_shape_your_buyer"
+  ]
+}

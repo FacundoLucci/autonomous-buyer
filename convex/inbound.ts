@@ -1,3 +1,6 @@
+import { findInbox } from "./mailIdentity";
+import { captureMail } from "./mailReview";
+import { mailBody, mailRisk } from "./mailContent";
 import { v } from "convex/values";
 
 import { internal } from "./_generated/api";
@@ -32,6 +35,9 @@ export const onMessageReceived = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const message = record(args.message);
+    const captured = await captureMail(ctx, message);
+    if (mailRisk(message)) return null;
+    message.extracted_text = mailBody(message);
     if (await receiveQuoteReply(ctx, message, args.eventId)) return null;
     if (await receiveSupplierReply(ctx, message, args.eventId)) return null;
     const providerMessageId = requiredString(message.message_id, "message_id");
@@ -62,6 +68,7 @@ export const onMessageReceived = internalMutation({
             .withIndex("by_thread", (q) => q.eq("providerThreadId", providerThreadId))
             .unique()
         : await ctx.db.get("rfqs", purchaseOrder.rfqId);
+    if (rfq === null && captured) return null;
     if (rfq === null) {
       await ctx.db.insert("integrationReceipts", {
         provider: "agentmail",
@@ -78,13 +85,8 @@ export const onMessageReceived = internalMutation({
     }
     const procurement = await ctx.db.get("procurements", rfq.procurementId);
     if (procurement === null) throw new Error("Procurement not found for inbound RFQ.");
-    const purchasingInbox = await ctx.db
-      .query("purchasingInboxes")
-      .withIndex("by_organization_and_provider", (q) =>
-        q.eq("organizationId", procurement.organizationId).eq("provider", "agentmail"),
-      )
-      .unique();
-    if (!purchasingInbox || optionalString(message.inbox_id) !== purchasingInbox.inboxId) {
+    const purchasingInbox = await findInbox(ctx, optionalString(message.inbox_id) ?? "");
+    if (!purchasingInbox || purchasingInbox.organizationId !== procurement.organizationId) {
       await ctx.db.insert("integrationReceipts", {
         provider: "agentmail",
         idempotencyKey,

@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-09-14T17:24:58.971832+00:00",
-  "status": "F01 saved to the existing Zernio schedule; other entries remain local drafts awaiting footage",
+  "updatedAt": "2026-09-16T14:17:06.249062+00:00",
+  "status": "F01 published; remaining founder posts held as drafts awaiting recordings",
   "note": "Only use when the described video exists and matches the actual recording. Read back X validation and both platform versions after saving.",
   "drafts": [
     {
       "key": "simpler_frontend",
       "campaign": "facundo_builder_202609",
-      "status": "scheduled",
+      "status": "published",
       "zernioPostId": "6aa5ebc2f75a3d18d84801e6",
       "targetAt": "2026-09-14T20:00:00-05:00",
       "x": "I made BUY HARD’s first UI look like vintage audio gear. It looked cool, but got in the way.\n\nHere’s why I simplified it. Old/current sample screens.\n\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=facundo_builder_202609&utm_content=simpler_frontend\n\n@convex @OpenAI @firecrawl @agentmail",

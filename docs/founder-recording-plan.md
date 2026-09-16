@@ -1,8 +1,27 @@
 # Founder recording plan
 
+## September 16 current publishing direction
+
+Every new post includes Facundo speaking on camera with his real voice. No image-only fallback. Five remaining image schedules were saved as drafts today; assets, IDs, captions and original slots are preserved. The standalone napkin also stays a draft until narrated or explicitly excepted. Older calendar entries below are historical, not current publishing instructions.
+
+The two finished product videos remain scheduled: **Talk to your buyer like a teammate — September 17, 08:30**, and **Help shape your buyer — September 18, 12:30**, Chicago time. The invitation now offers a conversation about the operator's process and what Facundo is testing. Avoid implying a proven end-to-end walkthrough. Conversational-agent framing replaces “you can say no.”
+
+Aim for 3–4 daily stories only when matching recordings are ready; do not fill gaps with images. No repeated request for the outstanding founder recordings. [Current queue and hold receipts](../output/marketing/2026-09-16-daily-campaign/README.md).
+
+
+**September 15 recording received and edited:** IMG_6987.MOV became two product posts, each with a captioned square and vertical edit plus a clean square export.
+
+| Finished clip | Duration | Saved X + LinkedIn schedule (Chicago) |
+| --- | --- | --- |
+| P02 — Talk to your buyer like a teammate | 21 seconds | Thu Sep 17, 8:30 a.m. |
+| P03 — Help shape your buyer | 31 seconds | Fri Sep 18, 12:30 p.m. |
+
+[Watch and download both](http://127.0.0.1:60693/) · [Saved schedule receipt](../output/marketing/2026-09-15-selfie-posts/zernio-schedule-receipt.json). Both slots were open. These are operator conversations under the product campaign; F02/F03/F04 retain their themes and are held as drafts awaiting recordings. Publication is still future.
+
+
 Updated September 14, 2026 · All deadlines and posting times are Chicago time.
 
-**F01 is finished and scheduled.** Your iPhone take became a 37.9-second edit with your real voice, archived/current product screens and lime captions. The square version replaced the two images in the original September 14, 8 p.m. X/LinkedIn post. [Watch both versions](http://127.0.0.1:60692/) · [Saved schedule](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json).
+**F01 is published on X and LinkedIn.** Your iPhone take became a 37.9-second edit with your real voice, archived/current product screens and lime captions. The square version replaced the two images in the original September 14, 8 p.m. X/LinkedIn post. [Watch both versions](http://127.0.0.1:60692/) · [Saved schedule](../output/marketing/2026-09-14-founder-recordings/zernio-schedule-receipt.json).
 
 **Next: F02, the handoff.** Send it by **Tuesday, September 15 at 6 p.m.** for Wednesday’s existing 8 p.m. slot. Its script is below. Read one sentence, pause, and read the next; change anything that does not sound like you.
 
@@ -36,11 +55,11 @@ Codex handles selecting takes, trimming pauses, matching visuals, sound cleanup,
 
 ## Recording and publishing schedule
 
-These are edit targets. F01 is now a **video scheduled in Zernio**. F02–F04 keep their approved image posts until each finished replacement is ready. Their existing IDs, channels and time slots stay together. [Live queue observation](../output/marketing/2026-09-14-founder-recordings/queue-readback.json) · [Recording status](../output/marketing/2026-09-14-founder-recordings/recording-plan.json).
+These are edit targets. F01 is now a **published video on both platforms**, verified September 15. F02–F04 are held as drafts until each finished video is ready. Their existing IDs, channels and time slots stay together. [Live queue observation](../output/marketing/2026-09-14-founder-recordings/queue-readback.json) · [Recording status](../output/marketing/2026-09-14-founder-recordings/recording-plan.json).
 
 | Clip | Send the raw recording by | Target post | What we combine it with |
 | --- | --- | --- | --- |
-| **F01 — Simpler frontend · complete** | Received Mon Sep 14 | Mon Sep 14, 8 p.m. · video verified in schedule | Real founder, old/current UI, conversation and captions |
+| **F01 — Simpler frontend · complete** | Received Mon Sep 14 | Mon Sep 14, 8 p.m. · publication verified on both platforms | Real founder, old/current UI, conversation and captions |
 | **F02 — The handoff** | Tue Sep 15, 6 p.m. | Wed Sep 16, 8 p.m. · already scheduled | Buyer conversation and purchase decision |
 | **P01 — Sales into supplies** · optional | Wed Sep 16, noon | Thu Sep 17, 12:30 p.m. · flexible theme, not scheduled | Existing Square/Shopify Hyperframes preview |
 | **F03 — More of this work** | Thu Sep 17, 6 p.m. | Fri Sep 18, 8 p.m. · already scheduled | Desktop/mobile sample and small design details |

@@ -1,3 +1,4 @@
+import { mailTables } from "./mailFields";
 import { companySuggestions } from "./companySuggestionFields";
 import { attribution, stage, event, deliveryStatus } from "./marketingFields";
 import { questionCode } from "./deskFields";
@@ -45,6 +46,7 @@ const operationStatusValidator = v.union(
 );
 
 export default defineSchema({
+  ...mailTables,
   companySuggestions,
   onboardingRequests: defineTable({
     userId: v.id("users"),
@@ -867,6 +869,7 @@ export default defineSchema({
     supplier: v.string(),
     email: v.string(),
     url: v.string(),
+    providerInboxId: v.optional(v.string()),
     providerOutboundId: v.optional(v.string()),
     providerThreadId: v.optional(v.string()),
     followups: v.number(),
@@ -1014,6 +1017,7 @@ export default defineSchema({
     placedAt: v.optional(v.number()),
     confirmation: v.optional(v.string()),
     expectedOn: v.optional(v.string()),
+    providerInboxId: v.optional(v.string()),
     providerOutboundId: v.optional(v.string()),
     providerThreadId: v.optional(v.string()),
     error: v.optional(v.string()),

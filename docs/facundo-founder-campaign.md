@@ -1,8 +1,17 @@
 # Facundo — founder and builder campaign
 
+## September 16 current publishing direction
+
+Every new post includes Facundo speaking on camera with his real voice. No image-only fallback. Five remaining image schedules were saved as drafts today; assets, IDs, captions and original slots are preserved. The standalone napkin also stays a draft until narrated or explicitly excepted. Older calendar entries below are historical, not current publishing instructions.
+
+The two finished product videos remain scheduled: **Talk to your buyer like a teammate — September 17, 08:30**, and **Help shape your buyer — September 18, 12:30**, Chicago time. The invitation now offers a conversation about the operator's process and what Facundo is testing. Avoid implying a proven end-to-end walkthrough. Conversational-agent framing replaces “you can say no.”
+
+Aim for 3–4 daily stories only when matching recordings are ready; do not fill gaps with images. No repeated request for the outstanding founder recordings. [Current queue and hold receipts](../output/marketing/2026-09-16-daily-campaign/README.md).
+
+
 September 12, 2026 · Separate from the [BUY HARD product campaign](gtm-marketing-strategy.md)
 
-Updated September 14: the first iPhone recording is edited and scheduled for 8 p.m. on X and LinkedIn. Codex combined Facundo’s real voice and camera with product screens and captions. [Start with the first script](founder-recording-plan.md). These are conditional video replacements for the existing image schedules, not additional daily posts.
+Updated September 15: the first iPhone video is published on X and LinkedIn. Codex combined Facundo’s real voice and camera with product screens and captions. [Start with the first script](founder-recording-plan.md). These are conditional video replacements for the existing image schedules, not additional daily posts.
 
 **Internal goal:** Turn hackathon attention into a strong job opportunity or progress toward a place at Y Combinator. BUY HARD is the work people can inspect; Facundo is the person this campaign introduces. YC is an internal aim, not a public hook or named audience in the posts.
 
@@ -32,6 +41,14 @@ The audience is founders and teams hiring people to build AI products, YC founde
 | Give an agent a job | Understanding how tools, saved state and decisions fit together | Stock, supplier research, inbox and approval |
 | What if inventory regenerated? | Ambition grounded in an everyday problem | Recurring replenishment |
 | Here is what I want to build next | A clear invitation to work with Facundo | BUY HARD as an inspectable work sample |
+
+### AgentMail story to develop
+
+**Hook:** “I gave my buyer its own email address.”
+
+**Draft:** “I gave BUY HARD's buyer its own email address with AgentMail. It can ask suppliers for a quote, follow up on missing details and keep their replies with the purchase. I want the routine back-and-forth to take less of the owner's day, while spending still needs approval.”
+
+Pair this with one connected supplier conversation and its purchase. Use a clearly labeled sample or a verified controlled email run; do not imply a real supplier order from sample footage. This is new local copy, not a change to an existing published or scheduled post. [AgentMail review](agentmail-review-2026-09-15.md)
 
 ## Distribution and sequence
 
@@ -79,7 +96,7 @@ At the existing 07:30 and 15:30 reviews, look at both campaigns separately. Reco
 
 ## Approved visuals and next assets
 
-Eight PNGs and their editable HTML remain the approved fallbacks. F01 has been replaced by the captioned founder video; the other three schedules still use their two-image sets. The founder posts have not published yet. See the [caption and image document](../output/marketing/2026-09-14-founder-campaign/posts.md). The source manifest distinguishes archived UI, current sample UI and the reused product photo.
+Eight PNGs and their editable HTML remain supporting assets only; there is no image fallback. F01 has been replaced by the captioned founder video; the other three schedules still use their two-image sets. F01 published September 14 on both platforms; the remaining three posts are scheduled. See the [caption and image document](../output/marketing/2026-09-14-founder-campaign/posts.md). The source manifest distinguishes archived UI, current sample UI and the reused product photo.
 
 Next assets:
 

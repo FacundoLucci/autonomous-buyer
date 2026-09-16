@@ -121,7 +121,7 @@ function toolbar(showStatus = false) {
 }
 
 function calendar() {
-  return `${intro("One shared calendar.", "Three product slots a day. Founder stories use selected fourth slots at 8 p.m. All times are Chicago time.")}<div class="banner"><p><strong>Your recordings fit the existing slots.</strong> Image posts remain the fallback until an edited video is ready. See the short scripts and handoff dates.</p><a href="#recordings">Recording plan ↗</a></div>${toolbar(true)}<div id="posts-list"></div><div class="note"><strong>The next open slot is Tuesday, Sep 15 at 5:30 p.m.</strong><p>Later product themes remain flexible. The napkin is a held draft for Sep 17 or later, after two earlier film references have published. The live queue remains in ${link("https://zernio.com/dashboard/posts-all?view=table", "Zernio")}.</p></div>`;
+  return `${intro("One shared calendar.", "Three product slots a day. Founder stories use selected fourth slots at 8 p.m. All times are Chicago time.")}<div class="banner"><p><strong>Your recordings fit the existing slots.</strong> Image posts remain the fallback until an edited video is ready. See the short scripts and handoff dates.</p><a href="#recordings">Recording plan ↗</a></div>${toolbar(true)}<div id="posts-list"></div><div class="note"><strong>Product themes follow the saved queue below.</strong><p>Later product themes remain flexible. The napkin is a held draft for Sep 17 or later, after two earlier film references have published. The live queue remains in ${link("https://zernio.com/dashboard/posts-all?view=table", "Zernio")}.</p></div>`;
 }
 
 function recordingNote(key) {

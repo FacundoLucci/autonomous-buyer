@@ -56,6 +56,17 @@ export function Landing({
         </p>
       </section>
       {!staticPreview && <MerchantMetrics />}
+      <section className="marketing-example">
+        <div>
+          <p className="desk-eyebrow">SUPPLIER EMAIL, HANDLED</p>
+          <h2>Your buyer has its own email address.</h2>
+        </div>
+        <p>
+          Powered by AgentMail, your buyer can request quotes, follow up on missing details and send
+          approved purchase orders to suppliers that accept them. Keep the conversation and supplier
+          documents with the purchase. You approve the spend.
+        </p>
+      </section>
       {staticPreview ? (
         <section id="pilot" className="marketing-pilot">
           <h2>Interested in the pilot?</h2>

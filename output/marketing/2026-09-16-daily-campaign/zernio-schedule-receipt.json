@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-09-16T14:17:06.249062+00:00",
+  "source": "Zernio in-app browser; both newly scheduled posts reopened after saving",
+  "completeQueue": false,
+  "scope": "Two product posts from IMG_6987.MOV",
+  "action": "Preserve both video slots; revise Help shape your buyer LinkedIn invitation; reopen both platform captions, saved video and date",
+  "posts": [
+    {
+      "key": "talk_to_your_buyer",
+      "title": "Talk to your buyer like a teammate",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-17T08:30:00-05:00",
+      "timezone": "America/Chicago",
+      "x": "You wear every hat. You don't have time for another app.\n\nI'm building BUY HARD around a buyer you can talk to like a teammate.\n\nExplore the sample:\nhttps://buyhard.app/?demo=true&utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=talk_to_your_buyer\n\n@convex @OpenAI @firecrawl @agentmail",
+      "xWeightedLength": 211,
+      "linkedinTagged": "Owner. Buyer. Cashier. Manager.\n\nWhen you wear every hat, buying is one more job on your plate.\n\nThe idea behind BUY HARD is a buyer you can talk to like another member of your team: tell it what matters, discuss the buying decision, and keep approval of the spend.\n\nThis is how I want it to feel. The app footage shows the current sample, not a live supplier purchase.\n\nWhich recurring purchase would you hand over first?\n\nExplore the sample:\nhttps://buyhard.app/?demo=true&utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=talk_to_your_buyer\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/talk-to-your-buyer-square-captioned.mp4",
+          "type": "video",
+          "width": 1080,
+          "height": 1080,
+          "sha256": "0bdbd5bfdce8a4a61d2bfedb73ecfc32d8cb2ebca1df5cdfd65520fc81a95465",
+          "bytes": 10502400,
+          "url": "https://media.zernio.com/media/1789518338830_0asn4l9f_talk-to-your-buyer-square-captioned.mp4",
+          "duration": 20.583333
+        }
+      ],
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ],
+      "zernioPostId": "6aa9e205760da7094a800706",
+      "duration": 20.583333,
+      "exports": [
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/talk-to-your-buyer-square-captioned.mp4",
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/talk-to-your-buyer-vertical-captioned.mp4",
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/talk-to-your-buyer-square-clean.mp4"
+      ],
+      "scheduledVerifiedAt": "2026-09-16T00:29:36.342490+00:00"
+    },
+    {
+      "key": "help_shape_your_buyer",
+      "title": "Help shape your buyer",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-18T12:30:00-05:00",
+      "timezone": "America/Chicago",
+      "x": "I learned buying in my parents' restaurant, then opened my own.\n\nEvery business is different. I'd love to hear what yours needs.\n\nHelp shape BUY HARD:\nhttps://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=help_shape_your_buyer\n\n@convex @OpenAI @firecrawl @agentmail",
+      "xWeightedLength": 213,
+      "linkedinTagged": "I got my first buying experience in my parents' restaurant. Then I opened a couple of my own.\n\nIngredients from the local market. Compostable cups from a specialty store. The usual online orders. Buying happens everywhere.\n\nThat experience is part of why I'm building BUY HARD. But your business will have details I haven't thought of.\n\nI'd love to hear them. Bring one recurring item, the supplier you use, and the part of buying it that takes too much of your time.\n\nLet's spend 20 minutes talking about how you buy today, what I'm testing, and what would actually help. BUY HARD is still early. The app screen in this video uses sample data.\n\nTell me what you need:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=help_shape_your_buyer\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/help-shape-your-buyer-square-captioned.mp4",
+          "type": "video",
+          "width": 1080,
+          "height": 1080,
+          "sha256": "a70709c6af161d3eca57929b5e1604d662dc5a4bb108c92faef351fd6f41659f",
+          "bytes": 15758339,
+          "url": "https://media.zernio.com/media/1789518449750_mz2cssag_help-shape-your-buyer-square-captioned.mp4",
+          "duration": 30.875
+        }
+      ],
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ],
+      "zernioPostId": "6aa9e2759ac8d7dcc2f38075",
+      "duration": 30.875,
+      "exports": [
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/help-shape-your-buyer-square-captioned.mp4",
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/help-shape-your-buyer-vertical-captioned.mp4",
+        "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-selfie-posts/ready/help-shape-your-buyer-square-clean.mp4"
+      ],
+      "scheduledVerifiedAt": "2026-09-16T00:29:36.342490+00:00"
+    }
+  ],
+  "verification": {
+    "freshEditorReadback": true,
+    "overviewStatus": "scheduled",
+    "mediaStatus": "SAVED",
+    "mediaCountPerPost": 1,
+    "mediaHost": "media.zernio.com",
+    "videoReadyState": 4,
+    "platforms": [
+      "X",
+      "LinkedIn"
+    ],
+    "timezone": "America/Chicago",
+    "publicationVerified": false
+  }
+}

@@ -1,3 +1,5 @@
+import { conversationInbox } from "./mailIdentity";
+import { mailBody, mailRisk } from "./mailContent";
 import { recordMerchantOrder } from "./merchantMetrics";
 import { supplierAllowed } from "./companySuppliers";
 import { ConvexError, v } from "convex/values";
@@ -466,6 +468,7 @@ async function queuePurchaseOrder(
     status: "sending",
     executionState: "submitting",
     providerOutboundId: outboundId,
+    providerInboxId: inbox.inboxId,
     updatedAt: Date.now(),
   });
   await orderEvent(
@@ -651,18 +654,15 @@ export async function receiveSupplierReply(
   message: Record<string, unknown>,
   eventId: string,
 ) {
+  if (mailRisk(message)) return true;
+  message = { ...message, extracted_text: mailBody(message) };
   if (typeof message.thread_id !== "string") return false;
   const order = await ctx.db
     .query("companyOrders")
     .withIndex("by_providerThreadId", (q) => q.eq("providerThreadId", message.thread_id as string))
     .unique();
   if (!order) return false;
-  const inbox = await ctx.db
-    .query("purchasingInboxes")
-    .withIndex("by_organization_and_provider", (q) =>
-      q.eq("organizationId", order.organizationId).eq("provider", "agentmail"),
-    )
-    .unique();
+  const inbox = await conversationInbox(ctx, order.organizationId, order.providerInboxId);
   const from =
     typeof message.from === "string"
       ? (message.from.match(/<([^<>]+)>/)?.[1] ?? message.from).trim().toLowerCase()
@@ -790,12 +790,7 @@ export const requestCancellation = mutation({
     const delivery = await agentmail.status(ctx, order.providerOutboundId as OutboundId);
     if (!delivery?.agentmailMessageId)
       throw new ConvexError("Check purchase order delivery before requesting cancellation.");
-    const inbox = await ctx.db
-      .query("purchasingInboxes")
-      .withIndex("by_organization_and_provider", (q) =>
-        q.eq("organizationId", order.organizationId).eq("provider", "agentmail"),
-      )
-      .unique();
+    const inbox = await conversationInbox(ctx, order.organizationId, order.providerInboxId);
     if (!inbox) throw new ConvexError("Purchasing inbox not found.");
     const outboundId = await agentmail.replyToMessage(
       ctx,

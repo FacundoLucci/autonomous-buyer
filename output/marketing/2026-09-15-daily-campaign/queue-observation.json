@@ -1,0 +1,273 @@
+{
+  "checkedAt": "2026-09-15T12:37:17.117459+00:00",
+  "completeQueue": true,
+  "source": "Authenticated Zernio posts table read in the Codex in-app browser",
+  "scope": "22 campaign stories: 12 published, 9 scheduled, 1 held draft. Both original queue pages inspected; new schedule separately reopened.",
+  "posts": [
+    {
+      "key": "p1_intro",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-11T13:34:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2098480454227698101",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504246162770821120/"
+      ],
+      "metrics": {
+        "impressions": 83,
+        "likes": 3,
+        "comments": null,
+        "reach": 53
+      }
+    },
+    {
+      "key": "p2_openai",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-12T08:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2098766393877356595",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504532095780827136/"
+      ],
+      "metrics": {
+        "impressions": 140,
+        "likes": 1,
+        "comments": 2,
+        "reach": 85
+      }
+    },
+    {
+      "key": "p3_firecrawl",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-12T12:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2098826588846514181",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504592308437262336/"
+      ],
+      "metrics": {
+        "impressions": 203,
+        "likes": 1,
+        "comments": null,
+        "reach": 18
+      }
+    },
+    {
+      "key": "p5_convex",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-12T17:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2098902276559507829",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504667985190481920/"
+      ],
+      "metrics": {
+        "impressions": 31,
+        "likes": 1,
+        "comments": null,
+        "reach": 16
+      }
+    },
+    {
+      "key": "what_if_inventory",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-12T20:00:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2098939829048234267",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504705533564567553/"
+      ],
+      "metrics": {
+        "impressions": 38,
+        "likes": 1,
+        "comments": null,
+        "reach": 23
+      }
+    },
+    {
+      "key": "approve_the_spend",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-13T08:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2099128769747316894",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504894476629434370/"
+      ],
+      "metrics": {
+        "impressions": 82,
+        "likes": null,
+        "comments": null,
+        "reach": 7
+      }
+    },
+    {
+      "key": "one_item_walkthrough",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-13T12:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2099189194539024881",
+        "https://www.linkedin.com/feed/update/urn:li:share:7504954901958127617/"
+      ],
+      "metrics": {
+        "impressions": 127,
+        "likes": null,
+        "comments": 2,
+        "reach": 53
+      }
+    },
+    {
+      "key": "p4_agentmail",
+      "campaign": "buyhard_allgas_202609",
+      "status": "published",
+      "scheduledAt": "2026-09-13T17:30:00-05:00",
+      "links": [
+        "https://twitter.com/i/web/status/2099264713745981578",
+        "https://www.linkedin.com/feed/update/urn:li:share:7505030431059222528/"
+      ],
+      "metrics": {
+        "impressions": 9,
+        "likes": null,
+        "comments": null,
+        "reach": 5
+      }
+    },
+    {
+      "key": "start_with_source",
+      "status": "published",
+      "scheduledAt": "2026-09-14T08:30:00-05:00",
+      "campaign": "buyhard_allgas_202609",
+      "metrics": {
+        "impressions": 12,
+        "likes": null,
+        "comments": null,
+        "reach": 10
+      },
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505256870492708864/",
+        "https://twitter.com/i/web/status/2099491168811692201"
+      ]
+    },
+    {
+      "key": "sales_plan_the_buy",
+      "status": "published",
+      "scheduledAt": "2026-09-14T12:30:00-05:00",
+      "campaign": "buyhard_allgas_202609",
+      "metrics": {
+        "impressions": 19,
+        "likes": 1,
+        "comments": null,
+        "reach": 17
+      },
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505317111196557312/",
+        "https://twitter.com/i/web/status/2099551415236497532"
+      ]
+    },
+    {
+      "key": "good_day_sample",
+      "status": "published",
+      "scheduledAt": "2026-09-14T17:30:00-05:00",
+      "campaign": "buyhard_allgas_202609",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:share:7505392786477768704/",
+        "https://twitter.com/i/web/status/2099627081571209223"
+      ],
+      "metrics": {
+        "impressions": null,
+        "views": null,
+        "reach": 8,
+        "likes": null,
+        "comments": null
+      }
+    },
+    {
+      "key": "simpler_frontend",
+      "status": "published",
+      "scheduledAt": "2026-09-14T20:00:00-05:00",
+      "campaign": "facundo_builder_202609",
+      "mediaType": "video",
+      "media": "f01-simpler-ui-square-captioned.mp4",
+      "links": [
+        "https://www.linkedin.com/feed/update/urn:li:ugcPost:7505430754978521089/",
+        "https://twitter.com/i/web/status/2099665040135553095"
+      ],
+      "metrics": {
+        "impressions": null,
+        "views": 25,
+        "reach": 49,
+        "likes": null,
+        "comments": null
+      }
+    },
+    {
+      "key": "your_existing_supplier",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-15T08:30:00-05:00",
+      "campaign": "buyhard_allgas_202609"
+    },
+    {
+      "key": "no_because",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-15T12:30:00-05:00",
+      "campaign": "buyhard_allgas_202609"
+    },
+    {
+      "key": "give_agent_a_job",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T20:00:00-05:00",
+      "campaign": "facundo_builder_202609"
+    },
+    {
+      "key": "build_useful_ai",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-18T20:00:00-05:00",
+      "campaign": "facundo_builder_202609"
+    },
+    {
+      "key": "ordinary_supplies_big_ambition",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-21T20:00:00-05:00",
+      "campaign": "facundo_builder_202609"
+    },
+    {
+      "key": "napkin_machine_buyer",
+      "campaign": "buyhard_allgas_202609",
+      "status": "draft",
+      "scheduledAt": null
+    },
+    {
+      "key": "square_test_result",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-15T17:30:00-05:00",
+      "zernioPostId": "6aa85aa9699a1408118db216"
+    },
+    {
+      "key": "delivery_delay_idea",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T08:30:00-05:00",
+      "zernioPostId": "6aa85af337545f68eb54355f"
+    },
+    {
+      "key": "partial_delivery",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T12:30:00-05:00",
+      "zernioPostId": "6aa85b291e9d258508db2226"
+    },
+    {
+      "key": "whole_checkout_price",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T17:30:00-05:00",
+      "zernioPostId": "6aa93b784386c85db40488e2"
+    }
+  ],
+  "limitations": [
+    "Zernio metrics are combined row figures; unavailable counters remain null.",
+    "Scheduled date passing does not establish successful publication.",
+    "Comment counts may include author replies; these counts do not identify prospects."
+  ]
+}

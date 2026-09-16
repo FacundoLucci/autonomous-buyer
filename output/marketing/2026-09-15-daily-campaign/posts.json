@@ -1,0 +1,30 @@
+{
+  "posts": [
+    {
+      "key": "whole_checkout_price",
+      "title": "Know the whole price. Then say yes.",
+      "campaign": "buyhard_allgas_202609",
+      "status": "scheduled",
+      "scheduledAt": "2026-09-16T17:30:00-05:00",
+      "timezone": "America/Chicago",
+      "x": "The product price isn't the whole price.\n\nBUY HARD checks checkout terms before offering purchase approval. Still checking? No approval yet.\n\nBring one recurring buy:\nhttps://buyhard.app/walkthrough?utm_source=x&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=whole_checkout_price\n\n@convex @OpenAI @firecrawl @agentmail",
+      "linkedinTagged": "The box of cups looks affordable. Then shipping and tax show up.\n\nYour buyer should bring you the decision with those details checked.\n\nBUY HARD's latest checkout update keeps unverified purchases at \u2018Checking checkout total and delivery\u2019. It doesn't offer purchase approval until the terms have been checked.\n\nThe update is deployed; the checkout tests used controlled stores. A first real merchant purchase is still a separate pilot. This card illustrates the workflow.\n\nBring one recurring item to a walkthrough and we'll look at the buying details that matter to you:\nhttps://buyhard.app/walkthrough?utm_source=linkedin&utm_medium=social&utm_campaign=buyhard_allgas_202609&utm_content=whole_checkout_price\n\nBuilt with @[Convex](urn:li:organization:71328718), @[OpenAI](urn:li:organization:11130470), @[Firecrawl](urn:li:organization:104100957), and @[AgentMail (YC S25)](urn:li:organization:106989461) for the Convex All Gas Hackathon.",
+      "media": [
+        {
+          "path": "/Users/facundo/repos/github/buyer/output/marketing/2026-09-15-daily-campaign/ready/whole_checkout_price.png",
+          "type": "image",
+          "altText": "Know the whole price. Then say yes. BUY HARD checks the cart and verifies the total before the owner approves the terms. Workflow illustration, not a merchant receipt. buyhard.app. Convex, OpenAI, Firecrawl, AgentMail.",
+          "width": 1536,
+          "height": 1024,
+          "sha256": "1a8d29a25daa7c581399982c5b4b5ff5daa99d7bbf090e0922bdbcd8d3c2fcfe",
+          "bytes": 82747
+        }
+      ],
+      "zernioPostId": "6aa93b784386c85db40488e2",
+      "platforms": [
+        "X",
+        "LinkedIn"
+      ]
+    }
+  ]
+}

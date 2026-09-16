@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-14T20:41:26.239134+00:00",
+  "checkedAt": "2026-09-16T14:17:06.249062+00:00",
   "scope": "BUY HARD + Facundo founder content",
   "titles": {
     "p1_intro": "Meet your new buyer",
@@ -14,15 +14,16 @@
     "sales_plan_the_buy": "What if sales planned the next buy?",
     "good_day_sample": "A good day to buy hard.",
     "your_existing_supplier": "Already have a supplier?",
-    "no_because": "No, because\u2026",
-    "simpler_frontend": "I\u2019ve been simplifying things",
+    "no_because": "No, because…",
+    "simpler_frontend": "I’ve been simplifying things",
     "give_agent_a_job": "Figuring out the handoff",
-    "build_useful_ai": "I\u2019d love to build more of this",
+    "build_useful_ai": "I’d love to build more of this",
     "ordinary_supplies_big_ambition": "What would you hand off first?",
     "napkin_machine_buyer": "Now I have a machine buyer.",
     "square_test_result": "Sales changed the buy.",
     "delivery_delay_idea": "What if late never meant too late?",
-    "partial_delivery": "Delivered. But not all of it."
+    "partial_delivery": "Delivered. But not all of it.",
+    "whole_checkout_price": "Know the whole price. Then say yes."
   },
   "founderKeys": [
     "simpler_frontend",
@@ -31,34 +32,37 @@
     "ordinary_supplies_big_ambition"
   ],
   "postEvidence": {
-    "p1_intro": "Sample demo \u00b7 operator invitation",
-    "p2_openai": "Illustrated workflow \u00b7 sample demo",
-    "p3_firecrawl": "Workflow illustration \u00b7 no completed merchant order claimed",
-    "p5_convex": "Implemented buying logic \u00b7 public sample",
-    "what_if_inventory": "Future vision \u00b7 question",
+    "p1_intro": "Sample demo · operator invitation",
+    "p2_openai": "Illustrated workflow · sample demo",
+    "p3_firecrawl": "Workflow illustration · no completed merchant order claimed",
+    "p5_convex": "Implemented buying logic · public sample",
+    "what_if_inventory": "Future vision · question",
     "approve_the_spend": "Sample purchase decision",
     "one_item_walkthrough": "20-minute operator walkthrough invitation",
-    "p4_agentmail": "Sample supplier conversation \u00b7 not a live exchange",
-    "start_with_source": "Setup illustration \u00b7 one recurring item",
-    "sales_plan_the_buy": "Intended capability \u00b7 ask which tools operators use",
-    "good_day_sample": "Public sample \u00b7 no supplier contacted",
+    "p4_agentmail": "Sample supplier conversation · not a live exchange",
+    "start_with_source": "Setup illustration · one recurring item",
+    "sales_plan_the_buy": "Intended capability · ask which tools operators use",
+    "good_day_sample": "Public sample · no supplier contacted",
     "your_existing_supplier": "Operator walkthrough invitation",
-    "no_because": "Sample dialogue \u00b7 no supplier contacted",
-    "simpler_frontend": "Real founder video \u00b7 archived and current sample UI \u00b7 design comparison",
-    "give_agent_a_job": "Sample agent workflow \u00b7 builder conversation",
-    "build_useful_ai": "Current work sample \u00b7 hiring invitation",
+    "no_because": "Sample dialogue · no supplier contacted",
+    "simpler_frontend": "Real founder video · archived and current sample UI · design comparison",
+    "give_agent_a_job": "Sample agent workflow · builder conversation",
+    "build_useful_ai": "Current work sample · hiring invitation",
     "ordinary_supplies_big_ambition": "Future vision and current inventory sample",
     "napkin_machine_buyer": "Held until Sep 17+ and two earlier reference stories are published",
-    "square_test_result": "Verified local Square Sandbox test \u00b7 no supplier purchase",
-    "delivery_delay_idea": "Future workflow \u00b7 illustrated question",
-    "partial_delivery": "Implemented partial receiving \u00b7 illustrative quantities"
+    "square_test_result": "Verified local Square Sandbox test · no supplier purchase",
+    "delivery_delay_idea": "Future workflow · illustrated question",
+    "partial_delivery": "Implemented partial receiving · illustrative quantities",
+    "whole_checkout_price": "Deployed checkout terms check · controlled-store verification · workflow illustration",
+    "talk_to_your_buyer": "Founder voice and real sample conversation; 21-second captioned video",
+    "help_shape_your_buyer": "Founder restaurant experience and operator invitation; 31-second captioned video"
   },
   "actions": [
     {
       "id": "record-f02",
       "title": "Record F02: when should the buyer ask?",
       "owner": "Facundo records; Codex edits",
-      "when": "Sep 15, 6 p.m. \u2192 Sep 16, 8 p.m. post",
+      "when": "Sep 15, 6 p.m. → Sep 16, 8 p.m. post",
       "next": "F01 is edited and scheduled. Open Recordings for the F02 script about the handoff between the buyer and you. Send the raw take by Tuesday at 6 p.m.; Codex handles the edit."
     },
     {
@@ -70,17 +74,17 @@
     },
     {
       "id": "tracking-release",
-      "title": "Release and recheck demo tracking",
+      "title": "Recheck production demo tracking",
       "owner": "Facundo + product task",
       "when": "Next release decision",
-      "next": "The demo-use fix is merged into pushed main through c456877. Verify its production deployment and live tracking before judging demo conversion."
+      "next": "The September 15 production rollout includes the fix; verify a fresh attributed demo-use event before judging demo conversion."
     },
     {
       "id": "narration",
       "title": "Record the main-film narration after the short pilot",
       "owner": "Facundo records; Codex edits",
       "when": "Raw recording Sep 19, noon; final cut Sep 20, 6 p.m.",
-      "next": "Use the current You handle today script in sections. Codex adds your voice/camera to the working assembly and trims the final film to 2:45\u20132:55, strictly below three minutes. Playback and publication remain separate checks."
+      "next": "Use the current You handle today script in sections. Codex adds your voice/camera to the working assembly and trims the final film to 2:45–2:55, strictly below three minutes. Playback and publication remain separate checks."
     },
     {
       "id": "provider-checks",
@@ -91,10 +95,10 @@
     },
     {
       "id": "tuesday-slot",
-      "title": "Choose Wednesday evening\u2019s product story",
+      "title": "Choose Thursday product stories",
       "owner": "Daily marketing review",
-      "when": "Sep 16, 5:30 p.m.",
-      "next": "Tuesday evening and Wednesday morning/midday are saved. Fill the next rolling slot from useful replies and product evidence, preserving the 8 p.m. founder post."
+      "when": "Next rolling review",
+      "next": "Wednesday is complete: three product stories and one founder slot. Select Thursday stories from new evidence; the napkin is eligible September 17 or later."
     },
     {
       "id": "founder-opportunities",
@@ -105,10 +109,10 @@
     },
     {
       "id": "napkin-gate",
-      "title": "Check the napkin\u2019s prerequisites",
+      "title": "Check the napkin’s prerequisites",
       "owner": "Daily marketing review",
       "when": "Sep 17 or later",
-      "next": "Keep it as a draft until two earlier film-reference stories have published links. One is live now; the second is scheduled for Sep 14."
+      "next": "Both earlier references have published links. Keep the napkin held until its September 17-or-later slot enters the rolling review."
     },
     {
       "id": "submission",
@@ -124,33 +128,33 @@
       "status": "Running",
       "tone": "success",
       "owner": "BUY HARD daily marketing",
-      "detail": "Ten product stories published. Six product stories are scheduled through Wednesday midday; four founder schedules remain separate. The napkin is held.",
-      "proof": "Both queue pages read September 14 afternoon; three new saved posts reopened on both platforms.",
+      "detail": "Eleven product stories published, six scheduled through Wednesday evening. One founder video published; three founder image posts remain scheduled.",
+      "proof": "September 15 in-app readback across both pages and reopened new schedule.",
       "url": "https://zernio.com/dashboard/posts-all?view=table",
       "linkTitle": "Open publishing queue"
     },
     {
-      "title": "iPhone \u2192 captioned social shorts",
-      "status": "F01 video scheduled",
+      "title": "iPhone → captioned social shorts",
+      "status": "F01 published",
       "tone": "success",
       "owner": "Facundo + Codex",
       "detail": "The first selfie became a 38-second Hyperframes edit with real product screens, normalized sound and lime captions. Square, vertical, clean, subtitle and cover exports are available.",
-      "proof": "F01 was reopened in Zernio: one saved video, both platform captions, Sep 14 at 8 p.m. Chicago. F02 is next, due Sep 15 at 6 p.m.",
+      "proof": "X and LinkedIn publication links verified September 15; native LinkedIn video plays. F02 remains pending.",
       "source": "docs/founder-recording-plan.md",
       "url": "http://127.0.0.1:60692/",
       "linkTitle": "Watch the first edit"
     },
     {
       "title": "Founder campaign",
-      "status": "First video scheduled; three image fallbacks",
+      "status": "First video published; three image fallbacks",
       "tone": "success",
       "owner": "Facundo",
-      "detail": "F01 now uses the founder video in its existing Sep 14 slot. F02\u2013F04 remain the approved image posts until their recordings are edited.",
+      "detail": "F01 is live on both platforms. Other IDs/times and approved fallbacks remain unchanged.",
       "proof": "Same F01 post ID, X and LinkedIn accounts, sponsor mentions, tracking and 8 p.m. time were verified after saving.",
       "source": "docs/facundo-founder-campaign.md"
     },
     {
-      "title": "You handle today \u00b7 launch film",
+      "title": "You handle today · launch film",
       "status": "Ready for narration",
       "tone": "warn",
       "owner": "Facundo records; Codex edits",
@@ -173,7 +177,7 @@
       "tone": "warn",
       "owner": "Product + Facundo",
       "detail": "Inquiry and booking have earlier release evidence. Demo tracking fix is merged and pushed; this review has not verified its production deployment.",
-      "proof": "September 14 production read: 26 tagged product visits, zero non-test inquiries, bookings or leads; launch checks excluded.",
+      "proof": "86 non-test visits: 27 product-tagged, one founder-tagged, zero inquiries or bookings. Released demo-use behavior needs fresh validation.",
       "url": "https://buyhard.app/leads",
       "linkTitle": "Open private leads"
     },
@@ -286,6 +290,8 @@
     }
   ],
   "recordingPlan": "output/marketing/2026-09-14-founder-recordings/recording-plan.json",
-  "recordingPlanUpdatedAt": "2026-09-14T17:24:58.971832+00:00",
-  "recordingUpdatedAt": "2026-09-14T17:26:03.975223+00:00"
+  "recordingPlanUpdatedAt": "2026-09-16T14:17:06.249062+00:00",
+  "recordingUpdatedAt": "2026-09-14T17:26:03.975223+00:00",
+  "currentDecision": "Five image-only schedules held as drafts; two real-camera videos remain scheduled. No filler. Invitation revised to early product conversation.",
+  "latestReview": "output/marketing/2026-09-16-daily-campaign/README.md"
 }

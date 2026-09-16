@@ -38,7 +38,7 @@ import { LiveBuyer } from "./agent-live";
 import { useBuyer } from "./agent";
 import { DemoDesk } from "./demo";
 import { SalesConnections } from "./sales-connections";
-import { PurchasingInbox } from "./mail";
+import { PurchasingInbox, OrderMailDocuments } from "./mail";
 import { SupplierDirectory } from "./suppliers";
 import { PurchasingPayments } from "./payments";
 import { LiveAuditLog } from "./audit";
@@ -1217,6 +1217,7 @@ function BuyHistory({ orderId }: { orderId: Id<"companyOrders"> }) {
   return (
     <details className="desk-disclosure">
       <summary>Activity</summary>
+      <OrderMailDocuments orderId={orderId} />
       {events?.map((e) => (
         <p className="desk-history-line" key={e._id}>
           {e.summary}

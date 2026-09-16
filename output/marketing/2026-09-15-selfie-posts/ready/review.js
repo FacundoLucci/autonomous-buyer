@@ -1,0 +1,1 @@
+document.querySelectorAll('button[data-format]').forEach(b=>b.addEventListener('click',()=>{const v=document.getElementById(b.dataset.video+'-player');v.pause();v.src=b.dataset.video+'-'+b.dataset.format+'-captioned.mp4';b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));}));

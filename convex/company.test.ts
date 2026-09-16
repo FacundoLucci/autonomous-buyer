@@ -783,3 +783,74 @@ test("pausing a supplier blocks order approval and previously queued execution",
     error: "This supplier is paused in your supplier directory.",
   });
 });
+
+test("HTML supplier confirmations work, unverified replies cannot place or cancel an order, and documents do not alter stock", async () => {
+  const { t, a, b, item, workspace } = await fixture();
+  const orderId = await a.mutation(api.companyOrders.create, { itemId: item.id, ...terms });
+  await t.run(async (ctx) => {
+    await ctx.db.patch("companyOrders", orderId, {
+      status: "sent",
+      approvedAt: 1,
+      supplierEmail: "supplier@example.com",
+      providerThreadId: "html-thread",
+      supplierSku: "TAPE-10",
+      cancellationRequestedAt: 1,
+    });
+    await ctx.db.insert("purchasingInboxes", {
+      organizationId: workspace.organizationId,
+      provider: "agentmail",
+      inboxId: "html@agentmail.to",
+      email: "html@agentmail.to",
+      selectedAt: 1,
+    });
+  });
+  const order = (await a.query(api.companyOrders.get, { orderId }))!;
+  const message = {
+    inbox_id: "html@agentmail.to",
+    thread_id: "html-thread",
+    message_id: "html-message",
+    from: "supplier@example.com",
+    labels: ["unauthenticated"],
+    html: `<p>Confirmed: yes</p><p>Purchase order: ${order.number}</p><p>Confirmation: HTML-1</p><p>SKU: TAPE-10</p><p>Quantity: 10 rolls</p><p>Total: USD 62.35</p><p>Arrival: 2026-10-10</p>`,
+  };
+  await t.mutation(internal.inbound.onMessageReceived, { message, thread: {}, eventId: "html1" });
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("sent");
+  await t.run((ctx) =>
+    receiveSupplierReply(
+      ctx,
+      {
+        ...message,
+        text: `Cancelled: yes\nPurchase order: ${order.number}\nRemaining quantity: 10 rolls`,
+      },
+      "cancel-unverified",
+    ),
+  );
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("sent");
+  await t.run((ctx) =>
+    receiveSupplierReply(
+      ctx,
+      { ...message, labels: ["received"], message_id: "verified-html" },
+      "verified-html",
+    ),
+  );
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("placed");
+  const before = (await a.query(api.onboarding.getWorkspace, {}))!.items[0].forecastQuantity;
+  const receiptId = await t.mutation(internal.mailReview.capture, {
+    message: { ...message, labels: ["received"], message_id: "doc-message" },
+  });
+  const documentId = await t.run((ctx) =>
+    ctx.db.insert("mailDocuments", {
+      organizationId: workspace.organizationId,
+      receiptId: receiptId!,
+      attachmentId: "pdf",
+      filename: "invoice.pdf",
+      contentType: "application/pdf",
+      status: "ready",
+    }),
+  );
+  await expect(b.mutation(api.mailReview.linkDocument, { documentId, orderId })).rejects.toThrow();
+  await a.mutation(api.mailReview.linkDocument, { documentId, orderId });
+  expect(await a.query(api.mailReview.forOrder, { orderId })).toHaveLength(1);
+  expect((await a.query(api.companyOrders.get, { orderId }))?.status).toBe("placed");
+  expect((await a.query(api.onboarding.getWorkspace, {}))!.items[0].forecastQuantity).toBe(before);
+});
