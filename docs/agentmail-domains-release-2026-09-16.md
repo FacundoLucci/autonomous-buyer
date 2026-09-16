@@ -38,4 +38,13 @@ Default provisioning already creates a separate Pod per company. The optional sh
 - A single marked release-test message was sent to the two user-authorized addresses. Production recorded separate `message.delivered` callbacks for both recipients. Receipt: `output/agentmail-release/controlled-send.json`. This proves mail-server delivery, not that either message was read. An incoming human reply has not yet been verified.
 - Final follow-up pins restricted-access setup and open conversations to their original inbox when a domain changes concurrently. Its regression test passes.
 
-Remaining external activation: increase AgentMail domain capacity and sign in to Cloudflare to publish the exact returned DNS records for `buyers.buyhard.app`. Do not set `AGENTMAIL_DOMAIN` until AgentMail reports VERIFIED. No purchase or plan upgrade was performed.
+## Branded domain activation
+
+- The user upgraded AgentMail to Developer and signed into Cloudflare. Domain capacity is now 10.
+- Registered the shared `buyers.buyhard.app` domain at organization scope. Customer-owned domains still use their own company Pods.
+- Imported AgentMail's five DNS records into Cloudflare: inbound MX, return-path MX/SPF, DKIM and DMARC. Existing root website records were preserved.
+- AgentMail reports all five DNS records VALID; public DNS also resolves the mail and signing records.
+- The console labels the domain Verified, but the API still reports VERIFYING with `ses_dkim_pending`. The app relies on that API, so `AGENTMAIL_DOMAIN` remains unset until its status becomes VERIFIED.
+- Branded delivery testing remains pending provider verification. Existing mail continues through the prior addresses. Evidence: `output/agentmail-release/branded-domain-activation.json`.
+
+Next: refresh provider verification, set production `AGENTMAIL_DOMAIN=buyers.buyhard.app` only after VERIFIED, then test an isolated branded inbox against the two authorized user addresses.

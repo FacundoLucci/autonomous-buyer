@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-09-16T23:28:35.203441+00:00",
+  "production_deployment": "reliable-albatross-463",
+  "domain": "buyers.buyhard.app",
+  "provider_status": "VERIFYING",
+  "provider_reason": "ses_dkim_pending",
+  "dns_records": [
+    {
+      "type": "TXT",
+      "name": "agentmail._domainkey.buyers",
+      "value": "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlLoEUivNLCVsfrTBeM60q+n089AcgngXLMHYg4QBOrkSsDaIGd6a4pROMMG3d7PXz+6+/+Syq9S6uzt0ucS/s7ouvQRC+qFA9ePlWHOsXJJMHKZuPeM9p5WhhLm6iy7hgDOBuCd7EqC/fwGgTIOOZnMummszpJsC2FsuVcNaoem+BIRCPjHrSIwCNwqWw9lcsTixuYO81S8uAPskFmWYFJs+NWSYgUTM+DT3iLEdJsbiMnvYLT8BQror44f/CP4obSkbVu+UES6tXEOjjSO3A0UIEtw0X0RYl9xerHtWKVpCE4XOG4gUf6nBVfQph6f0UtGt+NLhTVTFqnvoYnvUwQIDAQAB",
+      "status": "VALID"
+    },
+    {
+      "type": "MX",
+      "name": "buyers",
+      "value": "inbound-smtp.us-east-1.amazonaws.com",
+      "priority": 10,
+      "status": "VALID"
+    },
+    {
+      "type": "MX",
+      "name": "mail.buyers",
+      "value": "feedback-smtp.us-east-1.amazonses.com",
+      "priority": 10,
+      "status": "VALID"
+    },
+    {
+      "type": "TXT",
+      "name": "mail.buyers",
+      "value": "v=spf1 include:amazonses.com -all",
+      "status": "VALID"
+    },
+    {
+      "type": "TXT",
+      "name": "_dmarc.buyers",
+      "value": "v=DMARC1; p=reject; rua=mailto:dmarc@buyers.buyhard.app",
+      "status": "VALID"
+    }
+  ],
+  "default_domain_enabled": false,
+  "branded_delivery_test": "not_started_pending_provider_verification"
+}
