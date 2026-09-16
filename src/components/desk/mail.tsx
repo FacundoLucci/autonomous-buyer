@@ -71,6 +71,7 @@ export function PurchasingInbox({ email }: { email?: string }) {
   }
   async function refresh() {
     const result = await threads({ search, inboxId });
+    setSelectedInbox(inboxId);
     setPage(result);
     setSubmittedSearch(search);
     setThread(null);

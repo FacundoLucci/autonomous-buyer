@@ -8,7 +8,7 @@ Default provisioning already creates a separate Pod per company. The optional sh
 
 ## Verified locally and in development
 
-- 199 tests passed, 2 pre-existing skips. Added domain ownership, duplicate registration, provider Pod mismatch, DNS conflict, verified activation and retained-inbox tests.
+- 200 tests passed, 2 pre-existing skips. Added domain ownership, duplicate registration, provider Pod mismatch, DNS conflict, verified activation and retained-inbox tests.
 - Typecheck, lint, build and whitespace checks pass.
 - In-app browser exercised consent gating, DNS instructions, manual fallback, verification and connected states with simulated provider data. The mobile form fit a 390px viewport; no console errors were observed.
 - Backend compiled and deployed to development `festive-coyote-483`.
@@ -27,3 +27,15 @@ Default provisioning already creates a separate Pod per company. The optional sh
 - https://docs.agentmail.to/api-reference/pods/domains/create
 - https://docs.agentmail.to/api-reference/domains/get-setup-link
 - https://docs.agentmail.to/knowledge-base/mx-record-conflicts
+
+## Production verification
+
+- Main implementation committed and pushed as `4ec6dc5`, including the previously uncommitted marketing work requested by the user.
+- Backend deployed to `reliable-albatross-463`; website published through its static-hosting component and visibly verified on `https://buyhard.app`.
+- The published production domain UI bundle matched the local build by SHA-256. An unauthenticated `mailDomains:current` call was rejected.
+- The new landing section was visible in the in-app browser. A pre-existing React hydration warning (#418) appeared both before and after the deployment; the page recovered and rendered. This is separate from the clean simulated inbox checks.
+- The existing production webhook now also subscribes to `message.received.unauthenticated`, preserving its URL and other event types.
+- A single marked release-test message was sent to the two user-authorized addresses. Production recorded separate `message.delivered` callbacks for both recipients. Receipt: `output/agentmail-release/controlled-send.json`. This proves mail-server delivery, not that either message was read. An incoming human reply has not yet been verified.
+- Final follow-up pins restricted-access setup and open conversations to their original inbox when a domain changes concurrently. Its regression test passes.
+
+Remaining external activation: increase AgentMail domain capacity and sign in to Cloudflare to publish the exact returned DNS records for `buyers.buyhard.app`. Do not set `AGENTMAIL_DOMAIN` until AgentMail reports VERIFIED. No purchase or plan upgrade was performed.

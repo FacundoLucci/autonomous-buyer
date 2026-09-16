@@ -688,3 +688,14 @@ test("automatic DNS setup never offers a link that replaces business email", asy
     conflict: "Google Workspace",
   });
 });
+
+test("restricted access refuses a stale inbox selection before reserving a key", async () => {
+  const { a } = await fixture();
+  await expect(
+    a.mutation(internal.mailSettings.reserveAccess, { inboxId: "old@agentmail.to" }),
+  ).rejects.toThrow("Inbox changed");
+  const { organizationId } = await a.query(internal.companyMail.context, {});
+  expect(
+    await a.query(internal.mailSettings.credentials, { organizationId, inboxId: "a@agentmail.to" }),
+  ).toBeNull();
+});

@@ -1,0 +1,50 @@
+{
+  "state": "provider_accepted",
+  "sender": "facundolucci@agentmail.to",
+  "recipients": [
+    "flucci@gmail.com",
+    "facundo@facundo.xyz"
+  ],
+  "message_id": "<010001a0abb1c35b-653812e8-0591-4924-af75-bc391c2071cf-000000@email.amazonses.com>",
+  "thread_id": "ee8361c5-4abd-4cc5-b2a8-7e5c30eb1df9",
+  "labels": [
+    "sent",
+    "buyhard-release-20260916"
+  ],
+  "callbacks": [
+    {
+      "receivedAt": 1789586949991,
+      "type": "message.sent"
+    },
+    {
+      "delivery": {
+        "inbox_id": "facundolucci@agentmail.to",
+        "message_id": "<010001a0abb1c35b-653812e8-0591-4924-af75-bc391c2071cf-000000@email.amazonses.com>",
+        "organization_id": "f55f50f7-f188-4fcd-bccc-34188beb7be5",
+        "pod_id": "f55f50f7-f188-4fcd-bccc-34188beb7be5",
+        "recipients": [
+          "flucci@gmail.com"
+        ],
+        "thread_id": "ee8361c5-4abd-4cc5-b2a8-7e5c30eb1df9",
+        "timestamp": "2026-09-16T19:29:09.650Z"
+      },
+      "receivedAt": 1789586950355,
+      "type": "message.delivered"
+    },
+    {
+      "delivery": {
+        "inbox_id": "facundolucci@agentmail.to",
+        "message_id": "<010001a0abb1c35b-653812e8-0591-4924-af75-bc391c2071cf-000000@email.amazonses.com>",
+        "organization_id": "f55f50f7-f188-4fcd-bccc-34188beb7be5",
+        "pod_id": "f55f50f7-f188-4fcd-bccc-34188beb7be5",
+        "recipients": [
+          "facundo@facundo.xyz"
+        ],
+        "thread_id": "ee8361c5-4abd-4cc5-b2a8-7e5c30eb1df9",
+        "timestamp": "2026-09-16T19:29:09.992Z"
+      },
+      "receivedAt": 1789586950473,
+      "type": "message.delivered"
+    }
+  ]
+}

@@ -30,9 +30,9 @@ export const credentials = internalQuery({
   },
 });
 export const reserveAccess = internalMutation({
-  args: {},
+  args: { inboxId: v.optional(v.string()) },
   returns: v.union(v.id("mailCredentials"), v.null()),
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const { organization } = await ownedCompany(ctx);
     const inbox = await ctx.db
       .query("purchasingInboxes")
@@ -40,6 +40,8 @@ export const reserveAccess = internalMutation({
         q.eq("organizationId", organization._id).eq("provider", "agentmail"),
       )
       .unique();
+    if (args.inboxId && inbox?.inboxId !== args.inboxId)
+      throw new ConvexError("Inbox changed. Check email setup again.");
     const existing = await ctx.db
       .query("mailCredentials")
       .withIndex("by_company_inbox", (q) =>
@@ -90,7 +92,9 @@ export const enableRestrictedAccess = action({
       );
     const company = await ctx.runQuery(internal.companyMail.context, {});
     if (!company.email) throw new ConvexError("Connect your purchasing inbox first.");
-    const id = await ctx.runMutation(internal.mailSettings.reserveAccess, {});
+    const id = await ctx.runMutation(internal.mailSettings.reserveAccess, {
+      inboxId: company.email,
+    });
     if (!id) return null;
     const result = await mailRequest(`/inboxes/${segment(company.email)}/api-keys`, {
       method: "POST",
