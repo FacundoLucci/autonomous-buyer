@@ -318,6 +318,8 @@ The current marketing observation records published campaign posts. Prepared a
 179-second piano-story film with two new opening shots and preserved app scenes,
 then uploaded it to YouTube as unlisted: https://youtu.be/gWkVWIedk7A.
 The film combines generated footage with app components using fictional data;
-it does not prove live supplier purchases. Hackathon submission remains pending.
+it does not prove live supplier purchases. Submitted to the Convex All Gas Hackathon on September 20, 2026:
+https://vibeapps.dev/s/buy-hard. The published entry displays the
+AllGasHackathonSubmission tag and the app, repository, screenshot, and video links.
 This documentation update does not deploy code
 (`output/marketing/gtm-desk/queue-observation.json`).
