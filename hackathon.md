@@ -1,18 +1,18 @@
 # Hackathon log
 
-- **Project:** Autonomous Buyer
+- **Project:** BUY HARD
 - **Event:** Convex All Gas Hackathon
-- **What it does:** Detects stockout risk and coordinates a human-approved supplier sourcing, RFQ, quote, and purchase-order workflow.
+- **What it does:** Helps businesses track supplies, plan replenishment, compare suppliers, and approve purchases through a conversational buyer.
 - **Live app:** https://reliable-albatross-463.convex.site
 - **Repo:** https://github.com/FacundoLucci/autonomous-buyer
 - **Frontend:** Convex static hosting
 - **Convex deployment:** https://reliable-albatross-463.convex.cloud (production)
-- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @convex-dev/agent, @firecrawl/firecrawl-convex, @agentmail/convex
-- **Convex features:** typed schema, indexed data model, repeatable demo seeding, typed environment contract, reactive queries, actions, scheduled functions, component-backed threads, server-enforced approval identity
+- **Components:** @convex-dev/static-hosting, @convex-dev/workflow, @convex-dev/agent, @convex-dev/auth2 (auth, passkey, username, anonymous), @convex-dev/rate-limiter
+- **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, realtime queries, scheduled functions, crons, file storage, component-backed threads, server-enforced permissions
 - **Auth:** Convex Auth
 - **AI models:** OpenAI `gpt-5.4-mini`
 - **Started:** 2026-08-27T00:36:38Z
-- **Last updated:** 2026-08-28T23:09:56Z
+- **Last updated:** 2026-09-20T20:15:08Z
 
 ## Log
 
@@ -221,3 +221,103 @@ mode with one click, displayed the complete dashboard and evidence, hid
 controlled recipient addresses, disabled shared reset/start controls, and
 could not send external email. OXC, formatting, TypeScript, and production
 build checks passed. No repository publication or hackathon submission occurred.
+
+
+### 2026-09-04 - d35eba6
+
+Developed the BUY HARD interface from a design prototype and dark e-ink display
+into the live metal Buy Desk. These commits record interface development, not a
+new supplier transaction (`src/components`, `src/styles`).
+
+### 2026-09-05 - 7605791
+
+Added the landing page, guided sample demo, company setup, passkey signup, and
+inventory imports. Recorded hosted signup and release verification. Convex Auth,
+company-scoped records, and file imports support the new onboarding flow
+(`docs/onboarding.md`).
+
+### 2026-09-05 - 053de27
+
+Built the cinematic demo film and voiceover cut. Film assets and staged app scenes
+are presentation material; they do not prove a real supplier purchase. Final
+submission-video publication remains a separate step (`assets/storyboard`).
+
+### 2026-09-06 - 02aa8b7
+
+Added company purchasing, supplier confirmations, partial receiving, downloadable
+order records, and email alerts. Purchase status stays separate from delivery and
+receipt evidence (`docs/company-ordering.md`; Convex mutations, actions, storage,
+and scheduled work).
+
+### 2026-09-08 - 2b7d4d2
+
+Redesigned BUY HARD around conversational inventory and buying. Simplified the
+dashboard and forms, improved onboarding recovery, and added a persistent buyer
+conversation with workspace actions and corrected context handling
+(`convex/deskAgent.ts`, `src/components/desk`; Convex Agent threads and queries).
+
+### 2026-09-10 - 6f117ea
+
+Added agent-led replenishment, supplier research, merchant metrics, and hosted
+website checkout with approval and recovery checks. The release record documents
+production backend/frontend deployment, hosted worker health, and passkey
+signup/sign-in checks. Controlled tests and launch checks did not make a real
+merchant purchase (`docs/agent-led-purchasing-verification.md`). Firecrawl and
+AgentMail remain registered provider components in `convex/convex.config.ts`.
+
+### 2026-09-12 - 59277a1
+
+Added pilot inquiries, walkthrough booking, search metadata, and sample-demo
+engagement tracking. Inquiry saving and notification jobs are separate outcomes;
+sample activity is not customer traction (`docs/marketing-walkthrough.md`,
+`docs/gtm-marketing-strategy.md`).
+
+### 2026-09-13 - b0bdaec
+
+Added Square and Shopify sales connections and supply mapping. Recorded Square
+sandbox sales reducing projected stock once and producing a replenishment plan;
+Shopify development-store installation and catalog reads were verified. Shopify
+order-to-stock delivery and supplier purchasing were not established by those
+checks (`docs/sales-connections.md`; signed HTTP actions and scheduled sync).
+
+### 2026-09-13 - 66badf4
+
+Moved new workspaces behind assisted onboarding invitations while retaining the
+public sample demo (`docs/onboarding.md`). The demo explicitly uses sample data
+and does not contact suppliers.
+
+### 2026-09-15 - b317194
+
+Connected purchase approvals to Link and resumable website checkout, preserving
+payment ownership and uncertain-order safeguards. Recorded production rollout
+with live Link mode and the hosted connection handoff. No connected wallet,
+merchant acceptance, or real purchase receipt was proved by these launch checks
+(`docs/link-agent-payments.md`, `workers/browser-checkout`).
+
+### 2026-09-16 - 389f9de
+
+Expanded AgentMail workflows and customer email-domain setup, retaining original
+inbox identity across domain changes. The production release record includes
+provider delivery callbacks for a controlled test. Branded DNS records validated,
+but provider API verification and branded delivery remained pending in this
+record (`docs/agentmail-domains-release-2026-09-16.md`).
+
+### 2026-09-16 - 16b8950
+
+Added 96 shared app operations for the UI, built-in buyer, and remote MCP agents,
+with OAuth consent, scoped permissions, spending limits, and duplicate-request
+protection. Development checks verified shared page/filter state and inventory
+changes, with 217 tests passing and two skipped. This change was verified only
+in development; no production release, real order, supplier email, or payment
+was made during its validation (`docs/agent-controls.md`).
+
+### 2026-09-20 - working tree
+
+Backfilled this log from committed implementation and verification records.
+The current marketing observation records published campaign posts. Prepared a
+179-second piano-story film with two new opening shots and preserved app scenes,
+then uploaded it to YouTube as unlisted: https://youtu.be/gWkVWIedk7A.
+The film combines generated footage with app components using fictional data;
+it does not prove live supplier purchases. Hackathon submission remains pending.
+This documentation update does not deploy code
+(`output/marketing/gtm-desk/queue-observation.json`).
